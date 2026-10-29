@@ -23,6 +23,8 @@ export interface AppSettings {
   clearCookiesOnExit: boolean;
   enableAdBlocker: boolean;
   telemetry: boolean;
+  aiApiKey?: string;
+  aiProvider?: 'local' | 'gemini';
 }
 
 export type ActiveNavMenu = 
@@ -84,6 +86,22 @@ export interface HistoryEntry {
   type: 'project' | 'task' | 'navigation' | 'system';
 }
 
+export interface AgentStep {
+  id: string;
+  title: string;
+  description: string;
+  status: 'pending' | 'running' | 'completed' | 'error' | 'awaiting_approval';
+  requiresApproval?: boolean;
+  result?: string;
+  error?: string;
+}
+
+export interface AgentPlan {
+  goal: string;
+  targetUrl?: string;
+  steps: AgentStep[];
+}
+
 export interface ChirmoAPI {
   // Tabs management
   createTab: (url?: string) => Promise<Tab>;
@@ -137,9 +155,16 @@ export interface ChirmoAPI {
   // History
   getHistory: () => Promise<HistoryEntry[]>;
 
+  // AI Agent
+  startAgent: (options: { projectId: string; prompt: string; currentUrl?: string }) => Promise<{ task: Task; plan: AgentPlan }>;
+  approveAgentStep: (taskId: string, approved: boolean) => Promise<void>;
+  cancelAgent: (taskId: string) => Promise<void>;
+
   // Listeners
   onTabsUpdated: (callback: (tabs: Tab[], activeTabId: string) => void) => () => void;
   onTabStateChanged: (callback: (tab: Tab) => void) => () => void;
+  onAgentPlan: (callback: (taskId: string, plan: AgentPlan) => void) => () => void;
+  onAgentStep: (callback: (taskId: string, step: AgentStep) => void) => () => void;
 }
 
 declare global {

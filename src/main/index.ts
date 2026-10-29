@@ -4,12 +4,14 @@ import { setupSecurityPolicies } from './security';
 import { SettingsStore } from './store';
 import { WorkspaceDatabase } from './database';
 import { BrowserManager } from './browser-manager';
+import { AgentRunner } from './ai/agent-runner';
 import { registerIpcHandlers } from './ipc-handlers';
 
 let mainWindow: BrowserWindow | null = null;
 let browserManager: BrowserManager | null = null;
 let settingsStore: SettingsStore | null = null;
 let database: WorkspaceDatabase | null = null;
+let agentRunner: AgentRunner | null = null;
 
 async function createWindow(): Promise<void> {
   setupSecurityPolicies();
@@ -35,7 +37,9 @@ async function createWindow(): Promise<void> {
   });
 
   browserManager = new BrowserManager(mainWindow, settingsStore);
-  registerIpcHandlers(mainWindow, browserManager, settingsStore, database);
+  agentRunner = new AgentRunner(mainWindow, database, settingsStore);
+
+  registerIpcHandlers(mainWindow, browserManager, settingsStore, database, agentRunner);
 
   const devServerUrl = process.env.VITE_DEV_SERVER_URL;
   if (devServerUrl) {
@@ -52,6 +56,7 @@ async function createWindow(): Promise<void> {
     mainWindow = null;
     browserManager = null;
     database = null;
+    agentRunner = null;
   });
 }
 

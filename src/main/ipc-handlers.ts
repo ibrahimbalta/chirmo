@@ -2,12 +2,14 @@ import { ipcMain, BrowserWindow } from 'electron';
 import { BrowserManager, BrowserBounds } from './browser-manager';
 import { SettingsStore, AppSettings } from './store';
 import { WorkspaceDatabase, TaskStatus } from './database';
+import { AgentRunner } from './ai/agent-runner';
 
 export function registerIpcHandlers(
   win: BrowserWindow,
   browserManager: BrowserManager,
   settingsStore: SettingsStore,
-  db: WorkspaceDatabase
+  db: WorkspaceDatabase,
+  agentRunner: AgentRunner
 ): void {
   // Tabs
   ipcMain.handle('chirmo:create-tab', async (_, url?: string) => {
@@ -139,5 +141,18 @@ export function registerIpcHandlers(
   // --- HISTORY ---
   ipcMain.handle('chirmo:get-history', async () => {
     return db.getHistory();
+  });
+
+  // --- AI AGENT ---
+  ipcMain.handle('chirmo:start-agent', async (_, options: { projectId: string; prompt: string; currentUrl?: string }) => {
+    return agentRunner.startAgent(options);
+  });
+
+  ipcMain.handle('chirmo:approve-agent-step', async (_, taskId: string, approved: boolean) => {
+    agentRunner.approveStep(taskId, approved);
+  });
+
+  ipcMain.handle('chirmo:cancel-agent', async (_, taskId: string) => {
+    agentRunner.cancelAgent(taskId);
   });
 }

@@ -5,6 +5,7 @@ import { AddressBar } from './components/browser/AddressBar';
 import { BrowserContainer } from './components/browser/BrowserContainer';
 import { TaskSidebar } from './components/browser/TaskSidebar';
 import { ProjectsView } from './components/projects/ProjectsView';
+import { AgentsView } from './components/agents/AgentsView';
 import { HistoryView } from './components/history/HistoryView';
 import { SettingsView } from './components/settings/SettingsView';
 import { PlaceholderView } from './components/views/PlaceholderView';
@@ -160,6 +161,13 @@ export const App: React.FC = () => {
             {/* WebContentsView container */}
             <BrowserContainer isVisible={isBrowserActive} />
 
+            {/* AI Agents View */}
+            {activeMenu === 'agents' && (
+              <div className="absolute inset-0 z-10 flex">
+                <AgentsView />
+              </div>
+            )}
+
             {/* Projects View */}
             {activeMenu === 'projects' && (
               <div className="absolute inset-0 z-10 flex">
@@ -183,6 +191,7 @@ export const App: React.FC = () => {
 
             {/* Placeholder views for other future modules */}
             {activeMenu !== 'browser' &&
+              activeMenu !== 'agents' &&
               activeMenu !== 'projects' &&
               activeMenu !== 'history' &&
               activeMenu !== 'settings' && (

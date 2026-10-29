@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import { Tab, BrowserBounds, AppSettings, Project, Task, TaskLog, HistoryEntry, TaskStatus } from '../renderer/src/types';
+import { Tab, BrowserBounds, AppSettings, Project, Task, TaskLog, HistoryEntry, TaskStatus, AgentPlan, AgentStep } from '../renderer/src/types';
 
 const api = {
   createTab: (url?: string): Promise<Tab> => ipcRenderer.invoke('chirmo:create-tab', url),
@@ -64,6 +64,15 @@ const api = {
   getHistory: (): Promise<HistoryEntry[]> =>
     ipcRenderer.invoke('chirmo:get-history'),
 
+  // AI Agent
+  startAgent: (options: { projectId: string; prompt: string; currentUrl?: string }): Promise<{ task: Task; plan: AgentPlan }> =>
+    ipcRenderer.invoke('chirmo:start-agent', options),
+  approveAgentStep: (taskId: string, approved: boolean): Promise<void> =>
+    ipcRenderer.invoke('chirmo:approve-agent-step', taskId, approved),
+  cancelAgent: (taskId: string): Promise<void> =>
+    ipcRenderer.invoke('chirmo:cancel-agent', taskId),
+
+  // Listeners
   onTabsUpdated: (callback: (tabs: Tab[], activeTabId: string) => void) => {
     const listener = (_: any, tabs: Tab[], activeTabId: string) => callback(tabs, activeTabId);
     ipcRenderer.on('chirmo:tabs-updated', listener);
@@ -77,6 +86,22 @@ const api = {
     ipcRenderer.on('chirmo:tab-state-changed', listener);
     return () => {
       ipcRenderer.removeListener('chirmo:tab-state-changed', listener);
+    };
+  },
+
+  onAgentPlan: (callback: (taskId: string, plan: AgentPlan) => void) => {
+    const listener = (_: any, taskId: string, plan: AgentPlan) => callback(taskId, plan);
+    ipcRenderer.on('chirmo:agent-plan', listener);
+    return () => {
+      ipcRenderer.removeListener('chirmo:agent-plan', listener);
+    };
+  },
+
+  onAgentStep: (callback: (taskId: string, step: AgentStep) => void) => {
+    const listener = (_: any, taskId: string, step: AgentStep) => callback(taskId, step);
+    ipcRenderer.on('chirmo:agent-step', listener);
+    return () => {
+      ipcRenderer.removeListener('chirmo:agent-step', listener);
     };
   },
 };

@@ -20,10 +20,10 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) => {
   const menuItems: { id: ActiveNavMenu; label: string; icon: React.ReactNode; badge?: string }[] = [
     { id: 'browser', label: 'Tarayıcı', icon: <Globe className="w-4 h-4" /> },
-    { id: 'home', label: 'Ana Sayfa', icon: <Home className="w-4 h-4" /> },
+    { id: 'agents', label: 'AI Ajanları', icon: <Bot className="w-4 h-4" /> },
     { id: 'projects', label: 'Projeler', icon: <FolderKanban className="w-4 h-4" /> },
     { id: 'history', label: 'Görev Geçmişi', icon: <History className="w-4 h-4" /> },
-    { id: 'agents', label: 'AI Ajanları', icon: <Bot className="w-4 h-4" />, badge: 'Aşama 3' },
+    { id: 'home', label: 'Ana Sayfa', icon: <Home className="w-4 h-4" /> },
     { id: 'tools', label: 'Araçlar', icon: <Wrench className="w-4 h-4" /> },
     { id: 'workflows', label: 'İş Akışları', icon: <Workflow className="w-4 h-4" /> },
     { id: 'settings', label: 'Ayarlar', icon: <Settings className="w-4 h-4" /> },
