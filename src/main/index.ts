@@ -2,17 +2,20 @@ import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import { setupSecurityPolicies } from './security';
 import { SettingsStore } from './store';
+import { WorkspaceDatabase } from './database';
 import { BrowserManager } from './browser-manager';
 import { registerIpcHandlers } from './ipc-handlers';
 
 let mainWindow: BrowserWindow | null = null;
 let browserManager: BrowserManager | null = null;
 let settingsStore: SettingsStore | null = null;
+let database: WorkspaceDatabase | null = null;
 
 async function createWindow(): Promise<void> {
   setupSecurityPolicies();
 
   settingsStore = new SettingsStore();
+  database = new WorkspaceDatabase();
 
   mainWindow = new BrowserWindow({
     width: 1280,
@@ -32,7 +35,7 @@ async function createWindow(): Promise<void> {
   });
 
   browserManager = new BrowserManager(mainWindow, settingsStore);
-  registerIpcHandlers(mainWindow, browserManager, settingsStore);
+  registerIpcHandlers(mainWindow, browserManager, settingsStore, database);
 
   const devServerUrl = process.env.VITE_DEV_SERVER_URL;
   if (devServerUrl) {
@@ -48,6 +51,7 @@ async function createWindow(): Promise<void> {
   mainWindow.on('closed', () => {
     mainWindow = null;
     browserManager = null;
+    database = null;
   });
 }
 

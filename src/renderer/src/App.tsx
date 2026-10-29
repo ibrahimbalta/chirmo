@@ -3,6 +3,9 @@ import { Sidebar } from './components/layout/Sidebar';
 import { TabBar } from './components/browser/TabBar';
 import { AddressBar } from './components/browser/AddressBar';
 import { BrowserContainer } from './components/browser/BrowserContainer';
+import { TaskSidebar } from './components/browser/TaskSidebar';
+import { ProjectsView } from './components/projects/ProjectsView';
+import { HistoryView } from './components/history/HistoryView';
 import { SettingsView } from './components/settings/SettingsView';
 import { PlaceholderView } from './components/views/PlaceholderView';
 import { Tab, ActiveNavMenu } from './types';
@@ -11,6 +14,7 @@ export const App: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<ActiveNavMenu>('browser');
   const [tabs, setTabs] = useState<Tab[]>([]);
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
+  const [isTaskPanelOpen, setIsTaskPanelOpen] = useState(false);
 
   useEffect(() => {
     // Initial load
@@ -138,6 +142,8 @@ export const App: React.FC = () => {
         {isBrowserActive && (
           <AddressBar
             activeTab={activeTab}
+            isTaskPanelOpen={isTaskPanelOpen}
+            onToggleTaskPanel={() => setIsTaskPanelOpen(!isTaskPanelOpen)}
             onNavigate={handleNavigate}
             onGoBack={handleGoBack}
             onGoForward={handleGoForward}
@@ -148,25 +154,53 @@ export const App: React.FC = () => {
         )}
 
         {/* Content Viewports */}
-        <div className="flex-1 relative overflow-hidden flex flex-col">
-          {/* WebContentsView container: always rendered so bounds can be tracked, visibility toggled */}
-          <BrowserContainer isVisible={isBrowserActive} />
+        <div className="flex-1 relative overflow-hidden flex flex-row">
+          {/* Main Content Area */}
+          <div className="flex-1 relative overflow-hidden flex flex-col">
+            {/* WebContentsView container */}
+            <BrowserContainer isVisible={isBrowserActive} />
 
-          {/* Settings View */}
-          {activeMenu === 'settings' && (
-            <div className="absolute inset-0 z-10 flex">
-              <SettingsView />
-            </div>
-          )}
+            {/* Projects View */}
+            {activeMenu === 'projects' && (
+              <div className="absolute inset-0 z-10 flex">
+                <ProjectsView />
+              </div>
+            )}
 
-          {/* Placeholder views for other menu items */}
-          {activeMenu !== 'browser' && activeMenu !== 'settings' && (
-            <div className="absolute inset-0 z-10 flex">
-              <PlaceholderView
-                view={activeMenu}
-                onOpenBrowser={() => setActiveMenu('browser')}
-              />
-            </div>
+            {/* History View */}
+            {activeMenu === 'history' && (
+              <div className="absolute inset-0 z-10 flex">
+                <HistoryView />
+              </div>
+            )}
+
+            {/* Settings View */}
+            {activeMenu === 'settings' && (
+              <div className="absolute inset-0 z-10 flex">
+                <SettingsView />
+              </div>
+            )}
+
+            {/* Placeholder views for other future modules */}
+            {activeMenu !== 'browser' &&
+              activeMenu !== 'projects' &&
+              activeMenu !== 'history' &&
+              activeMenu !== 'settings' && (
+                <div className="absolute inset-0 z-10 flex">
+                  <PlaceholderView
+                    view={activeMenu}
+                    onOpenBrowser={() => setActiveMenu('browser')}
+                  />
+                </div>
+              )}
+          </div>
+
+          {/* Right Task & AI Sidebar in Browser View */}
+          {isBrowserActive && isTaskPanelOpen && (
+            <TaskSidebar
+              currentTab={activeTab}
+              onClose={() => setIsTaskPanelOpen(false)}
+            />
           )}
         </div>
       </div>

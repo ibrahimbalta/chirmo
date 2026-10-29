@@ -1,31 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-
-export interface Tab {
-  id: string;
-  url: string;
-  title: string;
-  favicon?: string;
-  isLoading: boolean;
-  canGoBack: boolean;
-  canGoForward: boolean;
-  isSecure: boolean;
-}
-
-export interface BrowserBounds {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
-export interface AppSettings {
-  defaultSearchEngine: 'google' | 'bing' | 'duckduckgo';
-  homePage: string;
-  theme: 'light';
-  clearCookiesOnExit: boolean;
-  enableAdBlocker: boolean;
-  telemetry: boolean;
-}
+import { Tab, BrowserBounds, AppSettings, Project, Task, TaskLog, HistoryEntry, TaskStatus } from '../renderer/src/types';
 
 const api = {
   createTab: (url?: string): Promise<Tab> => ipcRenderer.invoke('chirmo:create-tab', url),
@@ -53,6 +27,42 @@ const api = {
   minimizeWindow: (): void => ipcRenderer.send('chirmo:window-minimize'),
   maximizeWindow: (): void => ipcRenderer.send('chirmo:window-maximize'),
   closeWindow: (): void => ipcRenderer.send('chirmo:window-close'),
+
+  // Projects
+  getProjects: (): Promise<Project[]> => ipcRenderer.invoke('chirmo:get-projects'),
+  createProject: (name: string, description: string, color?: string): Promise<Project> =>
+    ipcRenderer.invoke('chirmo:create-project', name, description, color),
+  updateProject: (id: string, updates: Partial<Pick<Project, 'name' | 'description' | 'color'>>): Promise<Project | null> =>
+    ipcRenderer.invoke('chirmo:update-project', id, updates),
+  deleteProject: (id: string): Promise<boolean> =>
+    ipcRenderer.invoke('chirmo:delete-project', id),
+  getActiveProjectId: (): Promise<string | null> =>
+    ipcRenderer.invoke('chirmo:get-active-project-id'),
+  setActiveProjectId: (id: string | null): Promise<void> =>
+    ipcRenderer.invoke('chirmo:set-active-project-id', id),
+
+  // Tasks
+  getTasks: (projectId?: string): Promise<Task[]> =>
+    ipcRenderer.invoke('chirmo:get-tasks', projectId),
+  createTask: (data: {
+    projectId: string;
+    title: string;
+    description?: string;
+    targetUrl?: string;
+    status?: TaskStatus;
+  }): Promise<Task> => ipcRenderer.invoke('chirmo:create-task', data),
+  updateTask: (id: string, updates: Partial<Omit<Task, 'id' | 'createdAt' | 'logs'>>): Promise<Task | null> =>
+    ipcRenderer.invoke('chirmo:update-task', id, updates),
+  deleteTask: (id: string): Promise<boolean> =>
+    ipcRenderer.invoke('chirmo:delete-task', id),
+  cancelTask: (id: string): Promise<Task | null> =>
+    ipcRenderer.invoke('chirmo:cancel-task', id),
+  addTaskLog: (taskId: string, message: string, type?: 'info' | 'warn' | 'error' | 'success'): Promise<TaskLog | null> =>
+    ipcRenderer.invoke('chirmo:add-task-log', taskId, message, type),
+
+  // History
+  getHistory: (): Promise<HistoryEntry[]> =>
+    ipcRenderer.invoke('chirmo:get-history'),
 
   onTabsUpdated: (callback: (tabs: Tab[], activeTabId: string) => void) => {
     const listener = (_: any, tabs: Tab[], activeTabId: string) => callback(tabs, activeTabId);

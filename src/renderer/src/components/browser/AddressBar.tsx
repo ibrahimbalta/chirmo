@@ -10,12 +10,15 @@ import {
   Copy, 
   Check, 
   Home,
-  Bookmark
+  Bookmark,
+  PanelRight
 } from 'lucide-react';
 import { Tab } from '../../types';
 
 interface AddressBarProps {
   activeTab: Tab | null;
+  isTaskPanelOpen: boolean;
+  onToggleTaskPanel: () => void;
   onNavigate: (url: string) => void;
   onGoBack: () => void;
   onGoForward: () => void;
@@ -26,6 +29,8 @@ interface AddressBarProps {
 
 export const AddressBar: React.FC<AddressBarProps> = ({
   activeTab,
+  isTaskPanelOpen,
+  onToggleTaskPanel,
   onNavigate,
   onGoBack,
   onGoForward,
@@ -172,6 +177,20 @@ export const AddressBar: React.FC<AddressBarProps> = ({
           ) : (
             <Copy className="w-4 h-4" />
           )}
+        </button>
+
+        {/* Task & AI Side Panel Toggle */}
+        <button
+          onClick={onToggleTaskPanel}
+          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
+            isTaskPanelOpen
+              ? 'bg-chirmo-brand text-white shadow-xs'
+              : 'hover:bg-chirmo-secondary text-chirmo-text-secondary hover:text-chirmo-text'
+          }`}
+          title="Görev ve Çalışma Panelini Aç/Kapat"
+        >
+          <PanelRight className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Görev Paneli</span>
         </button>
       </div>
     </div>
