@@ -190,9 +190,9 @@ export const ProjectsView: React.FC = () => {
   };
 
   return (
-    <div className="flex-1 flex overflow-hidden bg-chirmo-secondary select-none">
+    <div className="flex-1 flex flex-col md:flex-row overflow-y-auto md:overflow-hidden bg-chirmo-secondary select-none pb-16 md:pb-0">
       {/* Left Column: Projects List */}
-      <div className="w-80 border-r border-chirmo-border bg-chirmo-bg flex flex-col justify-between">
+      <div className="w-full md:w-80 max-h-56 md:max-h-none border-b md:border-b-0 md:border-r border-chirmo-border bg-chirmo-bg flex flex-col justify-between shrink-0">
         <div className="p-4 border-b border-chirmo-border flex items-center justify-between">
           <div className="flex items-center gap-2">
             <FolderKanban className="w-5 h-5 text-chirmo-brand" />

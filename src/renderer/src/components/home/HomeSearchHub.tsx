@@ -12,8 +12,6 @@ import {
   Check,
   Zap,
   FolderKanban,
-  Clock,
-  Layers,
   ShieldCheck,
   TrendingUp,
   X,
@@ -23,8 +21,7 @@ import {
 import {
   SearchEngineService,
   SearchMode,
-  SearchResponse,
-  InstantAnswer
+  SearchResponse
 } from '../../services/searchEngine';
 import { Project, Task, HistoryEntry } from '../../types';
 
@@ -38,8 +35,7 @@ interface HomeSearchHubProps {
 export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
   onNavigateToBrowser,
   onNavigateToAgents,
-  onNavigateToProjects,
-  onNavigateToTools
+  onNavigateToProjects
 }) => {
   const [query, setQuery] = useState('');
   const [activeMode, setActiveMode] = useState<SearchMode>('all');
@@ -127,14 +123,14 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
 
   // Speed dial shortcuts
   const speedDialShortcuts = [
-    { title: 'Google', url: 'https://www.google.com', icon: '🔍', color: 'from-blue-500 to-red-500' },
-    { title: 'GitHub', url: 'https://github.com', icon: '🐙', color: 'from-gray-700 to-gray-900' },
-    { title: 'YouTube', url: 'https://www.youtube.com', icon: '▶️', color: 'from-red-500 to-red-700' },
-    { title: 'Wikipedia', url: 'https://tr.wikipedia.org', icon: '📚', color: 'from-gray-400 to-gray-600' },
-    { title: 'Stack Overflow', url: 'https://stackoverflow.com', icon: '💡', color: 'from-orange-500 to-amber-600' },
-    { title: 'ChatGPT', url: 'https://chatgpt.com', icon: '🤖', color: 'from-emerald-500 to-teal-700' },
-    { title: 'Reddit', url: 'https://reddit.com', icon: '🔥', color: 'from-orange-600 to-red-600' },
-    { title: 'X (Twitter)', url: 'https://x.com', icon: '✖️', color: 'from-gray-800 to-black' }
+    { title: 'Google', url: 'https://www.google.com', icon: '🔍' },
+    { title: 'GitHub', url: 'https://github.com', icon: '🐙' },
+    { title: 'YouTube', url: 'https://www.youtube.com', icon: '▶️' },
+    { title: 'Wikipedia', url: 'https://tr.wikipedia.org', icon: '📚' },
+    { title: 'Stack Overflow', url: 'https://stackoverflow.com', icon: '💡' },
+    { title: 'ChatGPT', url: 'https://chatgpt.com', icon: '🤖' },
+    { title: 'Reddit', url: 'https://reddit.com', icon: '🔥' },
+    { title: 'X (Twitter)', url: 'https://x.com', icon: '✖️' }
   ];
 
   // AI Prompt Suggestions
@@ -150,41 +146,41 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
   return (
     <div className="flex-1 h-full overflow-y-auto bg-gradient-to-b from-[#FAF9FE] via-[#FFFFFF] to-[#F5F6FA] text-chirmo-text select-none flex flex-col">
       {/* Background Ambient Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-b from-chirmo-brand/10 via-purple-400/5 to-transparent blur-3xl pointer-events-none -z-0" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[700px] h-[300px] bg-gradient-to-b from-chirmo-brand/10 via-purple-400/5 to-transparent blur-3xl pointer-events-none -z-0" />
 
       {/* Main Container */}
-      <div className="relative z-10 max-w-5xl w-full mx-auto px-6 py-8 flex flex-col flex-1">
+      <div className="relative z-10 max-w-5xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-8 pb-24 md:pb-12 flex flex-col flex-1">
         {/* Top Header / Branding */}
-        <div className="text-center mb-6">
-          <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full bg-chirmo-brand/10 border border-chirmo-brand/20 text-chirmo-brand text-xs font-semibold mb-3 shadow-sm">
-            <Sparkles className="w-3.5 h-3.5 text-chirmo-brand animate-pulse" />
-            <span>Chirmo Akıllı Arama & Keşif Merkezi</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            <span className="text-[10px] text-emerald-700 font-medium">Yerel Zekâ Aktif</span>
+        <div className="text-center mb-4 sm:mb-6">
+          <div className="inline-flex items-center gap-1.5 sm:gap-2.5 px-2.5 sm:px-3 py-1 rounded-full bg-chirmo-brand/10 border border-chirmo-brand/20 text-chirmo-brand text-[11px] sm:text-xs font-semibold mb-2.5 sm:mb-3 shadow-xs">
+            <Sparkles className="w-3.5 h-3.5 text-chirmo-brand animate-pulse shrink-0" />
+            <span className="truncate">Chirmo Akıllı Arama & Keşif Merkezi</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+            <span className="hidden xs:inline text-[10px] text-emerald-700 font-medium">Yerel Zekâ Aktif</span>
           </div>
 
-          <h1 className="text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-chirmo-text via-chirmo-brand-dark to-chirmo-brand mb-1">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-chirmo-text via-chirmo-brand-dark to-chirmo-brand mb-1">
             CHIRMO
           </h1>
-          <p className="text-sm text-chirmo-text-secondary max-w-lg mx-auto">
+          <p className="text-xs sm:text-sm text-chirmo-text-secondary max-w-lg mx-auto px-2">
             Google arama gücü, çevrimdışı yerel zekâ, hesaplayıcı ve proje yönetimi tek merkezde.
           </p>
         </div>
 
         {/* Center Omnisearch Form */}
-        <form onSubmit={handleSubmit} className="w-full max-w-3xl mx-auto mb-6">
+        <form onSubmit={handleSubmit} className="w-full max-w-3xl mx-auto mb-5 sm:mb-6">
           <div className="relative group">
             {/* Search Bar Glow */}
             <div className="absolute -inset-0.5 bg-gradient-to-r from-chirmo-brand via-purple-500 to-indigo-500 rounded-2xl blur opacity-25 group-hover:opacity-45 transition duration-300"></div>
 
             <div className="relative bg-white rounded-2xl border border-chirmo-border shadow-md hover:shadow-lg transition-all p-1.5 flex flex-col gap-1.5">
-              {/* Mode Pills */}
-              <div className="flex items-center justify-between px-3 pt-1 border-b border-chirmo-border/40 pb-1.5 text-xs">
-                <div className="flex items-center gap-1">
+              {/* Mode Pills (Horizontally scrollable on mobile) */}
+              <div className="flex items-center justify-between px-2 sm:px-3 pt-1 border-b border-chirmo-border/40 pb-1.5 text-xs overflow-x-auto no-scrollbar">
+                <div className="flex items-center gap-1 whitespace-nowrap">
                   <button
                     type="button"
                     onClick={() => setActiveMode('all')}
-                    className={`px-2.5 py-1 rounded-lg font-medium transition-colors ${
+                    className={`px-2 sm:px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-medium transition-colors shrink-0 ${
                       activeMode === 'all'
                         ? 'bg-chirmo-brand text-white shadow-xs'
                         : 'text-chirmo-text-secondary hover:text-chirmo-text hover:bg-chirmo-secondary'
@@ -195,7 +191,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                   <button
                     type="button"
                     onClick={() => setActiveMode('ai')}
-                    className={`px-2.5 py-1 rounded-lg font-medium transition-colors ${
+                    className={`px-2 sm:px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-medium transition-colors shrink-0 ${
                       activeMode === 'ai'
                         ? 'bg-chirmo-brand text-white shadow-xs'
                         : 'text-chirmo-text-secondary hover:text-chirmo-text hover:bg-chirmo-secondary'
@@ -206,7 +202,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                   <button
                     type="button"
                     onClick={() => setActiveMode('local')}
-                    className={`px-2.5 py-1 rounded-lg font-medium transition-colors ${
+                    className={`px-2 sm:px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-medium transition-colors shrink-0 ${
                       activeMode === 'local'
                         ? 'bg-chirmo-brand text-white shadow-xs'
                         : 'text-chirmo-text-secondary hover:text-chirmo-text hover:bg-chirmo-secondary'
@@ -217,7 +213,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                   <button
                     type="button"
                     onClick={() => setActiveMode('tools')}
-                    className={`px-2.5 py-1 rounded-lg font-medium transition-colors ${
+                    className={`px-2 sm:px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-medium transition-colors shrink-0 ${
                       activeMode === 'tools'
                         ? 'bg-chirmo-brand text-white shadow-xs'
                         : 'text-chirmo-text-secondary hover:text-chirmo-text hover:bg-chirmo-secondary'
@@ -227,7 +223,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                   </button>
                 </div>
 
-                <div className="hidden sm:flex items-center gap-1.5 text-[11px] text-chirmo-text-muted">
+                <div className="hidden md:flex items-center gap-1.5 text-[11px] text-chirmo-text-muted ml-2 shrink-0">
                   <kbd className="px-1.5 py-0.5 rounded bg-gray-100 border border-gray-200 text-[10px]">Ctrl</kbd>
                   <span>+</span>
                   <kbd className="px-1.5 py-0.5 rounded bg-gray-100 border border-gray-200 text-[10px]">K</kbd>
@@ -235,15 +231,15 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
               </div>
 
               {/* Main Input Row */}
-              <div className="flex items-center px-3 py-1 gap-3">
-                <Search className="w-5 h-5 text-chirmo-brand shrink-0" />
+              <div className="flex items-center px-2 sm:px-3 py-1 gap-2 sm:gap-3">
+                <Search className="w-4 h-4 sm:w-5 sm:h-5 text-chirmo-brand shrink-0" />
                 <input
                   ref={inputRef}
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Google'da arayın, 'React nedir' yazın, '150 * 1.2' hesaplayın veya projelerinizde arayın..."
-                  className="w-full text-sm font-medium bg-transparent border-none outline-none text-chirmo-text placeholder:text-chirmo-text-muted select-text"
+                  placeholder="Google'da ara, 'React nedir' yaz veya '150 * 1.2' hesapla..."
+                  className="w-full text-xs sm:text-sm font-medium bg-transparent border-none outline-none text-chirmo-text placeholder:text-chirmo-text-muted select-text min-w-0"
                 />
 
                 {query && (
@@ -253,7 +249,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                       setQuery('');
                       setSearchResponse(null);
                     }}
-                    className="p-1 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+                    className="p-1 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors shrink-0"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -262,13 +258,13 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                 <button
                   type="submit"
                   disabled={isSearching || !query.trim()}
-                  className="px-4 py-2 rounded-xl bg-chirmo-brand hover:bg-chirmo-brand-hover text-white text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm shadow-chirmo-brand/30 disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+                  className="px-3 sm:px-4 py-2 rounded-xl bg-chirmo-brand hover:bg-chirmo-brand-hover text-white text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm shadow-chirmo-brand/30 disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
                 >
                   {isSearching ? (
-                    <span>Sentezleniyor...</span>
+                    <span>...</span>
                   ) : (
                     <>
-                      <span>Arama Yap</span>
+                      <span>Ara</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </>
                   )}
@@ -280,13 +276,13 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
 
         {/* -------------------- SEARCH RESULTS SECTION -------------------- */}
         {searchResponse ? (
-          <div className="w-full max-w-4xl mx-auto space-y-6 animate-fadeIn pb-12">
+          <div className="w-full max-w-4xl mx-auto space-y-4 sm:space-y-6 animate-fadeIn">
             {/* Results Navigation Bar */}
-            <div className="flex items-center justify-between border-b border-chirmo-border pb-2">
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-chirmo-border pb-2 gap-2">
+              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar whitespace-nowrap">
                 <button
                   onClick={() => setActiveTab('overview')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                  className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shrink-0 ${
                     activeTab === 'overview'
                       ? 'bg-chirmo-brand text-white shadow-xs'
                       : 'text-chirmo-text-secondary hover:text-chirmo-text hover:bg-chirmo-secondary'
@@ -296,33 +292,33 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                 </button>
                 <button
                   onClick={() => setActiveTab('ai')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                  className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shrink-0 ${
                     activeTab === 'ai'
                       ? 'bg-chirmo-brand text-white shadow-xs'
                       : 'text-chirmo-text-secondary hover:text-chirmo-text hover:bg-chirmo-secondary'
                   }`}
                 >
-                  ⚡ AI Sentezi (Derin)
+                  ⚡ AI Sentezi
                 </button>
                 <button
                   onClick={() => setActiveTab('web')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                  className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shrink-0 ${
                     activeTab === 'web'
                       ? 'bg-chirmo-brand text-white shadow-xs'
                       : 'text-chirmo-text-secondary hover:text-chirmo-text hover:bg-chirmo-secondary'
                   }`}
                 >
-                  🌐 Web Sonuçları ({searchResponse.webResults.length})
+                  🌐 Web ({searchResponse.webResults.length})
                 </button>
                 <button
                   onClick={() => setActiveTab('local')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                  className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shrink-0 ${
                     activeTab === 'local'
                       ? 'bg-chirmo-brand text-white shadow-xs'
                       : 'text-chirmo-text-secondary hover:text-chirmo-text hover:bg-chirmo-secondary'
                   }`}
                 >
-                  🗄️ Yerel Bellek ({searchResponse.localResults.length})
+                  🗄️ Yerel ({searchResponse.localResults.length})
                 </button>
               </div>
 
@@ -331,8 +327,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                 onClick={() =>
                   onNavigateToBrowser(`https://www.google.com/search?q=${encodeURIComponent(searchResponse.query)}`)
                 }
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-chirmo-text text-xs font-medium transition-colors"
-                title="Bu aramayı tam Google sayfasında aç"
+                className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-chirmo-text text-xs font-medium transition-colors shrink-0"
               >
                 <span>Google'da Canlı Aç</span>
                 <ExternalLink className="w-3.5 h-3.5 text-gray-500" />
@@ -341,10 +336,10 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
 
             {/* A. INSTANT ANSWER CARD (Calculator / Converter / Tech Knowledge) */}
             {searchResponse.instantAnswer && (activeTab === 'overview' || activeTab === 'ai') && (
-              <div className="bg-gradient-to-br from-white to-purple-50/40 rounded-2xl border border-chirmo-brand/30 p-5 shadow-sm">
-                <div className="flex items-start justify-between mb-3">
+              <div className="bg-gradient-to-br from-white to-purple-50/40 rounded-2xl border border-chirmo-brand/30 p-4 sm:p-5 shadow-sm">
+                <div className="flex items-start justify-between mb-3 gap-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-chirmo-brand-light flex items-center justify-center text-chirmo-brand">
+                    <div className="w-8 h-8 rounded-lg bg-chirmo-brand-light flex items-center justify-center text-chirmo-brand shrink-0">
                       {searchResponse.instantAnswer.type === 'calculator' && <Calculator className="w-4 h-4" />}
                       {searchResponse.instantAnswer.type === 'converter' && <Coins className="w-4 h-4" />}
                       {searchResponse.instantAnswer.type === 'tech' && <BookOpen className="w-4 h-4" />}
@@ -357,13 +352,13 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                     </div>
                   </div>
 
-                  <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-chirmo-brand/10 text-chirmo-brand border border-chirmo-brand/20">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-chirmo-brand/10 text-chirmo-brand border border-chirmo-brand/20 shrink-0">
                     {searchResponse.instantAnswer.badge || 'Anında Yanıt'}
                   </span>
                 </div>
 
                 <div className="mb-3">
-                  <div className="text-2xl font-extrabold text-chirmo-brand-dark tracking-tight">
+                  <div className="text-xl sm:text-2xl font-extrabold text-chirmo-brand-dark tracking-tight break-words">
                     {searchResponse.instantAnswer.result}
                   </div>
                   {searchResponse.instantAnswer.details && (
@@ -395,37 +390,34 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
 
             {/* B. AI SYNTHESIS (PERPLEXITY-STYLE DEEP INSIGHT) */}
             {(activeTab === 'overview' || activeTab === 'ai') && (
-              <div className="bg-white rounded-2xl border border-chirmo-border p-6 shadow-sm">
-                <div className="flex items-center justify-between pb-3 border-b border-chirmo-border mb-4">
+              <div className="bg-white rounded-2xl border border-chirmo-border p-4 sm:p-6 shadow-sm">
+                <div className="flex flex-wrap items-center justify-between pb-3 border-b border-chirmo-border mb-4 gap-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-md bg-chirmo-brand text-white flex items-center justify-center">
+                    <div className="w-6 h-6 rounded-md bg-chirmo-brand text-white flex items-center justify-center shrink-0">
                       <Zap className="w-3.5 h-3.5" />
                     </div>
-                    <span className="text-sm font-bold text-chirmo-text">Chirmo AI Sentez Motoru</span>
-                    <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-semibold">
-                      Güvenilirlik: %{searchResponse.aiSynthesis.confidenceScore}
+                    <span className="text-xs sm:text-sm font-bold text-chirmo-text">Chirmo AI Sentez Motoru</span>
+                    <span className="text-[10px] sm:text-[11px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-semibold">
+                      %{searchResponse.aiSynthesis.confidenceScore}
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => handleCopySummary(searchResponse.aiSynthesis.summary)}
-                      className="p-1.5 rounded-md hover:bg-gray-100 text-gray-500 hover:text-gray-700 text-xs flex items-center gap-1 transition-colors"
-                      title="Özeti Kopyala"
-                    >
-                      {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                      <span>{copied ? 'Kopyalandı' : 'Kopyala'}</span>
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => handleCopySummary(searchResponse.aiSynthesis.summary)}
+                    className="p-1.5 rounded-md hover:bg-gray-100 text-gray-500 hover:text-gray-700 text-xs flex items-center gap-1 transition-colors"
+                  >
+                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copied ? 'Kopyalandı' : 'Kopyala'}</span>
+                  </button>
                 </div>
 
                 {/* AI Executive Summary */}
-                <p className="text-sm text-chirmo-text leading-relaxed mb-4 select-text font-normal">
+                <p className="text-xs sm:text-sm text-chirmo-text leading-relaxed mb-4 select-text">
                   {searchResponse.aiSynthesis.summary}
                 </p>
 
                 {/* Key Takeaways */}
-                <div className="bg-chirmo-secondary/60 rounded-xl p-4 border border-chirmo-border/70 mb-4">
+                <div className="bg-chirmo-secondary/60 rounded-xl p-3 sm:p-4 border border-chirmo-border/70 mb-4">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-chirmo-text mb-2.5 flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-chirmo-brand" />
                     <span>Önemli Çıkarımlar & Bulgular</span>
@@ -450,11 +442,11 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                       <button
                         key={i}
                         onClick={() => onNavigateToBrowser(src.url)}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 text-xs text-chirmo-text transition-colors"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 text-xs text-chirmo-text transition-colors max-w-full"
                       >
-                        <Globe className="w-3 h-3 text-chirmo-brand" />
-                        <span className="font-medium truncate max-w-[200px]">{src.title}</span>
-                        <ExternalLink className="w-2.5 h-2.5 text-gray-400" />
+                        <Globe className="w-3 h-3 text-chirmo-brand shrink-0" />
+                        <span className="font-medium truncate max-w-[180px] sm:max-w-[240px]">{src.title}</span>
+                        <ExternalLink className="w-2.5 h-2.5 text-gray-400 shrink-0" />
                       </button>
                     ))}
                   </div>
@@ -462,7 +454,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
 
                 {/* Action Bar */}
                 <div className="pt-4 border-t border-chirmo-border flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <button
                       onClick={() => onNavigateToAgents(`"${searchResponse.query}" hakkında derin araştırma raporu hazırla.`)}
                       className="px-3 py-1.5 rounded-lg bg-chirmo-brand text-white text-xs font-semibold hover:bg-chirmo-brand-hover transition-colors flex items-center gap-1.5 shadow-xs"
@@ -479,8 +471,8 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                     </button>
                   </div>
 
-                  <span className="text-[11px] text-chirmo-text-muted">
-                    Sorgu zamanı: {new Date(searchResponse.timestamp).toLocaleTimeString('tr-TR')}
+                  <span className="text-[10px] sm:text-[11px] text-chirmo-text-muted">
+                    {new Date(searchResponse.timestamp).toLocaleTimeString('tr-TR')}
                   </span>
                 </div>
               </div>
@@ -488,11 +480,11 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
 
             {/* C. LOCAL WORKSPACE RESULTS */}
             {(activeTab === 'overview' || activeTab === 'local') && searchResponse.localResults.length > 0 && (
-              <div className="bg-white rounded-2xl border border-chirmo-border p-5 shadow-sm">
+              <div className="bg-white rounded-2xl border border-chirmo-border p-4 sm:p-5 shadow-sm">
                 <div className="flex items-center justify-between mb-3 pb-2 border-b border-chirmo-border">
                   <div className="flex items-center gap-2">
                     <FolderKanban className="w-4 h-4 text-chirmo-brand" />
-                    <h3 className="text-sm font-bold text-chirmo-text">Yerel Çalışma Alanı Eşleşmeleri</h3>
+                    <h3 className="text-xs sm:text-sm font-bold text-chirmo-text">Yerel Çalışma Alanı Eşleşmeleri</h3>
                   </div>
                   <button
                     onClick={onNavigateToProjects}
@@ -535,10 +527,10 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                 {searchResponse.webResults.map((item) => (
                   <div
                     key={item.id}
-                    className="bg-white rounded-xl border border-chirmo-border p-4 shadow-2xs hover:shadow-sm hover:border-chirmo-brand/30 transition-all"
+                    className="bg-white rounded-xl border border-chirmo-border p-3.5 sm:p-4 shadow-2xs hover:shadow-sm hover:border-chirmo-brand/30 transition-all"
                   >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="text-[11px] font-semibold text-chirmo-brand">{item.domain}</span>
                           {item.badge && (
@@ -550,7 +542,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
 
                         <h4
                           onClick={() => onNavigateToBrowser(item.url)}
-                          className="text-sm font-bold text-blue-600 hover:text-blue-800 hover:underline cursor-pointer mb-1"
+                          className="text-sm font-bold text-blue-600 hover:text-blue-800 hover:underline cursor-pointer mb-1 break-words"
                         >
                           {item.title}
                         </h4>
@@ -560,10 +552,10 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                         </p>
                       </div>
 
-                      <div className="flex flex-col gap-1.5 shrink-0">
+                      <div className="flex flex-row sm:flex-col gap-1.5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-chirmo-border/50">
                         <button
                           onClick={() => onNavigateToBrowser(item.url)}
-                          className="px-2.5 py-1 rounded-md bg-chirmo-brand text-white text-xs font-medium hover:bg-chirmo-brand-hover transition-colors flex items-center gap-1 shadow-xs"
+                          className="flex-1 sm:flex-initial justify-center px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-md bg-chirmo-brand text-white text-xs font-medium hover:bg-chirmo-brand-hover transition-colors flex items-center gap-1 shadow-xs"
                         >
                           <span>Aç</span>
                           <ExternalLink className="w-3 h-3" />
@@ -572,7 +564,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                           onClick={() =>
                             onNavigateToAgents(`Şu sayfayı analiz et ve özetle: ${item.url}`)
                           }
-                          className="px-2.5 py-1 rounded-md bg-gray-50 border border-gray-200 hover:bg-gray-100 text-chirmo-text text-[11px] font-medium transition-colors"
+                          className="flex-1 sm:flex-initial justify-center px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-md bg-gray-50 border border-gray-200 hover:bg-gray-100 text-chirmo-text text-[11px] font-medium transition-colors"
                         >
                           AI ile Oku
                         </button>
@@ -585,7 +577,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
 
             {/* E. RELATED QUESTIONS (PEOPLE ALSO ASK) */}
             {searchResponse.relatedQuestions.length > 0 && (
-              <div className="bg-white rounded-2xl border border-chirmo-border p-5 shadow-sm">
+              <div className="bg-white rounded-2xl border border-chirmo-border p-4 sm:p-5 shadow-sm">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-chirmo-text-secondary mb-3 flex items-center gap-1.5">
                   <Compass className="w-3.5 h-3.5 text-chirmo-brand" />
                   <span>Bunu da Keşfetmek İsteyebilirsiniz</span>
@@ -600,8 +592,8 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                       }}
                       className="text-left px-3 py-2 rounded-xl border border-chirmo-border hover:border-chirmo-brand/40 bg-chirmo-secondary/40 hover:bg-chirmo-brand-light/40 text-xs font-medium text-chirmo-text transition-all flex items-center justify-between group"
                     >
-                      <span>{q}</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-chirmo-brand group-hover:translate-x-0.5 transition-all" />
+                      <span className="pr-2">{q}</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-chirmo-brand group-hover:translate-x-0.5 transition-all shrink-0" />
                     </button>
                   ))}
                 </div>
@@ -610,7 +602,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
           </div>
         ) : (
           /* -------------------- ZERO STATE (DISCOVERY & SHORTCUTS) -------------------- */
-          <div className="w-full max-w-4xl mx-auto space-y-8 animate-fadeIn pb-12">
+          <div className="w-full max-w-4xl mx-auto space-y-6 sm:space-y-8 animate-fadeIn">
             {/* Speed Dial Shortcuts Grid */}
             <div>
               <div className="flex items-center justify-between mb-3 px-1">
@@ -618,20 +610,20 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                   <Globe className="w-3.5 h-3.5 text-chirmo-brand" />
                   <span>Hızlı Erişim Siteleri</span>
                 </span>
-                <span className="text-[11px] text-chirmo-text-muted">Tek tıkla tarayıcıda aç</span>
+                <span className="text-[11px] text-chirmo-text-muted">Tek tıkla aç</span>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
                 {speedDialShortcuts.map((sc, i) => (
                   <button
                     key={i}
                     onClick={() => onNavigateToBrowser(sc.url)}
-                    className="p-3.5 rounded-2xl bg-white border border-chirmo-border/80 hover:border-chirmo-brand/40 hover:shadow-md transition-all flex items-center gap-3 group text-left"
+                    className="p-3 sm:p-3.5 rounded-2xl bg-white border border-chirmo-border/80 hover:border-chirmo-brand/40 hover:shadow-md transition-all flex items-center gap-2.5 sm:gap-3 group text-left"
                   >
-                    <div className="w-10 h-10 rounded-xl bg-chirmo-secondary flex items-center justify-center text-lg shadow-xs group-hover:scale-105 transition-transform">
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-chirmo-secondary flex items-center justify-center text-base sm:text-lg shadow-xs group-hover:scale-105 transition-transform shrink-0">
                       {sc.icon}
                     </div>
-                    <div className="overflow-hidden">
+                    <div className="overflow-hidden min-w-0">
                       <span className="text-xs font-bold text-chirmo-text block truncate group-hover:text-chirmo-brand transition-colors">
                         {sc.title}
                       </span>
@@ -647,9 +639,8 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
               <div className="flex items-center justify-between mb-3 px-1">
                 <span className="text-xs font-bold uppercase tracking-wider text-chirmo-text-secondary flex items-center gap-1.5">
                   <TrendingUp className="w-3.5 h-3.5 text-purple-600" />
-                  <span>Öne Çıkan AI Araştırma & Keşif İstekleri</span>
+                  <span>Öne Çıkan AI Araştırma İstekleri</span>
                 </span>
-                <span className="text-[11px] text-chirmo-text-muted">Tıkla ve anında sentezle</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
@@ -670,16 +661,16 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
             </div>
 
             {/* Workspace Live Snapshot Card */}
-            <div className="bg-gradient-to-r from-white via-white to-purple-50/30 rounded-2xl border border-chirmo-border p-5 shadow-sm">
+            <div className="bg-gradient-to-r from-white via-white to-purple-50/30 rounded-2xl border border-chirmo-border p-4 sm:p-5 shadow-sm">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-chirmo-brand-light text-chirmo-brand flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-chirmo-brand-light text-chirmo-brand flex items-center justify-center shrink-0">
                     <FolderKanban className="w-5 h-5" />
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-chirmo-text">Çalışma Alanı Durumu</h3>
                     <p className="text-xs text-chirmo-text-secondary">
-                      {projects.length} kayıtlı proje • {tasks.length} toplam görev • Çevrimdışı hazır
+                      {projects.length} proje • {tasks.length} görev • Çevrimdışı hazır
                     </p>
                   </div>
                 </div>
@@ -687,14 +678,14 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setShowQuickTaskModal(true)}
-                    className="px-3 py-1.5 rounded-xl bg-chirmo-brand hover:bg-chirmo-brand-hover text-white text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs"
+                    className="flex-1 sm:flex-initial justify-center px-3 py-1.5 rounded-xl bg-chirmo-brand hover:bg-chirmo-brand-hover text-white text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs"
                   >
                     <Plus className="w-3.5 h-3.5" />
-                    <span>Hızlı Görev Ekle</span>
+                    <span>Görev Ekle</span>
                   </button>
                   <button
                     onClick={onNavigateToProjects}
-                    className="px-3 py-1.5 rounded-xl bg-white border border-chirmo-border hover:bg-chirmo-secondary text-chirmo-text text-xs font-medium transition-colors"
+                    className="flex-1 sm:flex-initial justify-center px-3 py-1.5 rounded-xl bg-white border border-chirmo-border hover:bg-chirmo-secondary text-chirmo-text text-xs font-medium transition-colors"
                   >
                     Projeleri Gör
                   </button>
@@ -706,10 +697,10 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
             <div className="bg-chirmo-secondary/70 rounded-2xl border border-chirmo-border/80 p-4 flex items-start gap-3 text-xs text-chirmo-text-secondary">
               <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
               <div>
-                <span className="font-bold text-chirmo-text block mb-0.5">Yerel ve Gizlilik Odaklı Tasarlandı</span>
+                <span className="font-bold text-chirmo-text block mb-0.5">Mobil & Masaüstü Tam Uyumlu</span>
                 <p>
                   Chirmo arama motoru matematiksel hesaplamaları, birim dönüştürmeleri ve proje aramalarını tamamen
-                  cihazınızda yerel olarak çalıştırır. İnternetiniz olmasa dahi anında cevap verir; verileriniz dışarı aktarılmaz.
+                  cihazınızda yerel olarak çalıştırır.
                 </p>
               </div>
             </div>
@@ -720,7 +711,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
       {/* QUICK TASK MODAL */}
       {showQuickTaskModal && (
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl border border-chirmo-border max-w-md w-full p-6 shadow-xl animate-scaleUp">
+          <div className="bg-white rounded-2xl border border-chirmo-border max-w-md w-full p-5 sm:p-6 shadow-xl">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-bold text-chirmo-text flex items-center gap-2">
                 <Plus className="w-4 h-4 text-chirmo-brand" />

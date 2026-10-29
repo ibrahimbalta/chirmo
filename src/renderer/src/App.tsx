@@ -136,6 +136,7 @@ export const App: React.FC = () => {
           onSelectTab={handleSelectTab}
           onCloseTab={handleCloseTab}
           onNewTab={handleNewTab}
+          onGoHome={handleGoHome}
         />
 
         {/* Browser Top Navigation (Address bar, back/forward) */}

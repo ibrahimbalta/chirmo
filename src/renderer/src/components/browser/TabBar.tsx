@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, X, Globe, Loader2, Minus, Square, Copy } from 'lucide-react';
+import { Plus, X, Globe, Loader2, Minus, Square, Sparkles } from 'lucide-react';
 import { Tab } from '../../types';
 
 interface TabBarProps {
@@ -8,6 +8,7 @@ interface TabBarProps {
   onSelectTab: (tabId: string) => void;
   onCloseTab: (tabId: string) => void;
   onNewTab: () => void;
+  onGoHome?: () => void;
 }
 
 export const TabBar: React.FC<TabBarProps> = ({
@@ -16,6 +17,7 @@ export const TabBar: React.FC<TabBarProps> = ({
   onSelectTab,
   onCloseTab,
   onNewTab,
+  onGoHome,
 }) => {
   const handleMinimize = () => {
     window.chirmo?.minimizeWindow();
@@ -30,7 +32,17 @@ export const TabBar: React.FC<TabBarProps> = ({
   };
 
   return (
-    <div className="h-10 bg-chirmo-secondary border-b border-chirmo-border flex items-center justify-between pl-2 pr-0 select-none draggable-header">
+    <div className="h-10 bg-chirmo-secondary border-b border-chirmo-border flex items-center justify-between pl-2 pr-0 select-none draggable-header shrink-0">
+      {/* Mobile Brand Icon */}
+      <button
+        onClick={onGoHome}
+        className="md:hidden flex items-center gap-1.5 mr-2 px-1.5 py-1 rounded-lg bg-chirmo-brand text-white text-xs font-bold shadow-xs non-draggable shrink-0"
+        title="Ana Sayfa"
+      >
+        <Sparkles className="w-3.5 h-3.5" />
+        <span className="text-[11px]">CHIRMO</span>
+      </button>
+
       {/* Tab List */}
       <div className="flex items-center gap-1 overflow-x-auto no-scrollbar flex-1 h-full pt-1.5 non-draggable">
         {tabs.map((tab) => {
@@ -39,7 +51,7 @@ export const TabBar: React.FC<TabBarProps> = ({
             <div
               key={tab.id}
               onClick={() => onSelectTab(tab.id)}
-              className={`group relative flex items-center gap-2 px-3 py-1.5 h-full rounded-t-lg text-xs font-medium cursor-pointer border-t border-l border-r transition-all max-w-[200px] min-w-[120px] ${
+              className={`group relative flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 h-full rounded-t-lg text-xs font-medium cursor-pointer border-t border-l border-r transition-all max-w-[150px] sm:max-w-[200px] min-w-[90px] sm:min-w-[120px] shrink-0 ${
                 isActive
                   ? 'bg-chirmo-bg text-chirmo-text border-chirmo-border shadow-sm font-semibold'
                   : 'bg-transparent text-chirmo-text-secondary border-transparent hover:bg-chirmo-bg/60 hover:text-chirmo-text'
@@ -75,7 +87,9 @@ export const TabBar: React.FC<TabBarProps> = ({
                   onCloseTab(tab.id);
                 }}
                 className={`p-0.5 rounded hover:bg-chirmo-border/80 transition-colors ${
-                  isActive ? 'text-chirmo-text-secondary hover:text-chirmo-text' : 'opacity-0 group-hover:opacity-100 text-chirmo-text-muted hover:text-chirmo-text'
+                  isActive
+                    ? 'text-chirmo-text-secondary hover:text-chirmo-text'
+                    : 'opacity-100 sm:opacity-0 group-hover:opacity-100 text-chirmo-text-muted hover:text-chirmo-text'
                 }`}
                 title="Sekmeyi Kapat"
               >
@@ -88,15 +102,15 @@ export const TabBar: React.FC<TabBarProps> = ({
         {/* New Tab Button */}
         <button
           onClick={onNewTab}
-          className="p-1 rounded-md text-chirmo-text-secondary hover:bg-chirmo-bg hover:text-chirmo-brand transition-colors ml-1"
+          className="p-1 rounded-md text-chirmo-text-secondary hover:bg-chirmo-bg hover:text-chirmo-brand transition-colors ml-1 shrink-0"
           title="Yeni Sekme Aç"
         >
           <Plus className="w-4 h-4" />
         </button>
       </div>
 
-      {/* Windows Window Controls */}
-      <div className="flex items-center h-full non-draggable">
+      {/* Windows Window Controls (Hidden on mobile screens) */}
+      <div className="hidden md:flex items-center h-full non-draggable shrink-0">
         <button
           onClick={handleMinimize}
           className="h-full px-3 hover:bg-chirmo-border/60 text-chirmo-text-secondary hover:text-chirmo-text transition-colors flex items-center justify-center"
