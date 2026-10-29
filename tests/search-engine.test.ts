@@ -1,0 +1,70 @@
+import { describe, it, expect } from 'vitest';
+import { SearchEngineService } from '../src/renderer/src/services/searchEngine';
+
+describe('SearchEngineService', () => {
+  it('correctly calculates mathematical expressions', () => {
+    const res1 = SearchEngineService.detectInstantAnswer('1250 * 1.2');
+    expect(res1).toBeDefined();
+    expect(res1?.type).toBe('calculator');
+    expect(res1?.result).toBe('1500');
+
+    const res2 = SearchEngineService.detectInstantAnswer('hesapla: (100 + 50) / 3');
+    expect(res2).toBeDefined();
+    expect(res2?.result).toBe('50');
+
+    const res3 = SearchEngineService.detectInstantAnswer('15% of 2000');
+    expect(res3).toBeDefined();
+    expect(res3?.result).toBe('300');
+  });
+
+  it('correctly converts currencies and units', () => {
+    const curRes = SearchEngineService.detectInstantAnswer('100 usd to try');
+    expect(curRes).toBeDefined();
+    expect(curRes?.type).toBe('converter');
+    expect(curRes?.result).toContain('TRY');
+
+    const distRes = SearchEngineService.detectInstantAnswer('100 km to miles');
+    expect(distRes).toBeDefined();
+    expect(distRes?.type).toBe('converter');
+    expect(distRes?.result).toContain('62.14 Mil');
+  });
+
+  it('matches offline knowledge base for tech concepts', () => {
+    const techRes = SearchEngineService.detectInstantAnswer('React nedir');
+    expect(techRes).toBeDefined();
+    expect(techRes?.type).toBe('tech');
+    expect(techRes?.title).toBe('React');
+    expect(techRes?.codeSnippet).toBeDefined();
+
+    const chirmoRes = SearchEngineService.detectInstantAnswer('chirmo');
+    expect(chirmoRes).toBeDefined();
+    expect(chirmoRes?.title).toBe('Chirmo');
+  });
+
+  it('performs full search with AI synthesis, web results, and related questions', async () => {
+    const searchRes = await SearchEngineService.search('TypeScript');
+    expect(searchRes.query).toBe('TypeScript');
+    expect(searchRes.aiSynthesis).toBeDefined();
+    expect(searchRes.aiSynthesis.keyTakeaways.length).toBeGreaterThan(0);
+    expect(searchRes.webResults.length).toBe(5);
+    expect(searchRes.relatedQuestions.length).toBe(4);
+  });
+
+  it('indexes local projects and tasks offline', async () => {
+    const searchRes = await SearchEngineService.search('e-ticaret', 'all', {
+      projects: [
+        {
+          id: 'p1',
+          name: 'E-Ticaret Sitesi Analizi',
+          description: 'Rakip fiyatlarını inceleme',
+          color: '#6652C9',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        }
+      ]
+    });
+
+    expect(searchRes.localResults.length).toBe(1);
+    expect(searchRes.localResults[0].title).toBe('E-Ticaret Sitesi Analizi');
+  });
+});

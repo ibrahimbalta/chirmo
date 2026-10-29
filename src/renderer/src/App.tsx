@@ -10,11 +10,11 @@ import { ToolsView } from './components/tools/ToolsView';
 import { WorkflowsView } from './components/workflows/WorkflowsView';
 import { HistoryView } from './components/history/HistoryView';
 import { SettingsView } from './components/settings/SettingsView';
-import { PlaceholderView } from './components/views/PlaceholderView';
+import { HomeSearchHub } from './components/home/HomeSearchHub';
 import { Tab, ActiveNavMenu } from './types';
 
 export const App: React.FC = () => {
-  const [activeMenu, setActiveMenu] = useState<ActiveNavMenu>('browser');
+  const [activeMenu, setActiveMenu] = useState<ActiveNavMenu>('home');
   const [tabs, setTabs] = useState<Tab[]>([]);
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
   const [isTaskPanelOpen, setIsTaskPanelOpen] = useState(false);
@@ -116,11 +116,8 @@ export const App: React.FC = () => {
     }
   };
 
-  const handleGoHome = async () => {
-    if (window.chirmo && activeTabId) {
-      const settings = await window.chirmo.getSettings();
-      window.chirmo.navigate(activeTabId, settings.homePage || 'https://www.google.com');
-    }
+  const handleGoHome = () => {
+    setActiveMenu('home');
   };
 
   const isBrowserActive = activeMenu === 'browser';
@@ -205,12 +202,26 @@ export const App: React.FC = () => {
               </div>
             )}
 
-            {/* Home / Overview View */}
+            {/* Home / Omnisearch AI Hub View */}
             {activeMenu === 'home' && (
               <div className="absolute inset-0 z-10 flex">
-                <PlaceholderView
-                  view="home"
-                  onOpenBrowser={() => setActiveMenu('browser')}
+                <HomeSearchHub
+                  onNavigateToBrowser={(url: string) => {
+                    if (activeTabId && window.chirmo) {
+                      window.chirmo.navigate(activeTabId, url);
+                      setActiveMenu('browser');
+                    } else if (window.chirmo) {
+                      window.chirmo.createTab(url).then((tab) => {
+                        setActiveTabId(tab.id);
+                        setActiveMenu('browser');
+                      });
+                    }
+                  }}
+                  onNavigateToAgents={() => {
+                    setActiveMenu('agents');
+                  }}
+                  onNavigateToProjects={() => setActiveMenu('projects')}
+                  onNavigateToTools={() => setActiveMenu('tools')}
                 />
               </div>
             )}

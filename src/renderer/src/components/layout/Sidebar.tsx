@@ -1,6 +1,5 @@
 import React from 'react';
 import { 
-  Home, 
   Globe, 
   FolderKanban, 
   Bot, 
@@ -8,7 +7,8 @@ import {
   Workflow, 
   History, 
   Settings,
-  Sparkles
+  Sparkles,
+  Search
 } from 'lucide-react';
 import { ActiveNavMenu } from '../../types';
 
@@ -19,13 +19,13 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) => {
   const menuItems: { id: ActiveNavMenu; label: string; icon: React.ReactNode; badge?: string }[] = [
+    { id: 'home', label: 'Arama & Ana Sayfa', icon: <Search className="w-4 h-4" />, badge: 'AI Hub' },
     { id: 'browser', label: 'Tarayıcı', icon: <Globe className="w-4 h-4" /> },
     { id: 'agents', label: 'AI Ajanları', icon: <Bot className="w-4 h-4" /> },
     { id: 'projects', label: 'Projeler', icon: <FolderKanban className="w-4 h-4" /> },
     { id: 'tools', label: 'Araçlar', icon: <Wrench className="w-4 h-4" /> },
     { id: 'workflows', label: 'İş Akışları', icon: <Workflow className="w-4 h-4" /> },
     { id: 'history', label: 'Görev Geçmişi', icon: <History className="w-4 h-4" /> },
-    { id: 'home', label: 'Ana Sayfa', icon: <Home className="w-4 h-4" /> },
     { id: 'settings', label: 'Ayarlar', icon: <Settings className="w-4 h-4" /> },
   ];
 
@@ -33,13 +33,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) =>
     <aside className="w-56 bg-chirmo-secondary border-r border-chirmo-border flex flex-col justify-between select-none h-full z-20">
       {/* Brand Header */}
       <div>
-        <div className="h-12 border-b border-chirmo-border flex items-center px-4 gap-2.5 bg-chirmo-bg">
+        <div 
+          onClick={() => onSelectMenu('home')}
+          className="h-12 border-b border-chirmo-border flex items-center px-4 gap-2.5 bg-chirmo-bg cursor-pointer hover:bg-chirmo-secondary/50 transition-colors"
+        >
           <div className="w-7 h-7 rounded-lg bg-chirmo-brand flex items-center justify-center text-white shadow-sm shadow-chirmo-brand/30">
             <Sparkles className="w-4 h-4" />
           </div>
           <div>
             <span className="font-bold text-sm tracking-tight text-chirmo-text">CHIRMO</span>
-            <span className="text-[10px] block text-chirmo-text-secondary leading-none">AI Workspace</span>
+            <span className="text-[10px] block text-chirmo-text-secondary leading-none">AI & Search Hub</span>
           </div>
         </div>
 
@@ -58,15 +61,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) =>
                 }`}
               >
                 <div className="flex items-center gap-2.5">
-                  <span className={isActive ? 'text-white' : 'text-chirmo-text-secondary'}>
-                    {item.icon}
-                  </span>
+                  {item.icon}
                   <span>{item.label}</span>
                 </div>
                 {item.badge && (
-                  <span className={`text-[9px] px-1.5 py-0.5 rounded ${
-                    isActive ? 'bg-white/20 text-white' : 'bg-chirmo-border text-chirmo-text-secondary'
-                  }`}>
+                  <span
+                    className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+                      isActive
+                        ? 'bg-white/20 text-white'
+                        : 'bg-chirmo-brand/10 text-chirmo-brand'
+                    }`}
+                  >
                     {item.badge}
                   </span>
                 )}
@@ -76,15 +81,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) =>
         </nav>
       </div>
 
-      {/* Footer Info */}
-      <div className="p-3 border-t border-chirmo-border text-[11px] text-chirmo-text-secondary bg-chirmo-bg/50">
-        <div className="flex items-center justify-between font-mono text-[10px]">
-          <span>Chirmo Desktop</span>
-          <span className="bg-chirmo-brand-light text-chirmo-brand px-1.5 py-0.5 rounded font-semibold">v0.1.0</span>
+      {/* System Status Footer */}
+      <div className="p-3 border-t border-chirmo-border bg-chirmo-bg/50 text-[11px] text-chirmo-text-secondary">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="w-2 h-2 rounded-full bg-chirmo-success animate-pulse"></span>
+          <span className="font-medium text-chirmo-text">Yerel Zekâ Çevrimiçi</span>
         </div>
-        <p className="mt-1 text-[10px] text-chirmo-text-muted truncate">
-          Gezin. Düşün. İşlerini Tamamla.
-        </p>
+        <span className="text-[10px] text-chirmo-text-muted block">Chirmo Desktop v0.1.0</span>
       </div>
     </aside>
   );
