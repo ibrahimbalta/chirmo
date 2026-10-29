@@ -1,0 +1,68 @@
+import { app, BrowserWindow } from 'electron';
+import path from 'path';
+import { setupSecurityPolicies } from './security';
+import { SettingsStore } from './store';
+import { BrowserManager } from './browser-manager';
+import { registerIpcHandlers } from './ipc-handlers';
+
+let mainWindow: BrowserWindow | null = null;
+let browserManager: BrowserManager | null = null;
+let settingsStore: SettingsStore | null = null;
+
+async function createWindow(): Promise<void> {
+  setupSecurityPolicies();
+
+  settingsStore = new SettingsStore();
+
+  mainWindow = new BrowserWindow({
+    width: 1280,
+    height: 820,
+    minWidth: 960,
+    minHeight: 640,
+    title: 'Chirmo',
+    backgroundColor: '#FFFFFF',
+    frame: false, // Custom sleek titlebar matching Chirmo brand
+    show: false,
+    webPreferences: {
+      preload: path.join(__dirname, '../preload/index.js'),
+      sandbox: true,
+      contextIsolation: true,
+      nodeIntegration: false,
+    },
+  });
+
+  browserManager = new BrowserManager(mainWindow, settingsStore);
+  registerIpcHandlers(mainWindow, browserManager, settingsStore);
+
+  const devServerUrl = process.env.VITE_DEV_SERVER_URL;
+  if (devServerUrl) {
+    await mainWindow.loadURL(devServerUrl);
+  } else {
+    await mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
+  }
+
+  mainWindow.once('ready-to-show', () => {
+    mainWindow?.show();
+  });
+
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+    browserManager = null;
+  });
+}
+
+app.whenReady().then(async () => {
+  await createWindow();
+
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    }
+  });
+});
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
