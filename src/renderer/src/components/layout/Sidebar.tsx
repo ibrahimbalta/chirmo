@@ -7,12 +7,12 @@ import {
   Workflow, 
   History, 
   Settings,
-  Sparkles,
   Search,
   Menu,
   X
 } from 'lucide-react';
 import { ActiveNavMenu } from '../../types';
+import { ChirmoLogo } from '../common/ChirmoLogo';
 
 interface SidebarProps {
   activeMenu: ActiveNavMenu;
@@ -41,32 +41,26 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) =>
   return (
     <>
       {/* 1. DESKTOP SIDEBAR (Visible on md and larger screens) */}
-      <aside className="hidden md:flex w-56 bg-chirmo-secondary border-r border-chirmo-border flex-col justify-between select-none h-full z-20 shrink-0">
+      <aside className="hidden md:flex w-60 bg-[#FAF9FE] border-r border-chirmo-border/80 flex-col justify-between select-none h-full z-20 shrink-0">
         <div>
           <div 
             onClick={() => handleMenuClick('home')}
-            className="h-12 border-b border-chirmo-border flex items-center px-4 gap-2.5 bg-chirmo-bg cursor-pointer hover:bg-chirmo-secondary/50 transition-colors"
+            className="h-14 border-b border-chirmo-border/70 flex items-center px-4 bg-white/80 backdrop-blur-md cursor-pointer hover:bg-chirmo-secondary/60 transition-colors"
           >
-            <div className="w-7 h-7 rounded-lg bg-chirmo-brand flex items-center justify-center text-white shadow-sm shadow-chirmo-brand/30">
-              <Sparkles className="w-4 h-4" />
-            </div>
-            <div>
-              <span className="font-bold text-sm tracking-tight text-chirmo-text">CHIRMO</span>
-              <span className="text-[10px] block text-chirmo-text-secondary leading-none">AI & Search Hub</span>
-            </div>
+            <ChirmoLogo size="sm" showText={true} animated={true} />
           </div>
 
-          <nav className="p-2 space-y-0.5">
+          <nav className="p-2.5 space-y-1">
             {menuItems.map((item) => {
               const isActive = activeMenu === item.id;
               return (
                 <button
                   key={item.id}
                   onClick={() => handleMenuClick(item.id)}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-xs font-medium transition-colors ${
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                     isActive
-                      ? 'bg-chirmo-brand text-white shadow-sm'
-                      : 'text-chirmo-text-secondary hover:bg-chirmo-bg hover:text-chirmo-text'
+                      ? 'bg-gradient-to-r from-[#4338CA] via-[#6652C9] to-[#7C3AED] text-white shadow-md shadow-chirmo-brand/25'
+                      : 'text-chirmo-text-secondary hover:bg-white hover:text-chirmo-text hover:shadow-2xs'
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
@@ -75,7 +69,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) =>
                   </div>
                   {item.badge && (
                     <span
-                      className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+                      className={`text-[9px] px-1.5 py-0.5 rounded-full font-extrabold uppercase tracking-wider ${
                         isActive
                           ? 'bg-white/20 text-white'
                           : 'bg-chirmo-brand/10 text-chirmo-brand'
@@ -91,12 +85,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) =>
         </div>
 
         {/* System Status Footer */}
-        <div className="p-3 border-t border-chirmo-border bg-chirmo-bg/50 text-[11px] text-chirmo-text-secondary">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="w-2 h-2 rounded-full bg-chirmo-success animate-pulse"></span>
-            <span className="font-medium text-chirmo-text">Yerel Zekâ Çevrimiçi</span>
+        <div className="p-3.5 m-2.5 rounded-2xl border border-chirmo-border/80 bg-white shadow-2xs text-[11px] text-chirmo-text-secondary">
+          <div className="flex items-center justify-between mb-1.5">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="font-bold text-chirmo-text">Nöral Motor Aktif</span>
+            </div>
+            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+              0.4ms
+            </span>
           </div>
-          <span className="text-[10px] text-chirmo-text-muted block">Chirmo v0.1.0</span>
+          <span className="text-[10px] text-chirmo-text-muted block">Chirmo Enterprise OS v1.0</span>
         </div>
       </aside>
 
@@ -110,18 +109,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) =>
           />
 
           {/* Drawer Content */}
-          <div className="relative w-64 max-w-[80vw] bg-chirmo-bg h-full shadow-2xl flex flex-col justify-between z-10">
+          <div className="relative w-64 max-w-[82vw] bg-chirmo-bg h-full shadow-2xl flex flex-col justify-between z-10">
             <div>
               <div className="h-14 border-b border-chirmo-border flex items-center justify-between px-4 bg-chirmo-bg">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-lg bg-chirmo-brand flex items-center justify-center text-white shadow-sm">
-                    <Sparkles className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <span className="font-bold text-sm tracking-tight text-chirmo-text">CHIRMO</span>
-                    <span className="text-[10px] block text-chirmo-text-secondary leading-none">AI & Search Hub</span>
-                  </div>
-                </div>
+                <ChirmoLogo size="sm" showText={true} animated={false} />
                 <button
                   onClick={() => setIsMobileDrawerOpen(false)}
                   className="p-1.5 rounded-lg text-chirmo-text-secondary hover:bg-chirmo-secondary"
@@ -139,7 +130,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) =>
                       onClick={() => handleMenuClick(item.id)}
                       className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors ${
                         isActive
-                          ? 'bg-chirmo-brand text-white shadow-sm'
+                          ? 'bg-gradient-to-r from-[#4338CA] to-[#6652C9] text-white shadow-sm'
                           : 'text-chirmo-text-secondary hover:bg-chirmo-secondary hover:text-chirmo-text'
                       }`}
                     >
@@ -167,7 +158,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) =>
                 <span className="w-2 h-2 rounded-full bg-chirmo-success animate-pulse"></span>
                 <span className="font-semibold text-chirmo-text">Yerel Zekâ Aktif</span>
               </div>
-              <span className="text-[10px] text-chirmo-text-muted block">Chirmo Mobil & Masaüstü v0.1.0</span>
+              <span className="text-[10px] text-chirmo-text-muted block">Chirmo OS v1.0 PRO</span>
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React from 'react';
-import { Plus, X, Globe, Loader2, Minus, Square, Sparkles } from 'lucide-react';
+import { Plus, X, Globe, Loader2, Minus, Square } from 'lucide-react';
 import { Tab } from '../../types';
+import { ChirmoLogo } from '../common/ChirmoLogo';
 
 interface TabBarProps {
   tabs: Tab[];
@@ -36,11 +37,10 @@ export const TabBar: React.FC<TabBarProps> = ({
       {/* Mobile Brand Icon */}
       <button
         onClick={onGoHome}
-        className="md:hidden flex items-center gap-1.5 mr-2 px-1.5 py-1 rounded-lg bg-chirmo-brand text-white text-xs font-bold shadow-xs non-draggable shrink-0"
+        className="md:hidden flex items-center gap-1.5 mr-2 py-0.5 non-draggable shrink-0"
         title="Ana Sayfa"
       >
-        <Sparkles className="w-3.5 h-3.5" />
-        <span className="text-[11px]">CHIRMO</span>
+        <ChirmoLogo size="xs" animated={false} />
       </button>
 
       {/* Tab List */}
