@@ -1,5 +1,18 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import { Tab, BrowserBounds, AppSettings, Project, Task, TaskLog, HistoryEntry, TaskStatus, AgentPlan, AgentStep } from '../renderer/src/types';
+import { 
+  Tab, 
+  BrowserBounds, 
+  AppSettings, 
+  Project, 
+  Task, 
+  TaskLog, 
+  HistoryEntry, 
+  TaskStatus, 
+  AgentPlan, 
+  AgentStep,
+  PageAnalysisResult,
+  WorkflowDefinition
+} from '../renderer/src/types';
 
 const api = {
   createTab: (url?: string): Promise<Tab> => ipcRenderer.invoke('chirmo:create-tab', url),
@@ -71,6 +84,14 @@ const api = {
     ipcRenderer.invoke('chirmo:approve-agent-step', taskId, approved),
   cancelAgent: (taskId: string): Promise<void> =>
     ipcRenderer.invoke('chirmo:cancel-agent', taskId),
+
+  // Tools & Workflows
+  analyzePage: (url: string): Promise<PageAnalysisResult> =>
+    ipcRenderer.invoke('chirmo:analyze-page', url),
+  getWorkflowTemplates: (): Promise<WorkflowDefinition[]> =>
+    ipcRenderer.invoke('chirmo:get-workflow-templates'),
+  runBatchWorkflow: (projectId: string, urls: string[], title?: string): Promise<string> =>
+    ipcRenderer.invoke('chirmo:run-batch-workflow', projectId, urls, title),
 
   // Listeners
   onTabsUpdated: (callback: (tabs: Tab[], activeTabId: string) => void) => {

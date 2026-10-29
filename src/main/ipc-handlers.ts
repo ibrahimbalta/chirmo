@@ -3,13 +3,16 @@ import { BrowserManager, BrowserBounds } from './browser-manager';
 import { SettingsStore, AppSettings } from './store';
 import { WorkspaceDatabase, TaskStatus } from './database';
 import { AgentRunner } from './ai/agent-runner';
+import { ToolsService } from './ai/tools-service';
+import { WorkflowEngine } from './ai/workflow-engine';
 
 export function registerIpcHandlers(
   win: BrowserWindow,
   browserManager: BrowserManager,
   settingsStore: SettingsStore,
   db: WorkspaceDatabase,
-  agentRunner: AgentRunner
+  agentRunner: AgentRunner,
+  workflowEngine: WorkflowEngine
 ): void {
   // Tabs
   ipcMain.handle('chirmo:create-tab', async (_, url?: string) => {
@@ -154,5 +157,18 @@ export function registerIpcHandlers(
 
   ipcMain.handle('chirmo:cancel-agent', async (_, taskId: string) => {
     agentRunner.cancelAgent(taskId);
+  });
+
+  // --- TOOLS & WORKFLOWS ---
+  ipcMain.handle('chirmo:analyze-page', async (_, url: string) => {
+    return ToolsService.analyzePage(url);
+  });
+
+  ipcMain.handle('chirmo:get-workflow-templates', async () => {
+    return workflowEngine.getTemplates();
+  });
+
+  ipcMain.handle('chirmo:run-batch-workflow', async (_, projectId: string, urls: string[], title?: string) => {
+    return workflowEngine.runBatchScrape(projectId, urls, title);
   });
 }

@@ -6,6 +6,7 @@ import { WorkspaceDatabase } from './database';
 import { SessionRecovery } from './session-recovery';
 import { BrowserManager } from './browser-manager';
 import { AgentRunner } from './ai/agent-runner';
+import { WorkflowEngine } from './ai/workflow-engine';
 import { registerIpcHandlers } from './ipc-handlers';
 
 let mainWindow: BrowserWindow | null = null;
@@ -14,6 +15,7 @@ let settingsStore: SettingsStore | null = null;
 let database: WorkspaceDatabase | null = null;
 let sessionRecovery: SessionRecovery | null = null;
 let agentRunner: AgentRunner | null = null;
+let workflowEngine: WorkflowEngine | null = null;
 
 async function createWindow(): Promise<void> {
   setupSecurityPolicies();
@@ -21,6 +23,7 @@ async function createWindow(): Promise<void> {
   settingsStore = new SettingsStore();
   database = new WorkspaceDatabase();
   sessionRecovery = new SessionRecovery();
+  workflowEngine = new WorkflowEngine(database);
 
   mainWindow = new BrowserWindow({
     width: 1280,
@@ -42,7 +45,14 @@ async function createWindow(): Promise<void> {
   browserManager = new BrowserManager(mainWindow, settingsStore, sessionRecovery);
   agentRunner = new AgentRunner(mainWindow, database, settingsStore);
 
-  registerIpcHandlers(mainWindow, browserManager, settingsStore, database, agentRunner);
+  registerIpcHandlers(
+    mainWindow,
+    browserManager,
+    settingsStore,
+    database,
+    agentRunner,
+    workflowEngine
+  );
 
   const devServerUrl = process.env.VITE_DEV_SERVER_URL;
   if (devServerUrl) {
@@ -64,6 +74,7 @@ async function createWindow(): Promise<void> {
     database = null;
     sessionRecovery = null;
     agentRunner = null;
+    workflowEngine = null;
   });
 }
 

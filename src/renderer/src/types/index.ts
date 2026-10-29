@@ -102,6 +102,37 @@ export interface AgentPlan {
   steps: AgentStep[];
 }
 
+export interface PageAnalysisResult {
+  url: string;
+  title: string;
+  metaDescription: string;
+  wordCount: number;
+  headings: string[];
+  linksCount: number;
+  isHttps: boolean;
+  readabilityScore: string;
+  topKeywords: { word: string; count: number }[];
+  analyzedAt: string;
+}
+
+export interface WorkflowStep {
+  id: string;
+  name: string;
+  type: 'scrape' | 'analyze' | 'summarize';
+  targetUrl?: string;
+  status: 'pending' | 'running' | 'completed' | 'error';
+  result?: string;
+}
+
+export interface WorkflowDefinition {
+  id: string;
+  title: string;
+  description: string;
+  category: 'research' | 'seo' | 'news';
+  icon: string;
+  steps: WorkflowStep[];
+}
+
 export interface ChirmoAPI {
   // Tabs management
   createTab: (url?: string) => Promise<Tab>;
@@ -159,6 +190,11 @@ export interface ChirmoAPI {
   startAgent: (options: { projectId: string; prompt: string; currentUrl?: string }) => Promise<{ task: Task; plan: AgentPlan }>;
   approveAgentStep: (taskId: string, approved: boolean) => Promise<void>;
   cancelAgent: (taskId: string) => Promise<void>;
+
+  // Tools & Workflows
+  analyzePage: (url: string) => Promise<PageAnalysisResult>;
+  getWorkflowTemplates: () => Promise<WorkflowDefinition[]>;
+  runBatchWorkflow: (projectId: string, urls: string[], title?: string) => Promise<string>;
 
   // Listeners
   onTabsUpdated: (callback: (tabs: Tab[], activeTabId: string) => void) => () => void;

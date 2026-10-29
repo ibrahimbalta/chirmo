@@ -6,6 +6,8 @@ import { BrowserContainer } from './components/browser/BrowserContainer';
 import { TaskSidebar } from './components/browser/TaskSidebar';
 import { ProjectsView } from './components/projects/ProjectsView';
 import { AgentsView } from './components/agents/AgentsView';
+import { ToolsView } from './components/tools/ToolsView';
+import { WorkflowsView } from './components/workflows/WorkflowsView';
 import { HistoryView } from './components/history/HistoryView';
 import { SettingsView } from './components/settings/SettingsView';
 import { PlaceholderView } from './components/views/PlaceholderView';
@@ -175,6 +177,20 @@ export const App: React.FC = () => {
               </div>
             )}
 
+            {/* Tools View */}
+            {activeMenu === 'tools' && (
+              <div className="absolute inset-0 z-10 flex">
+                <ToolsView currentTab={activeTab} />
+              </div>
+            )}
+
+            {/* Workflows View */}
+            {activeMenu === 'workflows' && (
+              <div className="absolute inset-0 z-10 flex">
+                <WorkflowsView />
+              </div>
+            )}
+
             {/* History View */}
             {activeMenu === 'history' && (
               <div className="absolute inset-0 z-10 flex">
@@ -189,19 +205,15 @@ export const App: React.FC = () => {
               </div>
             )}
 
-            {/* Placeholder views for other future modules */}
-            {activeMenu !== 'browser' &&
-              activeMenu !== 'agents' &&
-              activeMenu !== 'projects' &&
-              activeMenu !== 'history' &&
-              activeMenu !== 'settings' && (
-                <div className="absolute inset-0 z-10 flex">
-                  <PlaceholderView
-                    view={activeMenu}
-                    onOpenBrowser={() => setActiveMenu('browser')}
-                  />
-                </div>
-              )}
+            {/* Home / Overview View */}
+            {activeMenu === 'home' && (
+              <div className="absolute inset-0 z-10 flex">
+                <PlaceholderView
+                  view="home"
+                  onOpenBrowser={() => setActiveMenu('browser')}
+                />
+              </div>
+            )}
           </div>
 
           {/* Right Task & AI Sidebar in Browser View */}
