@@ -1,29 +1,69 @@
-import { session, WebContents, shell } from 'electron';
+import { session, WebContents } from 'electron';
 
 const ALLOWED_PROTOCOLS = new Set(['http:', 'https:', 'about:', 'data:']);
 
+const BLOCKED_PERMISSIONS = new Set([
+  'media',
+  'geolocation',
+  'notifications',
+  'midi',
+  'midiSysex',
+  'pointerLock',
+  'fullscreen',
+  'openExternal',
+  'clipboard-read',
+  'clipboard-sanitized-write',
+  'serial',
+  'hid',
+  'usb',
+  'idle-detection',
+  'screen-wake-lock',
+  'window-management',
+  'local-fonts',
+]);
+
 export function setupSecurityPolicies(): void {
-  // 1. Permission request handler
+  // 1. Permission request handler (Strict Whitelist / Blacklist)
   session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
-    // For Phase 1, deny sensitive permissions like media, geolocation, notifications by default
-    const sensitive = ['media', 'geolocation', 'notifications', 'midi', 'openExternal'];
-    if (sensitive.includes(permission)) {
-      console.warn(`[Security] Blocked sensitive permission request: ${permission}`);
+    if (BLOCKED_PERMISSIONS.has(permission)) {
+      console.warn(`[Security] Blocked unauthorized permission request: ${permission}`);
       callback(false);
       return;
     }
-    callback(true);
+    // Default deny for unknown permissions
+    callback(false);
   });
 
-  // 2. Deny new window creation from untrusted contents, or route to Chirmo tab
-  // Handled on individual webContents via setWindowOpenHandler
+  // 2. Permission check handler (For navigator.permissions.query)
+  session.defaultSession.setPermissionCheckHandler((webContents, permission) => {
+    if (BLOCKED_PERMISSIONS.has(permission)) {
+      return false;
+    }
+    return false;
+  });
+
+  // 3. Disable device access (USB, Serial, HID, Bluetooth)
+  session.defaultSession.on('select-usb-device', (event, details, callback) => {
+    event.preventDefault();
+    callback('');
+  });
+
+  session.defaultSession.on('select-serial-port', (event, details, callback) => {
+    event.preventDefault();
+    callback('');
+  });
+
+  session.defaultSession.on('select-hid-device', (event, details, callback) => {
+    event.preventDefault();
+    callback('');
+  });
 }
 
 export function secureWebContents(
   contents: WebContents, 
   onNewTabRequested?: (url: string) => void
 ): void {
-  // Prevent opening arbitrary windows
+  // Prevent opening arbitrary external windows or popups; route to Chirmo tab
   contents.setWindowOpenHandler(({ url }) => {
     try {
       const parsed = new URL(url);
@@ -32,15 +72,15 @@ export function secureWebContents(
           onNewTabRequested(url);
         }
       } else {
-        console.warn(`[Security] Blocked untrusted protocol in new window: ${url}`);
+        console.warn(`[Security] Blocked untrusted protocol in new window request: ${url}`);
       }
     } catch {
-      console.warn(`[Security] Invalid URL requested: ${url}`);
+      console.warn(`[Security] Invalid URL requested in window open: ${url}`);
     }
     return { action: 'deny' };
   });
 
-  // Intercept will-navigate
+  // Intercept will-navigate to prevent protocol smuggling
   contents.on('will-navigate', (event, navigationUrl) => {
     try {
       const parsed = new URL(navigationUrl);
@@ -51,5 +91,10 @@ export function secureWebContents(
     } catch {
       event.preventDefault();
     }
+  });
+
+  // Block auxiliary click middle-click new window tricks
+  contents.on('will-attach-webview', (event) => {
+    event.preventDefault();
   });
 }

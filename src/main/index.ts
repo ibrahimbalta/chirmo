@@ -3,6 +3,7 @@ import path from 'path';
 import { setupSecurityPolicies } from './security';
 import { SettingsStore } from './store';
 import { WorkspaceDatabase } from './database';
+import { SessionRecovery } from './session-recovery';
 import { BrowserManager } from './browser-manager';
 import { AgentRunner } from './ai/agent-runner';
 import { registerIpcHandlers } from './ipc-handlers';
@@ -11,6 +12,7 @@ let mainWindow: BrowserWindow | null = null;
 let browserManager: BrowserManager | null = null;
 let settingsStore: SettingsStore | null = null;
 let database: WorkspaceDatabase | null = null;
+let sessionRecovery: SessionRecovery | null = null;
 let agentRunner: AgentRunner | null = null;
 
 async function createWindow(): Promise<void> {
@@ -18,6 +20,7 @@ async function createWindow(): Promise<void> {
 
   settingsStore = new SettingsStore();
   database = new WorkspaceDatabase();
+  sessionRecovery = new SessionRecovery();
 
   mainWindow = new BrowserWindow({
     width: 1280,
@@ -36,7 +39,7 @@ async function createWindow(): Promise<void> {
     },
   });
 
-  browserManager = new BrowserManager(mainWindow, settingsStore);
+  browserManager = new BrowserManager(mainWindow, settingsStore, sessionRecovery);
   agentRunner = new AgentRunner(mainWindow, database, settingsStore);
 
   registerIpcHandlers(mainWindow, browserManager, settingsStore, database, agentRunner);
@@ -48,6 +51,9 @@ async function createWindow(): Promise<void> {
     await mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
   }
 
+  // Restore previous tabs or init fresh session
+  await browserManager.restoreOrInitSession();
+
   mainWindow.once('ready-to-show', () => {
     mainWindow?.show();
   });
@@ -56,6 +62,7 @@ async function createWindow(): Promise<void> {
     mainWindow = null;
     browserManager = null;
     database = null;
+    sessionRecovery = null;
     agentRunner = null;
   });
 }

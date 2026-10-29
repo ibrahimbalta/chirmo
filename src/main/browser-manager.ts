@@ -2,6 +2,8 @@ import { BrowserWindow, WebContentsView } from 'electron';
 import { secureWebContents } from './security';
 import { resolveUrlOrSearch, isSecureUrl } from './url-helper';
 import { SettingsStore } from './store';
+import { SessionRecovery } from './session-recovery';
+import { generateErrorPage } from './error-page';
 
 export interface TabData {
   id: string;
@@ -29,14 +31,31 @@ interface TabItem {
 export class BrowserManager {
   private win: BrowserWindow;
   private settingsStore: SettingsStore;
+  private sessionRecovery: SessionRecovery;
   private tabs: Map<string, TabItem> = new Map();
   private activeTabId: string | null = null;
   private bounds: BrowserBounds = { x: 260, y: 76, width: 800, height: 600 };
   private isVisible: boolean = true;
 
-  constructor(win: BrowserWindow, settingsStore: SettingsStore) {
+  constructor(
+    win: BrowserWindow,
+    settingsStore: SettingsStore,
+    sessionRecovery: SessionRecovery
+  ) {
     this.win = win;
     this.settingsStore = settingsStore;
+    this.sessionRecovery = sessionRecovery;
+  }
+
+  public async restoreOrInitSession(): Promise<void> {
+    const saved = this.sessionRecovery.load();
+    if (saved && saved.tabs && saved.tabs.length > 0) {
+      for (const t of saved.tabs) {
+        await this.createTab(t.url);
+      }
+    } else {
+      await this.createTab();
+    }
   }
 
   public getTabs(): TabData[] {
@@ -79,7 +98,7 @@ export class BrowserManager {
 
     this.tabs.set(id, tabItem);
 
-    // Apply security policies
+    // Apply strict security policies
     secureWebContents(view.webContents, (newUrl) => {
       this.createTab(newUrl);
     });
@@ -96,14 +115,19 @@ export class BrowserManager {
       tabItem.data.isLoading = false;
       tabItem.data.canGoBack = contents.canGoBack();
       tabItem.data.canGoForward = contents.canGoForward();
-      tabItem.data.url = contents.getURL() || tabItem.data.url;
+      const currentUrl = contents.getURL();
+      if (currentUrl && !currentUrl.startsWith('data:')) {
+        tabItem.data.url = currentUrl;
+      }
       tabItem.data.isSecure = isSecureUrl(tabItem.data.url);
       this.notifyTabUpdated(tabItem.data);
+      this.persistSession();
     });
 
     contents.on('page-title-updated', (_, title) => {
       tabItem.data.title = title || 'Sekme';
       this.notifyTabUpdated(tabItem.data);
+      this.persistSession();
     });
 
     contents.on('page-favicon-updated', (_, favicons) => {
@@ -114,17 +138,36 @@ export class BrowserManager {
     });
 
     contents.on('did-navigate', (_, url) => {
-      tabItem.data.url = url;
+      if (!url.startsWith('data:')) {
+        tabItem.data.url = url;
+      }
       tabItem.data.canGoBack = contents.canGoBack();
       tabItem.data.canGoForward = contents.canGoForward();
       tabItem.data.isSecure = isSecureUrl(url);
       this.notifyTabUpdated(tabItem.data);
+      this.persistSession();
     });
 
     contents.on('did-navigate-in-page', (_, url) => {
-      tabItem.data.url = url;
+      if (!url.startsWith('data:')) {
+        tabItem.data.url = url;
+      }
       tabItem.data.canGoBack = contents.canGoBack();
       tabItem.data.canGoForward = contents.canGoForward();
+      this.notifyTabUpdated(tabItem.data);
+      this.persistSession();
+    });
+
+    // Handle network / loading errors with custom friendly error page
+    contents.on('did-fail-load', (_, errorCode, errorDescription, validatedUrl) => {
+      // Ignore ERR_ABORTED (-3) as it happens during normal redirect or user stop
+      if (errorCode === -3) return;
+
+      console.warn(`[BrowserManager] Failed to load ${validatedUrl}: ${errorDescription} (${errorCode})`);
+      tabItem.data.isLoading = false;
+      tabItem.data.title = 'Sayfaya Ulaşılamıyor';
+      const errorPageDataUrl = generateErrorPage(validatedUrl, errorCode, errorDescription);
+      view.webContents.loadURL(errorPageDataUrl).catch(() => {});
       this.notifyTabUpdated(tabItem.data);
     });
 
@@ -166,6 +209,7 @@ export class BrowserManager {
     }
 
     this.notifyTabsList();
+    this.persistSession();
   }
 
   public async closeTab(tabId: string): Promise<void> {
@@ -191,6 +235,8 @@ export class BrowserManager {
     } else {
       this.notifyTabsList();
     }
+
+    this.persistSession();
   }
 
   public updateBounds(bounds: BrowserBounds): void {
@@ -266,6 +312,15 @@ export class BrowserManager {
     if (tab) {
       tab.view.webContents.stop();
     }
+  }
+
+  private persistSession(): void {
+    const savedTabs = Array.from(this.tabs.values()).map((t) => ({
+      id: t.data.id,
+      url: t.data.url,
+      title: t.data.title,
+    }));
+    this.sessionRecovery.save(savedTabs, this.activeTabId);
   }
 
   private notifyTabUpdated(tab: TabData): void {
