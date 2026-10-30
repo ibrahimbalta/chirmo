@@ -243,10 +243,24 @@ export interface VentureOpportunity {
   pitchSlides: { slide: number; title: string; content: string }[];
 }
 
+export interface DirectSourceQuote {
+  id: number;
+  text: string;
+  sourceTitle: string;
+  sourceUrl: string;
+  domain: string;
+  publishedDate?: string;
+  category: 'web' | 'academic' | 'code' | 'discussion';
+}
+
 export interface AiSynthesis {
   query: string;
   professionMode: ProfessionMode;
   summary: string;
+  intentLabel?: string;
+  directSourceQuotes?: DirectSourceQuote[];
+  hasVerifiedPrimarySources?: boolean;
+  uncertaintyWarning?: string;
   perspectives: Record<PerspectiveLens, { title: string; badge: string; content: string; bullets: string[] }>;
   temporal: TemporalTimeline;
   factCheck: FactCheckXRay;
@@ -258,9 +272,11 @@ export interface AiSynthesis {
   knowledgeNodes: string[];
   confidenceScore: number;
   isLiveEnriched: boolean;
-  sources: { title: string; url: string; domain: string; snippet?: string }[];
+  sources: { title: string; url: string; domain: string; snippet?: string; publishedDate?: string }[];
   relatedQuestions: string[];
 }
+
+export type ResultCategory = 'all' | 'web' | 'academic' | 'code' | 'discussion';
 
 export interface WebSearchResult {
   id: string;
@@ -269,6 +285,9 @@ export interface WebSearchResult {
   snippet: string;
   domain: string;
   badge?: string;
+  category?: 'web' | 'academic' | 'code' | 'discussion';
+  publishedDate?: string;
+  relevanceScore?: number;
   stars?: number;
   language?: string;
   author?: string;
@@ -286,6 +305,7 @@ export interface LocalSearchResult {
 
 export interface SearchResponse {
   query: string;
+  didYouMean?: string;
   professionMode: ProfessionMode;
   timestamp: string;
   executionTimeMs: number;
@@ -416,9 +436,92 @@ const KNOWLEDGE_BASE: KnowledgeItem[] = [
   }
 ];
 
+const COMMON_TYPO_DICTIONARY: Record<string, string> = {
+  'yapay zka': 'yapay zeka',
+  'yapayzeka': 'yapay zeka',
+  'typscript': 'TypeScript',
+  'typescrpt': 'TypeScript',
+  'javascrip': 'JavaScript',
+  'elektirikli araç': 'elektrikli araç',
+  'elektirikli araba': 'elektrikli araba',
+  'pyton': 'Python',
+  'phyton': 'Python',
+  'reakt': 'React',
+  'kuantum fizigi': 'kuantum fiziği',
+  'makine ogrenmesi': 'makine öğrenmesi',
+  'iklim degisikligi': 'iklim değişikliği'
+};
+
 export class SearchEngineService {
+  private static searchCache = new Map<string, { timestamp: number; response: SearchResponse }>();
+  private static readonly CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+  private static liveUsdRates: Record<string, number> | null = null;
+  private static lastRatesFetch = 0;
+
+  public static clearCache(): void {
+    this.searchCache.clear();
+  }
+
   /**
-   * Main Federated Search & 2036 Universal Synthesis Entry Point
+   * Fetches instant autocomplete suggestions from Wikipedia Opensearch API
+   */
+  public static async fetchAutocompleteSuggestions(prefix: string): Promise<string[]> {
+    const clean = prefix.trim();
+    if (clean.length < 2) return [];
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 1400);
+      const url = `https://tr.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(
+        clean
+      )}&limit=6&namespace=0&format=json&origin=*`;
+      const res = await fetch(url, { signal: controller.signal });
+      clearTimeout(timer);
+      if (!res.ok) return [];
+      const data = await res.json();
+      if (Array.isArray(data) && Array.isArray(data[1])) {
+        return data[1].filter((item: any) => typeof item === 'string' && item.trim().length > 0);
+      }
+      return [];
+    } catch {
+      return [];
+    }
+  }
+
+  /**
+   * Refreshes live currency exchange rates from open.er-api.com in the background
+   */
+  public static async refreshLiveCurrencyRates(): Promise<void> {
+    if (this.liveUsdRates && Date.now() - this.lastRatesFetch < 30 * 60 * 1000) return;
+    try {
+      const res = await fetch('https://open.er-api.com/v6/latest/USD');
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data?.rates) {
+        const tryRate = data.rates.TRY ? 1 / data.rates.TRY : 0.029;
+        const eurRate = data.rates.EUR ? 1 / data.rates.EUR : 1.08;
+        const gbpRate = data.rates.GBP ? 1 / data.rates.GBP : 1.29;
+        this.liveUsdRates = {
+          usd: 1.0,
+          dolar: 1.0,
+          eur: eurRate,
+          euro: eurRate,
+          gbp: gbpRate,
+          sterlin: gbpRate,
+          try: tryRate,
+          tl: tryRate,
+          btc: 68500.0,
+          altın: 88.0,
+          'gram altın': 88.0
+        };
+        this.lastRatesFetch = Date.now();
+      }
+    } catch {
+      // Fallback to default rates
+    }
+  }
+
+  /**
+   * Main Federated Search & Synthesis Entry Point
    */
   public static async search(
     query: string,
@@ -433,6 +536,20 @@ export class SearchEngineService {
     const startTime = performance.now();
     const trimmed = query.trim();
     const timestamp = new Date().toISOString();
+
+    const cacheKey = `${trimmed.toLowerCase()}::${mode}::${professionMode}::${workspaceContext.projects?.length || 0}`;
+    const cached = this.searchCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < this.CACHE_TTL_MS) {
+      return {
+        ...cached.response,
+        executionTimeMs: Math.max(1, Math.round(performance.now() - startTime))
+      };
+    }
+
+    // Trigger non-blocking currency rate refresh if query looks like currency conversion
+    if (/\b(usd|dolar|eur|euro|try|tl|gbp|sterlin)\b/i.test(trimmed)) {
+      await this.refreshLiveCurrencyRates();
+    }
 
     // 1. Instant Local Evaluation (Math, KDV, BMI/VKİ, Loan, Currency/Unit, Knowledge Base)
     const instantAnswer = this.detectInstantAnswer(trimmed);
@@ -482,7 +599,7 @@ export class SearchEngineService {
           }
         : undefined);
 
-    // 5. Build 2036 Synthesis (4 Lenses + Temporal + Fact-Check + Study Quiz + Venture Lab)
+    // 5. Build AI Synthesis (with explicit Direct Source Quotes vs AI Synthesis separation)
     const aiSynthesis = this.generateAiSynthesis(
       trimmed,
       professionMode,
@@ -498,10 +615,15 @@ export class SearchEngineService {
     // 7. Related Questions
     const relatedQuestions = this.generateRelatedQuestions(trimmed, decisionMatrix, professionMode);
 
+    const didYouMean =
+      liveData.didYouMean || COMMON_TYPO_DICTIONARY[trimmed.toLowerCase()] || undefined;
+
     const executionTimeMs = Math.max(12, Math.round(performance.now() - startTime));
 
-    return {
+    const response: SearchResponse = {
       query: trimmed,
+      didYouMean:
+        didYouMean && didYouMean.toLowerCase() !== trimmed.toLowerCase() ? didYouMean : undefined,
       professionMode,
       timestamp,
       executionTimeMs,
@@ -514,6 +636,9 @@ export class SearchEngineService {
       localResults,
       relatedQuestions
     };
+
+    this.searchCache.set(cacheKey, { timestamp: Date.now(), response });
+    return response;
   }
 
   /**
@@ -779,7 +904,9 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
    * 4. HackerNews Algolia API (Global Discussions)
    */
   private static async fetchLiveFederatedSources(query: string): Promise<{
-    wikiSummary?: { title: string; description?: string; extract: string; url: string; thumbnail?: string };
+    wikiSummary?: { title: string; description?: string; extract: string; url: string; thumbnail?: string; timestamp?: string };
+    wikiArticles: WebSearchResult[];
+    didYouMean?: string;
     academicPapers: AcademicPaper[];
     githubRepos: LiveGitHubRepo[];
     hnResults: WebSearchResult[];
@@ -790,7 +917,7 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
 
     const targetQuery = cleanQ || query.trim();
 
-    const fetchWithTimeout = async (url: string, timeoutMs = 2200) => {
+    const fetchWithTimeout = async (url: string, timeoutMs = 2400) => {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), timeoutMs);
       try {
@@ -806,31 +933,60 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
 
     const isPureMath = targetQuery.length < 2 || /^[\d\s\+\-\*\/]+$/.test(targetQuery);
 
-    const [wikiTr, openAlexPapers, githubData, hnData] = await Promise.all([
+    const [wikiBundle, openAlexPapers, githubData, hnData] = await Promise.all([
       (async () => {
-        if (isPureMath) return undefined;
+        if (isPureMath) return { summary: undefined, articles: [] as WebSearchResult[], suggestion: undefined };
         const searchUrl = `https://tr.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(
           targetQuery
-        )}&utf8=&format=json&origin=*&srlimit=1`;
-        const searchJson = await fetchWithTimeout(searchUrl, 2000);
-        const firstHit = searchJson?.query?.search?.[0];
-        if (!firstHit?.title) return undefined;
+        )}&srinfo=suggestion&utf8=&format=json&origin=*&srlimit=5`;
+        const searchJson = await fetchWithTimeout(searchUrl, 2200);
+        const hits: any[] = searchJson?.query?.search || [];
+        const suggestion: string | undefined = searchJson?.query?.searchinfo?.suggestion
+          ? searchJson.query.searchinfo.suggestion.replace(/<\/?[^>]+(>|$)/g, '')
+          : undefined;
+
+        const articles: WebSearchResult[] = hits.map((h: any, idx: number) => ({
+          id: `wiki_tr_${h.pageid || idx}`,
+          title: `${h.title} — Wikipedia Ansiklopedisi`,
+          url: `https://tr.wikipedia.org/wiki/${encodeURIComponent(h.title)}`,
+          snippet: (h.snippet || '').replace(/<\/?[^>]+(>|$)/g, '').replace(/&quot;/g, '"'),
+          domain: 'tr.wikipedia.org',
+          badge: idx === 0 ? 'Birincil Ansiklopedi' : 'Ansiklopedik Kaynak',
+          category: 'web',
+          publishedDate: h.timestamp ? h.timestamp.slice(0, 10) : undefined,
+          relevanceScore: Math.max(70, 99 - idx * 4)
+        }));
+
+        const firstHit = hits[0];
+        if (!firstHit?.title) {
+          return { summary: undefined, articles, suggestion };
+        }
 
         const summaryUrl = `https://tr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(
           firstHit.title
         )}`;
         const sumJson = await fetchWithTimeout(summaryUrl, 2000);
-        if (!sumJson || !sumJson.extract) return undefined;
+        if (!sumJson || !sumJson.extract) {
+          return { summary: undefined, articles, suggestion };
+        }
 
-        return {
+        const summary = {
           title: sumJson.title,
           description: sumJson.description,
           extract: sumJson.extract,
           url:
             sumJson.content_urls?.desktop?.page ||
             `https://tr.wikipedia.org/wiki/${encodeURIComponent(sumJson.title)}`,
-          thumbnail: sumJson.thumbnail?.source
+          thumbnail: sumJson.thumbnail?.source,
+          timestamp: firstHit.timestamp ? firstHit.timestamp.slice(0, 10) : undefined
         };
+
+        if (articles.length > 0) {
+          articles[0].snippet = sumJson.extract;
+          articles[0].url = summary.url;
+        }
+
+        return { summary, articles, suggestion };
       })(),
 
       // OpenAlex Scientific & Academic Works API (Medicine, Law, Education, Economics, Engineering)
@@ -838,12 +994,12 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
         if (isPureMath) return [];
         const oaUrl = `https://api.openalex.org/works?search=${encodeURIComponent(
           targetQuery
-        )}&per-page=3&sort=cited_by_count:desc`;
-        const oaJson = await fetchWithTimeout(oaUrl, 2200);
+        )}&per-page=5&sort=cited_by_count:desc`;
+        const oaJson = await fetchWithTimeout(oaUrl, 2400);
         if (!oaJson?.results || !Array.isArray(oaJson.results)) return [];
         return oaJson.results
           .filter((w: any) => w.title)
-          .slice(0, 3)
+          .slice(0, 5)
           .map((w: any) => ({
             id: w.id || String(Math.random()),
             title: w.title,
@@ -859,10 +1015,10 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
         if (isPureMath) return [];
         const ghUrl = `https://api.github.com/search/repositories?q=${encodeURIComponent(
           targetQuery
-        )}&sort=stars&order=desc&per_page=3`;
+        )}&sort=stars&order=desc&per_page=5`;
         const ghJson = await fetchWithTimeout(ghUrl, 2200);
         if (!ghJson?.items || !Array.isArray(ghJson.items)) return [];
-        return ghJson.items.slice(0, 3).map((repo: any) => ({
+        return ghJson.items.slice(0, 5).map((repo: any) => ({
           id: repo.id,
           fullName: repo.full_name,
           description: repo.description || 'Açık kaynak GitHub deposu',
@@ -876,25 +1032,30 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
         if (isPureMath) return [];
         const hnUrl = `https://hn.algolia.com/api/v1/search?query=${encodeURIComponent(
           targetQuery
-        )}&hitsPerPage=3`;
+        )}&hitsPerPage=5`;
         const hnJson = await fetchWithTimeout(hnUrl, 2000);
         if (!hnJson?.hits || !Array.isArray(hnJson.hits)) return [];
         return hnJson.hits
           .filter((h: any) => h.title && (h.url || h.objectID))
-          .slice(0, 3)
-          .map((h: any, idx: number) => ({
+          .slice(0, 5)
+          .map((h: any, idx: number): WebSearchResult => ({
             id: `hn_${h.objectID || idx}`,
             title: h.title,
             url: h.url || `https://news.ycombinator.com/item?id=${h.objectID}`,
             snippet: `Küresel Gündem & Tartışma • ${h.points || 0} puan • ${h.num_comments || 0} yorum • Yazar: @${h.author}`,
             domain: h.url ? new URL(h.url).hostname.replace('www.', '') : 'news.ycombinator.com',
-            badge: 'Canlı Gündem'
+            badge: 'Topluluk & Gündem',
+            category: 'discussion',
+            publishedDate: h.created_at ? String(h.created_at).slice(0, 10) : undefined,
+            relevanceScore: Math.max(60, 88 - idx * 4)
           }));
       })()
     ]);
 
     return {
-      wikiSummary: wikiTr,
+      wikiSummary: wikiBundle.summary,
+      wikiArticles: wikiBundle.articles || [],
+      didYouMean: wikiBundle.suggestion,
       academicPapers: openAlexPapers || [],
       githubRepos: githubData || [],
       hnResults: hnData || []
@@ -1057,6 +1218,70 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
     return undefined;
   }
 
+  private static safeCalculateArithmetic(expr: string): number | null {
+    // Safe Shunting-yard / Recursive-descent evaluator without eval or new Function
+    const tokens = expr
+      .replace(/,/g, '.')
+      .match(/(\d+(?:\.\d+)?|\+|\-|\*|\/|\^|\(|\))/g);
+    if (!tokens || tokens.length === 0) return null;
+
+    let pos = 0;
+
+    const parseExpression = (): number => {
+      let left = parseTerm();
+      while (pos < tokens.length && (tokens[pos] === '+' || tokens[pos] === '-')) {
+        const op = tokens[pos++];
+        const right = parseTerm();
+        left = op === '+' ? left + right : left - right;
+      }
+      return left;
+    };
+
+    const parseTerm = (): number => {
+      let left = parsePower();
+      while (pos < tokens.length && (tokens[pos] === '*' || tokens[pos] === '/')) {
+        const op = tokens[pos++];
+        const right = parsePower();
+        left = op === '*' ? left * right : left / right;
+      }
+      return left;
+    };
+
+    const parsePower = (): number => {
+      let left = parseFactor();
+      while (pos < tokens.length && tokens[pos] === '^') {
+        pos++;
+        const right = parseFactor();
+        left = Math.pow(left, right);
+      }
+      return left;
+    };
+
+    const parseFactor = (): number => {
+      const tok = tokens[pos++];
+      if (tok === '(') {
+        const val = parseExpression();
+        if (tokens[pos] === ')') pos++;
+        return val;
+      }
+      if (tok === '-') {
+        return -parseFactor();
+      }
+      if (tok === '+') {
+        return parseFactor();
+      }
+      return parseFloat(tok);
+    };
+
+    try {
+      const result = parseExpression();
+      if (pos !== tokens.length) return null;
+      return typeof result === 'number' && !isNaN(result) && isFinite(result) ? result : null;
+    } catch {
+      return null;
+    }
+  }
+
   private static evaluateMath(query: string): InstantAnswer | undefined {
     const cleanQuery = query
       .replace(/^(hesapla|hesap|calc|calculate|ne kadar|kaç eder|sonuç)[:\s]*/i, '')
@@ -1079,24 +1304,17 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
 
     const mathRegex = /^[\d\s\+\-\*\/\^\(\)\.\,\%]+$/;
     if (mathRegex.test(cleanQuery) && /[\+\-\*\/\^]/.test(cleanQuery)) {
-      try {
-        const sanitized = cleanQuery.replace(/\^/g, '**').replace(/,/g, '.');
-        // eslint-disable-next-line no-new-func
-        const fn = new Function(`"use strict"; return (${sanitized});`);
-        const val = fn();
-        if (typeof val === 'number' && !isNaN(val) && isFinite(val)) {
-          const formatted = Number.isInteger(val) ? val.toString() : val.toFixed(4).replace(/\.?0+$/, '');
-          return {
-            type: 'calculator',
-            title: 'Anında Matematik & Finans Motoru',
-            subtitle: cleanQuery,
-            result: formatted,
-            details: `${cleanQuery} = ${formatted} • (+%20 KDV Dahil: ${(val * 1.2).toFixed(2)} | +%10 KDV Dahil: ${(val * 1.1).toFixed(2)})`,
-            badge: 'Hesap Makinesi'
-          };
-        }
-      } catch {
-        // Ignore parse error
+      const val = this.safeCalculateArithmetic(cleanQuery);
+      if (val !== null) {
+        const formatted = Number.isInteger(val) ? val.toString() : val.toFixed(4).replace(/\.?0+$/, '');
+        return {
+          type: 'calculator',
+          title: 'Anında Matematik & Finans Motoru',
+          subtitle: cleanQuery,
+          result: formatted,
+          details: `${cleanQuery} = ${formatted} • (+%20 KDV Dahil: ${(val * 1.2).toFixed(2)} | +%10 KDV Dahil: ${(val * 1.1).toFixed(2)})`,
+          badge: 'Hesap Makinesi'
+        };
       }
     }
 
@@ -1113,7 +1331,7 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
       const from = currencyMatch[2].toLowerCase();
       const to = currencyMatch[3].toLowerCase();
 
-      const ratesToUsd: Record<string, number> = {
+      const defaultRatesToUsd: Record<string, number> = {
         usd: 1.0,
         dolar: 1.0,
         eur: 1.08,
@@ -1126,6 +1344,8 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
         altın: 88.0,
         'gram altın': 88.0
       };
+
+      const ratesToUsd = this.liveUsdRates || defaultRatesToUsd;
 
       const rateNames: Record<string, string> = {
         usd: 'USD ($)',
@@ -1150,7 +1370,7 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
           title: 'Döviz, Altın & Kur Dönüştürücü',
           subtitle: `${amount} ${rateNames[from]} ➔ ${rateNames[to]}`,
           result: `${formatted} ${to.toUpperCase()}`,
-          details: `1 ${from.toUpperCase()} ≈ ${(ratesToUsd[from] / ratesToUsd[to]).toFixed(2)} ${to.toUpperCase()}`,
+          details: `1 ${from.toUpperCase()} ≈ ${(ratesToUsd[from] / ratesToUsd[to]).toFixed(2)} ${to.toUpperCase()}${this.liveUsdRates ? ' • (Canlı Piyasa Kuru)' : ''}`,
           badge: 'Finans & Döviz'
         };
       }
@@ -1514,38 +1734,105 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
       `${rootConcept} Akademik Makaleler`
     ];
 
-    const sources: { title: string; url: string; domain: string }[] = [];
+    const directSourceQuotes: DirectSourceQuote[] = [];
+    const sources: { title: string; url: string; domain: string; snippet?: string; publishedDate?: string }[] = [];
+
     if (liveData?.wikiSummary) {
       sources.push({
         title: `${liveData.wikiSummary.title} — Wikipedia`,
         url: liveData.wikiSummary.url,
-        domain: 'wikipedia.org'
+        domain: 'tr.wikipedia.org',
+        snippet: liveData.wikiSummary.extract.slice(0, 180)
+      });
+      directSourceQuotes.push({
+        id: directSourceQuotes.length + 1,
+        text: liveData.wikiSummary.extract,
+        sourceTitle: `${liveData.wikiSummary.title} (Wikipedia TR)`,
+        sourceUrl: liveData.wikiSummary.url,
+        domain: 'tr.wikipedia.org',
+        category: 'web'
       });
     }
+
     if (liveData?.academicPapers?.length) {
-      sources.push({
-        title: `${liveData.academicPapers[0].title} (${liveData.academicPapers[0].citedByCount} Atıf)`,
-        url: liveData.academicPapers[0].url,
-        domain: 'openalex.org'
-      });
+      for (const paper of liveData.academicPapers.slice(0, 2)) {
+        sources.push({
+          title: `${paper.title} (${paper.citedByCount} Atıf)`,
+          url: paper.url,
+          domain: 'openalex.org',
+          publishedDate: String(paper.year)
+        });
+        directSourceQuotes.push({
+          id: directSourceQuotes.length + 1,
+          text: `"${paper.title}" başlıklı hakemli bilimsel çalışma (${paper.year}), ${paper.author} tarafından yayınlanmış olup akademik literatürde ${paper.citedByCount.toLocaleString('tr-TR')} kez atıf almıştır.`,
+          sourceTitle: `${paper.venue || 'OpenAlex Akademik İndeks'} (${paper.year})`,
+          sourceUrl: paper.url,
+          domain: 'openalex.org',
+          publishedDate: String(paper.year),
+          category: 'academic'
+        });
+      }
     }
+
     if (liveData?.githubRepos?.length) {
+      const topRepo = liveData.githubRepos[0];
       sources.push({
-        title: `${liveData.githubRepos[0].fullName} (${liveData.githubRepos[0].stars.toLocaleString()} ⭐)`,
-        url: liveData.githubRepos[0].url,
+        title: `${topRepo.fullName} (${topRepo.stars.toLocaleString()} ⭐)`,
+        url: topRepo.url,
         domain: 'github.com'
       });
+      directSourceQuotes.push({
+        id: directSourceQuotes.length + 1,
+        text: `${topRepo.fullName} (${topRepo.language}): ${topRepo.description} — Topluluk tarafından ${topRepo.stars.toLocaleString('tr-TR')} yıldız ile doğrulanmıştır.`,
+        sourceTitle: `GitHub: ${topRepo.fullName}`,
+        sourceUrl: topRepo.url,
+        domain: 'github.com',
+        category: 'code'
+      });
     }
-    sources.push({
-      title: `${query} — Google Web İndeksi`,
-      url: `https://www.google.com/search?q=${encodeURIComponent(query)}`,
-      domain: 'google.com'
-    });
+
+    if (liveData?.hnResults?.length) {
+      const topHn = liveData.hnResults[0];
+      sources.push({
+        title: topHn.title,
+        url: topHn.url,
+        domain: topHn.domain,
+        publishedDate: topHn.publishedDate
+      });
+    }
+
+    const hasVerifiedPrimarySources = Boolean(
+      directSourceQuotes.length > 0 || instantAnswer
+    );
+
+    const uncertaintyWarning = !hasVerifiedPrimarySources
+      ? `Bu sorgu ("${query}") için açık ansiklopedik veya hakemli akademik veritabanlarında doğrudan eşleşen birincil kaynak bulunamadı. Aşağıdaki sentez genel kavramsal yönlendirme amaçlıdır; kesin bilgi olarak kabul edilmemelidir.`
+      : undefined;
+
+    if (sources.length === 0) {
+      sources.push({
+        title: `${query} — Küresel Web Arama Bağlantısı`,
+        url: `https://www.google.com/search?q=${encodeURIComponent(query)}`,
+        domain: 'google.com'
+      });
+    }
+
+    const intentLabel = decisionMatrix
+      ? 'Karşılaştırma & Karar Analizi'
+      : instantAnswer
+      ? `Anlık Hesaplama & Doğrudan Yanıt (${instantAnswer.badge || 'Hesaplama'})`
+      : /\b(nasıl|nedir|neden|kimdir|ne zaman)\b/i.test(query)
+      ? 'Bilgi & Kavram Açıklaması'
+      : 'Çoklu Kaynak Web & Literatür Araştırması';
 
     return {
       query,
       professionMode,
       summary: baseSummary,
+      intentLabel,
+      directSourceQuotes,
+      hasVerifiedPrimarySources,
+      uncertaintyWarning,
       perspectives,
       temporal,
       factCheck,
@@ -1555,13 +1842,8 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
       recommendedActions: actionBlueprint.map((a) => a.title),
       actionBlueprint,
       knowledgeNodes,
-      confidenceScore: factCheck.verifiabilityScore,
-      isLiveEnriched: Boolean(
-        liveData?.wikiSummary ||
-          liveData?.academicPapers?.length ||
-          liveData?.githubRepos?.length ||
-          liveData?.hnResults?.length
-      ),
+      confidenceScore: hasVerifiedPrimarySources ? factCheck.verifiabilityScore : 60,
+      isLiveEnriched: hasVerifiedPrimarySources,
       sources,
       relatedQuestions: this.generateRelatedQuestions(query, decisionMatrix, professionMode)
     };
@@ -1571,6 +1853,7 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
     query: string,
     liveData: {
       wikiSummary?: { title: string; description?: string; extract: string; url: string };
+      wikiArticles?: WebSearchResult[];
       academicPapers: AcademicPaper[];
       githubRepos: LiveGitHubRepo[];
       hnResults: WebSearchResult[];
@@ -1595,35 +1878,48 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
           url: h.url,
           snippet: `${liveScrapedSite.pageTitle} üzerinden anlık olarak çekilen canlı haber/içerik başlığı.`,
           domain,
-          badge: `Canlı Başlık #${idx + 1}`
+          badge: `Canlı Başlık #${idx + 1}`,
+          category: 'web',
+          publishedDate: new Date().toISOString().slice(0, 10),
+          relevanceScore: 100 - idx
         });
       });
     }
 
-    if (liveData.wikiSummary) {
+    if (liveData.wikiArticles && liveData.wikiArticles.length > 0) {
+      for (const article of liveData.wikiArticles) {
+        results.push(article);
+      }
+    } else if (liveData.wikiSummary) {
       results.push({
         id: 'live-wiki',
         title: `${liveData.wikiSummary.title} — Wikipedia Ansiklopedisi`,
         url: liveData.wikiSummary.url,
         snippet: liveData.wikiSummary.extract,
         domain: 'tr.wikipedia.org',
-        badge: 'Canlı Ansiklopedi'
+        badge: 'Canlı Ansiklopedi',
+        category: 'web',
+        relevanceScore: 99
       });
     }
 
     // Include peer-reviewed scientific/academic papers from OpenAlex
-    for (const paper of liveData.academicPapers) {
+    liveData.academicPapers.forEach((paper, idx) => {
       results.push({
         id: `oa-${paper.id}`,
         title: `${paper.title} (${paper.year})`,
         url: paper.url,
         snippet: `Hakemli Bilimsel Araştırma • Yazar: ${paper.author} • Yayın: ${paper.venue} • Atıf Sayısı: ${paper.citedByCount.toLocaleString()}`,
         domain: 'scholar.openalex.org',
-        badge: `🎓 Akademik Makale • ${paper.citedByCount} Atıf`
+        badge: `🎓 Akademik Makale • ${paper.citedByCount} Atıf`,
+        category: 'academic',
+        publishedDate: String(paper.year),
+        author: paper.author,
+        relevanceScore: Math.max(75, 96 - idx * 3)
       });
-    }
+    });
 
-    for (const repo of liveData.githubRepos) {
+    liveData.githubRepos.forEach((repo, idx) => {
       results.push({
         id: `gh-${repo.id}`,
         title: `${repo.fullName} — Açık Kaynak (${repo.stars.toLocaleString()} ⭐)`,
@@ -1631,10 +1927,12 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
         snippet: repo.description,
         domain: 'github.com',
         badge: `${repo.language} • ★ ${repo.stars.toLocaleString()}`,
+        category: 'code',
         stars: repo.stars,
-        language: repo.language
+        language: repo.language,
+        relevanceScore: Math.max(70, 92 - idx * 3)
       });
-    }
+    });
 
     for (const hn of liveData.hnResults) {
       results.push(hn);
@@ -1647,26 +1945,32 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
         url: `https://www.google.com/search?q=${encodeURIComponent(query + ' site:mevzuat.gov.tr OR site:resmigazete.gov.tr')}`,
         snippet: `"${query}" konusuyla ilgili yürürlükteki kanun, yönetmelik ve Resmi Gazete kararlarını inceleyin.`,
         domain: 'mevzuat.gov.tr',
-        badge: '⚖️ Resmi Mevzuat'
+        badge: '⚖️ Resmi Mevzuat',
+        category: 'web',
+        relevanceScore: 85
       });
     }
 
     results.push(
       {
         id: 'web-google',
-        title: `${query} — Google Canlı Arama Sonuçları`,
+        title: `${query} — Google Canlı Web İndeksi`,
         url: `https://www.google.com/search?q=${encoded}`,
         snippet: `"${query}" için tüm küresel web sayfalarını, haberleri ve dokümanları doğrudan Google üzerinde açın.`,
         domain: 'google.com',
-        badge: 'Google Arama'
+        badge: 'Dış Arama Motoru',
+        category: 'web',
+        relevanceScore: 50
       },
       {
         id: 'web-yt',
-        title: `${query} — Video Eğitimler, Tarifler ve Uygulamalı Analizler`,
+        title: `${query} — Video Eğitimler ve Görsel Anlatımlar`,
         url: `https://www.youtube.com/results?search_query=${encoded}`,
         snippet: `${query} konusuyla ilgili adım adım görsel anlatımlar, uzman incelemeleri ve rehber videoları.`,
         domain: 'youtube.com',
-        badge: 'Video Rehber'
+        badge: 'Video Rehber',
+        category: 'web',
+        relevanceScore: 48
       }
     );
 

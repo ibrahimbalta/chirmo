@@ -1,78 +1,127 @@
-import React, { useState } from 'react';
-import { 
-  Globe, 
-  FolderKanban, 
-  Bot, 
-  Wrench, 
-  Workflow, 
-  History, 
+import React, { useState } from 'react'
+import {
+  Globe,
+  FolderKanban,
+  Bot,
+  Wrench,
+  Workflow,
+  History,
   Settings,
   Search,
   Menu,
   X,
   ChevronLeft,
   ChevronRight,
-  ChevronDown
-} from 'lucide-react';
-import { ActiveNavMenu } from '../../types';
-import { ChirmoLogo } from '../common/ChirmoLogo';
+  ChevronDown,
+  Compass,
+  Image as ImageIcon,
+  Scale
+} from 'lucide-react'
+import { ActiveNavMenu } from '../../types'
+import { ChirmoLogo } from '../common/ChirmoLogo'
 
 interface SidebarProps {
-  activeMenu: ActiveNavMenu;
-  onSelectMenu: (menu: ActiveNavMenu) => void;
+  activeMenu: ActiveNavMenu
+  onSelectMenu: (menu: ActiveNavMenu) => void
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) => {
-  // Accordion / Slide-left state (starts collapsed so the search page is wide & clean like Google)
-  const [isCollapsed, setIsCollapsed] = useState(true);
-  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
-  const [openGroup, setOpenGroup] = useState<string>('main');
+  const [isCollapsed, setIsCollapsed] = useState(true)
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false)
+  const [openGroup, setOpenGroup] = useState<string>('main')
 
   const menuGroups = [
     {
       id: 'main',
-      title: 'Arama & Web',
+      title: 'Arama & Keşif',
       items: [
-        { id: 'home' as ActiveNavMenu, label: 'Ana Sayfa', icon: <Search className="w-4 h-4 shrink-0" /> },
-        { id: 'browser' as ActiveNavMenu, label: 'Web Tarayıcı', icon: <Globe className="w-4 h-4 shrink-0" /> },
+        {
+          id: 'home' as ActiveNavMenu,
+          label: 'AI Arama & Ana Sayfa',
+          icon: <Search className="w-4 h-4 shrink-0" />
+        },
+        {
+          id: 'discover' as ActiveNavMenu,
+          label: 'Keşfet (Discover)',
+          icon: <Compass className="w-4 h-4 shrink-0" />
+        },
+        {
+          id: 'visual' as ActiveNavMenu,
+          label: 'Görsel Keşif',
+          icon: <ImageIcon className="w-4 h-4 shrink-0" />
+        },
+        {
+          id: 'compare' as ActiveNavMenu,
+          label: 'Akıllı Karşılaştırma',
+          icon: <Scale className="w-4 h-4 shrink-0" />
+        }
       ]
     },
     {
       id: 'workspace',
-      title: 'Proje & Otomasyon',
+      title: 'Araştırma & Çalışma Alanı',
       items: [
-        { id: 'projects' as ActiveNavMenu, label: 'Projeler', icon: <FolderKanban className="w-4 h-4 shrink-0" /> },
-        { id: 'agents' as ActiveNavMenu, label: 'AI Ajanları', icon: <Bot className="w-4 h-4 shrink-0" /> },
-        { id: 'tools' as ActiveNavMenu, label: 'Analiz Araçları', icon: <Wrench className="w-4 h-4 shrink-0" /> },
-        { id: 'workflows' as ActiveNavMenu, label: 'İş Akışları', icon: <Workflow className="w-4 h-4 shrink-0" /> },
+        {
+          id: 'agents' as ActiveNavMenu,
+          label: 'Derin Araştırma (Research)',
+          icon: <Bot className="w-4 h-4 shrink-0" />
+        },
+        {
+          id: 'projects' as ActiveNavMenu,
+          label: 'Kişisel Çalışma Alanı',
+          icon: <FolderKanban className="w-4 h-4 shrink-0" />
+        },
+        {
+          id: 'tools' as ActiveNavMenu,
+          label: 'Sayfa Analiz Araçları',
+          icon: <Wrench className="w-4 h-4 shrink-0" />
+        },
+        {
+          id: 'workflows' as ActiveNavMenu,
+          label: 'Toplu İş Akışları',
+          icon: <Workflow className="w-4 h-4 shrink-0" />
+        }
       ]
     },
     {
       id: 'system',
-      title: 'Sistem',
+      title: 'Tarayıcı & Sistem',
       items: [
-        { id: 'history' as ActiveNavMenu, label: 'Geçmiş', icon: <History className="w-4 h-4 shrink-0" /> },
-        { id: 'settings' as ActiveNavMenu, label: 'Ayarlar', icon: <Settings className="w-4 h-4 shrink-0" /> },
+        {
+          id: 'browser' as ActiveNavMenu,
+          label: 'Web Tarayıcı',
+          icon: <Globe className="w-4 h-4 shrink-0" />
+        },
+        {
+          id: 'history' as ActiveNavMenu,
+          label: 'Geçmiş',
+          icon: <History className="w-4 h-4 shrink-0" />
+        },
+        {
+          id: 'settings' as ActiveNavMenu,
+          label: 'Ayarlar',
+          icon: <Settings className="w-4 h-4 shrink-0" />
+        }
       ]
     }
-  ];
+  ]
 
-  const allItems = menuGroups.flatMap((g) => g.items);
+  const allItems = menuGroups.flatMap((g) => g.items)
 
-  const handleMenuClick = (id: ActiveNavMenu) => {
-    onSelectMenu(id);
-    setIsMobileDrawerOpen(false);
-  };
+  const handleMenuClick = (id: ActiveNavMenu): void => {
+    onSelectMenu(id)
+    setIsMobileDrawerOpen(false)
+  }
 
   return (
     <>
-      {/* 1. DESKTOP COLLAPSIBLE / SLIDING ACCORDION SIDEBAR */}
+      {/* 1. DESKTOP COLLAPSIBLE SIDEBAR */}
       <aside
         className={`hidden md:flex flex-col justify-between bg-white border-r border-slate-200 select-none h-full z-20 shrink-0 transition-all duration-300 ease-in-out ${
-          isCollapsed ? 'w-14' : 'w-56'
+          isCollapsed ? 'w-14' : 'w-60'
         }`}
       >
-        <div>
+        <div className="overflow-y-auto no-scrollbar">
           {/* Top Brand & Slide Toggle Header */}
           <div className="h-12 border-b border-slate-100 flex items-center justify-between px-3">
             {!isCollapsed && (
@@ -86,42 +135,51 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) =>
 
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className={`p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors ${
+              aria-label={isCollapsed ? 'Menüyü Aç' : 'Menüyü Daralt'}
+              className={`p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-chirmo-brand transition-colors ${
                 isCollapsed ? 'mx-auto' : ''
               }`}
-              title={isCollapsed ? 'Menüyü Aç' : 'Menüyü Sola Kaydır'}
+              title={isCollapsed ? 'Menüyü Aç' : 'Menüyü Daralt'}
             >
-              {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+              {isCollapsed ? (
+                <ChevronRight className="w-4 h-4" />
+              ) : (
+                <ChevronLeft className="w-4 h-4" />
+              )}
             </button>
           </div>
 
-          {/* Navigation Items (Accordion groups when expanded, clean icons when collapsed) */}
+          {/* Navigation Items */}
           <nav className="p-2 space-y-2">
             {isCollapsed ? (
               <div className="space-y-1">
                 {allItems.map((item) => {
-                  const isActive = activeMenu === item.id;
+                  const isActive = activeMenu === item.id
                   return (
                     <button
                       key={item.id}
                       onClick={() => handleMenuClick(item.id)}
+                      aria-label={item.label}
                       title={item.label}
                       className={`w-full flex items-center justify-center p-2.5 rounded-xl transition-colors ${
                         isActive
-                          ? 'bg-blue-600 text-white shadow-xs'
-                          : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'
+                          ? 'bg-chirmo-brand text-white shadow-xs'
+                          : 'text-slate-500 hover:bg-chirmo-brand-light/50 hover:text-chirmo-brand'
                       }`}
                     >
                       {item.icon}
                     </button>
-                  );
+                  )
                 })}
               </div>
             ) : (
               menuGroups.map((group) => {
-                const isGroupOpen = openGroup === group.id;
+                const isGroupOpen = openGroup === group.id
                 return (
-                  <div key={group.id} className="border-b border-slate-100 last:border-none pb-2">
+                  <div
+                    key={group.id}
+                    className="border-b border-slate-100 last:border-none pb-2"
+                  >
                     <button
                       onClick={() => setOpenGroup(isGroupOpen ? '' : group.id)}
                       className="w-full flex items-center justify-between px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-400 hover:text-slate-700"
@@ -137,33 +195,33 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) =>
                     {isGroupOpen && (
                       <div className="mt-1 space-y-0.5">
                         {group.items.map((item) => {
-                          const isActive = activeMenu === item.id;
+                          const isActive = activeMenu === item.id
                           return (
                             <button
                               key={item.id}
                               onClick={() => handleMenuClick(item.id)}
                               className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
                                 isActive
-                                  ? 'bg-blue-600 text-white font-semibold shadow-2xs'
-                                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                                  ? 'bg-chirmo-brand text-white font-semibold shadow-2xs'
+                                  : 'text-slate-600 hover:bg-chirmo-brand-light/40 hover:text-chirmo-brand'
                               }`}
                             >
                               {item.icon}
                               <span className="truncate">{item.label}</span>
                             </button>
-                          );
+                          )
                         })}
                       </div>
                     )}
                   </div>
-                );
+                )
               })
             )}
           </nav>
         </div>
 
-        {/* Bottom Collapse / Status */}
-        <div className="p-2 border-t border-slate-100">
+        {/* Bottom Collapse */}
+        <div className="p-2 border-t border-slate-100 shrink-0">
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="w-full flex items-center justify-center gap-2 py-2 px-2 rounded-xl text-xs font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors"
@@ -188,12 +246,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) =>
             className="fixed inset-0 bg-black/40 backdrop-blur-xs"
           />
 
-          <div className="relative w-64 max-w-[80vw] bg-white h-full shadow-2xl flex flex-col justify-between z-10">
+          <div className="relative w-64 max-w-[82vw] bg-white h-full shadow-2xl flex flex-col justify-between z-10 overflow-y-auto">
             <div>
               <div className="h-14 border-b border-slate-100 flex items-center justify-between px-4">
                 <ChirmoLogo size="sm" />
                 <button
                   onClick={() => setIsMobileDrawerOpen(false)}
+                  aria-label="Menüyü kapat"
                   className="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100"
                 >
                   <X className="w-5 h-5" />
@@ -202,21 +261,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) =>
 
               <nav className="p-3 space-y-1">
                 {allItems.map((item) => {
-                  const isActive = activeMenu === item.id;
+                  const isActive = activeMenu === item.id
                   return (
                     <button
                       key={item.id}
                       onClick={() => handleMenuClick(item.id)}
                       className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors ${
                         isActive
-                          ? 'bg-blue-600 text-white'
+                          ? 'bg-chirmo-brand text-white'
                           : 'text-slate-600 hover:bg-slate-100'
                       }`}
                     >
                       {item.icon}
                       <span>{item.label}</span>
                     </button>
-                  );
+                  )
                 })}
               </nav>
             </div>
@@ -229,7 +288,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) =>
         <button
           onClick={() => handleMenuClick('home')}
           className={`flex flex-col items-center justify-center flex-1 py-1 ${
-            activeMenu === 'home' ? 'text-blue-600 font-bold' : 'text-slate-500'
+            activeMenu === 'home' ? 'text-chirmo-brand font-bold' : 'text-slate-500'
           }`}
         >
           <Search className="w-5 h-5 mb-0.5" />
@@ -237,23 +296,33 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) =>
         </button>
 
         <button
-          onClick={() => handleMenuClick('browser')}
+          onClick={() => handleMenuClick('discover')}
           className={`flex flex-col items-center justify-center flex-1 py-1 ${
-            activeMenu === 'browser' ? 'text-blue-600 font-bold' : 'text-slate-500'
+            activeMenu === 'discover' ? 'text-chirmo-brand font-bold' : 'text-slate-500'
           }`}
         >
-          <Globe className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px]">Tarayıcı</span>
+          <Compass className="w-5 h-5 mb-0.5" />
+          <span className="text-[10px]">Keşfet</span>
+        </button>
+
+        <button
+          onClick={() => handleMenuClick('visual')}
+          className={`flex flex-col items-center justify-center flex-1 py-1 ${
+            activeMenu === 'visual' ? 'text-chirmo-brand font-bold' : 'text-slate-500'
+          }`}
+        >
+          <ImageIcon className="w-5 h-5 mb-0.5" />
+          <span className="text-[10px]">Görsel</span>
         </button>
 
         <button
           onClick={() => handleMenuClick('projects')}
           className={`flex flex-col items-center justify-center flex-1 py-1 ${
-            activeMenu === 'projects' ? 'text-blue-600 font-bold' : 'text-slate-500'
+            activeMenu === 'projects' ? 'text-chirmo-brand font-bold' : 'text-slate-500'
           }`}
         >
           <FolderKanban className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px]">Kanban</span>
+          <span className="text-[10px]">Çalışma Al.</span>
         </button>
 
         <button
@@ -265,5 +334,5 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) =>
         </button>
       </div>
     </>
-  );
-};
+  )
+}

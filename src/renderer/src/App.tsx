@@ -11,6 +11,9 @@ import { WorkflowsView } from './components/workflows/WorkflowsView';
 import { HistoryView } from './components/history/HistoryView';
 import { SettingsView } from './components/settings/SettingsView';
 import { HomeSearchHub } from './components/home/HomeSearchHub';
+import { DiscoverView } from './components/discover/DiscoverView';
+import { VisualDiscoveryView } from './components/visual/VisualDiscoveryView';
+import { CompareView } from './components/compare/CompareView';
 import { Tab, ActiveNavMenu } from './types';
 
 export const App: React.FC = () => {
@@ -19,6 +22,12 @@ export const App: React.FC = () => {
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
   const [isTaskPanelOpen, setIsTaskPanelOpen] = useState(false);
   const [agentInitialPrompt, setAgentInitialPrompt] = useState<string>('');
+  const [sharedSearchQuery, setSharedSearchQuery] = useState<string>('');
+  const [visualInitialQuery, setVisualInitialQuery] = useState<string>('');
+  const [comparePair, setComparePair] = useState<{ a: string; b: string }>({
+    a: 'Elektrikli otomobil',
+    b: 'Hibrit otomobil'
+  });
 
   useEffect(() => {
     // Initial load
@@ -162,17 +171,73 @@ export const App: React.FC = () => {
             {/* WebContentsView container */}
             <BrowserContainer isVisible={isBrowserActive} />
 
-            {/* AI Agents View */}
+            {/* Discover View */}
+            {activeMenu === 'discover' && (
+              <div className="absolute inset-0 z-10 flex">
+                <DiscoverView
+                  onSearchTopic={(topic: string) => {
+                    setSharedSearchQuery(topic);
+                    setActiveMenu('home');
+                  }}
+                  onOpenVisualDiscovery={(q: string) => {
+                    setVisualInitialQuery(q);
+                    setActiveMenu('visual');
+                  }}
+                  onCompareTopics={(a: string, b: string) => {
+                    setComparePair({ a, b });
+                    setActiveMenu('compare');
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Visual Discovery View */}
+            {activeMenu === 'visual' && (
+              <div className="absolute inset-0 z-10 flex">
+                <VisualDiscoveryView
+                  initialQuery={visualInitialQuery}
+                  onExploreTopic={(topic: string) => {
+                    setSharedSearchQuery(topic);
+                    setActiveMenu('home');
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Smart Comparison View */}
+            {activeMenu === 'compare' && (
+              <div className="absolute inset-0 z-10 flex">
+                <CompareView
+                  initialOptionA={comparePair.a}
+                  initialOptionB={comparePair.b}
+                  onExploreTopic={(topic: string) => {
+                    setSharedSearchQuery(topic);
+                    setActiveMenu('home');
+                  }}
+                />
+              </div>
+            )}
+
+            {/* AI Agents / Deep Research View */}
             {activeMenu === 'agents' && (
               <div className="absolute inset-0 z-10 flex">
                 <AgentsView initialPrompt={agentInitialPrompt} />
               </div>
             )}
 
-            {/* Projects View */}
+            {/* Personal Workspace / Projects View */}
             {activeMenu === 'projects' && (
               <div className="absolute inset-0 z-10 flex">
-                <ProjectsView />
+                <ProjectsView
+                  onOpenSearch={(q: string) => {
+                    setSharedSearchQuery(q);
+                    setActiveMenu('home');
+                  }}
+                  onOpenComparison={(a: string, b: string) => {
+                    setComparePair({ a, b });
+                    setActiveMenu('compare');
+                  }}
+                />
               </div>
             )}
 
@@ -208,6 +273,7 @@ export const App: React.FC = () => {
             {activeMenu === 'home' && (
               <div className="absolute inset-0 z-10 flex">
                 <HomeSearchHub
+                  initialQuery={sharedSearchQuery}
                   onNavigateToBrowser={(url: string) => {
                     if (activeTabId && window.chirmo) {
                       window.chirmo.navigate(activeTabId, url);
@@ -225,6 +291,15 @@ export const App: React.FC = () => {
                   }}
                   onNavigateToProjects={() => setActiveMenu('projects')}
                   onNavigateToTools={() => setActiveMenu('tools')}
+                  onNavigateToVisual={(q: string) => {
+                    setVisualInitialQuery(q);
+                    setActiveMenu('visual');
+                  }}
+                  onNavigateToCompare={(a: string, b: string) => {
+                    setComparePair({ a, b });
+                    setActiveMenu('compare');
+                  }}
+                  onNavigateToDiscover={() => setActiveMenu('discover')}
                 />
               </div>
             )}

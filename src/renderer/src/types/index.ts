@@ -29,6 +29,9 @@ export interface AppSettings {
 
 export type ActiveNavMenu = 
   | 'home'
+  | 'discover'
+  | 'visual'
+  | 'compare'
   | 'browser'
   | 'projects'
   | 'agents'

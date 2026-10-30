@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { SearchEngineService } from '../src/renderer/src/services/searchEngine';
 import { LiveWebScraper } from '../src/renderer/src/services/liveWebScraper';
+import { WorkspaceStorage } from '../src/renderer/src/services/workspaceStorage';
+import { ComparisonService } from '../src/renderer/src/services/comparisonService';
 
 describe('SearchEngineService', () => {
   it('resolves natural language prompts like mynet.com spor haberlerini listele to exact URLs', () => {
@@ -124,5 +126,45 @@ describe('SearchEngineService', () => {
 
     expect(searchRes.localResults.length).toBe(1);
     expect(searchRes.localResults[0].title).toBe('E-Ticaret Sitesi Analizi');
+  });
+
+  it('provides typo tolerance suggestions (didYouMean) and separates AI synthesis from direct source quotes', async () => {
+    const searchRes = await SearchEngineService.search('typescrpt');
+    expect(searchRes.didYouMean).toBe('TypeScript');
+    expect(searchRes.aiSynthesis.intentLabel).toBeDefined();
+    expect(Array.isArray(searchRes.aiSynthesis.directSourceQuotes)).toBe(true);
+  });
+
+  it('persists and manages user workspace collections in WorkspaceStorage', () => {
+    const saved = WorkspaceStorage.saveSearch({
+      query: 'Kuantum Bilgisayar',
+      summarySnippet: 'Süperpozisyon ve dolanıklık temelli hesaplama.',
+      resultCount: 12,
+      mode: 'all'
+    });
+    expect(saved.query).toBe('Kuantum Bilgisayar');
+    expect(WorkspaceStorage.getSavedSearches().length).toBeGreaterThanOrEqual(1);
+
+    const fav = WorkspaceStorage.saveFavoriteSource({
+      title: 'Wikipedia - Kuantum bilgisayar',
+      url: 'https://tr.wikipedia.org/wiki/Kuantum_bilgisayar',
+      domain: 'tr.wikipedia.org',
+      snippet: 'Kuantum mekaniği ilkelerini kullanan hesaplama sistemi.',
+      category: 'web'
+    });
+    expect(fav.domain).toBe('tr.wikipedia.org');
+    expect(WorkspaceStorage.isSourceFavorited('https://tr.wikipedia.org/wiki/Kuantum_bilgisayar')).toBe(true);
+
+    WorkspaceStorage.addSearchHistory('Yapay Zeka Mimarisi', 'all');
+    expect(WorkspaceStorage.getSearchHistory()[0].query).toBe('Yapay Zeka Mimarisi');
+  });
+
+  it('builds evidence-based comparisons via ComparisonService and explicitly marks unverified fields', async () => {
+    const comp = await ComparisonService.compare('React', 'Vue.js');
+    expect(comp.optionA.name).toBe('React');
+    expect(comp.optionB.name).toBe('Vue.js');
+    expect(comp.comparisonRows.length).toBeGreaterThanOrEqual(5);
+    expect(typeof comp.optionA.isPriceVerified).toBe('boolean');
+    expect(comp.synthesisSummary).toContain('şeffaflık ilkesi');
   });
 });

@@ -33,13 +33,13 @@ export const ChirmoLogo: React.FC<ChirmoLogoProps> = ({
 
   return (
     <div className={`inline-flex items-baseline select-none font-black tracking-tight ${sizeClasses} ${className}`}>
-      <span className="text-[#2563EB]">c</span>
+      <span className="text-[#6652C9]">c</span>
       <span className="text-[#0F172A]">h</span>
-      <span className="text-[#0D9488]">i</span>
+      <span className="text-[#6652C9]">i</span>
       <span className="text-[#0F172A]">r</span>
-      <span className="text-[#F59E0B]">m</span>
-      <span className="text-[#E11D48]">o</span>
-      <span className={`inline-block rounded-full bg-[#2563EB] ml-1 ${dotSize}`} />
+      <span className="text-[#0F172A]">m</span>
+      <span className="text-[#0F172A]">o</span>
+      <span className={`inline-block rounded-full bg-[#6652C9] ml-1 ${dotSize}`} />
     </div>
   );
 };
