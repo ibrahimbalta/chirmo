@@ -19,8 +19,8 @@ export const ChirmoLogo: React.FC<ChirmoLogoProps> = ({
     xs: 'h-6',
     sm: 'h-8 sm:h-9',
     md: 'h-10 sm:h-12',
-    lg: 'h-16 sm:h-20',
-    xl: 'h-20 sm:h-24 md:h-28'
+    lg: 'h-14 sm:h-16',
+    xl: 'h-16 sm:h-20 md:h-24'
   }[size];
 
   return (

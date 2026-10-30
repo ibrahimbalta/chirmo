@@ -121,7 +121,23 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
   const [searchResponse, setSearchResponse] = useState<SearchResponse | null>(null)
   const [resultTab, setResultTab] = useState<ResultTabId>('all')
   const [categoryFilter, setCategoryFilter] = useState<ResultCategory>('all')
-  const [visibleResultsCount, setVisibleResultsCount] = useState<number>(8)
+  const [smartFilter, setSmartFilter] = useState<'all' | 'price' | 'guide' | 'trusted'>('all')
+  const [sortBy, setSortBy] = useState<'relevance' | 'trust' | 'fast'>('relevance')
+  const [visibleResultsCount, setVisibleResultsCount] = useState<number>(10)
+  const [inspectingUrl, setInspectingUrl] = useState<string | null>(null)
+  const [inspectedPages, setInspectedPages] = useState<
+    Record<
+      string,
+      {
+        pageTitle: string
+        summary: string
+        headlines: { title: string; url: string }[]
+        keywords: string[]
+        wordCount: number
+      }
+    >
+  >({})
+  const [compareSelection, setCompareSelection] = useState<string[]>([])
 
   // Autocomplete & Search History dropdown state
   const [suggestions, setSuggestions] = useState<string[]>([])
@@ -494,7 +510,9 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
     setShowDropdown(false)
     setIsSearching(true)
     setCategoryFilter('all')
-    setVisibleResultsCount(8)
+    setSmartFilter('all')
+    setSortBy('relevance')
+    setVisibleResultsCount(10)
     WorkspaceStorage.addSearchHistory(trimmed, 'all')
 
     try {
@@ -510,6 +528,44 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
     } finally {
       setIsSearching(false)
     }
+  }
+
+  const handleInspectResultLive = async (url: string): Promise<void> => {
+    if (inspectedPages[url]) {
+      const next = { ...inspectedPages }
+      delete next[url]
+      setInspectedPages(next)
+      return
+    }
+    setInspectingUrl(url)
+    try {
+      const scraped = await SearchEngineService.inspectResultPageLive(url)
+      if (scraped) {
+        setInspectedPages((prev) => ({
+          ...prev,
+          [url]: {
+            pageTitle: scraped.pageTitle,
+            summary: scraped.summary,
+            headlines: scraped.headlines.slice(0, 6),
+            keywords: scraped.keywords.slice(0, 6),
+            wordCount: scraped.wordCount
+          }
+        }))
+      } else {
+        showToast('Bu sayfa için canlı önizleme alınamadı, doğrudan kaynağa gidebilirsiniz.')
+      }
+    } finally {
+      setInspectingUrl(null)
+    }
+  }
+
+  const handleToggleCompareSelect = (label: string): void => {
+    const clean = label.split('—')[0].split('|')[0].split('-')[0].trim().slice(0, 48)
+    setCompareSelection((prev) => {
+      if (prev.includes(clean)) return prev.filter((x) => x !== clean)
+      if (prev.length >= 2) return [prev[1], clean]
+      return [...prev, clean]
+    })
   }
 
   const handleSubmit = (e: React.FormEvent): void => {
@@ -549,9 +605,37 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
 
   const filteredWebResults = useMemo(() => {
     if (!searchResponse) return []
-    if (categoryFilter === 'all') return searchResponse.webResults
-    return searchResponse.webResults.filter((r) => (r.category || 'web') === categoryFilter)
-  }, [searchResponse, categoryFilter])
+    let list =
+      categoryFilter === 'all'
+        ? [...searchResponse.webResults]
+        : searchResponse.webResults.filter((r) => (r.category || 'web') === categoryFilter)
+
+    if (smartFilter === 'price') {
+      list = list.filter(
+        (r) =>
+          r.contentTypeLabel?.includes('Fiyat') ||
+          (r.extractedHighlights && r.extractedHighlights.length > 0) ||
+          /\b(fiyat|ücret|tl|usd|maliyet|liste)\b/i.test(`${r.title} ${r.snippet}`)
+      )
+    } else if (smartFilter === 'guide') {
+      list = list.filter(
+        (r) =>
+          r.contentTypeLabel?.includes('Rehber') ||
+          r.contentTypeLabel?.includes('Ansiklopedi') ||
+          /\b(en iyi|rehber|öneri|tavsiye|nasıl|inceleme)\b/i.test(`${r.title} ${r.snippet}`)
+      )
+    } else if (smartFilter === 'trusted') {
+      list = list.filter((r) => (r.trustScore || 90) >= 94)
+    }
+
+    if (sortBy === 'trust') {
+      list.sort((a, b) => (b.trustScore || 90) - (a.trustScore || 90))
+    } else if (sortBy === 'fast') {
+      list.sort((a, b) => (a.readingTimeMin || 3) - (b.readingTimeMin || 3))
+    }
+
+    return list
+  }, [searchResponse, categoryFilter, smartFilter, sortBy])
 
   const paginatedWebResults = useMemo(() => {
     return filteredWebResults.slice(0, visibleResultsCount)
@@ -617,7 +701,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
       {/* ==================== 1. FULL-BLEED HERO VIEWPORT (WHEN NO ACTIVE SEARCH) ==================== */}
       {!searchResponse ? (
         <div
-          className="w-full min-h-[calc(100vh-4rem)] relative flex flex-col items-center justify-between overflow-hidden px-4 sm:px-8 pt-6 sm:pt-10 pb-6 shrink-0"
+          className="w-full min-h-[calc(100vh-4rem)] relative flex flex-col items-center justify-between overflow-hidden px-4 sm:px-8 pt-3 sm:pt-5 pb-3 shrink-0"
           style={{
             backgroundImage: "url('./chirmo-hero-bg.jpg')",
             backgroundSize: '100% 100%',
@@ -626,33 +710,33 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
           }}
         >
           {/* Main Hero Center Content */}
-          <div className="w-full max-w-5xl mx-auto flex flex-col items-center text-center z-10 mt-1 sm:mt-2">
+          <div className="w-full max-w-5xl mx-auto flex flex-col items-center text-center z-10">
             {/* Top Lavender Pill Badge */}
-            <div className="inline-flex items-center px-4 sm:px-5 py-1.5 sm:py-2 rounded-full bg-[#F3EFFE] border border-purple-200/70 text-[#6534F8] text-xs sm:text-sm font-semibold tracking-wide mb-4 shadow-2xs">
+            <div className="inline-flex items-center px-4 sm:px-5 py-1.5 rounded-full bg-[#F3EFFE] border border-purple-200/70 text-[#6534F8] text-xs sm:text-sm font-semibold tracking-wide mb-2.5 shadow-2xs">
               Yapay Zeka Destekli Yeni Nesil Arama Motoru
             </div>
 
             {/* Main 3D Metallic Gold & Violet Chirmo Hero Logo */}
-            <div className="mb-3.5">
+            <div className="mb-2">
               <ChirmoLogo size="xl" variant="hero" />
             </div>
 
             {/* Two-Line Bold Headline (Larger Typography) */}
-            <h1 className="text-3xl sm:text-5xl md:text-[50px] font-extrabold tracking-tight leading-[1.16] text-[#111827]">
+            <h1 className="text-3xl sm:text-4xl md:text-[44px] font-extrabold tracking-tight leading-[1.15] text-[#111827]">
               Aradığını yalnızca bulma.
-              <span className="block bg-gradient-to-r from-[#6C38FF] via-[#6534F8] to-[#7C3AED] bg-clip-text text-transparent mt-1">
+              <span className="block bg-gradient-to-r from-[#6C38FF] via-[#6534F8] to-[#7C3AED] bg-clip-text text-transparent mt-0.5">
                 Anla, keşfet, karşılaştır, karar ver.
               </span>
             </h1>
 
             {/* Two-Line Subtitle (Larger & Crisper) */}
-            <p className="text-sm sm:text-base md:text-lg text-slate-600 font-medium mt-3.5 leading-relaxed max-w-2xl">
+            <p className="text-sm sm:text-base md:text-[17px] text-slate-600 font-medium mt-2.5 leading-relaxed max-w-2xl">
               Chirmo, yapay zeka gücüyle interneti senin için daha anlamlı hale getirir.
               <br className="hidden sm:inline" /> Sadece arama yapma, bilgiye derinlemesine ulaş.
             </p>
 
             {/* Main Pill Search Bar with Soft Lavender Glow */}
-            <div ref={searchBoxContainerRef} className="w-full max-w-[780px] relative mt-6">
+            <div ref={searchBoxContainerRef} className="w-full max-w-[780px] relative mt-4 sm:mt-5">
               <div className="absolute -inset-2.5 bg-gradient-to-r from-purple-300/35 via-indigo-300/30 to-purple-300/35 rounded-full blur-xl pointer-events-none" />
 
               <form onSubmit={handleSubmit} className="w-full relative">
@@ -825,7 +909,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
             </div>
 
             {/* Popular Searches Row ("Popüler Aramalar:") */}
-            <div className="mt-4 sm:mt-5 flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
+            <div className="mt-3.5 sm:mt-4 flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
               <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-600 mr-1">
                 <Sparkles className="w-4 h-4 text-[#6534F8]" />
                 <span>Popüler Aramalar:</span>
@@ -843,7 +927,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                     setQuery(popQuery)
                     handleExecuteSearch(popQuery)
                   }}
-                  className="px-4 py-1.5 sm:py-2 rounded-full bg-white/90 hover:bg-white border border-purple-200/80 hover:border-[#6534F8]/50 text-xs sm:text-sm font-medium text-slate-700 hover:text-[#6534F8] shadow-2xs transition-all cursor-pointer"
+                  className="px-4 py-1.5 rounded-full bg-white/90 hover:bg-white border border-purple-200/80 hover:border-[#6534F8]/50 text-xs sm:text-sm font-medium text-slate-700 hover:text-[#6534F8] shadow-2xs transition-all cursor-pointer"
                 >
                   {popQuery}
                 </button>
@@ -851,7 +935,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
             </div>
 
             {/* 6 Feature Icon Columns Grid */}
-            <div className="w-full max-w-5xl mt-7 sm:mt-9 relative">
+            <div className="w-full max-w-5xl mt-5 sm:mt-6 relative">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 sm:gap-6">
                 {/* 1. Akıllı Arama */}
                 <button
@@ -1544,134 +1628,423 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
               </div>
             )}
 
-            {/* F. CATEGORIZED WEB RESULTS WITH SOURCE METADATA, FAVORITE & PAGINATION */}
+            {/* F. CHIRMO SUPER-LIST: GOOGLE-EQUIVALENT WEB RESULTS + CHIRMO VALUE-ADD EXTRAS */}
             {resultTab === 'all' && (
               <div className="space-y-4 pt-1">
-                {/* Category Filter Pills */}
-                <div className="flex items-center justify-between gap-2 flex-wrap">
-                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-                    {(
-                      [
-                        { id: 'all', label: `Tüm Sonuçlar (${searchResponse.webResults.length})` },
-                        {
-                          id: 'web',
-                          label: `Web & Ansiklopedi (${
-                            searchResponse.webResults.filter((r) => (r.category || 'web') === 'web')
-                              .length
-                          })`
-                        },
-                        {
-                          id: 'academic',
-                          label: `Akademik (${
-                            searchResponse.webResults.filter((r) => r.category === 'academic')
-                              .length
-                          })`
-                        },
-                        {
-                          id: 'code',
-                          label: `Açık Kaynak Kod (${
-                            searchResponse.webResults.filter((r) => r.category === 'code').length
-                          })`
-                        },
-                        {
-                          id: 'discussion',
-                          label: `Topluluk & Gündem (${
-                            searchResponse.webResults.filter((r) => r.category === 'discussion')
-                              .length
-                          })`
-                        }
-                      ] as const
-                    ).map((cat) => (
-                      <button
-                        key={cat.id}
-                        type="button"
-                        onClick={() => {
-                          setCategoryFilter(cat.id)
-                          setVisibleResultsCount(8)
-                        }}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border ${
-                          categoryFilter === cat.id
-                            ? 'bg-chirmo-brand text-white border-chirmo-brand'
-                            : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
-                        }`}
-                      >
-                        {cat.label}
-                      </button>
-                    ))}
+                {/* Super-List Header & Category Tabs */}
+                <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-50/90 border border-slate-200/90 space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#6534F8] text-white text-[11px] font-bold shadow-2xs">
+                        <Globe className="w-3.5 h-3.5" />
+                        CANLI WEB ARAMA SONUÇLARI + CHIRMO SÜPER-LİSTE ARTILARI
+                      </span>
+                      <span className="text-xs text-slate-500 hidden sm:inline">
+                        Her sonuçta güven skoru, sayısal veri çıkarımı ve sayfaya gitmeden canlı özet!
+                      </span>
+                    </div>
+
+                    {/* Sort Selector */}
+                    <div className="flex items-center gap-1.5 text-xs">
+                      <span className="text-slate-400 font-semibold text-[11px]">Sırala:</span>
+                      {(
+                        [
+                          { id: 'relevance', label: '🎯 En Alakalı (Web Sırası)' },
+                          { id: 'trust', label: '🛡️ Güven Skoru' },
+                          { id: 'fast', label: '⏱ Okuma Süresi' }
+                        ] as const
+                      ).map((s) => (
+                        <button
+                          key={s.id}
+                          type="button"
+                          onClick={() => setSortBy(s.id)}
+                          className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-colors cursor-pointer ${
+                            sortBy === s.id
+                              ? 'bg-purple-100 text-[#6534F8] border border-purple-200'
+                              : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                          }`}
+                        >
+                          {s.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Category Tabs + Smart Content Filter Chips */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-200/70">
+                    <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                      {(
+                        [
+                          {
+                            id: 'all',
+                            label: `Tüm Sonuçlar (${searchResponse.webResults.length})`
+                          },
+                          {
+                            id: 'web',
+                            label: `🌐 Web & Siteler (${
+                              searchResponse.webResults.filter(
+                                (r) => (r.category || 'web') === 'web'
+                              ).length
+                            })`
+                          },
+                          {
+                            id: 'academic',
+                            label: `🎓 Akademik (${
+                              searchResponse.webResults.filter((r) => r.category === 'academic')
+                                .length
+                            })`
+                          },
+                          {
+                            id: 'code',
+                            label: `💻 Açık Kaynak (${
+                              searchResponse.webResults.filter((r) => r.category === 'code').length
+                            })`
+                          },
+                          {
+                            id: 'discussion',
+                            label: `💬 Topluluk (${
+                              searchResponse.webResults.filter((r) => r.category === 'discussion')
+                                .length
+                            })`
+                          }
+                        ] as const
+                      ).map((cat) => (
+                        <button
+                          key={cat.id}
+                          type="button"
+                          onClick={() => {
+                            setCategoryFilter(cat.id)
+                            setVisibleResultsCount(10)
+                          }}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border cursor-pointer ${
+                            categoryFilter === cat.id
+                              ? 'bg-[#6534F8] text-white border-[#6534F8] shadow-2xs'
+                              : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
+                          }`}
+                        >
+                          {cat.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Smart Content Type Filter Chips */}
+                    <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                      {(
+                        [
+                          { id: 'all', label: '✨ Tüm Türler' },
+                          { id: 'price', label: '🛒 Fiyat & Sayısal Veri' },
+                          { id: 'guide', label: '📋 Rehber & Tavsiye' },
+                          { id: 'trusted', label: '🛡️ %94+ Yüksek Güven' }
+                        ] as const
+                      ).map((sf) => (
+                        <button
+                          key={sf.id}
+                          type="button"
+                          onClick={() => setSmartFilter(sf.id)}
+                          className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold whitespace-nowrap transition-all border cursor-pointer ${
+                            smartFilter === sf.id
+                              ? 'bg-emerald-600 text-white border-emerald-600'
+                              : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
+                          }`}
+                        >
+                          {sf.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
+
+                {/* Multi-Compare Selection Bar */}
+                {compareSelection.length > 0 && (
+                  <div className="p-3.5 rounded-2xl bg-gradient-to-r from-[#6534F8] to-[#4F46E5] text-white flex flex-wrap items-center justify-between gap-3 shadow-md animate-fadeIn">
+                    <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold">
+                      <Scale className="w-4 h-4 shrink-0" />
+                      <span>Karşılaştırma Seçimi ({compareSelection.length}/2):</span>
+                      {compareSelection.map((sel, i) => (
+                        <span
+                          key={i}
+                          className="px-2.5 py-1 rounded-lg bg-white/20 text-white text-xs font-bold"
+                        >
+                          {sel}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {onNavigateToCompare && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            onNavigateToCompare(
+                              compareSelection[0] || searchResponse.query,
+                              compareSelection[1] || 'Alternatif Seçenek'
+                            )
+                          }
+                          className="px-3.5 py-1.5 rounded-xl bg-white text-[#6534F8] font-bold text-xs hover:bg-purple-50 transition-colors cursor-pointer"
+                        >
+                          ⚖️ Yan Yana Karşılaştır
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => setCompareSelection([])}
+                        className="px-2.5 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-semibold cursor-pointer"
+                      >
+                        Temizle
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 {/* Result Cards */}
                 {paginatedWebResults.length === 0 ? (
                   <div className="p-8 rounded-2xl border border-dashed border-slate-200 text-center space-y-2">
                     <p className="text-sm font-semibold text-slate-700">
-                      Bu kategoride eşleşen sonuç bulunamadı
+                      Seçili filtrede eşleşen sonuç bulunamadı
                     </p>
-                    <p className="text-xs text-slate-500">
-                      "Tüm Sonuçlar" sekmesine geçebilir veya arama teriminizi genişletebilirsiniz.
-                    </p>
+                    <div className="flex items-center justify-center gap-2 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCategoryFilter('all')
+                          setSmartFilter('all')
+                        }}
+                        className="px-3.5 py-1.5 rounded-xl bg-[#6534F8] text-white text-xs font-semibold"
+                      >
+                        Tüm Sonuçları Göster ({searchResponse.webResults.length})
+                      </button>
+                    </div>
                   </div>
                 ) : (
-                  <div className="space-y-3">
-                    {paginatedWebResults.map((item) => {
+                  <div className="space-y-3.5">
+                    {paginatedWebResults.map((item, idx) => {
                       const isFav = favoritedUrls.has(item.url)
+                      const inspected = inspectedPages[item.url]
+                      const isInspectingThis = inspectingUrl === item.url
+                      const cleanCompareTitle = item.title
+                        .split('—')[0]
+                        .split('|')[0]
+                        .split('-')[0]
+                        .trim()
+                        .slice(0, 48)
+                      const isSelectedForCompare = compareSelection.includes(cleanCompareTitle)
+
                       return (
                         <div
                           key={item.id}
-                          className="group p-4 rounded-2xl bg-white hover:bg-slate-50/80 border border-slate-200/80 hover:border-chirmo-brand/40 transition-all shadow-2xs"
+                          className="group p-4 sm:p-5 rounded-2xl bg-white hover:bg-purple-50/20 border border-slate-200/90 hover:border-[#6534F8]/45 transition-all shadow-2xs hover:shadow-md"
                         >
-                          <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
-                            <div className="flex items-center gap-2 text-xs">
-                              <span className="font-semibold text-slate-700">{item.domain}</span>
-                              {item.badge && (
-                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-chirmo-brand-light text-chirmo-brand font-semibold">
-                                  {item.badge}
+                          {/* TOP ROW: Site Favicon, Breadcrumb Path & Chirmo Smart Badges */}
+                          <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <img
+                                src={
+                                  item.faviconUrl ||
+                                  `https://www.google.com/s2/favicons?domain=${encodeURIComponent(
+                                    item.domain
+                                  )}&sz=64`
+                                }
+                                alt={item.domain}
+                                className="w-5 h-5 rounded-md object-contain bg-slate-50 border border-slate-200/80 p-0.5 shrink-0"
+                                onError={(e) => {
+                                  ;(e.target as HTMLImageElement).style.display = 'none'
+                                }}
+                              />
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className="text-xs font-bold text-slate-800">
+                                    {item.domain}
+                                  </span>
+                                  {item.breadcrumb && item.breadcrumb !== item.domain && (
+                                    <span className="text-[11px] text-slate-400 truncate max-w-[280px] hidden sm:inline">
+                                      {item.breadcrumb}
+                                    </span>
+                                  )}
+                                  {item.publishedDate && (
+                                    <span className="text-[11px] text-slate-500 font-medium">
+                                      • 📅 {item.publishedDate}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* CHIRMO VALUE-ADD BADGES: Rank, Content Type, Trust Score & Reading Time */}
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              {idx < 3 && categoryFilter === 'all' && smartFilter === 'all' && (
+                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 font-bold">
+                                  🔥 #{idx + 1} Üst Sıra
                                 </span>
                               )}
-                              {item.publishedDate && (
-                                <span className="text-[11px] text-slate-400">
-                                  • Tarih: {item.publishedDate}
+
+                              {item.contentTypeLabel && (
+                                <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-[#F3EFFE] border border-purple-200/70 text-[#6534F8] font-bold">
+                                  {item.contentTypeLabel}
                                 </span>
                               )}
+
+                              <span
+                                className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${
+                                  (item.trustScore || 90) >= 95
+                                    ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                                    : 'bg-sky-50 border-sky-200 text-sky-700'
+                                }`}
+                                title="Chirmo Kaynak Güvenilirlik ve Otorite Skoru"
+                              >
+                                🛡️ %{item.trustScore || 91} Güven
+                              </span>
+
+                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-semibold">
+                                ⏱ ~{item.readingTimeMin || 3} dk okuma
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* MAIN RESULT TITLE (Google-style prominent clickable title) */}
+                          <a
+                            href={item.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block text-base sm:text-lg font-bold text-[#1E1B4B] group-hover:text-[#6534F8] hover:underline transition-colors mb-1.5 leading-snug"
+                          >
+                            {item.title}
+                          </a>
+
+                          {/* SNIPPET DESCRIPTION */}
+                          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed select-text">
+                            {item.snippet}
+                          </p>
+
+                          {/* CHIRMO EXTRA 1: EXTRACTED QUANTITATIVE HIGHLIGHTS (Prices, Years, Metrics) */}
+                          {item.extractedHighlights && item.extractedHighlights.length > 0 && (
+                            <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                                📌 Öne Çıkan Veriler:
+                              </span>
+                              {item.extractedHighlights.map((hl, hIdx) => (
+                                <span
+                                  key={hIdx}
+                                  className="text-[11px] font-bold text-slate-800 bg-amber-50/90 border border-amber-200/80 px-2 py-0.5 rounded-md"
+                                >
+                                  {hl}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* CHIRMO EXTRA 2: SMART CLICKABLE TOPIC TAGS */}
+                          {item.smartTags && item.smartTags.length > 0 && (
+                            <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+                              {item.smartTags.map((tag, tIdx) => (
+                                <button
+                                  key={tIdx}
+                                  type="button"
+                                  onClick={() => {
+                                    setQuery(tag)
+                                    handleExecuteSearch(tag)
+                                  }}
+                                  className="text-[11px] font-medium text-slate-500 hover:text-[#6534F8] bg-slate-50 hover:bg-purple-50 border border-slate-200/70 px-2 py-0.5 rounded-md transition-colors cursor-pointer"
+                                  title={`"${tag}" için arama yap`}
+                                >
+                                  #{tag}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* CHIRMO EXTRA 3: SUPER ACTION BAR (Live X-Ray Preview, Compare, Cite, Save, Kanban) */}
+                          <div className="mt-3 pt-2.5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              {/* Live Inline Page X-Ray Summary Button */}
+                              <button
+                                type="button"
+                                onClick={() => handleInspectResultLive(item.url)}
+                                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer border ${
+                                  inspected
+                                    ? 'bg-[#6534F8] text-white border-[#6534F8]'
+                                    : 'bg-[#F8F5FF] hover:bg-purple-100 text-[#6534F8] border-purple-200'
+                                }`}
+                              >
+                                <Sparkles className="w-3 h-3" />
+                                <span>
+                                  {isInspectingThis
+                                    ? 'Sayfa Taranıyor...'
+                                    : inspected
+                                    ? 'Canlı Özeti Gizle ▲'
+                                    : '⚡ Sayfaya Gitmeden Özeti Gör'}
+                                </span>
+                              </button>
+
+                              {/* Add to Compare Button */}
+                              <button
+                                type="button"
+                                onClick={() => handleToggleCompareSelect(item.title)}
+                                className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold flex items-center gap-1 transition-colors cursor-pointer border ${
+                                  isSelectedForCompare
+                                    ? 'bg-indigo-600 text-white border-indigo-600'
+                                    : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
+                                }`}
+                              >
+                                <Scale className="w-3 h-3" />
+                                <span>
+                                  {isSelectedForCompare ? 'Kıyaslamada ✓' : '⚖️ Kıyasla'}
+                                </span>
+                              </button>
+
+                              {/* Copy Citation Button */}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const citation = `"${item.title}" — ${item.domain} (${
+                                    item.publishedDate || '2026'
+                                  }). Erişim: ${item.url}`
+                                  navigator.clipboard?.writeText(citation)
+                                  showToast('Kaynak alıntısı panoya kopyalandı!')
+                                }}
+                                className="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 text-[11px] font-semibold cursor-pointer"
+                              >
+                                📋 Alıntıla
+                              </button>
+
+                              {/* Save to Favorites */}
+                              <button
+                                type="button"
+                                onClick={() => handleToggleFavoriteResult(item)}
+                                className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold flex items-center gap-1 transition-colors cursor-pointer border ${
+                                  isFav
+                                    ? 'bg-amber-50 text-amber-700 border-amber-200'
+                                    : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200'
+                                }`}
+                              >
+                                <Bookmark className="w-3 h-3" />
+                                <span>{isFav ? 'Favoride' : 'Kaydet'}</span>
+                              </button>
+
+                              {/* Add to Kanban */}
+                              <button
+                                type="button"
+                                onClick={() => addSearchToKanban(item.title)}
+                                className="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-[11px] font-semibold cursor-pointer"
+                              >
+                                + Kanban
+                              </button>
                             </div>
 
                             <div className="flex items-center gap-2">
                               <button
                                 type="button"
-                                onClick={() => handleToggleFavoriteResult(item)}
-                                className={`text-[11px] font-semibold flex items-center gap-1 px-2 py-0.5 rounded-md transition-colors ${
-                                  isFav
-                                    ? 'bg-chirmo-brand-light text-chirmo-brand'
-                                    : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'
-                                }`}
-                              >
-                                <Bookmark className="w-3 h-3" />
-                                {isFav ? 'Favoride' : 'Kaydet'}
-                              </button>
-
-                              <button
-                                type="button"
-                                onClick={() => addSearchToKanban(item.title)}
-                                className="text-[11px] text-emerald-700 hover:underline font-semibold"
-                              >
-                                + Kanban
-                              </button>
-
-                              <button
-                                type="button"
                                 onClick={() =>
                                   onNavigateToAgents(`Şu kaynağı analiz et: ${item.url}`)
                                 }
-                                className="text-[11px] text-slate-500 hover:text-chirmo-brand font-medium"
+                                className="text-[11px] text-slate-500 hover:text-[#6534F8] font-semibold cursor-pointer"
                               >
-                                Derin Analiz
+                                Derin Araştır
                               </button>
 
                               <a
                                 href={item.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-xs font-semibold text-chirmo-brand hover:underline flex items-center gap-1"
+                                className="px-3 py-1 rounded-lg bg-slate-900 hover:bg-[#6534F8] text-white text-xs font-semibold flex items-center gap-1 transition-colors"
                               >
                                 <span>Kaynağa Git</span>
                                 <ExternalLink className="w-3 h-3" />
@@ -1679,18 +2052,64 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                             </div>
                           </div>
 
-                          <a
-                            href={item.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block text-sm sm:text-base font-bold text-slate-900 group-hover:text-chirmo-brand transition-colors mb-1"
-                          >
-                            {item.title}
-                          </a>
+                          {/* INLINE LIVE PAGE X-RAY DRAWER (When user clicks "Sayfaya Gitmeden Özeti Gör") */}
+                          {inspected && (
+                            <div className="mt-3 p-4 rounded-xl bg-gradient-to-br from-[#F8F5FF] to-white border border-purple-200/90 space-y-2.5 animate-fadeIn">
+                              <div className="flex flex-wrap items-center justify-between gap-2">
+                                <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#6534F8] flex items-center gap-1.5">
+                                  <Sparkles className="w-3.5 h-3.5" />
+                                  CANLI SAYFA X-RAY ÖZETİ ({item.domain})
+                                </span>
+                                <span className="text-[11px] font-semibold text-slate-500">
+                                  📄 ~{inspected.wordCount} kelime tarandı
+                                </span>
+                              </div>
 
-                          <p className="text-xs text-slate-600 leading-relaxed select-text">
-                            {item.snippet}
-                          </p>
+                              <p className="text-xs sm:text-sm text-slate-800 leading-relaxed select-text font-medium">
+                                {inspected.summary}
+                              </p>
+
+                              {inspected.headlines.length > 0 && (
+                                <div className="pt-1.5 border-t border-purple-100">
+                                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">
+                                    Sayfadaki Öne Çıkan Başlıklar & Bölümler:
+                                  </span>
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                                    {inspected.headlines.map((hl, i) => (
+                                      <a
+                                        key={i}
+                                        href={hl.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-xs text-slate-700 hover:text-[#6534F8] bg-white px-2.5 py-1.5 rounded-lg border border-purple-100 truncate flex items-center gap-1.5"
+                                      >
+                                        <span className="w-4 h-4 rounded-full bg-purple-100 text-[#6534F8] text-[10px] font-bold flex items-center justify-center shrink-0">
+                                          {i + 1}
+                                        </span>
+                                        <span className="truncate">{hl.title}</span>
+                                      </a>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {inspected.keywords.length > 0 && (
+                                <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                                  <span className="text-[10px] font-bold text-slate-400">
+                                    Anahtar Kavramlar:
+                                  </span>
+                                  {inspected.keywords.map((kw, i) => (
+                                    <span
+                                      key={i}
+                                      className="text-[10px] font-semibold px-2 py-0.5 rounded bg-purple-100/70 text-[#6534F8]"
+                                    >
+                                      {kw}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
                       )
                     })}
@@ -1703,7 +2122,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                     <button
                       type="button"
                       onClick={() => setVisibleResultsCount((prev) => prev + 8)}
-                      className="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-chirmo-brand hover:text-white text-xs font-semibold text-slate-700 transition-colors"
+                      className="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-chirmo-brand hover:text-white text-xs font-semibold text-slate-700 transition-colors cursor-pointer"
                     >
                       Daha Fazla Sonuç Yükle ({filteredWebResults.length - visibleResultsCount}{' '}
                       kaldı)

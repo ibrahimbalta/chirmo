@@ -291,6 +291,14 @@ export interface WebSearchResult {
   stars?: number;
   language?: string;
   author?: string;
+  // Chirmo Super-List Enhancements
+  faviconUrl?: string;
+  breadcrumb?: string;
+  trustScore?: number;
+  contentTypeLabel?: string;
+  readingTimeMin?: number;
+  smartTags?: string[];
+  extractedHighlights?: string[];
 }
 
 export interface LocalSearchResult {
@@ -463,26 +471,304 @@ export class SearchEngineService {
   }
 
   /**
-   * Fetches instant autocomplete suggestions from Wikipedia Opensearch API
+   * Fetches instant autocomplete suggestions from Google Türkiye Suggest + Wikipedia Opensearch API
    */
   public static async fetchAutocompleteSuggestions(prefix: string): Promise<string[]> {
     const clean = prefix.trim();
     if (clean.length < 2) return [];
+
+    const fetchGoogleSuggest = async (): Promise<string[]> => {
+      try {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 1400);
+        const target = `https://suggestqueries.google.com/complete/search?client=firefox&hl=tr&q=${encodeURIComponent(
+          clean
+        )}`;
+        const res = await fetch(`https://r.jina.ai/${target}`, {
+          headers: { Accept: 'application/json' },
+          signal: controller.signal
+        });
+        clearTimeout(timer);
+        if (!res.ok) return [];
+        const json = await res.json();
+        const content: string = json?.data?.content || '';
+        const bracketStart = content.indexOf('[');
+        const bracketEnd = content.lastIndexOf(']');
+        if (bracketStart !== -1 && bracketEnd > bracketStart) {
+          const parsed = JSON.parse(content.slice(bracketStart, bracketEnd + 1));
+          if (Array.isArray(parsed) && Array.isArray(parsed[1])) {
+            return parsed[1].filter((item: any) => typeof item === 'string' && item.trim().length > 0);
+          }
+        }
+        return [];
+      } catch {
+        return [];
+      }
+    };
+
+    const fetchWikiSuggest = async (): Promise<string[]> => {
+      try {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 1300);
+        const url = `https://tr.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(
+          clean
+        )}&limit=6&namespace=0&format=json&origin=*`;
+        const res = await fetch(url, { signal: controller.signal });
+        clearTimeout(timer);
+        if (!res.ok) return [];
+        const data = await res.json();
+        if (Array.isArray(data) && Array.isArray(data[1])) {
+          return data[1].filter((item: any) => typeof item === 'string' && item.trim().length > 0);
+        }
+        return [];
+      } catch {
+        return [];
+      }
+    };
+
+    const [googleList, wikiList] = await Promise.all([fetchGoogleSuggest(), fetchWikiSuggest()]);
+    const merged = Array.from(new Set([...googleList, ...wikiList]));
+    return merged.slice(0, 8);
+  }
+
+  /**
+   * Enriches any WebSearchResult with Chirmo Super-List value-add metadata:
+   * - Real Site Favicon
+   * - Readable Breadcrumb Path
+   * - Domain Trust Score (85 - 99%)
+   * - Content Type Classification Badge
+   * - Estimated Reading Time
+   * - Extracted Quantitative Highlights (prices, years, percentages, metrics)
+   * - Smart Clickable Topic Tags
+   */
+  public static enrichWebResult(r: WebSearchResult): WebSearchResult {
+    const cleanDomain = (r.domain || 'web').replace(/^www\./, '');
+    const faviconUrl =
+      r.faviconUrl ||
+      `https://www.google.com/s2/favicons?domain=${encodeURIComponent(cleanDomain)}&sz=64`;
+
+    let breadcrumb = cleanDomain;
     try {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 1400);
-      const url = `https://tr.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(
+      const parsed = new URL(r.url);
+      const segments = parsed.pathname
+        .split('/')
+        .map((s) => decodeURIComponent(s).replace(/[-_]/g, ' ').trim())
+        .filter((s) => s.length > 1 && s.length < 36);
+      if (segments.length > 0) {
+        breadcrumb = `${cleanDomain} › ${segments.slice(0, 2).join(' › ')}`;
+      }
+    } catch {
+      breadcrumb = cleanDomain;
+    }
+
+    let trustScore = r.trustScore || 89;
+    if (
+      cleanDomain.endsWith('.gov.tr') ||
+      cleanDomain.endsWith('.gov') ||
+      cleanDomain.endsWith('.edu.tr') ||
+      cleanDomain.endsWith('.edu') ||
+      cleanDomain.includes('wikipedia.org') ||
+      cleanDomain.includes('openalex.org')
+    ) {
+      trustScore = 99;
+    } else if (cleanDomain.includes('github.com') || cleanDomain.includes('scholar.google')) {
+      trustScore = 97;
+    } else if (cleanDomain.endsWith('.org') || cleanDomain.endsWith('.com.tr')) {
+      trustScore = 94;
+    } else if (r.url.startsWith('https://')) {
+      trustScore = 91;
+    }
+
+    const combinedText = `${r.title} ${r.snippet}`;
+    let contentTypeLabel = r.contentTypeLabel;
+    if (!contentTypeLabel) {
+      if (r.category === 'academic' || cleanDomain.includes('openalex')) {
+        contentTypeLabel = '🎓 Akademik Makale';
+      } else if (r.category === 'code' || cleanDomain.includes('github.com')) {
+        contentTypeLabel = '💻 Açık Kaynak Kod';
+      } else if (r.category === 'discussion' || cleanDomain.includes('ycombinator')) {
+        contentTypeLabel = '💬 Topluluk & Tartışma';
+      } else if (cleanDomain.includes('wikipedia.org')) {
+        contentTypeLabel = '📚 Ansiklopedi';
+      } else if (cleanDomain.endsWith('.gov.tr') || cleanDomain.endsWith('.gov')) {
+        contentTypeLabel = '🏛️ Resmi Kurum';
+      } else if (
+        /\b(fiyat|fiyatları|ücret|kaç tl|listesi|satın al|maliyet|zam|tarife|kampanya)\b/i.test(
+          combinedText
+        )
+      ) {
+        contentTypeLabel = '🛒 Fiyat & Piyasa Verisi';
+      } else if (
+        /\b(en iyi|rehber|öneri|tavsiye|karşılaştır|kıyasla|inceleme|nasıl|hangisi)\b/i.test(
+          combinedText
+        )
+      ) {
+        contentTypeLabel = '📋 Rehber & Karşılaştırma';
+      } else if (/\b(haber|son dakika|gündem|açıkladı|duyurdu|gelişme)\b/i.test(combinedText)) {
+        contentTypeLabel = '📰 Güncel Haber';
+      } else {
+        contentTypeLabel = '🌐 Doğrulanmış Web Kaynağı';
+      }
+    }
+
+    const readingTimeMin =
+      r.readingTimeMin ||
+      (r.category === 'academic'
+        ? 8
+        : Math.max(2, Math.min(6, Math.round((r.snippet.length + r.title.length) / 55))));
+
+    // Extract numerical highlights (prices, years, percentages, distances, ratings)
+    const highlightMatches = combinedText.match(
+      /(?:\d{1,3}(?:\.\d{3})+(?:,\d+)?\s*(?:TL|₺|USD|\$|EUR|€)|\b202[4-9]\b|%\s*\d+|\d+\s*(?:km|kW|kWh|GB|TB|Hz|MP|Saat|Gün|Ay|Yıl|Atıf|⭐))/gi
+    );
+    const extractedHighlights = Array.from(
+      new Set((highlightMatches || []).map((m) => m.trim()))
+    ).slice(0, 4);
+
+    // Extract smart clickable tags from title words
+    const stopWords = new Set([
+      'için', 'olan', 'gibi', 'daha', 'kadar', 'गöre', 'ile', 'veya', 'ama', 'fakat',
+      'ancak', 'tüm', 'yeni', 'nasıl', 'nedir', 'hakkında', 'üzerine', 'arasında', 'olarak',
+      'wikipedia', 'ansiklopedisi', 'açık', 'kaynak'
+    ]);
+    const words = r.title
+      .replace(/[^\w\sğüşıöçĞÜŞİÖÇ]/g, ' ')
+      .split(/\s+/)
+      .map((w) => w.trim())
+      .filter((w) => w.length >= 4 && !/^\d+$/.test(w) && !stopWords.has(w.toLowerCase()));
+    const smartTags = Array.from(new Set(words)).slice(0, 4);
+
+    return {
+      ...r,
+      domain: cleanDomain,
+      faviconUrl,
+      breadcrumb,
+      trustScore,
+      contentTypeLabel,
+      readingTimeMin,
+      extractedHighlights,
+      smartTags
+    };
+  }
+
+  /**
+   * Live X-Ray Inspector for any individual search result card
+   */
+  public static async inspectResultPageLive(url: string): Promise<LiveScrapedSite | undefined> {
+    return LiveWebScraper.scrapeLiveWebsite(url);
+  }
+
+  /**
+   * Fetches real organic web search results (Google-equivalent SERP) via CORS-enabled Jina Reader
+   */
+  private static async fetchLiveWebSerp(query: string): Promise<WebSearchResult[]> {
+    const clean = query.trim();
+    if (clean.length < 2) return [];
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 3200);
+    try {
+      const serpUrl = `https://r.jina.ai/https://html.duckduckgo.com/html/?q=${encodeURIComponent(
         clean
-      )}&limit=6&namespace=0&format=json&origin=*`;
-      const res = await fetch(url, { signal: controller.signal });
+      )}`;
+      const res = await fetch(serpUrl, {
+        headers: { Accept: 'application/json' },
+        signal: controller.signal
+      });
       clearTimeout(timer);
       if (!res.ok) return [];
-      const data = await res.json();
-      if (Array.isArray(data) && Array.isArray(data[1])) {
-        return data[1].filter((item: any) => typeof item === 'string' && item.trim().length > 0);
+      const json = await res.json();
+      const md: string = json?.data?.content || '';
+      if (!md) return [];
+
+      const results: WebSearchResult[] = [];
+      const seenUrls = new Set<string>();
+      const blocks = md.split(/##\s+\[/);
+
+      for (let i = 1; i < blocks.length; i++) {
+        const b = blocks[i];
+        const titleMatch = b.match(/^([^\]]+)\]\((https?:\/\/[^\)]+)\)/);
+        if (!titleMatch) continue;
+        const rawTitle = titleMatch[1]
+          .replace(/\*{4}/g, ' ')
+          .replace(/\*\*/g, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+
+        let rawUrl = titleMatch[2];
+        const uddgMatch = rawUrl.match(/[?&]uddg=([^&]+)/);
+        if (uddgMatch) {
+          try {
+            rawUrl = decodeURIComponent(uddgMatch[1]);
+          } catch {
+            // keep rawUrl
+          }
+        }
+        if (
+          !rawUrl.startsWith('http') ||
+          rawUrl.includes('duckduckgo.com/y.js') ||
+          rawUrl.includes('duckduckgo.com/?')
+        ) {
+          continue;
+        }
+        if (seenUrls.has(rawUrl)) continue;
+        seenUrls.add(rawUrl);
+
+        const lines = b
+          .split('\n')
+          .map((l) => l.trim())
+          .filter(Boolean);
+        let snippet = '';
+        for (let j = lines.length - 1; j >= 1; j--) {
+          const m = lines[j].match(/^\[([^\]]+)\]\(https?:\/\//);
+          if (m && !m[1].startsWith('![')) {
+            const candidate = m[1]
+              .replace(/\*{4}/g, ' ')
+              .replace(/\*\*/g, '')
+              .replace(/\s+/g, ' ')
+              .trim();
+            if (
+              candidate.length > 30 &&
+              !candidate.startsWith('www.') &&
+              !candidate.startsWith('http')
+            ) {
+              snippet = candidate;
+              break;
+            }
+          }
+        }
+
+        let domain = '';
+        try {
+          domain = new URL(rawUrl).hostname.replace(/^www\./, '');
+        } catch {
+          continue;
+        }
+
+        // Extract date if present in snippet (e.g. "13 Nis 2026", "2026", etc.)
+        const dateMatch = (snippet + ' ' + rawTitle).match(
+          /\b(\d{1,2}\s+(?:Oca|Şub|Mar|Nis|May|Haz|Tem|Ağu|Eyl|Eki|Kas|Ara)[a-zğüşıöç]*\s+202\d|202[4-6])\b/i
+        );
+
+        results.push(
+          this.enrichWebResult({
+            id: `serp_${i}_${domain}`,
+            title: rawTitle,
+            url: rawUrl,
+            snippet: snippet || `${rawTitle} — ${domain} üzerindeki güncel içerik ve detaylar.`,
+            domain,
+            badge: i <= 3 ? `🔥 En İyi Eşleşme #${i}` : 'Canlı Web Sonucu',
+            category: 'web',
+            publishedDate: dateMatch ? dateMatch[1] : undefined,
+            relevanceScore: Math.max(78, 100 - (i - 1) * 2)
+          })
+        );
+
+        if (results.length >= 12) break;
       }
-      return [];
+
+      return results;
     } catch {
+      clearTimeout(timer);
       return [];
     }
   }
@@ -904,6 +1190,7 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
    * 4. HackerNews Algolia API (Global Discussions)
    */
   private static async fetchLiveFederatedSources(query: string): Promise<{
+    webSerpResults: WebSearchResult[];
     wikiSummary?: { title: string; description?: string; extract: string; url: string; thumbnail?: string; timestamp?: string };
     wikiArticles: WebSearchResult[];
     didYouMean?: string;
@@ -933,7 +1220,8 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
 
     const isPureMath = targetQuery.length < 2 || /^[\d\s\+\-\*\/]+$/.test(targetQuery);
 
-    const [wikiBundle, openAlexPapers, githubData, hnData] = await Promise.all([
+    const [webSerpResults, wikiBundle, openAlexPapers, githubData, hnData] = await Promise.all([
+      isPureMath ? Promise.resolve([] as WebSearchResult[]) : this.fetchLiveWebSerp(query.trim()),
       (async () => {
         if (isPureMath) return { summary: undefined, articles: [] as WebSearchResult[], suggestion: undefined };
         const searchUrl = `https://tr.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(
@@ -1053,6 +1341,7 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
     ]);
 
     return {
+      webSerpResults: webSerpResults || [],
       wikiSummary: wikiBundle.summary,
       wikiArticles: wikiBundle.articles || [],
       didYouMean: wikiBundle.suggestion,
@@ -1460,6 +1749,7 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
     instantAnswer?: InstantAnswer,
     localResults: LocalSearchResult[] = [],
     liveData?: {
+      webSerpResults?: WebSearchResult[];
       wikiSummary?: { title: string; description?: string; extract: string; url: string };
       academicPapers: AcademicPaper[];
       githubRepos: LiveGitHubRepo[];
@@ -1467,12 +1757,16 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
     },
     decisionMatrix?: DecisionMatrix
   ): AiSynthesis {
+    const topWebSerp = liveData?.webSerpResults?.[0];
+    const secondWebSerp = liveData?.webSerpResults?.[1];
     const baseSummary = liveData?.wikiSummary?.extract
       ? liveData.wikiSummary.extract
       : instantAnswer?.details
       ? `${instantAnswer.title}: ${instantAnswer.details}`
       : decisionMatrix
       ? decisionMatrix.verdict
+      : topWebSerp
+      ? `${topWebSerp.snippet}${secondWebSerp ? ` Ayrıca ${secondWebSerp.domain} kaynağına göre: ${secondWebSerp.snippet}` : ''}`
       : `"${query}" konusu; canlı ansiklopedik kaynaklar, hakemli bilimsel yayınlar (OpenAlex) ve sektörel veriler taranarak sentezlenmiştir.`;
 
     const perspectives: Record<PerspectiveLens, { title: string; badge: string; content: string; bullets: string[] }> = {
@@ -1737,6 +2031,27 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
     const directSourceQuotes: DirectSourceQuote[] = [];
     const sources: { title: string; url: string; domain: string; snippet?: string; publishedDate?: string }[] = [];
 
+    if (liveData?.webSerpResults?.length) {
+      for (const serp of liveData.webSerpResults.slice(0, 3)) {
+        sources.push({
+          title: serp.title,
+          url: serp.url,
+          domain: serp.domain,
+          snippet: serp.snippet.slice(0, 180),
+          publishedDate: serp.publishedDate
+        });
+        directSourceQuotes.push({
+          id: directSourceQuotes.length + 1,
+          text: serp.snippet,
+          sourceTitle: `${serp.title} (${serp.domain})`,
+          sourceUrl: serp.url,
+          domain: serp.domain,
+          publishedDate: serp.publishedDate,
+          category: 'web'
+        });
+      }
+    }
+
     if (liveData?.wikiSummary) {
       sources.push({
         title: `${liveData.wikiSummary.title} — Wikipedia`,
@@ -1852,6 +2167,7 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
   private static mergeWebResults(
     query: string,
     liveData: {
+      webSerpResults?: WebSearchResult[];
       wikiSummary?: { title: string; description?: string; extract: string; url: string };
       wikiArticles?: WebSearchResult[];
       academicPapers: AcademicPaper[];
@@ -1863,6 +2179,14 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
   ): WebSearchResult[] {
     const encoded = encodeURIComponent(query);
     const results: WebSearchResult[] = [];
+    const seenUrls = new Set<string>();
+
+    const pushUnique = (item: WebSearchResult) => {
+      const normalizedUrl = item.url.replace(/\/+$/, '').toLowerCase();
+      if (seenUrls.has(normalizedUrl)) return;
+      seenUrls.add(normalizedUrl);
+      results.push(this.enrichWebResult(item));
+    };
 
     if (liveScrapedSite && liveScrapedSite.headlines.length > 0) {
       let domain = liveScrapedSite.targetUrl;
@@ -1872,7 +2196,7 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
         // ignore
       }
       liveScrapedSite.headlines.slice(0, 12).forEach((h, idx) => {
-        results.push({
+        pushUnique({
           id: `live-scrape-${idx}`,
           title: h.title,
           url: h.url,
@@ -1886,12 +2210,20 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
       });
     }
 
+    // 1. Real Organic Web Search Results (Google-equivalent Web SERP)
+    if (liveData.webSerpResults && liveData.webSerpResults.length > 0) {
+      for (const serpItem of liveData.webSerpResults) {
+        pushUnique(serpItem);
+      }
+    }
+
+    // 2. Wikipedia Encyclopedia Results
     if (liveData.wikiArticles && liveData.wikiArticles.length > 0) {
       for (const article of liveData.wikiArticles) {
-        results.push(article);
+        pushUnique(article);
       }
     } else if (liveData.wikiSummary) {
-      results.push({
+      pushUnique({
         id: 'live-wiki',
         title: `${liveData.wikiSummary.title} — Wikipedia Ansiklopedisi`,
         url: liveData.wikiSummary.url,
@@ -1903,9 +2235,9 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
       });
     }
 
-    // Include peer-reviewed scientific/academic papers from OpenAlex
+    // 3. Peer-reviewed scientific/academic papers from OpenAlex
     liveData.academicPapers.forEach((paper, idx) => {
-      results.push({
+      pushUnique({
         id: `oa-${paper.id}`,
         title: `${paper.title} (${paper.year})`,
         url: paper.url,
@@ -1919,8 +2251,9 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
       });
     });
 
+    // 4. Open-source repositories from GitHub
     liveData.githubRepos.forEach((repo, idx) => {
-      results.push({
+      pushUnique({
         id: `gh-${repo.id}`,
         title: `${repo.fullName} — Açık Kaynak (${repo.stars.toLocaleString()} ⭐)`,
         url: repo.url,
@@ -1934,12 +2267,13 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
       });
     });
 
+    // 5. Global community discussions from HackerNews
     for (const hn of liveData.hnResults) {
-      results.push(hn);
+      pushUnique(hn);
     }
 
     if (professionMode === 'legal') {
-      results.push({
+      pushUnique({
         id: 'web-mevzuat',
         title: `${query} — T.C. Cumhurbaşkanlığı Mevzuat Bilgi Sistemi Arama`,
         url: `https://www.google.com/search?q=${encodeURIComponent(query + ' site:mevzuat.gov.tr OR site:resmigazete.gov.tr')}`,
@@ -1951,28 +2285,26 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
       });
     }
 
-    results.push(
-      {
-        id: 'web-google',
-        title: `${query} — Google Canlı Web İndeksi`,
-        url: `https://www.google.com/search?q=${encoded}`,
-        snippet: `"${query}" için tüm küresel web sayfalarını, haberleri ve dokümanları doğrudan Google üzerinde açın.`,
-        domain: 'google.com',
-        badge: 'Dış Arama Motoru',
-        category: 'web',
-        relevanceScore: 50
-      },
-      {
-        id: 'web-yt',
-        title: `${query} — Video Eğitimler ve Görsel Anlatımlar`,
-        url: `https://www.youtube.com/results?search_query=${encoded}`,
-        snippet: `${query} konusuyla ilgili adım adım görsel anlatımlar, uzman incelemeleri ve rehber videoları.`,
-        domain: 'youtube.com',
-        badge: 'Video Rehber',
-        category: 'web',
-        relevanceScore: 48
-      }
-    );
+    pushUnique({
+      id: 'web-google',
+      title: `${query} — Google Canlı Web İndeksi`,
+      url: `https://www.google.com/search?q=${encoded}`,
+      snippet: `"${query}" için tüm küresel web sayfalarını, haberleri ve dokümanları doğrudan Google üzerinde açın.`,
+      domain: 'google.com',
+      badge: 'Dış Arama Motoru',
+      category: 'web',
+      relevanceScore: 50
+    });
+    pushUnique({
+      id: 'web-yt',
+      title: `${query} — Video Eğitimler ve Görsel Anlatımlar`,
+      url: `https://www.youtube.com/results?search_query=${encoded}`,
+      snippet: `${query} konusuyla ilgili adım adım görsel anlatımlar, uzman incelemeleri ve rehber videoları.`,
+      domain: 'youtube.com',
+      badge: 'Video Rehber',
+      category: 'web',
+      relevanceScore: 48
+    });
 
     return results;
   }
