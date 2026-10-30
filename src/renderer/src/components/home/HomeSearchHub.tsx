@@ -717,23 +717,9 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
             </div>
 
             {/* Main 3D Metallic Gold & Violet Chirmo Hero Logo */}
-            <div className="mb-2">
+            <div className="mb-4 sm:mb-6">
               <ChirmoLogo size="xl" variant="hero" />
             </div>
-
-            {/* Two-Line Bold Headline (Larger Typography) */}
-            <h1 className="text-3xl sm:text-4xl md:text-[44px] font-extrabold tracking-tight leading-[1.15] text-[#111827]">
-              Aradığını yalnızca bulma.
-              <span className="block bg-gradient-to-r from-[#6C38FF] via-[#6534F8] to-[#7C3AED] bg-clip-text text-transparent mt-0.5">
-                Anla, keşfet, karşılaştır, karar ver.
-              </span>
-            </h1>
-
-            {/* Two-Line Subtitle (Larger & Crisper) */}
-            <p className="text-sm sm:text-base md:text-[17px] text-slate-600 font-medium mt-2.5 leading-relaxed max-w-2xl">
-              Chirmo, yapay zeka gücüyle interneti senin için daha anlamlı hale getirir.
-              <br className="hidden sm:inline" /> Sadece arama yapma, bilgiye derinlemesine ulaş.
-            </p>
 
             {/* Main Pill Search Bar with Soft Lavender Glow */}
             <div ref={searchBoxContainerRef} className="w-full max-w-[780px] relative mt-4 sm:mt-5">
