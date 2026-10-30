@@ -49,7 +49,7 @@ export const HistoryView: React.FC = () => {
   };
 
   return (
-    <div className="flex-1 bg-chirmo-secondary overflow-y-auto p-4 sm:p-8 pb-20 md:pb-8 select-none">
+    <div className="flex-1 bg-chirmo-secondary overflow-y-auto p-4 sm:p-8 pb-24 md:pb-8 select-none">
       <div className="max-w-4xl mx-auto space-y-5">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-chirmo-border pb-4">
@@ -76,8 +76,8 @@ export const HistoryView: React.FC = () => {
         </div>
 
         {/* Filters & Search */}
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center bg-chirmo-bg border border-chirmo-border rounded-lg px-3 py-1.5 w-72 focus-within:border-chirmo-brand">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center bg-chirmo-bg border border-chirmo-border rounded-lg px-3 py-1.5 w-full sm:w-72 focus-within:border-chirmo-brand">
             <Search className="w-3.5 h-3.5 text-chirmo-text-muted mr-2" />
             <input
               type="text"

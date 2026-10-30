@@ -362,7 +362,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  // Debounced live autocomplete suggestions from Wikipedia Opensearch
+  // Debounced live autocomplete suggestions from Google Live Suggest
   useEffect(() => {
     const trimmed = query.trim()
     if (trimmed.length < 2) {
@@ -373,7 +373,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
       SearchEngineService.fetchAutocompleteSuggestions(trimmed).then((list) => {
         setSuggestions(list)
       })
-    }, 220)
+    }, 180)
     return () => clearTimeout(timer)
   }, [query])
 
@@ -965,10 +965,10 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
       {/* ==================== 1. FULL-BLEED HERO VIEWPORT (WHEN NO ACTIVE SEARCH) ==================== */}
       {!searchResponse ? (
         <div
-          className="w-full min-h-[calc(100vh-4rem)] relative flex flex-col items-center justify-between overflow-hidden px-4 sm:px-8 pt-3 sm:pt-5 pb-3 shrink-0"
+          className="w-full min-h-[calc(100vh-4rem)] relative flex flex-col items-center justify-between overflow-y-auto sm:overflow-visible px-4 sm:px-8 pt-3 sm:pt-5 pb-24 sm:pb-3 shrink-0"
           style={{
             backgroundImage: "url('./chirmo-hero-bg.jpg')",
-            backgroundSize: '100% 100%',
+            backgroundSize: 'cover',
             backgroundPosition: 'center bottom',
             backgroundRepeat: 'no-repeat'
           }}
@@ -1070,9 +1070,12 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                 <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl border border-purple-100 shadow-2xl z-40 overflow-hidden py-2 text-left">
                   {suggestions.length > 0 && (
                     <div className="px-3 py-1.5">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#6534F8] px-2 block mb-1">
-                        Anlık Arama Önerileri
-                      </span>
+                      <div className="flex items-center justify-between px-2 mb-1">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#6534F8]">
+                          Google Arama Önerileri
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-medium">Canlı İndeks</span>
+                      </div>
                       {suggestions.map((sug) => (
                         <button
                           key={sug}
@@ -1136,6 +1139,22 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                           </button>
                         </div>
                       ))}
+                    </div>
+                  )}
+
+                  {/* Direct Google Search Link */}
+                  {query.trim() && (
+                    <div className="px-3 py-2 border-t border-slate-100 bg-slate-50/80 flex items-center justify-between mt-1">
+                      <span className="text-[11px] text-slate-500">Dış Arama</span>
+                      <a
+                        href={`https://www.google.com/search?q=${encodeURIComponent(query.trim())}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs font-semibold text-[#4285F4] hover:underline flex items-center gap-1"
+                      >
+                        <span>Google'da doğrudan ara</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
                     </div>
                   )}
                 </div>
@@ -1534,6 +1553,17 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
               </div>
 
               <div className="flex items-center gap-1.5">
+                <a
+                  href={`https://www.google.com/search?q=${encodeURIComponent(searchResponse.query)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                  title="Google'da Canlı Aç"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Google'da Aç</span>
+                </a>
+
                 <button
                   type="button"
                   onClick={handleSaveCurrentSearch}

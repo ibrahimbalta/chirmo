@@ -349,7 +349,7 @@ export function setupWebMock(): void {
 
       const targetUrl = isDirectDomainTask
         ? LiveWebScraper.resolveTargetUrlFromPrompt(opts.prompt)
-        : `https://tr.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(opts.prompt)}`
+        : `https://www.google.com/search?q=${encodeURIComponent(opts.prompt)}`
 
       const steps: AgentStep[] = isDirectDomainTask
         ? [

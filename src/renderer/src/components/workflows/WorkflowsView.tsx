@@ -75,7 +75,7 @@ export const WorkflowsView: React.FC = () => {
   };
 
   return (
-    <div className="flex-1 bg-chirmo-secondary overflow-y-auto p-4 sm:p-8 pb-20 md:pb-8 select-none">
+    <div className="flex-1 bg-chirmo-secondary overflow-y-auto p-4 sm:p-8 pb-24 md:pb-8 select-none">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-chirmo-border pb-4">
@@ -102,7 +102,7 @@ export const WorkflowsView: React.FC = () => {
           <label className="text-xs font-semibold text-chirmo-text">
             İş Akışı Şablonu Seçin:
           </label>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {templates.map((tpl) => {
               const isSelected = selectedTemplate?.id === tpl.id;
               return (

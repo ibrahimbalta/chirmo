@@ -73,8 +73,8 @@ export class LiveWebScraper {
     }
 
     if (!rawUrl) {
-      // Fallback to Wikipedia or Google search topic
-      return `https://tr.wikipedia.org/wiki/Özel:Ara?search=${encodeURIComponent(trimmed)}`;
+      // Direct Google search fallback
+      return `https://www.google.com/search?q=${encodeURIComponent(trimmed)}`;
     }
 
     // 4. Smart section routing when user asks for a specific category on a root domain

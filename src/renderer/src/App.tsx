@@ -220,10 +220,10 @@ export const App: React.FC = () => {
         </div>
 
         {/* Right: Quick Links + 9-Dot Apps Launcher (Google Style) + Theme + Auth */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <button
             onClick={() => setActiveMenu('discover')}
-            className={`text-xs sm:text-sm font-medium transition-colors cursor-pointer ${
+            className={`hidden sm:inline-block text-xs sm:text-sm font-medium transition-colors cursor-pointer ${
               activeMenu === 'discover'
                 ? 'text-[#6534F8] font-bold'
                 : 'text-slate-700 hover:text-slate-900'
@@ -234,7 +234,7 @@ export const App: React.FC = () => {
 
           <button
             onClick={() => setActiveMenu('visual')}
-            className={`text-xs sm:text-sm font-medium transition-colors cursor-pointer ${
+            className={`hidden sm:inline-block text-xs sm:text-sm font-medium transition-colors cursor-pointer ${
               activeMenu === 'visual'
                 ? 'text-[#6534F8] font-bold'
                 : 'text-slate-700 hover:text-slate-900'
@@ -247,7 +247,7 @@ export const App: React.FC = () => {
           <div ref={appLauncherRef} className="relative">
             <button
               onClick={() => setShowAppLauncher((prev) => !prev)}
-              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer ${
+              className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all cursor-pointer ${
                 showAppLauncher
                   ? 'bg-slate-200 text-slate-900'
                   : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
@@ -260,7 +260,7 @@ export const App: React.FC = () => {
 
             {/* FLOATING APP LAUNCHER POPOVER (MATCHING GOOGLE WAFFLE APPS) */}
             {showAppLauncher && (
-              <div className="absolute right-0 top-12 w-80 sm:w-88 rounded-3xl bg-white/95 backdrop-blur-xl shadow-2xl border border-slate-200/90 p-4 sm:p-5 z-50 animate-fadeIn ring-1 ring-slate-900/5">
+              <div className="fixed sm:absolute right-4 sm:right-0 top-16 sm:top-12 w-[calc(100vw-2rem)] max-w-sm sm:w-88 rounded-3xl bg-white/95 backdrop-blur-xl shadow-2xl border border-slate-200/90 p-4 sm:p-5 z-50 animate-fadeIn ring-1 ring-slate-900/5">
                 <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
                   <span className="text-xs font-bold text-slate-800 tracking-wide">
                     Favorileriniz
@@ -433,7 +433,7 @@ export const App: React.FC = () => {
       </header>
 
       {/* Main Workspace Area */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden relative">
+      <div className="flex-1 flex flex-col h-full overflow-hidden relative pb-16 sm:pb-0">
         {/* Browser TabBar & AddressBar only when built-in browser view is active */}
         {isBrowserActive && (
           <>
@@ -701,6 +701,67 @@ export const App: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* ==================== NATIVE MOBILE BOTTOM NAVIGATION BAR ==================== */}
+      <nav
+        className="sm:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-lg border-t border-slate-200/90 z-40 flex items-center justify-around px-2 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.06)]"
+        aria-label="Mobil Gezinme Menüsü"
+      >
+        {/* 1. Arama / Home */}
+        <button
+          onClick={handleGoHome}
+          className={`flex flex-col items-center justify-center flex-1 py-1.5 transition-colors cursor-pointer ${
+            activeMenu === 'home' ? 'text-[#6534F8] font-bold' : 'text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <Search className="w-5 h-5 mb-0.5" />
+          <span className="text-[10px]">Arama</span>
+        </button>
+
+        {/* 2. Keşfet */}
+        <button
+          onClick={() => setActiveMenu('discover')}
+          className={`flex flex-col items-center justify-center flex-1 py-1.5 transition-colors cursor-pointer ${
+            activeMenu === 'discover' ? 'text-[#6534F8] font-bold' : 'text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <Compass className="w-5 h-5 mb-0.5" />
+          <span className="text-[10px]">Keşfet</span>
+        </button>
+
+        {/* 3. Görseller */}
+        <button
+          onClick={() => setActiveMenu('visual')}
+          className={`flex flex-col items-center justify-center flex-1 py-1.5 transition-colors cursor-pointer ${
+            activeMenu === 'visual' ? 'text-[#6534F8] font-bold' : 'text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <ImageIcon className="w-5 h-5 mb-0.5" />
+          <span className="text-[10px]">Görseller</span>
+        </button>
+
+        {/* 4. Karşılaştır */}
+        <button
+          onClick={() => setActiveMenu('compare')}
+          className={`flex flex-col items-center justify-center flex-1 py-1.5 transition-colors cursor-pointer ${
+            activeMenu === 'compare' ? 'text-[#6534F8] font-bold' : 'text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <Scale className="w-5 h-5 mb-0.5" />
+          <span className="text-[10px]">Karşılaştır</span>
+        </button>
+
+        {/* 5. Menü / Apps */}
+        <button
+          onClick={() => setShowAppLauncher((prev) => !prev)}
+          className={`flex flex-col items-center justify-center flex-1 py-1.5 transition-colors cursor-pointer ${
+            showAppLauncher ? 'text-[#6534F8] font-bold' : 'text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <LayoutGrid className="w-5 h-5 mb-0.5" />
+          <span className="text-[10px]">Uygulamalar</span>
+        </button>
+      </nav>
     </div>
   );
 };
