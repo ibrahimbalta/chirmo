@@ -67,11 +67,15 @@ export const TabBar: React.FC<TabBarProps> = ({
                     alt=""
                     className="w-3.5 h-3.5 rounded-sm object-contain"
                     onError={(e) => {
-                      (e.target as HTMLElement).style.display = 'none';
+                      (e.target as HTMLImageElement).src = './favicon.png';
                     }}
                   />
                 ) : (
-                  <Globe className="w-3.5 h-3.5 text-chirmo-text-muted" />
+                  <img
+                    src="./favicon.png"
+                    alt=""
+                    className="w-3.5 h-3.5 rounded-xs object-contain"
+                  />
                 )}
               </div>
 
