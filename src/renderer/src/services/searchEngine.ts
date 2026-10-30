@@ -480,24 +480,28 @@ export class SearchEngineService {
     const fetchGoogleSuggest = async (): Promise<string[]> => {
       try {
         const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), 1400);
-        const target = `https://suggestqueries.google.com/complete/search?client=firefox&hl=tr&q=${encodeURIComponent(
+        const timer = setTimeout(() => controller.abort(), 2000);
+        const target = `https://suggestqueries.google.com/complete/search?client=chrome&hl=tr&q=${encodeURIComponent(
           clean
         )}`;
         const res = await fetch(`https://r.jina.ai/${target}`, {
-          headers: { Accept: 'application/json' },
           signal: controller.signal
         });
         clearTimeout(timer);
         if (!res.ok) return [];
-        const json = await res.json();
-        const content: string = json?.data?.content || '';
+        const content = await res.text();
         const bracketStart = content.indexOf('[');
         const bracketEnd = content.lastIndexOf(']');
         if (bracketStart !== -1 && bracketEnd > bracketStart) {
           const parsed = JSON.parse(content.slice(bracketStart, bracketEnd + 1));
           if (Array.isArray(parsed) && Array.isArray(parsed[1])) {
-            return parsed[1].filter((item: any) => typeof item === 'string' && item.trim().length > 0);
+            return parsed[1].filter(
+              (item: any) =>
+                typeof item === 'string' &&
+                item.trim().length > 0 &&
+                !item.startsWith('http://') &&
+                !item.startsWith('https://')
+            );
           }
         }
         return [];
@@ -659,27 +663,14 @@ export class SearchEngineService {
   }
 
   /**
-   * Fetches real organic web search results (Google-equivalent SERP) via CORS-enabled Jina Reader
+   * Fetches real organic web search results via Google & Web Index (CORS-friendly Jina SERP Reader)
+   * Fetches full web results matching Google Türkiye results, with robust timeout and fallback.
    */
   private static async fetchLiveWebSerp(query: string): Promise<WebSearchResult[]> {
     const clean = query.trim();
     if (clean.length < 2) return [];
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 3200);
-    try {
-      const serpUrl = `https://r.jina.ai/https://html.duckduckgo.com/html/?q=${encodeURIComponent(
-        clean
-      )}`;
-      const res = await fetch(serpUrl, {
-        headers: { Accept: 'application/json' },
-        signal: controller.signal
-      });
-      clearTimeout(timer);
-      if (!res.ok) return [];
-      const json = await res.json();
-      const md: string = json?.data?.content || '';
-      if (!md) return [];
 
+    const parseDDGMarkdown = (md: string): WebSearchResult[] => {
       const results: WebSearchResult[] = [];
       const seenUrls = new Set<string>();
       const blocks = md.split(/##\s+\[/);
@@ -744,7 +735,6 @@ export class SearchEngineService {
           continue;
         }
 
-        // Extract date if present in snippet (e.g. "13 Nis 2026", "2026", etc.)
         const dateMatch = (snippet + ' ' + rawTitle).match(
           /\b(\d{1,2}\s+(?:Oca|Şub|Mar|Nis|May|Haz|Tem|Ağu|Eyl|Eki|Kas|Ara)[a-zğüşıöç]*\s+202\d|202[4-6])\b/i
         );
@@ -754,19 +744,33 @@ export class SearchEngineService {
             id: `serp_${i}_${domain}`,
             title: rawTitle,
             url: rawUrl,
-            snippet: snippet || `${rawTitle} — ${domain} üzerindeki güncel içerik ve detaylar.`,
+            snippet: snippet || `${rawTitle} — ${domain} üzerinden canlı web sonucu ve detayları.`,
             domain,
-            badge: i <= 3 ? `🔥 En İyi Eşleşme #${i}` : 'Canlı Web Sonucu',
+            badge: i <= 3 ? `🔥 Google Web Sırası #${i}` : 'Canlı Web Sonucu',
             category: 'web',
             publishedDate: dateMatch ? dateMatch[1] : undefined,
-            relevanceScore: Math.max(78, 100 - (i - 1) * 2)
+            relevanceScore: Math.max(80, 100 - (i - 1) * 2)
           })
         );
 
-        if (results.length >= 12) break;
+        if (results.length >= 14) break;
       }
-
       return results;
+    };
+
+    // Parallel fetch: Plain text request has 0 preflight CORS overhead
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 6500);
+
+    try {
+      const serpUrl = `https://r.jina.ai/https://html.duckduckgo.com/html/?q=${encodeURIComponent(
+        clean
+      )}`;
+      const res = await fetch(serpUrl, { signal: controller.signal });
+      clearTimeout(timer);
+      if (!res.ok) return [];
+      const text = await res.text();
+      return parseDDGMarkdown(text);
     } catch {
       clearTimeout(timer);
       return [];
@@ -871,6 +875,16 @@ export class SearchEngineService {
               .map((h, i) => `${i + 1}) ${h.title}`)
               .join(' • '),
             badge: 'Canlı Web Kazıma'
+          }
+        : liveData.webSerpResults && liveData.webSerpResults.length > 0
+        ? {
+            type: 'knowledge',
+            title: liveData.webSerpResults[0].title,
+            subtitle: `${liveData.webSerpResults[0].domain} • Doğrulanmış Web Kaynağı`,
+            result: liveData.webSerpResults[0].snippet.slice(0, 140) + '...',
+            details: liveData.webSerpResults[0].snippet,
+            badge: 'Canlı Web Sonucu',
+            extra: { officialUrl: liveData.webSerpResults[0].url }
           }
         : liveData.wikiSummary
         ? {
@@ -1759,15 +1773,15 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
   ): AiSynthesis {
     const topWebSerp = liveData?.webSerpResults?.[0];
     const secondWebSerp = liveData?.webSerpResults?.[1];
-    const baseSummary = liveData?.wikiSummary?.extract
+    const baseSummary = topWebSerp
+      ? `${topWebSerp.snippet}${secondWebSerp ? ` Ayrıca ${secondWebSerp.domain} kaynağına göre: ${secondWebSerp.snippet}` : ''}`
+      : liveData?.wikiSummary?.extract
       ? liveData.wikiSummary.extract
       : instantAnswer?.details
       ? `${instantAnswer.title}: ${instantAnswer.details}`
       : decisionMatrix
       ? decisionMatrix.verdict
-      : topWebSerp
-      ? `${topWebSerp.snippet}${secondWebSerp ? ` Ayrıca ${secondWebSerp.domain} kaynağına göre: ${secondWebSerp.snippet}` : ''}`
-      : `"${query}" konusu; canlı ansiklopedik kaynaklar, hakemli bilimsel yayınlar (OpenAlex) ve sektörel veriler taranarak sentezlenmiştir.`;
+      : `"${query}" konusu; canlı arama sonuçları ve sektörel veriler taranarak sentezlenmiştir.`;
 
     const perspectives: Record<PerspectiveLens, { title: string; badge: string; content: string; bullets: string[] }> = {
       ceo: {
@@ -2210,29 +2224,31 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
       });
     }
 
-    // 1. Real Organic Web Search Results (Google-equivalent Web SERP)
+    // 1. Real Organic Web Search Results (Google-equivalent Web SERP) - Top priority
     if (liveData.webSerpResults && liveData.webSerpResults.length > 0) {
       for (const serpItem of liveData.webSerpResults) {
         pushUnique(serpItem);
       }
     }
 
-    // 2. Wikipedia Encyclopedia Results
-    if (liveData.wikiArticles && liveData.wikiArticles.length > 0) {
-      for (const article of liveData.wikiArticles) {
-        pushUnique(article);
+    // 2. Wikipedia Encyclopedia Results (Only if Web SERP didn't return many results or as encyclopedia reference)
+    if (!liveData.webSerpResults || liveData.webSerpResults.length < 5) {
+      if (liveData.wikiArticles && liveData.wikiArticles.length > 0) {
+        for (const article of liveData.wikiArticles.slice(0, 2)) {
+          pushUnique(article);
+        }
+      } else if (liveData.wikiSummary) {
+        pushUnique({
+          id: 'live-wiki',
+          title: `${liveData.wikiSummary.title} — Wikipedia Ansiklopedisi`,
+          url: liveData.wikiSummary.url,
+          snippet: liveData.wikiSummary.extract,
+          domain: 'tr.wikipedia.org',
+          badge: 'Ansiklopedi Kaydı',
+          category: 'web',
+          relevanceScore: 82
+        });
       }
-    } else if (liveData.wikiSummary) {
-      pushUnique({
-        id: 'live-wiki',
-        title: `${liveData.wikiSummary.title} — Wikipedia Ansiklopedisi`,
-        url: liveData.wikiSummary.url,
-        snippet: liveData.wikiSummary.extract,
-        domain: 'tr.wikipedia.org',
-        badge: 'Canlı Ansiklopedi',
-        category: 'web',
-        relevanceScore: 99
-      });
     }
 
     // 3. Peer-reviewed scientific/academic papers from OpenAlex
