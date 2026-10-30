@@ -12,6 +12,9 @@ export interface CogkoLogoProps {
  * Premium High-End Cogko Wordmark Logo
  * Designed with bold geometric neo-grotesque typography, rich prismatic gradient fills,
  * subtle tactile depth, ambient aura, and an iconic radiant AI spark.
+ *
+ * Fully preserves letter descenders (e.g. lowercase 'g') via baseline-compensated
+ * bottom padding to prevent bg-clip-text truncation.
  */
 export const CogkoLogo: React.FC<CogkoLogoProps> = ({
   size = 'md',
@@ -36,11 +39,17 @@ export const CogkoLogo: React.FC<CogkoLogoProps> = ({
 
   const isHero = variant === 'hero' || size === 'xl';
 
+  // Base styling for each letter:
+  // pb-[0.38em] -mb-[0.38em] extends the element box downwards so that
+  // bg-clip-text covers the full descender tail of lowercase 'g' without clipping!
+  const letterBase =
+    'inline-block bg-clip-text text-transparent pb-[0.38em] -mb-[0.38em] pt-[0.1em] -mt-[0.1em] transition-transform duration-300 hover:scale-105';
+
   return (
     <div
       role="img"
       aria-label="Cogko"
-      className={`relative inline-flex items-center justify-center font-['Outfit','Plus_Jakarta_Sans',system-ui,sans-serif] font-black tracking-[-0.04em] select-none leading-none ${className}`}
+      className={`relative inline-flex items-center justify-center font-['Outfit','Plus_Jakarta_Sans',system-ui,sans-serif] font-black tracking-[-0.04em] select-none py-1.5 overflow-visible ${className}`}
     >
       {/* Subtle atmospheric ambient glow for hero mode */}
       {isHero && (
@@ -51,29 +60,29 @@ export const CogkoLogo: React.FC<CogkoLogoProps> = ({
       )}
 
       {/* Main typographic wordmark with rich multi-stop prismatic gradients */}
-      <div className={`relative flex items-baseline drop-shadow-[0_4px_16px_rgba(99,102,241,0.22)] ${sizeClasses}`}>
+      <div className={`relative flex items-baseline drop-shadow-[0_4px_16px_rgba(99,102,241,0.22)] overflow-visible ${sizeClasses}`}>
         {/* C: Electric Cobalt to Deep Indigo */}
-        <span className="bg-gradient-to-b from-[#38BDF8] via-[#6366F1] to-[#4338CA] bg-clip-text text-transparent inline-block transition-transform duration-300 hover:scale-105">
+        <span className={`${letterBase} bg-gradient-to-b from-[#38BDF8] via-[#6366F1] to-[#4338CA]`}>
           C
         </span>
 
         {/* o: Vivid Coral to Crimson Rose */}
-        <span className="bg-gradient-to-b from-[#FB7185] via-[#F43F5E] to-[#E11D48] bg-clip-text text-transparent inline-block transition-transform duration-300 hover:scale-105">
+        <span className={`${letterBase} bg-gradient-to-b from-[#FB7185] via-[#F43F5E] to-[#E11D48]`}>
           o
         </span>
 
-        {/* g: Solar Gold to Vibrant Amber */}
-        <span className="bg-gradient-to-b from-[#FDE047] via-[#F59E0B] to-[#EA580C] bg-clip-text text-transparent inline-block transition-transform duration-300 hover:scale-105">
+        {/* g: Solar Gold to Vibrant Amber - Full descender loop rendered */}
+        <span className={`${letterBase} bg-gradient-to-b from-[#FDE047] via-[#F59E0B] to-[#EA580C]`}>
           g
         </span>
 
         {/* k: Royal Violet to Cyber Orchid */}
-        <span className="bg-gradient-to-b from-[#C084FC] via-[#8B5CF6] to-[#6D28D9] bg-clip-text text-transparent inline-block transition-transform duration-300 hover:scale-105">
+        <span className={`${letterBase} bg-gradient-to-b from-[#C084FC] via-[#8B5CF6] to-[#6D28D9]`}>
           k
         </span>
 
         {/* o: Emerald Mint to Pacific Cyan */}
-        <span className="bg-gradient-to-b from-[#34D399] via-[#06B6D4] to-[#0284C7] bg-clip-text text-transparent inline-block transition-transform duration-300 hover:scale-105">
+        <span className={`${letterBase} bg-gradient-to-b from-[#34D399] via-[#06B6D4] to-[#0284C7]`}>
           o
         </span>
 
