@@ -13,10 +13,42 @@ export interface AIProvider {
 export class LocalHeuristicProvider implements AIProvider {
   public async createPlan(userPrompt: string, currentUrl?: string): Promise<AgentPlan> {
     const trimmed = userPrompt.trim();
+    const lower = trimmed.toLowerCase();
 
-    // Extract URL if mentioned in prompt or fallback to current tab URL
-    const urlMatch = trimmed.match(/https?:\/\/[^\s]+/);
-    const targetUrl = urlMatch ? urlMatch[0] : currentUrl || resolveUrlOrSearch(trimmed);
+    // Extract full URL or bare domain (e.g. mynet.com)
+    const urlMatch = trimmed.match(/https?:\/\/[^\s]+/i);
+    const domainMatch = trimmed.match(
+      /\b((?:[a-zA-Z0-9-]+\.)+(?:com|net|org|io|gov|edu|tr|dev|ai|co|uk|de|tv|me|info|biz|news)(?:\.[a-zA-Z]{2,3})?(?:\/[^\s]*)?)\b/i
+    );
+
+    let targetUrl = '';
+    if (urlMatch) {
+      targetUrl = urlMatch[0];
+    } else if (domainMatch) {
+      const d = domainMatch[1];
+      targetUrl = d.startsWith('http') ? d : `https://www.${d.replace(/^www\./i, '')}`;
+    } else if (lower.includes('mynet')) {
+      targetUrl = 'https://www.mynet.com';
+    } else {
+      targetUrl = currentUrl || resolveUrlOrSearch(trimmed);
+    }
+
+    // Smart category routing (e.g. "mynet.com spor haberlerini listele" -> "https://spor.mynet.com")
+    try {
+      const parsed = new URL(targetUrl);
+      const isRoot = parsed.pathname === '/' || parsed.pathname === '';
+      if (isRoot && /\b(spor|futbol|basketbol|süper lig|transfer|maç)\b/i.test(lower)) {
+        targetUrl = parsed.hostname.includes('mynet.com')
+          ? 'https://spor.mynet.com'
+          : `${parsed.origin}/spor/`;
+      } else if (isRoot && /\b(finans|borsa|döviz|altın|ekonomi)\b/i.test(lower)) {
+        targetUrl = parsed.hostname.includes('mynet.com')
+          ? 'https://finans.mynet.com'
+          : `${parsed.origin}/ekonomi/`;
+      }
+    } catch {
+      // ignore
+    }
 
     const isSensitive = 
       /satın al|öde|sil|form|şifre|giriş yap|kaydol|delete|pay|submit|login/i.test(trimmed);

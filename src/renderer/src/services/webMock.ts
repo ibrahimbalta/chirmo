@@ -1,9 +1,11 @@
 /**
  * Web fallback mock for Chirmo when running in a standard web browser (e.g. GitHub Pages).
- * Enables the complete UI, Omnisearch Hub, AI Research Agent, Tools, Workflows, History, and Projects to work 100% interactively.
+ * Powered by LiveWebScraper so AI Research Agent, Page Analyzer Tools, and Batch Workflows
+ * fetch and parse REAL live websites (e.g. mynet.com, spor.mynet.com, bbc.com, etc.).
  */
 
 import { AgentPlan, AgentStep, Task, WorkflowDefinition, PageAnalysisResult } from '../types';
+import { LiveWebScraper } from './liveWebScraper';
 
 export function setupWebMock(): void {
   if (typeof window === 'undefined' || window.chirmo) return;
@@ -35,16 +37,6 @@ export function setupWebMock(): void {
       description: 'Gerçek zamanlı veri füzyonu ve karar matrisi modellerini karşılaştır',
       status: 'completed',
       result: 'Rapor tamamlandı: Çok kaynaklı doğrulama ve yerel hız önbelleklemesi %40 verim artışı sağlıyor.',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      logs: []
-    },
-    {
-      id: 'task_demo_2',
-      projectId: 'proj_demo_1',
-      title: 'Açık kaynak ekosistem trendlerini raporla',
-      description: 'GitHub ve akademik literatür taraması',
-      status: 'pending',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       logs: []
@@ -84,7 +76,7 @@ export function setupWebMock(): void {
     {
       id: 'wf_tech_digest',
       title: 'Küresel Gündem & Haber Özeti Akışı',
-      description: 'Teknoloji ve bilim sitelerindeki güncel başlıkları tarayarak yönetici özeti formatında tek raporda birleştirir.',
+      description: 'Haber ve teknoloji sitelerindeki güncel başlıkları canlı tarayarak tek raporda birleştirir.',
       category: 'Özetleme',
       steps: [
         { id: 's1', name: 'Kaynakları Ziyaret Et', action: 'fetch' },
@@ -250,51 +242,39 @@ export function setupWebMock(): void {
       {
         id: 'hist_1',
         action: 'Chirmo Küresel Arama Motoru Başlatıldı',
-        details: 'Çoklu kaynak doğrulama ve canlı indeksleme aktif',
+        details: 'Canlı web kazıma ve çoklu kaynak doğrulama aktif',
         timestamp: new Date().toISOString(),
         type: 'system' as const
-      },
-      {
-        id: 'hist_2',
-        action: 'Wikipedia & OpenAlex Akademik Bağlantısı Kuruldu',
-        details: 'Gerçek zamanlı ansiklopedi ve bilimsel makale taraması hazır',
-        timestamp: new Date().toISOString(),
-        type: 'agent' as const
       }
     ],
 
     startAgent: async (opts: { projectId: string; prompt: string; currentUrl?: string }) => {
       const taskId = `agent_task_${Date.now()}`;
-      const urlMatch = opts.prompt.match(/https?:\/\/[^\s]+/);
-      const targetUrl = urlMatch ? urlMatch[0] : 'https://tr.wikipedia.org';
+      const targetUrl = LiveWebScraper.resolveTargetUrlFromPrompt(opts.prompt);
 
       const steps: AgentStep[] = [
         {
           id: 'step_1',
-          title: 'Hedef & Niyet Analizi',
-          description: `"${opts.prompt}" görevi alt adımlara ayrıştırılıyor`,
-          type: 'navigate',
-          status: 'running',
-          result: 'Hedef kaynaklar ve anahtar kavramlar belirlendi.'
+          title: 'Hedef & Adres Çözümleme',
+          description: `"${opts.prompt}" komutu çözümlendi ➔ Hedef: ${targetUrl}`,
+          status: 'completed',
+          result: `Hedef kaynak belirlendi: ${targetUrl}`
         },
         {
           id: 'step_2',
-          title: 'Canlı Kaynak & Veri Çıkarımı',
-          description: `${targetUrl} ve küresel indekslerden veri toplanıyor`,
-          type: 'extract',
-          status: 'pending'
+          title: 'Canlı Web Sayfası Kazıma & Başlık Çıkarımı',
+          description: `${targetUrl} adresine bağlanılarak güncel başlıklar okunuyor...`,
+          status: 'running'
         },
         {
           id: 'step_3',
-          title: 'Yapılandırılmış Rapor Sentezi',
-          description: 'Toplanan bulgular doğrulanarak nihai rapor oluşturuluyor',
-          type: 'summarize',
+          title: 'Başlıkları Listeleme ve Rapor Sentezi',
+          description: 'Çekilen gerçek başlıklar ve bağlantılar raporlanıyor',
           status: 'pending'
         }
       ];
 
       const plan: AgentPlan = {
-        taskId,
         goal: opts.prompt,
         targetUrl,
         steps
@@ -304,7 +284,7 @@ export function setupWebMock(): void {
         id: taskId,
         projectId: opts.projectId || defaultProjects[0].id,
         title: opts.prompt.slice(0, 70),
-        description: 'AI Araştırma Ajanı Görevi',
+        description: `Canlı Hedef: ${targetUrl}`,
         targetUrl,
         status: 'running',
         logs: [],
@@ -314,63 +294,43 @@ export function setupWebMock(): void {
 
       defaultTasks.unshift(task);
 
-      // Simulate real asynchronous step progression
-      setTimeout(() => {
-        const s1: AgentStep = {
-          ...steps[0],
-          status: 'completed',
-          result: 'Hedef parametreler doğrulandı ve bağlantı kuruldu.'
-        };
-        const s2: AgentStep = {
-          ...steps[1],
-          status: 'running'
-        };
-        stepListeners.forEach((cb) => cb(taskId, s1));
-        stepListeners.forEach((cb) => cb(taskId, s2));
-      }, 600);
+      // Run REAL live scraping asynchronously!
+      (async () => {
+        try {
+          const scraped = await LiveWebScraper.scrapeLiveWebsite(targetUrl);
 
-      setTimeout(() => {
-        const s2Done: AgentStep = {
-          ...steps[1],
-          status: 'completed',
-          result: 'Sayfa başlıkları, özet veriler ve anahtar metrikler başarıyla çıkarıldı.'
-        };
-        const s3Run: AgentStep = {
-          ...steps[2],
-          status: 'running'
-        };
-        stepListeners.forEach((cb) => cb(taskId, s2Done));
-        stepListeners.forEach((cb) => cb(taskId, s3Run));
-      }, 1300);
+          const s2Done: AgentStep = {
+            ...steps[1],
+            status: 'completed',
+            result: `"${scraped.pageTitle}" sayfasından ${scraped.headlines.length} adet canlı başlık çekildi.`
+          };
+          const s3Run: AgentStep = {
+            ...steps[2],
+            status: 'running'
+          };
+          stepListeners.forEach((cb) => cb(taskId, s2Done));
+          stepListeners.forEach((cb) => cb(taskId, s3Run));
 
-      setTimeout(() => {
-        task.status = 'completed';
-        task.result = `===================================================================
-CHIRMO AI AJAN ARAŞTIRMA RAPORU
-Görev: ${opts.prompt}
-Hedef Kaynak: ${targetUrl}
-Tarih: ${new Date().toLocaleString('tr-TR')}
-===================================================================
+          const fullReport = LiveWebScraper.formatLiveAgentReport(opts.prompt, scraped);
+          task.status = 'completed';
+          task.result = fullReport;
 
-1. YÖNETİCİ ÖZETİ
-Verilen görev doğrultusunda hedef kaynaklar ve küresel bilgi indeksleri taranmıştır. Konuyla ilgili temel bulgular, doğruluk kontrolünden geçirilerek aşağıda maddelenmiştir.
-
-2. ÖNE ÇIKAN BULGULAR VE VERİLER
-• Kaynak erişilebilirliği ve SSL güvenlik doğrulaması: Başarılı (HTTPS Aktif).
-• İncelenen içerikte yüksek bilgi yoğunluğu ve güncel referanslar tespit edilmiştir.
-• Konunun uygulanabilirlik skoru %94 olarak hesaplanmıştır.
-
-3. ÖNERİLEN AKSİYON ADIMLARI
-1) Elde edilen bu raporu ilgili projenin görev listesinde referans olarak kullanın.
-2) Alternatif kaynaklarla kıyaslama yapmak için Ana Sayfa Karar Matrisi aracını çalıştırın.`;
-
-        const s3Done: AgentStep = {
-          ...steps[2],
-          status: 'completed',
-          result: 'Araştırma raporu başarıyla oluşturuldu ve projeye kaydedildi.'
-        };
-        stepListeners.forEach((cb) => cb(taskId, s3Done));
-      }, 2000);
+          const s3Done: AgentStep = {
+            ...steps[2],
+            status: 'completed',
+            result: `${scraped.headlines.length} güncel başlık başarıyla listelendi ve raporlandı.`
+          };
+          stepListeners.forEach((cb) => cb(taskId, s3Done));
+        } catch (err: any) {
+          task.status = 'error';
+          const sErr: AgentStep = {
+            ...steps[1],
+            status: 'error',
+            error: err.message || 'Sayfa verisi çekilemedi.'
+          };
+          stepListeners.forEach((cb) => cb(taskId, sErr));
+        }
+      })();
 
       return { task, plan };
     },
@@ -382,58 +342,48 @@ Verilen görev doğrultusunda hedef kaynaklar ve küresel bilgi indeksleri taran
     },
 
     analyzePage: async (url: string): Promise<PageAnalysisResult> => {
-      const cleanUrl = url.startsWith('http') ? url : `https://${url}`;
-      let host = cleanUrl;
-      try {
-        host = new URL(cleanUrl).hostname;
-      } catch {
-        // ignore
-      }
+      const scraped = await LiveWebScraper.scrapeLiveWebsite(url);
       return {
-        url: cleanUrl,
-        title: `${host.toUpperCase()} — Küresel Web & SEO Analiz Raporu`,
-        metaDescription: `${host} web sayfasının başlık yapısı, anahtar kelime yoğunluğu, bağlantı sayısı ve SSL güvenlik sertifikası Chirmo Analizörü tarafından incelenmiştir.`,
-        wordCount: 840,
-        linksCount: 42,
-        isHttps: cleanUrl.startsWith('https'),
-        readabilityScore: 'Yüksek (Akıcı & Yapılandırılmış)',
-        topKeywords: [
-          { word: host.split('.')[0] || 'platform', count: 18 },
-          { word: 'teknoloji', count: 14 },
-          { word: 'veri', count: 11 },
-          { word: 'analiz', count: 9 },
-          { word: 'güvenlik', count: 7 },
-          { word: 'performans', count: 6 }
-        ],
-        headings: [
-          `H1: ${host} Ana Başlık ve Değer Önerisi`,
-          'H2: Temel Özellikler ve Servis Mimarisi',
-          'H2: Kullanıcı Deneyimi ve Güvenlik Standartları',
-          'H3: Sıkça Sorulan Sorular ve Dokümantasyon'
-        ]
+        url: scraped.targetUrl,
+        title: scraped.pageTitle,
+        metaDescription: scraped.description,
+        wordCount: scraped.wordCount,
+        linksCount: scraped.linksCount,
+        isHttps: scraped.isHttps,
+        readabilityScore: `Yüksek (${scraped.headlines.length} Başlık Tespit Edildi)`,
+        topKeywords:
+          scraped.topKeywords.length > 0
+            ? scraped.topKeywords
+            : [{ word: 'gündem', count: 10 }],
+        headings: scraped.headlines.map((h) => h.title).slice(0, 12)
       };
     },
 
     getWorkflowTemplates: async () => workflowTemplates,
 
     runBatchWorkflow: async (projectId: string, urls: string[], title?: string) => {
+      const scrapedList = await Promise.all(
+        urls.map((u) => LiveWebScraper.scrapeLiveWebsite(u))
+      );
+
       const report = `===================================================================
-CHIRMO TOPLU İŞ AKIŞI RAPORU: ${(title || 'Çoklu Kaynak Taraması').toUpperCase()}
-Taranan Kaynak Sayısı: ${urls.length}
+CHIRMO CANLI TOPLU İŞ AKIŞI RAPORU: ${(title || 'Çoklu Kaynak Taraması').toUpperCase()}
+Taranan Kaynak Sayısı: ${scrapedList.length}
 Tarih: ${new Date().toLocaleString('tr-TR')}
 ===================================================================
 
-${urls
+${scrapedList
   .map(
-    (u, idx) => `${idx + 1}. KAYNAK: ${u}
-   • Durum: 200 OK (HTTPS Güvenli)
-   • Kelime Hacmi: ~${650 + idx * 120} kelime | Bağlantı Sayısı: ${28 + idx * 7}
-   • Özet Bulgu: Sayfa yapısı modern standartlara uygun, meta açıklamaları ve başlık hiyerarşisi doğrulandı.`
+    (s, idx) => `${idx + 1}. KAYNAK: ${s.pageTitle} (${s.targetUrl})
+   • Çekilen Canlı Başlık Sayısı: ${s.headlines.length} | Kelime Hacmi: ~${s.wordCount}
+   • Öne Çıkan İlk 5 Başlık:
+${s.headlines
+  .slice(0, 5)
+  .map((h, i) => `     ${i + 1}) ${h.title}`)
+  .join('\n')}`
   )
   .join('\n\n')}
-
-GENEL SONUÇ:
-Tüm kaynaklar başarıyla tarandı ve sonuçlar aktif projeye görev kaydı olarak eklendi.`;
+===================================================================`;
 
       defaultTasks.unshift({
         id: `wf_task_${Date.now()}`,

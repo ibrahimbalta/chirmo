@@ -1,7 +1,15 @@
 import { describe, it, expect } from 'vitest';
 import { SearchEngineService } from '../src/renderer/src/services/searchEngine';
+import { LiveWebScraper } from '../src/renderer/src/services/liveWebScraper';
 
 describe('SearchEngineService', () => {
+  it('resolves natural language prompts like mynet.com spor haberlerini listele to exact URLs', () => {
+    const u1 = LiveWebScraper.resolveTargetUrlFromPrompt('mynet.com git spor haberlerini listele');
+    expect(u1).toBe('https://spor.mynet.com');
+
+    const u2 = LiveWebScraper.resolveTargetUrlFromPrompt('hurriyet.com.tr ekonomi haberlerini özetle');
+    expect(u2).toBe('https://www.hurriyet.com.tr/ekonomi/');
+  });
   it('correctly calculates mathematical expressions', () => {
     const res1 = SearchEngineService.detectInstantAnswer('1250 * 1.2');
     expect(res1).toBeDefined();

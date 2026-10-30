@@ -140,8 +140,8 @@ export const AgentsView: React.FC<AgentsViewProps> = ({ initialPrompt }) => {
   const awaitingStep = currentPlan?.steps.find((s) => s.status === 'awaiting_approval');
 
   const suggestions = [
+    'mynet.com git spor haberlerini listele',
     'https://news.ycombinator.com sayfasını incele ve günün öne çıkan haberlerini özetle',
-    'Wikipedia Electron makalesini araştır ve temel mimariyi raporla',
     'https://github.com/trending adresine giderek günün trend projelerini derle',
   ];
 

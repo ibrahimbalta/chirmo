@@ -11,6 +11,7 @@
  */
 
 import { Project, Task, HistoryEntry } from '../types';
+import { LiveWebScraper, LiveScrapedSite } from './liveWebScraper';
 
 export type SearchMode = 'all' | 'ai' | 'compare' | 'local' | 'tools';
 export type PerspectiveLens = 'ceo' | 'engineer' | 'critic' | 'eli5';
@@ -443,11 +444,32 @@ export class SearchEngineService {
     const decisionMatrix = this.buildDecisionMatrix(trimmed, mode === 'compare');
 
     // 4. Live Federated Multi-Source Fetch (Wikipedia TR + OpenAlex Academic + GitHub + HackerNews)
-    const liveData = await this.fetchLiveFederatedSources(trimmed);
+    const isDirectSiteScrape =
+      /\b(mynet|hurriyet|hürriyet|sozcu|sözcü|ntv|haberturk|habertürk|milliyet|sabah|fanatik|fotomac|shiftdelete|donanimhaber|webtekno)\b/i.test(
+        trimmed
+      ) ||
+      /\b([a-zA-Z0-9-]+\.(?:com|net|org|tr|io|co))\b/i.test(trimmed);
+
+    const [liveData, liveScrapedSite] = await Promise.all([
+      this.fetchLiveFederatedSources(trimmed),
+      isDirectSiteScrape ? LiveWebScraper.scrapeLiveWebsite(trimmed) : Promise.resolve(undefined)
+    ]);
 
     const finalInstantAnswer: InstantAnswer | undefined =
       instantAnswer ||
-      (liveData.wikiSummary
+      (liveScrapedSite && liveScrapedSite.headlines.length > 0
+        ? {
+            type: 'knowledge',
+            title: `${liveScrapedSite.pageTitle} (${liveScrapedSite.targetUrl})`,
+            subtitle: 'Canlı Çekilen Güncel Sayfa Başlıkları',
+            result: `${liveScrapedSite.headlines.length} Canlı Başlık Listelendi`,
+            details: liveScrapedSite.headlines
+              .slice(0, 6)
+              .map((h, i) => `${i + 1}) ${h.title}`)
+              .join(' • '),
+            badge: 'Canlı Web Kazıma'
+          }
+        : liveData.wikiSummary
         ? {
             type: 'knowledge',
             title: liveData.wikiSummary.title,
@@ -470,8 +492,8 @@ export class SearchEngineService {
       decisionMatrix
     );
 
-    // 6. Merge Web Results (Wikipedia + Academic Papers + GitHub + Global Web)
-    const webResults = this.mergeWebResults(trimmed, liveData, professionMode);
+    // 6. Merge Web Results (Live Scraped Site Headlines + Wikipedia + Academic Papers + GitHub + Global Web)
+    const webResults = this.mergeWebResults(trimmed, liveData, professionMode, liveScrapedSite);
 
     // 7. Related Questions
     const relatedQuestions = this.generateRelatedQuestions(trimmed, decisionMatrix, professionMode);
@@ -1553,10 +1575,30 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
       githubRepos: LiveGitHubRepo[];
       hnResults: WebSearchResult[];
     },
-    professionMode: ProfessionMode
+    professionMode: ProfessionMode,
+    liveScrapedSite?: LiveScrapedSite
   ): WebSearchResult[] {
     const encoded = encodeURIComponent(query);
     const results: WebSearchResult[] = [];
+
+    if (liveScrapedSite && liveScrapedSite.headlines.length > 0) {
+      let domain = liveScrapedSite.targetUrl;
+      try {
+        domain = new URL(liveScrapedSite.targetUrl).hostname;
+      } catch {
+        // ignore
+      }
+      liveScrapedSite.headlines.slice(0, 12).forEach((h, idx) => {
+        results.push({
+          id: `live-scrape-${idx}`,
+          title: h.title,
+          url: h.url,
+          snippet: `${liveScrapedSite.pageTitle} üzerinden anlık olarak çekilen canlı haber/içerik başlığı.`,
+          domain,
+          badge: `Canlı Başlık #${idx + 1}`
+        });
+      });
+    }
 
     if (liveData.wikiSummary) {
       results.push({

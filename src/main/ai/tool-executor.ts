@@ -56,9 +56,18 @@ export class ToolExecutor {
               const title = document.title || '';
               const metaDesc = document.querySelector('meta[name="description"]')?.getAttribute('content') || '';
               
-              // Extract headings
-              const headingNodes = Array.from(document.querySelectorAll('h1, h2, h3'));
-              const headings = headingNodes.map(h => h.textContent ? h.textContent.trim() : '').filter(Boolean).slice(0, 10);
+              // Extract headings and news card titles
+              const headingNodes = Array.from(document.querySelectorAll('h1, h2, h3, a[title]'));
+              const seen = new Set();
+              const headings = [];
+              for (const node of headingNodes) {
+                const txt = (node.getAttribute('title') || node.textContent || '').replace(/\\s+/g, ' ').trim();
+                if (txt.length >= 22 && txt.length <= 160 && !seen.has(txt.toLowerCase())) {
+                  seen.add(txt.toLowerCase());
+                  headings.push(txt);
+                  if (headings.length >= 20) break;
+                }
+              }
               
               // Extract main text (strip script, style, nav, footer, noscript)
               const clone = document.body.cloneNode(true);
