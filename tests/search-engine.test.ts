@@ -59,8 +59,26 @@ describe('SearchEngineService', () => {
     expect(searchRes.aiSynthesis.perspectives.eli5).toBeDefined();
     expect(searchRes.aiSynthesis.actionBlueprint.length).toBe(4);
     expect(searchRes.aiSynthesis.knowledgeNodes.length).toBe(6);
+    expect(searchRes.aiSynthesis.temporal.past).toBeDefined();
+    expect(searchRes.aiSynthesis.temporal.present).toBeDefined();
+    expect(searchRes.aiSynthesis.temporal.future2036).toBeDefined();
+    expect(searchRes.aiSynthesis.temporal.future2036.disruptionProbability).toBeGreaterThan(50);
+    expect(searchRes.aiSynthesis.factCheck.verifiabilityScore).toBeGreaterThan(50);
     expect(searchRes.webResults.length).toBeGreaterThanOrEqual(2);
     expect(searchRes.relatedQuestions.length).toBe(4);
+  });
+
+  it('decomposes user goals into actionable Kanban tasks', () => {
+    const tasks = SearchEngineService.decomposeGoalToKanban('SaaS Girişimi Kurmak');
+    expect(tasks.length).toBe(4);
+    expect(tasks.some((t) => t.column === 'todo')).toBe(true);
+    expect(tasks.some((t) => t.column === 'doing')).toBe(true);
+  });
+
+  it('fetches live or fallback tech radar items', async () => {
+    const radar = await SearchEngineService.fetchLiveTechRadar();
+    expect(radar.length).toBeGreaterThan(0);
+    expect(radar[0].title).toBeDefined();
   });
 
   it('indexes local projects and tasks offline', async () => {
