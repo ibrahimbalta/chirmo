@@ -11,10 +11,10 @@ module.exports = {
           bg: '#FFFFFF',
           secondary: '#F8FAFC',
           brand: {
-            DEFAULT: '#6652C9',
-            hover: '#5642B8',
-            light: '#F3F0FF',
-            dark: '#433196'
+            DEFAULT: '#2563EB',
+            hover: '#1D4ED8',
+            light: '#EFF6FF',
+            dark: '#1E40AF'
           },
           text: {
             DEFAULT: '#0F172A',

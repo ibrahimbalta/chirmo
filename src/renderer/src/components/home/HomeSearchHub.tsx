@@ -708,9 +708,9 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
           }`}
         >
           {!searchResponse && (
-            <div className="mb-5 text-center">
+            <div className="mb-6 text-center">
               <ChirmoLogo size="xl" />
-              <p className="text-xs sm:text-sm font-medium text-slate-500 mt-2">
+              <p className="text-sm sm:text-base md:text-lg font-semibold text-slate-600 mt-3 tracking-tight">
                 Aradığını yalnızca bulma. Anla, keşfet, karşılaştır ve karar ver.
               </p>
             </div>
@@ -719,7 +719,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
           {/* Search Bar Container with Instant Suggestions & History Dropdown */}
           <div ref={searchBoxContainerRef} className="w-full max-w-2xl relative">
             <form onSubmit={handleSubmit} className="w-full">
-              <div className="relative flex items-center w-full bg-white rounded-2xl border border-slate-300 hover:border-slate-400 focus-within:border-chirmo-brand focus-within:ring-4 focus-within:ring-chirmo-brand/10 shadow-xs transition-all px-4 sm:px-5 py-2.5 sm:py-3">
+              <div className="relative flex items-center w-full bg-white rounded-full border border-slate-300 hover:border-slate-400 focus-within:border-chirmo-brand focus-within:ring-4 focus-within:ring-chirmo-brand/10 shadow-xs hover:shadow-md transition-all px-5 sm:px-6 py-3 sm:py-3.5">
                 <Search className="w-5 h-5 text-chirmo-brand shrink-0 mr-3" />
 
                 <input
@@ -732,7 +732,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                     setShowDropdown(true)
                   }}
                   placeholder="Web'de arayın, yapay zekâya sorun, iki seçeneği karşılaştırın veya hesaplayın..."
-                  className="w-full text-sm sm:text-base text-slate-900 placeholder:text-slate-400 bg-transparent border-none outline-none select-text"
+                  className="w-full text-base sm:text-lg text-slate-900 placeholder:text-slate-400 bg-transparent border-none outline-none select-text"
                 />
 
                 {query && (
