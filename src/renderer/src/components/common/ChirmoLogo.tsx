@@ -9,15 +9,16 @@ export interface CogkoLogoProps {
 }
 
 /**
- * Official Corporate Multi-Color Cogko Wordmark Logo
- * Clean, geometric, authoritative typography inspired by Google's corporate brand identity.
+ * Official Distinctive Cogko Wordmark Logo
+ * Designed with Space Grotesk / Sora high-tech neo-grotesque typography
+ * and a signature bespoke palette (Electric Indigo, Sunset Coral, Pacific Cyan, Royal Iris, Emerald Mint).
  *
- * Letters & Colors:
- * - C: Google Blue (#4285F4)
- * - o: Google Red (#EA4335)
- * - g: Google Amber/Yellow (#FBBC05)
- * - k: Google Blue (#4285F4)
- * - o: Google Green (#34A853)
+ * Distinctive Palette (Zero Google overlap):
+ * - C: #5B4DF5 (Electric Indigo)
+ * - o: #FF6B4A (Sunset Coral)
+ * - g: #00B4D8 (Pacific Cyan)
+ * - k: #8435E8 (Royal Iris Purple)
+ * - o: #05C189 (Emerald Mint)
  */
 export const CogkoLogo: React.FC<CogkoLogoProps> = ({
   size = 'md',
@@ -35,13 +36,13 @@ export const CogkoLogo: React.FC<CogkoLogoProps> = ({
     <div
       role="img"
       aria-label="Cogko"
-      className={`inline-flex items-center justify-center font-['Outfit','Plus_Jakarta_Sans',system-ui,sans-serif] font-semibold tracking-[-0.03em] select-none leading-none ${sizeClasses} ${className}`}
+      className={`inline-flex items-center justify-center font-['Space_Grotesk','Sora','Plus_Jakarta_Sans',sans-serif] font-bold tracking-[-0.035em] select-none leading-none ${sizeClasses} ${className}`}
     >
-      <span className="text-[#4285F4] inline-block">C</span>
-      <span className="text-[#EA4335] inline-block">o</span>
-      <span className="text-[#FBBC05] inline-block">g</span>
-      <span className="text-[#4285F4] inline-block">k</span>
-      <span className="text-[#34A853] inline-block">o</span>
+      <span className="text-[#5B4DF5] inline-block transition-transform duration-200 hover:-translate-y-0.5">C</span>
+      <span className="text-[#FF6B4A] inline-block transition-transform duration-200 hover:-translate-y-0.5">o</span>
+      <span className="text-[#00B4D8] inline-block transition-transform duration-200 hover:-translate-y-0.5">g</span>
+      <span className="text-[#8435E8] inline-block transition-transform duration-200 hover:-translate-y-0.5">k</span>
+      <span className="text-[#05C189] inline-block transition-transform duration-200 hover:-translate-y-0.5">o</span>
     </div>
   );
 };
