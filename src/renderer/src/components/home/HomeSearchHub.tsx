@@ -626,38 +626,38 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
           }}
         >
           {/* Main Hero Center Content */}
-          <div className="w-full max-w-5xl mx-auto flex flex-col items-center text-center z-10 mt-1 sm:mt-3">
+          <div className="w-full max-w-5xl mx-auto flex flex-col items-center text-center z-10 mt-1 sm:mt-2">
             {/* Top Lavender Pill Badge */}
-            <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#F3EFFE] border border-purple-200/60 text-[#6534F8] text-xs font-semibold tracking-wide mb-4 shadow-2xs">
+            <div className="inline-flex items-center px-4 sm:px-5 py-1.5 sm:py-2 rounded-full bg-[#F3EFFE] border border-purple-200/70 text-[#6534F8] text-xs sm:text-sm font-semibold tracking-wide mb-4 shadow-2xs">
               Yapay Zeka Destekli Yeni Nesil Arama Motoru
             </div>
 
-            {/* Main Hero Logo (4-Point Sparkle Diamond + Bold Chirmo) */}
-            <div className="mb-3">
+            {/* Main 3D Metallic Gold & Violet Chirmo Hero Logo */}
+            <div className="mb-3.5">
               <ChirmoLogo size="xl" variant="hero" />
             </div>
 
-            {/* Two-Line Bold Headline */}
-            <h1 className="text-2xl sm:text-4xl md:text-[40px] font-extrabold tracking-tight leading-[1.18] text-[#111827]">
+            {/* Two-Line Bold Headline (Larger Typography) */}
+            <h1 className="text-3xl sm:text-5xl md:text-[50px] font-extrabold tracking-tight leading-[1.16] text-[#111827]">
               Aradığını yalnızca bulma.
-              <span className="block bg-gradient-to-r from-[#6C38FF] via-[#6534F8] to-[#7C3AED] bg-clip-text text-transparent mt-0.5">
+              <span className="block bg-gradient-to-r from-[#6C38FF] via-[#6534F8] to-[#7C3AED] bg-clip-text text-transparent mt-1">
                 Anla, keşfet, karşılaştır, karar ver.
               </span>
             </h1>
 
-            {/* Two-Line Subtitle */}
-            <p className="text-xs sm:text-sm md:text-[15px] text-slate-600 font-normal mt-3 leading-relaxed max-w-xl">
+            {/* Two-Line Subtitle (Larger & Crisper) */}
+            <p className="text-sm sm:text-base md:text-lg text-slate-600 font-medium mt-3.5 leading-relaxed max-w-2xl">
               Chirmo, yapay zeka gücüyle interneti senin için daha anlamlı hale getirir.
               <br className="hidden sm:inline" /> Sadece arama yapma, bilgiye derinlemesine ulaş.
             </p>
 
             {/* Main Pill Search Bar with Soft Lavender Glow */}
-            <div ref={searchBoxContainerRef} className="w-full max-w-[720px] relative mt-6">
+            <div ref={searchBoxContainerRef} className="w-full max-w-[780px] relative mt-6">
               <div className="absolute -inset-2.5 bg-gradient-to-r from-purple-300/35 via-indigo-300/30 to-purple-300/35 rounded-full blur-xl pointer-events-none" />
 
               <form onSubmit={handleSubmit} className="w-full relative">
-                <div className="relative flex items-center w-full bg-white/95 backdrop-blur-md rounded-full border border-purple-100/90 shadow-[0_10px_35px_-5px_rgba(101,52,248,0.18)] focus-within:border-[#6534F8]/60 focus-within:shadow-[0_12px_42px_-5px_rgba(101,52,248,0.28)] transition-all pl-5 sm:pl-6 pr-2.5 py-2 sm:py-2.5">
-                  <Search className="w-5 h-5 text-slate-800 shrink-0 mr-3 stroke-[2.2]" />
+                <div className="relative flex items-center w-full bg-white/95 backdrop-blur-md rounded-full border border-purple-100/90 shadow-[0_10px_35px_-5px_rgba(101,52,248,0.18)] focus-within:border-[#6534F8]/60 focus-within:shadow-[0_12px_42px_-5px_rgba(101,52,248,0.28)] transition-all pl-5 sm:pl-7 pr-3 py-2.5 sm:py-3">
+                  <Search className="w-5 h-5 sm:w-6 sm:h-6 text-slate-800 shrink-0 mr-3.5 stroke-[2.2]" />
 
                   <input
                     ref={inputRef}
@@ -669,7 +669,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                       setShowDropdown(true)
                     }}
                     placeholder='Ne aramak istersin? Örneğin: "Elektrikli araçların 2026 fiyatları"'
-                    className="w-full text-sm sm:text-[15px] text-slate-800 placeholder:text-slate-400 bg-transparent border-none outline-none select-text"
+                    className="w-full text-base sm:text-lg text-slate-800 placeholder:text-slate-400 bg-transparent border-none outline-none select-text font-medium"
                   />
 
                   {query && (
@@ -825,9 +825,9 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
             </div>
 
             {/* Popular Searches Row ("Popüler Aramalar:") */}
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 mr-1">
-                <Sparkles className="w-3.5 h-3.5 text-[#6534F8]" />
+            <div className="mt-4 sm:mt-5 flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
+              <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-600 mr-1">
+                <Sparkles className="w-4 h-4 text-[#6534F8]" />
                 <span>Popüler Aramalar:</span>
               </span>
               {[
@@ -843,7 +843,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                     setQuery(popQuery)
                     handleExecuteSearch(popQuery)
                   }}
-                  className="px-3.5 py-1.5 rounded-full bg-white/85 hover:bg-white border border-purple-200/80 hover:border-[#6534F8]/50 text-xs font-medium text-slate-700 hover:text-[#6534F8] shadow-2xs transition-all cursor-pointer"
+                  className="px-4 py-1.5 sm:py-2 rounded-full bg-white/90 hover:bg-white border border-purple-200/80 hover:border-[#6534F8]/50 text-xs sm:text-sm font-medium text-slate-700 hover:text-[#6534F8] shadow-2xs transition-all cursor-pointer"
                 >
                   {popQuery}
                 </button>
@@ -852,7 +852,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
 
             {/* 6 Feature Icon Columns Grid */}
             <div className="w-full max-w-5xl mt-7 sm:mt-9 relative">
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 sm:gap-5">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 sm:gap-6">
                 {/* 1. Akıllı Arama */}
                 <button
                   type="button"
@@ -865,13 +865,13 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                   }}
                   className="group flex flex-col items-center text-center p-2 rounded-2xl transition-transform hover:-translate-y-0.5 cursor-pointer"
                 >
-                  <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-[#F3E8FF]/90 border border-purple-200/60 flex items-center justify-center text-[#7C3AED] shadow-xs mb-2.5 group-hover:scale-105 transition-transform">
-                    <Search className="w-6 h-6 stroke-[2]" />
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#F3E8FF]/90 border border-purple-200/60 flex items-center justify-center text-[#7C3AED] shadow-xs mb-2.5 group-hover:scale-105 transition-transform">
+                    <Search className="w-6 h-6 sm:w-7 sm:h-7 stroke-[2]" />
                   </div>
-                  <span className="text-xs sm:text-[13px] font-bold text-slate-900">
+                  <span className="text-sm sm:text-base font-bold text-slate-900">
                     Akıllı Arama
                   </span>
-                  <span className="text-[11px] text-slate-600 leading-snug mt-1 max-w-[145px]">
+                  <span className="text-xs sm:text-[13px] font-medium text-slate-600 leading-snug mt-1 max-w-[160px]">
                     Yapay zeka destekli, sonuç odaklı arama deneyimi.
                   </span>
                 </button>
@@ -887,11 +887,11 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                   }
                   className="group flex flex-col items-center text-center p-2 rounded-2xl transition-transform hover:-translate-y-0.5 cursor-pointer"
                 >
-                  <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-[#EEF2FF]/90 border border-indigo-200/60 flex items-center justify-center text-[#4F46E5] shadow-xs mb-2.5 group-hover:scale-105 transition-transform">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#EEF2FF]/90 border border-indigo-200/60 flex items-center justify-center text-[#4F46E5] shadow-xs mb-2.5 group-hover:scale-105 transition-transform">
                     <svg
                       viewBox="0 0 24 24"
                       fill="none"
-                      className="w-6 h-6"
+                      className="w-6 h-6 sm:w-7 sm:h-7"
                       stroke="currentColor"
                       strokeWidth="1.9"
                     >
@@ -907,10 +907,10 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                       />
                     </svg>
                   </div>
-                  <span className="text-xs sm:text-[13px] font-bold text-slate-900">
+                  <span className="text-sm sm:text-base font-bold text-slate-900">
                     AI Araştırma
                   </span>
-                  <span className="text-[11px] text-slate-600 leading-snug mt-1 max-w-[145px]">
+                  <span className="text-xs sm:text-[13px] font-medium text-slate-600 leading-snug mt-1 max-w-[160px]">
                     Derinlemesine analizler, özetler ve kaynaklar.
                   </span>
                 </button>
@@ -921,13 +921,13 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                   onClick={() => onNavigateToVisual && onNavigateToVisual(query.trim())}
                   className="group flex flex-col items-center text-center p-2 rounded-2xl transition-transform hover:-translate-y-0.5 cursor-pointer"
                 >
-                  <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-[#FCE7F3]/90 border border-pink-200/60 flex items-center justify-center text-[#DB2777] shadow-xs mb-2.5 group-hover:scale-105 transition-transform">
-                    <ImageIcon className="w-6 h-6 stroke-[1.9]" />
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#FCE7F3]/90 border border-pink-200/60 flex items-center justify-center text-[#DB2777] shadow-xs mb-2.5 group-hover:scale-105 transition-transform">
+                    <ImageIcon className="w-6 h-6 sm:w-7 sm:h-7 stroke-[1.9]" />
                   </div>
-                  <span className="text-xs sm:text-[13px] font-bold text-slate-900">
+                  <span className="text-sm sm:text-base font-bold text-slate-900">
                     Görsel Keşif
                   </span>
-                  <span className="text-[11px] text-slate-600 leading-snug mt-1 max-w-[145px]">
+                  <span className="text-xs sm:text-[13px] font-medium text-slate-600 leading-snug mt-1 max-w-[160px]">
                     Görsellerle ara, daha fazlasını keşfet.
                   </span>
                 </button>
@@ -941,13 +941,13 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                   }
                   className="group flex flex-col items-center text-center p-2 rounded-2xl transition-transform hover:-translate-y-0.5 cursor-pointer"
                 >
-                  <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-[#D1FAE5]/90 border border-emerald-200/60 flex items-center justify-center text-[#059669] shadow-xs mb-2.5 group-hover:scale-105 transition-transform">
-                    <Scale className="w-6 h-6 stroke-[1.9]" />
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#D1FAE5]/90 border border-emerald-200/60 flex items-center justify-center text-[#059669] shadow-xs mb-2.5 group-hover:scale-105 transition-transform">
+                    <Scale className="w-6 h-6 sm:w-7 sm:h-7 stroke-[1.9]" />
                   </div>
-                  <span className="text-xs sm:text-[13px] font-bold text-slate-900">
+                  <span className="text-sm sm:text-base font-bold text-slate-900">
                     Karşılaştırma
                   </span>
-                  <span className="text-[11px] text-slate-600 leading-snug mt-1 max-w-[145px]">
+                  <span className="text-xs sm:text-[13px] font-medium text-slate-600 leading-snug mt-1 max-w-[160px]">
                     Ürün ve hizmetleri kolayca karşılaştır.
                   </span>
                 </button>
@@ -958,18 +958,18 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                   onClick={() => onNavigateToDiscover && onNavigateToDiscover()}
                   className="group flex flex-col items-center text-center p-2 rounded-2xl transition-transform hover:-translate-y-0.5 cursor-pointer"
                 >
-                  <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-[#FEF3C7]/90 border border-amber-200/60 flex items-center justify-center text-[#D97706] shadow-xs mb-2.5 group-hover:scale-105 transition-transform">
-                    <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6" stroke="currentColor" strokeWidth="1.9">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#FEF3C7]/90 border border-amber-200/60 flex items-center justify-center text-[#D97706] shadow-xs mb-2.5 group-hover:scale-105 transition-transform">
+                    <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 sm:w-7 sm:h-7" stroke="currentColor" strokeWidth="1.9">
                       <path
                         strokeLinejoin="round"
                         d="M12 3C12.8 8.2 15.8 11.2 21 12C15.8 12.8 12.8 15.8 12 21C11.2 15.8 8.2 12.8 3 12C8.2 11.2 11.2 8.2 12 3Z"
                       />
                     </svg>
                   </div>
-                  <span className="text-xs sm:text-[13px] font-bold text-slate-900">
+                  <span className="text-sm sm:text-base font-bold text-slate-900">
                     Keşif Merkezi
                   </span>
-                  <span className="text-[11px] text-slate-600 leading-snug mt-1 max-w-[145px]">
+                  <span className="text-xs sm:text-[13px] font-medium text-slate-600 leading-snug mt-1 max-w-[160px]">
                     Dünyayı keşfet, yeni fikirler bul.
                   </span>
                 </button>
@@ -980,8 +980,8 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                   onClick={onNavigateToProjects}
                   className="group flex flex-col items-center text-center p-2 rounded-2xl transition-transform hover:-translate-y-0.5 cursor-pointer"
                 >
-                  <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-[#EDE9FE]/90 border border-violet-200/60 flex items-center justify-center text-[#6D28D9] shadow-xs mb-2.5 group-hover:scale-105 transition-transform">
-                    <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6" stroke="currentColor" strokeWidth="1.9">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#EDE9FE]/90 border border-violet-200/60 flex items-center justify-center text-[#6D28D9] shadow-xs mb-2.5 group-hover:scale-105 transition-transform">
+                    <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 sm:w-7 sm:h-7" stroke="currentColor" strokeWidth="1.9">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -989,10 +989,10 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                       />
                     </svg>
                   </div>
-                  <span className="text-xs sm:text-[13px] font-bold text-slate-900">
+                  <span className="text-sm sm:text-base font-bold text-slate-900">
                     Kişisel Alan
                   </span>
-                  <span className="text-[11px] text-slate-600 leading-snug mt-1 max-w-[145px]">
+                  <span className="text-xs sm:text-[13px] font-medium text-slate-600 leading-snug mt-1 max-w-[160px]">
                     Aramalarını kaydet, projelerini yönet.
                   </span>
                 </button>

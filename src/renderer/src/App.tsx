@@ -203,15 +203,15 @@ export const App: React.FC = () => {
             className="flex items-center cursor-pointer focus:outline-none group"
             title="Chirmo Ana Sayfa"
           >
-            <ChirmoLogo size="sm" variant="header" />
+            <ChirmoLogo size="md" variant="header" />
           </button>
 
           <nav className="hidden md:flex items-center gap-6 lg:gap-8">
             <button
               onClick={() => setActiveMenu('discover')}
-              className={`text-sm font-medium transition-colors cursor-pointer ${
+              className={`text-sm lg:text-[15px] font-semibold transition-colors cursor-pointer ${
                 activeMenu === 'discover'
-                  ? 'text-[#6534F8] font-semibold'
+                  ? 'text-[#6534F8]'
                   : 'text-slate-700 hover:text-[#6534F8]'
               }`}
             >
@@ -220,9 +220,9 @@ export const App: React.FC = () => {
 
             <button
               onClick={() => setActiveMenu('agents')}
-              className={`text-sm font-medium transition-colors cursor-pointer ${
+              className={`text-sm lg:text-[15px] font-semibold transition-colors cursor-pointer ${
                 activeMenu === 'agents'
-                  ? 'text-[#6534F8] font-semibold'
+                  ? 'text-[#6534F8]'
                   : 'text-slate-700 hover:text-[#6534F8]'
               }`}
             >
@@ -231,9 +231,9 @@ export const App: React.FC = () => {
 
             <button
               onClick={() => setActiveMenu('visual')}
-              className={`text-sm font-medium transition-colors cursor-pointer ${
+              className={`text-sm lg:text-[15px] font-semibold transition-colors cursor-pointer ${
                 activeMenu === 'visual'
-                  ? 'text-[#6534F8] font-semibold'
+                  ? 'text-[#6534F8]'
                   : 'text-slate-700 hover:text-[#6534F8]'
               }`}
             >
@@ -242,9 +242,9 @@ export const App: React.FC = () => {
 
             <button
               onClick={() => setActiveMenu('compare')}
-              className={`text-sm font-medium transition-colors cursor-pointer ${
+              className={`text-sm lg:text-[15px] font-semibold transition-colors cursor-pointer ${
                 activeMenu === 'compare'
-                  ? 'text-[#6534F8] font-semibold'
+                  ? 'text-[#6534F8]'
                   : 'text-slate-700 hover:text-[#6534F8]'
               }`}
             >
@@ -255,11 +255,11 @@ export const App: React.FC = () => {
             <div ref={moreMenuRef} className="relative">
               <button
                 onClick={() => setShowMoreMenu((prev) => !prev)}
-                className={`flex items-center gap-1 text-sm font-medium transition-colors cursor-pointer ${
+                className={`flex items-center gap-1 text-sm lg:text-[15px] font-semibold transition-colors cursor-pointer ${
                   ['projects', 'tools', 'workflows', 'browser', 'history', 'settings'].includes(
                     activeMenu
                   )
-                    ? 'text-[#6534F8] font-semibold'
+                    ? 'text-[#6534F8]'
                     : 'text-slate-700 hover:text-[#6534F8]'
                 }`}
               >
