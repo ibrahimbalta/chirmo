@@ -1773,15 +1773,25 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
   ): AiSynthesis {
     const topWebSerp = liveData?.webSerpResults?.[0];
     const secondWebSerp = liveData?.webSerpResults?.[1];
-    const baseSummary = topWebSerp
-      ? `${topWebSerp.snippet}${secondWebSerp ? ` Ayrıca ${secondWebSerp.domain} kaynağına göre: ${secondWebSerp.snippet}` : ''}`
-      : liveData?.wikiSummary?.extract
-      ? liveData.wikiSummary.extract
-      : instantAnswer?.details
-      ? `${instantAnswer.title}: ${instantAnswer.details}`
-      : decisionMatrix
-      ? decisionMatrix.verdict
-      : `"${query}" konusu; canlı arama sonuçları ve sektörel veriler taranarak sentezlenmiştir.`;
+    let baseSummary = '';
+    if (topWebSerp?.snippet) {
+      baseSummary = topWebSerp.snippet;
+      if (
+        secondWebSerp?.snippet &&
+        secondWebSerp.domain !== topWebSerp.domain &&
+        !topWebSerp.snippet.toLowerCase().includes(secondWebSerp.snippet.slice(0, 30).toLowerCase())
+      ) {
+        baseSummary += ` ${secondWebSerp.snippet}`;
+      }
+    } else if (liveData?.wikiSummary?.extract) {
+      baseSummary = liveData.wikiSummary.extract;
+    } else if (instantAnswer?.details) {
+      baseSummary = `${instantAnswer.title}: ${instantAnswer.details}`;
+    } else if (decisionMatrix) {
+      baseSummary = decisionMatrix.verdict;
+    } else {
+      baseSummary = `"${query}" ile ilgili güncel web sonuçları, fiyat listeleri ve ilgili kaynaklar derlenmiştir.`;
+    }
 
     const perspectives: Record<PerspectiveLens, { title: string; badge: string; content: string; bullets: string[] }> = {
       ceo: {
@@ -2066,7 +2076,15 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
       }
     }
 
-    if (liveData?.wikiSummary) {
+    const isWikiRelevant = Boolean(
+      liveData?.wikiSummary &&
+      query
+        .toLowerCase()
+        .split(/\s+/)
+        .some((w) => w.length > 2 && liveData.wikiSummary!.title.toLowerCase().includes(w))
+    );
+
+    if (isWikiRelevant && liveData?.wikiSummary) {
       sources.push({
         title: `${liveData.wikiSummary.title} — Wikipedia`,
         url: liveData.wikiSummary.url,
