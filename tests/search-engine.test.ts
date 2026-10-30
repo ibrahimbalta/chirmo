@@ -27,6 +27,25 @@ describe('SearchEngineService', () => {
     expect(distRes).toBeDefined();
     expect(distRes?.type).toBe('converter');
     expect(distRes?.result).toContain('62.14 Mil');
+
+    const kdvRes = SearchEngineService.detectInstantAnswer('10000 tl kdv');
+    expect(kdvRes).toBeDefined();
+    expect(kdvRes?.type).toBe('finance');
+    expect(kdvRes?.result).toContain('12');
+
+    const bmiRes = SearchEngineService.detectInstantAnswer('175 cm 75 kg');
+    expect(bmiRes).toBeDefined();
+    expect(bmiRes?.type).toBe('health');
+    expect(bmiRes?.result).toContain('VKİ');
+  });
+
+  it('generates official petitions, contracts, and business plans for any topic', () => {
+    const petition = SearchEngineService.generateDocumentTemplate('Tüketici İadesi', 'petition');
+    expect(petition.title).toContain('Tüketici İadesi');
+    expect(petition.content).toContain('SONUÇ VE İSTEM');
+
+    const bizPlan = SearchEngineService.generateDocumentTemplate('Kahve Dükkanı', 'business_plan');
+    expect(bizPlan.content).toContain('GELİR MODELİ');
   });
 
   it('matches offline knowledge base for tech concepts', () => {

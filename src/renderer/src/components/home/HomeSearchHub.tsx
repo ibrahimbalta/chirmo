@@ -30,13 +30,23 @@ import {
   Sliders,
   Download,
   GitBranch,
-  Star
+  Star,
+  FileText,
+  GraduationCap,
+  Briefcase,
+  Copy,
+  Award,
+  BookOpen,
+  TrendingUp
 } from 'lucide-react';
 import {
   SearchEngineService,
   SearchResponse,
   PerspectiveLens,
-  TemporalEra
+  TemporalEra,
+  ProfessionMode,
+  PROFESSION_MODES,
+  DocumentTemplateType
 } from '../../services/searchEngine';
 import { Project, Task, HistoryEntry } from '../../types';
 import { ChirmoLogo } from '../common/ChirmoLogo';
@@ -48,7 +58,24 @@ interface HomeSearchHubProps {
   onNavigateToTools: () => void;
 }
 
-type WidgetId = 'shortcuts' | 'kanban' | 'radar' | 'notes' | 'calculator' | 'pomodoro';
+type WidgetId =
+  | 'shortcuts'
+  | 'kanban'
+  | 'docstudio'
+  | 'radar'
+  | 'notes'
+  | 'calculator'
+  | 'pomodoro';
+
+type ResultTabId =
+  | 'all'
+  | 'docgen'
+  | 'study'
+  | 'venture'
+  | 'temporal'
+  | 'ai'
+  | 'compare'
+  | 'xray';
 
 interface KanbanCard {
   id: string;
@@ -64,18 +91,27 @@ interface ShortcutItem {
 }
 
 const DEFAULT_KANBAN: KanbanCard[] = [
-  { id: 'k1', title: 'Hedef anahtar kelimeleri ve rakipleri incele', tag: 'Araştırma', column: 'todo' },
-  { id: 'k2', title: '2036 vizyonu ve proje yol haritasını çıkar', tag: 'Plan', column: 'doing' },
-  { id: 'k3', title: 'Chirmo çalışma alanını kişiselleştir', tag: 'Tamam', column: 'done' }
+  { id: 'k1', title: 'Hedef konuyu ara ve Belge Stüdyosundan taslak üret', tag: 'Başlangıç', column: 'todo' },
+  { id: 'k2', title: '2036 vizyonu ve proje yol haritasını incele', tag: 'Plan', column: 'doing' },
+  { id: 'k3', title: 'Chirmo çalışma alanını mesleğine göre kişiselleştir', tag: 'Tamam', column: 'done' }
 ];
 
 const DEFAULT_SHORTCUTS: ShortcutItem[] = [
   { id: 's1', title: 'Google', url: 'https://www.google.com' },
-  { id: 's2', title: 'YouTube', url: 'https://www.youtube.com' },
-  { id: 's3', title: 'GitHub', url: 'https://github.com' },
-  { id: 's4', title: 'Wikipedia', url: 'https://tr.wikipedia.org' },
-  { id: 's5', title: 'ChatGPT', url: 'https://chatgpt.com' },
-  { id: 's6', title: 'X / Twitter', url: 'https://x.com' }
+  { id: 's2', title: 'e-Devlet', url: 'https://www.turkiye.gov.tr' },
+  { id: 's3', title: 'Wikipedia', url: 'https://tr.wikipedia.org' },
+  { id: 's4', title: 'YouTube', url: 'https://www.youtube.com' },
+  { id: 's5', title: 'GitHub', url: 'https://github.com' },
+  { id: 's6', title: 'ChatGPT', url: 'https://chatgpt.com' }
+];
+
+const DOCUMENT_TYPES: { id: DocumentTemplateType; label: string; badge: string }[] = [
+  { id: 'petition', label: '⚖️ Resmi Dilekçe & Başvuru', badge: 'Kurum / Tüketici' },
+  { id: 'business_plan', label: '🚀 Girişim İş Planı (Lean Canvas)', badge: 'Yatırımcı / KOBİ' },
+  { id: 'contract', label: '🤝 Hizmet & İşbirliği Sözleşmesi', badge: 'Ticari / Hukuk' },
+  { id: 'study_guide', label: '🎓 Ders & Sınav Çalışma Özeti', badge: 'Öğrenci / Akademi' },
+  { id: 'official_email', label: '📧 Kurumsal Teklif E-Postası', badge: 'İş Dünyası' },
+  { id: 'press_release', label: '📢 Basın Bülteni & Duyuru', badge: 'Medya / İletişim' }
 ];
 
 export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
@@ -83,9 +119,10 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
   onNavigateToAgents
 }) => {
   const [query, setQuery] = useState('');
+  const [professionMode, setProfessionMode] = useState<ProfessionMode>('general');
   const [isSearching, setIsSearching] = useState(false);
   const [searchResponse, setSearchResponse] = useState<SearchResponse | null>(null);
-  const [resultTab, setResultTab] = useState<'all' | 'ai' | 'temporal' | 'compare' | 'xray'>('all');
+  const [resultTab, setResultTab] = useState<ResultTabId>('all');
 
   // 2036 Future Engine Controls
   const [activeLens, setActiveLens] = useState<PerspectiveLens>('ceo');
@@ -95,7 +132,27 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [kanbanToast, setKanbanToast] = useState<string | null>(null);
 
-  // Interactive Simulator Sliders (inside results)
+  // Document & Petition Studio State
+  const [selectedDocType, setSelectedDocType] = useState<DocumentTemplateType>('petition');
+  const [docTopicInput, setDocTopicInput] = useState('Tüketici Hakem Heyeti Ayıplı Mal İadesi');
+  const [editableDocContent, setEditableDocContent] = useState('');
+
+  // Study Mode (Flashcards & Quiz) State
+  const [flippedCards, setFlippedCards] = useState<Record<string, boolean>>({});
+  const [quizAnswers, setQuizAnswers] = useState<Record<string, number>>({});
+
+  // Venture / Startup Financial Lab State
+  const [unitPrice, setUnitPrice] = useState(1500);
+  const [unitCost, setUnitCost] = useState(600);
+  const [monthlyFixedCost, setMonthlyFixedCost] = useState(27000);
+  const [estimatedMonthlySales, setEstimatedMonthlySales] = useState(60);
+
+  // Investor / Acquisition Showcase Modal State
+  const [showInvestorModal, setShowInvestorModal] = useState(false);
+  const [b2bUsers, setB2bUsers] = useState(25000);
+  const [b2bArpu, setB2bArpu] = useState(12);
+
+  // Interactive Simulator Sliders (inside Temporal tab)
   const [simSpeed, setSimSpeed] = useState(75);
   const [simBudget, setSimBudget] = useState(50);
 
@@ -103,9 +160,9 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
   const [activeWidgets, setActiveWidgets] = useState<WidgetId[]>(() => {
     try {
       const saved = localStorage.getItem('chirmo_home_widgets');
-      return saved ? JSON.parse(saved) : ['shortcuts', 'kanban', 'radar'];
+      return saved ? JSON.parse(saved) : ['shortcuts', 'kanban', 'docstudio', 'radar'];
     } catch {
-      return ['shortcuts', 'kanban', 'radar'];
+      return ['shortcuts', 'kanban', 'docstudio', 'radar'];
     }
   });
   const [showWidgetPicker, setShowWidgetPicker] = useState(false);
@@ -144,15 +201,17 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
     }
   });
 
-  // Quick Calculator & KDV State
-  const [calcInput, setCalcInput] = useState('1500 * 1.20');
+  // Quick Calculator & KDV/VKİ State
+  const [calcInput, setCalcInput] = useState('10000 tl kdv');
 
   // Pomodoro Timer State
   const [pomoSeconds, setPomoSeconds] = useState(25 * 60);
   const [pomoRunning, setPomoRunning] = useState(false);
 
   // Live Tech Radar State
-  const [radarItems, setRadarItems] = useState<{ id: string; title: string; url: string; points: number; author: string }[]>([]);
+  const [radarItems, setRadarItems] = useState<
+    { id: string; title: string; url: string; points: number; author: string }[]
+  >([]);
 
   // Workspace context
   const [projects, setProjects] = useState<Project[]>([]);
@@ -160,6 +219,11 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
   const [history, setHistory] = useState<HistoryEntry[]>([]);
 
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const activeProfessionConfig = useMemo(
+    () => PROFESSION_MODES.find((m) => m.id === professionMode) || PROFESSION_MODES[0],
+    [professionMode]
+  );
 
   useEffect(() => {
     if (window.chirmo) {
@@ -169,6 +233,13 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
     }
     SearchEngineService.fetchLiveTechRadar().then(setRadarItems).catch(() => {});
   }, []);
+
+  // Update editable document whenever topic or template type changes
+  useEffect(() => {
+    const targetTopic = searchResponse ? searchResponse.query : docTopicInput;
+    const generated = SearchEngineService.generateDocumentTemplate(targetTopic, selectedDocType);
+    setEditableDocContent(generated.content);
+  }, [searchResponse?.query, docTopicInput, selectedDocType]);
 
   // Pomodoro countdown effect
   useEffect(() => {
@@ -191,6 +262,14 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
   const showToast = (msg: string) => {
     setKanbanToast(msg);
     setTimeout(() => setKanbanToast(null), 2800);
+  };
+
+  // Switch profession mode and auto-adjust default document template
+  const handleSelectProfession = (mode: ProfessionMode) => {
+    setProfessionMode(mode);
+    if (mode === 'legal') setSelectedDocType('petition');
+    else if (mode === 'entrepreneur') setSelectedDocType('business_plan');
+    else if (mode === 'student') setSelectedDocType('study_guide');
   };
 
   // Real Web Speech API Voice Recognition
@@ -264,6 +343,28 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
     window.speechSynthesis.speak(utterance);
   };
 
+  // Copy & Download Document helpers
+  const handleCopyDocument = () => {
+    navigator.clipboard?.writeText(editableDocContent);
+    showToast('Belge panoya kopyalandı!');
+  };
+
+  const handleDownloadDocument = (ext: 'doc' | 'txt') => {
+    const mime = ext === 'doc' ? 'application/msword;charset=utf-8' : 'text/plain;charset=utf-8';
+    const blob = new Blob([editableDocContent], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const safeName = (searchResponse?.query || docTopicInput || 'belge')
+      .toLowerCase()
+      .replace(/[^a-z0-9ğüşıöç]/gi, '-')
+      .slice(0, 30);
+    a.download = `chirmo-${safeName}.${ext}`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast(`Belge .${ext} formatında indirildi!`);
+  };
+
   // Persist widgets
   const updateWidgets = (next: WidgetId[]) => {
     setActiveWidgets(next);
@@ -318,7 +419,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
   // Autonomous Goal-to-Kanban Decomposition
   const handleDecomposeGoalToKanban = (goalText: string) => {
     const targetGoal = goalText.trim() || 'Yeni Proje Hedefi';
-    const generated = SearchEngineService.decomposeGoalToKanban(targetGoal);
+    const generated = SearchEngineService.decomposeGoalToKanban(targetGoal, professionMode);
     const newCards: KanbanCard[] = generated.map((g, idx) => ({
       id: `kb_auto_${Date.now()}_${idx}`,
       title: g.title,
@@ -418,6 +519,34 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
     };
   }, [searchResponse?.decisionMatrix, customWeights]);
 
+  // Break-even & ROI calculation for Venture Lab
+  const ventureMetrics = useMemo(() => {
+    const marginPerUnit = Math.max(1, unitPrice - unitCost);
+    const breakEvenUnits = Math.ceil(monthlyFixedCost / marginPerUnit);
+    const monthlyRevenue = unitPrice * estimatedMonthlySales;
+    const monthlyTotalCost = monthlyFixedCost + unitCost * estimatedMonthlySales;
+    const monthlyNetProfit = monthlyRevenue - monthlyTotalCost;
+    const profitMarginPct = monthlyRevenue > 0 ? Math.round((monthlyNetProfit / monthlyRevenue) * 100) : 0;
+    return {
+      marginPerUnit,
+      breakEvenUnits,
+      monthlyRevenue,
+      monthlyNetProfit,
+      profitMarginPct
+    };
+  }, [unitPrice, unitCost, monthlyFixedCost, estimatedMonthlySales]);
+
+  // Study Quiz Score Calculation
+  const quizScore = useMemo(() => {
+    const questions = searchResponse?.aiSynthesis.studyModule.quiz || [];
+    if (questions.length === 0) return { correct: 0, total: 0 };
+    let correct = 0;
+    questions.forEach((q) => {
+      if (quizAnswers[q.id] === q.correctIndex) correct += 1;
+    });
+    return { correct, total: questions.length };
+  }, [searchResponse?.aiSynthesis.studyModule.quiz, quizAnswers]);
+
   // Kanban completion percentage
   const kanbanProgress = useMemo(() => {
     if (kanbanCards.length === 0) return 0;
@@ -425,19 +554,28 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
     return Math.round((doneCount / kanbanCards.length) * 100);
   }, [kanbanCards]);
 
-  const handleExecuteSearch = async (searchQuery: string) => {
+  const handleExecuteSearch = async (searchQuery: string, customProfession?: ProfessionMode) => {
     const trimmed = searchQuery.trim();
     if (!trimmed) return;
 
+    const targetProf = customProfession || professionMode;
     setIsSearching(true);
     setCustomWeights({});
+    setQuizAnswers({});
+    setFlippedCards({});
     try {
-      const response = await SearchEngineService.search(trimmed, 'all', {
-        projects,
-        tasks,
-        history
-      });
+      const response = await SearchEngineService.search(
+        trimmed,
+        'all',
+        {
+          projects,
+          tasks,
+          history
+        },
+        targetProf
+      );
       setSearchResponse(response);
+      setDocTopicInput(trimmed);
       setResultTab('all');
     } finally {
       setIsSearching(false);
@@ -469,8 +607,14 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
       icon: <Kanban className="w-4 h-4 text-emerald-600" />
     },
     {
+      id: 'docstudio',
+      label: 'Dilekçe, Sözleşme & İş Planı Stüdyosu',
+      desc: 'Her meslek için tek tıkla resmi belge üretici',
+      icon: <FileText className="w-4 h-4 text-purple-600" />
+    },
+    {
       id: 'radar',
-      label: 'Canlı Teknoloji Radarı',
+      label: 'Canlı Teknoloji & Gündem Radarı',
       desc: 'Küresel gündem ve anlık teknoloji akışı',
       icon: <Radio className="w-4 h-4 text-indigo-600" />
     },
@@ -482,8 +626,8 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
     },
     {
       id: 'calculator',
-      label: 'Hesap & Döviz Kutusu',
-      desc: 'Anında matematik ve kur çevirici',
+      label: 'Hesap, KDV, VKİ & Döviz Kutusu',
+      desc: 'KDV, Boy-Kilo VKİ, döviz ve matematik motoru',
       icon: <Calculator className="w-4 h-4 text-rose-500" />
     },
     {
@@ -504,6 +648,134 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
         </div>
       )}
 
+      {/* INVESTOR & ENTERPRISE ACQUISITION SHOWCASE MODAL */}
+      {showInvestorModal && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-white rounded-3xl border border-slate-200 max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl space-y-6">
+            <div className="flex items-start justify-between gap-4 border-b border-slate-100 pb-4">
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">
+                  Yatırımcı, Girişimci & Kurumsal Satın Alma (M&A) Dosyası
+                </span>
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 mt-2">
+                  Neden Şirketler ve Toplum Chirmo 2036'yı Tercih Ediyor?
+                </h2>
+                <p className="text-xs text-slate-500 mt-1">
+                  Klasik arama motorları sadece "mavi link" verir; Chirmo ise aramayı doğrudan **Resmi Belgeye, Finansal Tabloya, Sınava ve Kanban Projesine** dönüştürür.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowInvestorModal(false)}
+                className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* 4 Pillars of Unfair Advantage */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                <span className="font-bold text-blue-700 block mb-1">1. Toplumun %100'üne Hitap Eden 8 Evrensel Mod</span>
+                <p className="text-slate-600">
+                  Sadece yazılımcılar için değil; esnaf (KDV ve kâr hesabı), vatandaş (dilekçe ve sözleşme), öğrenci (ezber kartı ve sınav), doktor/akademisyen (OpenAlex 250M+ makale) ve ev kullanıcıları için tek merkezdir.
+                </p>
+              </div>
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                <span className="font-bold text-emerald-700 block mb-1">2. Arama + Üretim + Kanban İcra Bütünlüğü</span>
+                <p className="text-slate-600">
+                  Kullanıcı başka hiçbir uygulamaya geçmeden aradığı konuda resmi dilekçesini indirir, başabaş maliyetini hesaplar ve hedefini 4 adımlı Kanban panosuna aktarır.
+                </p>
+              </div>
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                <span className="font-bold text-purple-700 block mb-1">3. Sıfır Sunucu Maliyetli Hibrit Mimari</span>
+                <p className="text-slate-600">
+                  Yerel SQLite veritabanı, Electron WebContentsView izolasyonu ve açık API füzyonu sayesinde kullanıcı başına sunucu maliyeti neredeyse sıfırdır (%92 brüt kâr marjı).
+                </p>
+              </div>
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                <span className="font-bold text-amber-700 block mb-1">4. Kurumsal B2B & White-Label Lisanslama</span>
+                <p className="text-slate-600">
+                  Üniversiteler, hukuk büroları, KOBİ odaları ve kurumsal şirketler kendi iç bilgi ve belge motoru olarak Chirmo'yu doğrudan lisanslayabilir.
+                </p>
+              </div>
+            </div>
+
+            {/* Interactive SaaS Valuation Simulator */}
+            <div className="p-5 rounded-2xl bg-blue-50/60 border border-blue-200 space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
+                  📈 Canlı SaaS Gelir & Şirket Değerleme Simülatörü (Yatırımcılar İçin)
+                </span>
+                <span className="text-xs font-bold text-blue-700">10x ARR Çarpanı</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div>
+                  <div className="flex justify-between font-semibold text-slate-700 mb-1">
+                    <span>Aktif Pro / Kurumsal Abone Sayısı:</span>
+                    <span className="font-bold text-blue-700">{b2bUsers.toLocaleString('tr-TR')} Kullanıcı</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={1000}
+                    max={250000}
+                    step={1000}
+                    value={b2bUsers}
+                    onChange={(e) => setB2bUsers(Number(e.target.value))}
+                    className="w-full accent-blue-600 cursor-pointer"
+                  />
+                </div>
+                <div>
+                  <div className="flex justify-between font-semibold text-slate-700 mb-1">
+                    <span>Aylık Kullanıcı Başı Gelir (ARPU):</span>
+                    <span className="font-bold text-emerald-700">${b2bArpu} / ay</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={5}
+                    max={50}
+                    step={1}
+                    value={b2bArpu}
+                    onChange={(e) => setB2bArpu(Number(e.target.value))}
+                    className="w-full accent-emerald-600 cursor-pointer"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3 pt-2 border-t border-blue-200/60 text-center">
+                <div className="bg-white p-3 rounded-xl border border-blue-100">
+                  <span className="text-[10px] text-slate-400 block">Aylık Gelir (MRR)</span>
+                  <span className="text-sm sm:text-base font-black text-slate-900">
+                    ${(b2bUsers * b2bArpu).toLocaleString('en-US')}
+                  </span>
+                </div>
+                <div className="bg-white p-3 rounded-xl border border-blue-100">
+                  <span className="text-[10px] text-slate-400 block">Yıllık Gelir (ARR)</span>
+                  <span className="text-sm sm:text-base font-black text-blue-600">
+                    ${(b2bUsers * b2bArpu * 12).toLocaleString('en-US')}
+                  </span>
+                </div>
+                <div className="bg-white p-3 rounded-xl border border-emerald-200">
+                  <span className="text-[10px] text-slate-400 block">Tahmini Şirket Değerlemesi</span>
+                  <span className="text-sm sm:text-base font-black text-emerald-600">
+                    ${(b2bUsers * b2bArpu * 12 * 10).toLocaleString('en-US')}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                onClick={() => setShowInvestorModal(false)}
+                className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold"
+              >
+                Kapat ve Deneyimlemeye Devam Et
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* TOP BAR: Clean & Minimal */}
       <div className="w-full px-4 sm:px-6 py-3 flex items-center justify-between border-b border-slate-100">
         <div className="flex items-center gap-3">
@@ -520,12 +792,21 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
           ) : (
             <span className="text-[11px] font-semibold text-slate-400 flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span>Chirmo 2036 • Canlı Sentez & Kanban Motoru</span>
+              <span>Chirmo 2036 • Her Meslek İçin Geleceğin Arama ve Üretim Motoru</span>
             </span>
           )}
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowInvestorModal(true)}
+            className="px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200/80 flex items-center gap-1.5 transition-all"
+            title="Neden Chirmo? Yatırımcı ve Kurumsal Değerleme Simülatörü"
+          >
+            <Award className="w-3.5 h-3.5 text-amber-600" />
+            <span className="hidden sm:inline">Kurumsal & Yatırımcı Vizyonu</span>
+          </button>
+
           <button
             onClick={() => setShowWidgetPicker(!showWidgetPicker)}
             className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all border ${
@@ -593,10 +874,14 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
 
       {/* MAIN CONTENT AREA */}
       <div className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 pb-24 md:pb-12 flex flex-col">
-        {/* ==================== 1. PURE GOOGLE-STYLE SEARCH HERO ==================== */}
-        <div className={`w-full flex flex-col items-center transition-all ${searchResponse ? 'pt-4 pb-5' : 'pt-8 sm:pt-14 pb-8'}`}>
+        {/* ==================== 1. PURE GOOGLE-STYLE SEARCH HERO + UNIVERSAL PROFESSION BAR ==================== */}
+        <div
+          className={`w-full flex flex-col items-center transition-all ${
+            searchResponse ? 'pt-4 pb-4' : 'pt-7 sm:pt-11 pb-6'
+          }`}
+        >
           {!searchResponse && (
-            <div className="mb-5 text-center">
+            <div className="mb-4 text-center">
               <ChirmoLogo size="xl" />
             </div>
           )}
@@ -611,7 +896,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Web'de arayın, 'React vs Vue' karşılaştırın veya '1500 * 1.20' hesaplayın..."
+                placeholder={activeProfessionConfig.placeholder}
                 className="w-full text-sm sm:text-base text-slate-900 placeholder:text-slate-400 bg-transparent border-none outline-none select-text"
               />
 
@@ -669,45 +954,74 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
               </div>
             )}
 
-            {/* Clean Action Buttons Below Search Bar */}
+            {/* 8 Universal Profession & Society Mode Pills */}
+            <div className="mt-3.5 flex items-center justify-start sm:justify-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
+              {PROFESSION_MODES.map((m) => {
+                const active = professionMode === m.id;
+                return (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => handleSelectProfession(m.id)}
+                    className={`px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all whitespace-nowrap shrink-0 border ${
+                      active
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
+                        : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200/80'
+                    }`}
+                  >
+                    {m.shortLabel}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Sample Quick Prompts for Selected Profession Mode + Action Buttons */}
             {!searchResponse && (
-              <div className="flex flex-wrap items-center justify-center gap-2.5 mt-4">
-                <button
-                  type="submit"
-                  onClick={() => {
-                    if (query.trim()) handleExecuteSearch(query);
-                  }}
-                  className="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200/80 text-slate-700 text-xs font-medium transition-colors"
-                >
-                  Chirmo ile Ara
-                </button>
+              <div className="mt-3 flex flex-col items-center gap-2.5">
+                <div className="flex flex-wrap items-center justify-center gap-1.5">
+                  <span className="text-[11px] text-slate-400 mr-1">Örnek:</span>
+                  {activeProfessionConfig.sampleQueries.map((sq) => (
+                    <button
+                      key={sq}
+                      type="button"
+                      onClick={() => {
+                        setQuery(sq);
+                        handleExecuteSearch(sq);
+                      }}
+                      className="px-2.5 py-1 rounded-lg bg-white hover:bg-blue-50 text-slate-600 hover:text-blue-700 border border-slate-200 text-[11px] font-medium transition-colors"
+                    >
+                      {sq}
+                    </button>
+                  ))}
+                </div>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    const targetGoal = query.trim() || 'Yeni Web Girişimi Kurmak';
-                    handleDecomposeGoalToKanban(targetGoal);
-                  }}
-                  className="px-4 py-2 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/70 text-xs font-semibold transition-colors flex items-center gap-1.5"
-                  title="Yazdığınız hedefi otomatik olarak 4 adımlı Kanban görevlerine böler"
-                >
-                  <Kanban className="w-3.5 h-3.5" />
-                  <span>Hedefi Kanban'a Böl</span>
-                </button>
+                <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const targetGoal = query.trim() || activeProfessionConfig.sampleQueries[0];
+                      handleDecomposeGoalToKanban(targetGoal);
+                    }}
+                    className="px-3.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/70 text-xs font-semibold transition-colors flex items-center gap-1.5"
+                  >
+                    <Kanban className="w-3.5 h-3.5" />
+                    <span>Hedefi Kanban'a Böl</span>
+                  </button>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    const target = query.trim()
-                      ? `https://www.google.com/search?q=${encodeURIComponent(query.trim())}`
-                      : 'https://www.google.com';
-                    onNavigateToBrowser(target);
-                  }}
-                  className="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200/80 text-slate-700 text-xs font-medium transition-colors flex items-center gap-1.5"
-                >
-                  <span>Google'da Aç</span>
-                  <ExternalLink className="w-3 h-3 text-slate-400" />
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const target = query.trim()
+                        ? `https://www.google.com/search?q=${encodeURIComponent(query.trim())}`
+                        : 'https://www.google.com';
+                      onNavigateToBrowser(target);
+                    }}
+                    className="px-3.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200/80 text-slate-700 text-xs font-medium transition-colors flex items-center gap-1.5"
+                  >
+                    <span>Google'da Aç</span>
+                    <ExternalLink className="w-3 h-3 text-slate-400" />
+                  </button>
+                </div>
               </div>
             )}
           </form>
@@ -716,9 +1030,9 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
         {/* ==================== 2. 2036 NEXT-GEN SEARCH RESULTS VIEW ==================== */}
         {searchResponse ? (
           <div className="w-full max-w-3xl mx-auto space-y-5 animate-fadeIn">
-            {/* Clean Google-style Result Tabs + 2036 Modes */}
+            {/* Result Navigation Tabs */}
             <div className="flex flex-wrap items-center justify-between border-b border-slate-200 pb-2 gap-2 text-xs">
-              <div className="flex items-center gap-4 overflow-x-auto no-scrollbar">
+              <div className="flex items-center gap-3.5 overflow-x-auto no-scrollbar">
                 <button
                   onClick={() => setResultTab('all')}
                   className={`pb-2 -mb-2.5 font-semibold border-b-2 transition-colors whitespace-nowrap ${
@@ -731,6 +1045,42 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                 </button>
 
                 <button
+                  onClick={() => setResultTab('docgen')}
+                  className={`pb-2 -mb-2.5 font-semibold border-b-2 transition-colors flex items-center gap-1 whitespace-nowrap ${
+                    resultTab === 'docgen'
+                      ? 'border-blue-600 text-blue-600'
+                      : 'border-transparent text-slate-500 hover:text-slate-800'
+                  }`}
+                >
+                  <FileText className="w-3.5 h-3.5 text-purple-600" />
+                  <span>Belge & Dilekçe Üret</span>
+                </button>
+
+                <button
+                  onClick={() => setResultTab('study')}
+                  className={`pb-2 -mb-2.5 font-semibold border-b-2 transition-colors flex items-center gap-1 whitespace-nowrap ${
+                    resultTab === 'study'
+                      ? 'border-blue-600 text-blue-600'
+                      : 'border-transparent text-slate-500 hover:text-slate-800'
+                  }`}
+                >
+                  <GraduationCap className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Öğren & Sınav Ol</span>
+                </button>
+
+                <button
+                  onClick={() => setResultTab('venture')}
+                  className={`pb-2 -mb-2.5 font-semibold border-b-2 transition-colors flex items-center gap-1 whitespace-nowrap ${
+                    resultTab === 'venture'
+                      ? 'border-blue-600 text-blue-600'
+                      : 'border-transparent text-slate-500 hover:text-slate-800'
+                  }`}
+                >
+                  <Briefcase className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Girişim & Kâr Hesabı</span>
+                </button>
+
+                <button
                   onClick={() => setResultTab('temporal')}
                   className={`pb-2 -mb-2.5 font-semibold border-b-2 transition-colors flex items-center gap-1 whitespace-nowrap ${
                     resultTab === 'temporal'
@@ -738,20 +1088,8 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                       : 'border-transparent text-slate-500 hover:text-slate-800'
                   }`}
                 >
-                  <Clock className="w-3.5 h-3.5" />
+                  <Clock className="w-3.5 h-3.5 text-blue-600" />
                   <span>2036 Zaman Makinesi</span>
-                </button>
-
-                <button
-                  onClick={() => setResultTab('ai')}
-                  className={`pb-2 -mb-2.5 font-semibold border-b-2 transition-colors flex items-center gap-1 whitespace-nowrap ${
-                    resultTab === 'ai'
-                      ? 'border-blue-600 text-blue-600'
-                      : 'border-transparent text-slate-500 hover:text-slate-800'
-                  }`}
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>4-Zihin Lensi</span>
                 </button>
 
                 <button
@@ -781,7 +1119,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                   }`}
                 >
                   <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>Doğruluk X-Ray (%{searchResponse.aiSynthesis.factCheck.verifiabilityScore})</span>
+                  <span>Doğruluk X-Ray</span>
                 </button>
               </div>
 
@@ -809,12 +1147,12 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
               </div>
             </div>
 
-            {/* A. INSTANT ANSWER / LIVE WIKIPEDIA CARD */}
+            {/* A. INSTANT ANSWER / LIVE WIKIPEDIA / KDV / BMI CARD */}
             {searchResponse.instantAnswer && resultTab === 'all' && (
               <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-start justify-between gap-4">
                 <div className="flex-1">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 block mb-1">
-                    {searchResponse.instantAnswer.badge || 'Hızlı Yanıt'}
+                    {searchResponse.instantAnswer.badge || 'Anında Hesaplama & Yanıt'}
                   </span>
                   <h3 className="text-base font-bold text-slate-900 mb-1">
                     {searchResponse.instantAnswer.title}
@@ -838,7 +1176,286 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
               </div>
             )}
 
-            {/* B. 2036 TEMPORAL TIME MACHINE TAB (Geçmiş ➔ Bugün ➔ 2036 Gelecek) */}
+            {/* B. DOCUMENT, OFFICIAL PETITION & CONTRACT GENERATOR TAB */}
+            {resultTab === 'docgen' && (
+              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-purple-600" />
+                      <span>"{searchResponse.query}" İçin Hazır Belge & Dilekçe Stüdyosu</span>
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      Belge türünü seçin, metni doğrudan düzenleyin ve Word (.doc) veya .txt olarak indirin
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={handleCopyDocument}
+                      className="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 flex items-center gap-1"
+                    >
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Kopyala</span>
+                    </button>
+                    <button
+                      onClick={() => handleDownloadDocument('doc')}
+                      className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-1"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Word (.doc) İndir</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Template Type Selector Pills */}
+                <div className="flex flex-wrap gap-1.5">
+                  {DOCUMENT_TYPES.map((dt) => (
+                    <button
+                      key={dt.id}
+                      onClick={() => setSelectedDocType(dt.id)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border ${
+                        selectedDocType === dt.id
+                          ? 'bg-purple-600 text-white border-purple-600'
+                          : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                      }`}
+                    >
+                      {dt.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Live Editable Document Area */}
+                <textarea
+                  rows={14}
+                  value={editableDocContent}
+                  onChange={(e) => setEditableDocContent(e.target.value)}
+                  className="w-full p-4 rounded-xl bg-white border border-slate-300 font-mono text-xs text-slate-800 leading-relaxed outline-none focus:border-blue-600 select-text"
+                />
+              </div>
+            )}
+
+            {/* C. INTERACTIVE STUDY, FLASHCARDS & QUIZ TAB (Öğren & Sınav Ol) */}
+            {resultTab === 'study' && (
+              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-6">
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <GraduationCap className="w-4 h-4 text-emerald-600" />
+                    <span>Akıllı Öğrenme & Sınav Laboratuvarı: "{searchResponse.query}"</span>
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Kartların üzerine tıklayarak cevabı çevirin ve aşağıdaki interaktif mini sınavla bilginizi ölçün
+                  </p>
+                </div>
+
+                {/* 1. Flip Flashcards */}
+                <div>
+                  <span className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-2.5">
+                    🧠 Akıllı Ezber Kartları (Kartı Çevirmek İçin Tıklayın)
+                  </span>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {searchResponse.aiSynthesis.studyModule.flashcards.map((fc) => {
+                      const isFlipped = Boolean(flippedCards[fc.id]);
+                      return (
+                        <div
+                          key={fc.id}
+                          onClick={() =>
+                            setFlippedCards((p) => ({ ...p, [fc.id]: !p[fc.id] }))
+                          }
+                          className={`p-4 rounded-2xl border cursor-pointer transition-all min-h-[140px] flex flex-col justify-between ${
+                            isFlipped
+                              ? 'bg-emerald-600 text-white border-emerald-600 shadow-md'
+                              : 'bg-white hover:bg-blue-50/40 text-slate-800 border-slate-200'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider opacity-80">
+                            <span>{fc.category}</span>
+                            <span>{isFlipped ? 'Cevap' : 'Soru (Çevir ↻)'}</span>
+                          </div>
+                          <p className="text-xs font-semibold leading-relaxed my-2">
+                            {isFlipped ? fc.back : fc.front}
+                          </p>
+                          <span className="text-[10px] underline opacity-75">
+                            {isFlipped ? 'Soruya dön' : 'Cevabı gör'}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 2. Interactive Graded Quiz */}
+                <div className="space-y-3 pt-2 border-t border-slate-200">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                      📝 İnteraktif Mini Sınav (Kendinizi Test Edin)
+                    </span>
+                    <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
+                      Skor: {quizScore.correct} / {quizScore.total} Doğru
+                    </span>
+                  </div>
+
+                  {searchResponse.aiSynthesis.studyModule.quiz.map((q, qIdx) => {
+                    const selected = quizAnswers[q.id];
+                    const hasAnswered = selected !== undefined;
+                    return (
+                      <div key={q.id} className="p-4 rounded-xl bg-white border border-slate-200 space-y-2.5">
+                        <p className="text-xs font-bold text-slate-900">
+                          {qIdx + 1}. {q.question}
+                        </p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {q.options.map((opt, oIdx) => {
+                            const isThisSelected = selected === oIdx;
+                            const isCorrectOption = oIdx === q.correctIndex;
+                            let btnStyle = 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700';
+                            if (hasAnswered) {
+                              if (isCorrectOption) {
+                                btnStyle = 'bg-emerald-50 border-emerald-500 text-emerald-800 font-bold';
+                              } else if (isThisSelected) {
+                                btnStyle = 'bg-rose-50 border-rose-400 text-rose-700';
+                              }
+                            }
+                            return (
+                              <button
+                                key={oIdx}
+                                onClick={() => setQuizAnswers((p) => ({ ...p, [q.id]: oIdx }))}
+                                className={`p-2.5 rounded-xl border text-left text-xs transition-all ${btnStyle}`}
+                              >
+                                {opt}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        {hasAnswered && (
+                          <p className="text-[11px] text-slate-600 bg-slate-50 p-2 rounded-lg">
+                            <b>Açıklama:</b> {q.explanation}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* D. ENTREPRENEUR & INVESTOR OPPORTUNITY LAB TAB (Girişim & Kâr Hesabı) */}
+            {resultTab === 'venture' && (
+              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                      <Briefcase className="w-4 h-4 text-amber-600" />
+                      <span>Girişimcilik, Maliyet & Başabaş (Break-Even) Laboratuvarı: "{searchResponse.query}"</span>
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      Aradığınız konuyu ticari bir iş fırsatına dönüştürün ve canlı kârlılık simülasyonu yapın
+                    </p>
+                  </div>
+                </div>
+
+                {/* Live Break-Even & Profit Calculator */}
+                <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-4">
+                  <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                    <TrendingUp className="w-4 h-4 text-emerald-600" />
+                    <span>Canlı Başabaş Noktası (Break-Even) ve Aylık Net Kâr Hesaplayıcı</span>
+                  </span>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+                    <div>
+                      <label className="text-[11px] text-slate-500 block mb-1">Birim Satış Fiyatı (₺)</label>
+                      <input
+                        type="number"
+                        value={unitPrice}
+                        onChange={(e) => setUnitPrice(Math.max(1, Number(e.target.value)))}
+                        className="w-full px-3 py-1.5 rounded-lg border border-slate-200 font-bold text-slate-900"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] text-slate-500 block mb-1">Birim Maliyet (₺)</label>
+                      <input
+                        type="number"
+                        value={unitCost}
+                        onChange={(e) => setUnitCost(Math.max(0, Number(e.target.value)))}
+                        className="w-full px-3 py-1.5 rounded-lg border border-slate-200 font-bold text-slate-900"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] text-slate-500 block mb-1">Aylık Sabit Gider (₺)</label>
+                      <input
+                        type="number"
+                        value={monthlyFixedCost}
+                        onChange={(e) => setMonthlyFixedCost(Math.max(0, Number(e.target.value)))}
+                        className="w-full px-3 py-1.5 rounded-lg border border-slate-200 font-bold text-slate-900"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] text-slate-500 block mb-1">Aylık Satış Adedi</label>
+                      <input
+                        type="number"
+                        value={estimatedMonthlySales}
+                        onChange={(e) => setEstimatedMonthlySales(Math.max(1, Number(e.target.value)))}
+                        className="w-full px-3 py-1.5 rounded-lg border border-slate-200 font-bold text-blue-600"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                    <div className="p-3 rounded-xl bg-amber-50 border border-amber-200">
+                      <span className="text-[10px] font-bold text-amber-800 uppercase block">
+                        Başabaş (Break-Even) Noktası
+                      </span>
+                      <span className="text-base font-black text-slate-900">
+                        {ventureMetrics.breakEvenUnits} Adet Satış / Ay
+                      </span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-blue-50 border border-blue-200">
+                      <span className="text-[10px] font-bold text-blue-800 uppercase block">
+                        Aylık Toplam Ciro
+                      </span>
+                      <span className="text-base font-black text-blue-700">
+                        {ventureMetrics.monthlyRevenue.toLocaleString('tr-TR')} ₺
+                      </span>
+                    </div>
+                    <div
+                      className={`p-3 rounded-xl border ${
+                        ventureMetrics.monthlyNetProfit >= 0
+                          ? 'bg-emerald-50 border-emerald-200'
+                          : 'bg-rose-50 border-rose-200'
+                      }`}
+                    >
+                      <span className="text-[10px] font-bold uppercase block text-slate-700">
+                        Aylık Net Kâr (%{ventureMetrics.profitMarginPct} Marj)
+                      </span>
+                      <span
+                        className={`text-base font-black ${
+                          ventureMetrics.monthlyNetProfit >= 0 ? 'text-emerald-700' : 'text-rose-600'
+                        }`}
+                      >
+                        {ventureMetrics.monthlyNetProfit.toLocaleString('tr-TR')} ₺
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 5-Slide Investor Pitch Deck */}
+                <div className="space-y-2.5">
+                  <span className="text-xs font-bold text-slate-800 uppercase tracking-wider block">
+                    📊 5 Slaytlık Hazır Yatırımcı Sunumu (Pitch Deck) Taslağı
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-5 gap-2.5">
+                    {searchResponse.aiSynthesis.ventureOpportunity.pitchSlides.map((s) => (
+                      <div key={s.slide} className="p-3 rounded-xl bg-white border border-slate-200 flex flex-col justify-between">
+                        <div>
+                          <span className="text-[11px] font-bold text-blue-600 block mb-1">{s.title}</span>
+                          <p className="text-[11px] text-slate-600 leading-relaxed">{s.content}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* E. 2036 TEMPORAL TIME MACHINE TAB (Geçmiş ➔ Bugün ➔ 2036 Gelecek) */}
             {resultTab === 'temporal' && (
               <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
@@ -952,21 +1569,21 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
               </div>
             )}
 
-            {/* C. 4-LENS PERSPECTIVE SWITCHER (CEO, Engineer, Devil's Advocate, ELI5) */}
+            {/* F. 4-LENS PERSPECTIVE SWITCHER (CEO, Engineer, Devil's Advocate, ELI5) */}
             {(resultTab === 'all' || resultTab === 'ai') && (
               <div className="p-4 sm:p-5 rounded-2xl bg-blue-50/40 border border-blue-100 space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <span className="text-xs font-bold text-blue-700 flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>Akıllı Sentez & Bakış Açısı Lensi</span>
+                    <span>4 Farklı Uzman Gözünden Sentez</span>
                   </span>
 
                   {/* 4 Lens Pills */}
                   <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
                     {(
                       [
-                        { id: 'ceo', label: '🎯 Yönetici' },
-                        { id: 'engineer', label: '💻 Mühendis' },
+                        { id: 'ceo', label: '🎯 İş & Yönetici' },
+                        { id: 'engineer', label: '🔬 Uzman & Akademik' },
                         { id: 'critic', label: '⚠️ Risk Analizi' },
                         { id: 'eli5', label: '👶 Yalın Anlatım' }
                       ] as const
@@ -1001,7 +1618,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
               </div>
             )}
 
-            {/* D. INTERACTIVE WEIGHTED DECISION MATRIX TAB */}
+            {/* G. INTERACTIVE WEIGHTED DECISION MATRIX TAB */}
             {resultTab === 'compare' && searchResponse.decisionMatrix && (
               <div className="p-5 rounded-2xl bg-white border border-slate-200 space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
@@ -1045,8 +1662,12 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                           </div>
                         </div>
                         <div className="flex justify-between text-[11px] text-slate-600 mb-1">
-                          <span>{searchResponse.decisionMatrix?.optionA}: <b>{c.scoreA}</b></span>
-                          <span>{searchResponse.decisionMatrix?.optionB}: <b>{c.scoreB}</b></span>
+                          <span>
+                            {searchResponse.decisionMatrix?.optionA}: <b>{c.scoreA}</b>
+                          </span>
+                          <span>
+                            {searchResponse.decisionMatrix?.optionB}: <b>{c.scoreB}</b>
+                          </span>
                         </div>
                         <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden flex">
                           <div className="bg-blue-600 h-full" style={{ width: `${c.scoreA / 2}%` }} />
@@ -1059,7 +1680,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
               </div>
             )}
 
-            {/* E. FACT-CHECK & REALITY X-RAY TAB */}
+            {/* H. FACT-CHECK & REALITY X-RAY TAB */}
             {resultTab === 'xray' && (
               <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
                 <div className="flex items-center justify-between">
@@ -1093,7 +1714,35 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
               </div>
             )}
 
-            {/* F. LIVE GITHUB REPOS STRIP (When available) */}
+            {/* I. LIVE ACADEMIC PAPERS (OpenAlex) & GITHUB REPOS STRIP */}
+            {resultTab === 'all' &&
+              searchResponse.academicPapers &&
+              searchResponse.academicPapers.length > 0 && (
+                <div className="space-y-2">
+                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                    <BookOpen className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Hakemli Bilimsel & Akademik Araştırmalar (OpenAlex Enstitüsü)</span>
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                    {searchResponse.academicPapers.map((paper) => (
+                      <div
+                        key={paper.id}
+                        onClick={() => onNavigateToBrowser(paper.url)}
+                        className="p-3 rounded-xl bg-emerald-50/40 hover:bg-emerald-50 border border-emerald-200/80 hover:border-emerald-400 cursor-pointer transition-all flex flex-col justify-between"
+                      >
+                        <p className="text-xs font-bold text-slate-800 line-clamp-2 mb-1.5">
+                          {paper.title}
+                        </p>
+                        <div className="flex items-center justify-between text-[10px] text-emerald-800 font-semibold">
+                          <span>📅 {paper.year}</span>
+                          <span>📚 {paper.citedByCount.toLocaleString()} Atıf</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
             {resultTab === 'all' && searchResponse.liveRepos && searchResponse.liveRepos.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 {searchResponse.liveRepos.map((repo) => (
@@ -1118,7 +1767,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
               </div>
             )}
 
-            {/* G. CLEAN GOOGLE-STYLE WEB LINKS */}
+            {/* J. CLEAN GOOGLE-STYLE WEB LINKS */}
             {resultTab === 'all' && (
               <div className="space-y-3 pt-1">
                 {searchResponse.webResults.map((item) => (
@@ -1175,7 +1824,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
           </div>
         ) : (
           /* ==================== 3. MODULAR ADD/REMOVE WORKSPACE & KANBAN ==================== */
-          <div className="w-full space-y-6 mt-2">
+          <div className="w-full space-y-6 mt-1">
             {/* MODULE 1: QUICK SHORTCUTS */}
             {activeWidgets.includes('shortcuts') && (
               <div className="bg-slate-50/70 rounded-2xl border border-slate-200/80 p-4 sm:p-5">
@@ -1205,19 +1854,22 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                 </div>
 
                 {showAddShortcut && (
-                  <form onSubmit={handleAddShortcut} className="mb-3 flex flex-wrap gap-2 bg-white p-3 rounded-xl border border-slate-200">
+                  <form
+                    onSubmit={handleAddShortcut}
+                    className="mb-3 flex flex-wrap gap-2 bg-white p-3 rounded-xl border border-slate-200"
+                  >
                     <input
                       type="text"
                       value={newSiteTitle}
                       onChange={(e) => setNewSiteTitle(e.target.value)}
-                      placeholder="Site adı (Örn: GitHub)"
+                      placeholder="Site adı (Örn: e-Devlet)"
                       className="px-3 py-1.5 rounded-lg border border-slate-200 text-xs flex-1 min-w-[120px] outline-none focus:border-blue-500"
                     />
                     <input
                       type="text"
                       value={newSiteUrl}
                       onChange={(e) => setNewSiteUrl(e.target.value)}
-                      placeholder="Adres (Örn: github.com)"
+                      placeholder="Adres (Örn: turkiye.gov.tr)"
                       className="px-3 py-1.5 rounded-lg border border-slate-200 text-xs flex-1 min-w-[160px] outline-none focus:border-blue-500"
                     />
                     <button
@@ -1426,7 +2078,76 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
               </div>
             )}
 
-            {/* MODULE 3: LIVE GLOBAL TECH RADAR (Canlı Teknoloji & Gündem Radarı) */}
+            {/* MODULE 3: UNIVERSAL DOCUMENT, PETITION & BUSINESS PLAN STUDIO */}
+            {activeWidgets.includes('docstudio') && (
+              <div className="bg-slate-50/70 rounded-2xl border border-slate-200/80 p-4 sm:p-5 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-purple-600" />
+                    <h2 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                      Hızlı Dilekçe, Sözleşme & İş Planı Stüdyosu (Her Meslek İçin)
+                    </h2>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={handleCopyDocument}
+                      className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-[11px] font-semibold text-slate-700 hover:bg-slate-100 flex items-center gap-1"
+                    >
+                      <Copy className="w-3 h-3" />
+                      <span>Kopyala</span>
+                    </button>
+                    <button
+                      onClick={() => handleDownloadDocument('doc')}
+                      className="px-2.5 py-1 rounded-lg bg-blue-600 text-white text-[11px] font-semibold hover:bg-blue-700 flex items-center gap-1"
+                    >
+                      <Download className="w-3 h-3" />
+                      <span>Word (.doc) İndir</span>
+                    </button>
+                    <button
+                      onClick={() => toggleWidget('docstudio')}
+                      className="p-1 text-slate-400 hover:text-slate-600"
+                      title="Bu alanı kaldır"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input
+                    type="text"
+                    value={docTopicInput}
+                    onChange={(e) => setDocTopicInput(e.target.value)}
+                    placeholder="Belge veya dilekçe konusunu yazın (Örn: Kira Sözleşmesi, KOBİ İş Planı)..."
+                    className="flex-1 px-3 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-800 outline-none focus:border-blue-500 select-text"
+                  />
+                  <div className="flex gap-1 overflow-x-auto no-scrollbar">
+                    {DOCUMENT_TYPES.map((dt) => (
+                      <button
+                        key={dt.id}
+                        onClick={() => setSelectedDocType(dt.id)}
+                        className={`px-2.5 py-1.5 rounded-xl text-[11px] font-semibold whitespace-nowrap border transition-all ${
+                          selectedDocType === dt.id
+                            ? 'bg-purple-600 text-white border-purple-600'
+                            : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
+                        }`}
+                      >
+                        {dt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <textarea
+                  rows={7}
+                  value={editableDocContent}
+                  onChange={(e) => setEditableDocContent(e.target.value)}
+                  className="w-full p-3 rounded-xl bg-white border border-slate-200 font-mono text-xs text-slate-800 leading-relaxed outline-none focus:border-blue-500 select-text"
+                />
+              </div>
+            )}
+
+            {/* MODULE 4: LIVE GLOBAL TECH RADAR */}
             {activeWidgets.includes('radar') && (
               <div className="bg-slate-50/70 rounded-2xl border border-slate-200/80 p-4 sm:p-5">
                 <div className="flex items-center justify-between mb-3">
@@ -1465,7 +2186,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
               </div>
             )}
 
-            {/* MODULE 4, 5, 6 ROW: Notes, Calculator, Pomodoro */}
+            {/* MODULE 5, 6, 7 ROW: Notes, Calculator (KDV/VKİ/Döviz), Pomodoro */}
             {(activeWidgets.includes('notes') ||
               activeWidgets.includes('calculator') ||
               activeWidgets.includes('pomodoro')) && (
@@ -1522,7 +2243,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                         <div className="flex items-center gap-2">
                           <Calculator className="w-4 h-4 text-blue-600" />
                           <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                            Hesap & Döviz Kutusu
+                            KDV, VKİ, Döviz & Hesap
                           </h3>
                         </div>
                         <button
@@ -1537,14 +2258,25 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                         type="text"
                         value={calcInput}
                         onChange={(e) => setCalcInput(e.target.value)}
-                        placeholder="Örn: 1500 * 1.20 veya 100 usd to try"
-                        className="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-900 outline-none focus:border-blue-500 mb-3 select-text"
+                        placeholder="10000 tl kdv | 175 cm 75 kg | 100 usd to try"
+                        className="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-900 outline-none focus:border-blue-500 mb-2 select-text"
                       />
+                      <div className="flex gap-1 mb-2">
+                        {['10000 tl kdv', '175 cm 75 kg', '100 usd to try'].map((ex) => (
+                          <button
+                            key={ex}
+                            onClick={() => setCalcInput(ex)}
+                            className="text-[10px] px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 hover:text-blue-600"
+                          >
+                            {ex}
+                          </button>
+                        ))}
+                      </div>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-white border border-slate-200 flex items-center justify-between">
+                    <div className="p-2.5 rounded-xl bg-white border border-slate-200 flex items-center justify-between">
                       <span className="text-xs text-slate-500">Sonuç:</span>
-                      <span className="text-base font-black text-blue-600">
+                      <span className="text-sm font-black text-blue-600">
                         {calcWidgetOutput ? calcWidgetOutput.result : '—'}
                       </span>
                     </div>
