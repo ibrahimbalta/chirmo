@@ -110,6 +110,8 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
   initialQuery = '',
   onNavigateToBrowser,
   onNavigateToAgents,
+  onNavigateToProjects,
+  onNavigateToTools,
   onNavigateToVisual,
   onNavigateToCompare,
   onNavigateToDiscover
