@@ -9,19 +9,19 @@ module.exports = {
       colors: {
         chirmo: {
           bg: '#FFFFFF',
-          secondary: '#F5F6FA',
+          secondary: '#F8FAFC',
           brand: {
-            DEFAULT: '#6652C9',
-            hover: '#5541B8',
-            light: '#F0EEFC',
-            dark: '#4835A1'
+            DEFAULT: '#2563EB',
+            hover: '#1D4ED8',
+            light: '#EFF6FF',
+            dark: '#1E40AF'
           },
           text: {
-            DEFAULT: '#252631',
-            secondary: '#777987',
-            muted: '#9CA3AF'
+            DEFAULT: '#0F172A',
+            secondary: '#475569',
+            muted: '#94A3B8'
           },
-          border: '#E5E7EF',
+          border: '#E2E8F0',
           success: '#10B981',
           warning: '#F59E0B',
           error: '#EF4444'
