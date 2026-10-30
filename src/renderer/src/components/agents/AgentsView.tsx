@@ -16,10 +16,14 @@ import {
 } from 'lucide-react';
 import { Project, Task, AgentPlan, AgentStep } from '../../types';
 
-export const AgentsView: React.FC = () => {
+interface AgentsViewProps {
+  initialPrompt?: string;
+}
+
+export const AgentsView: React.FC<AgentsViewProps> = ({ initialPrompt }) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedProjectId, setSelectedProjectId] = useState<string>('');
-  const [prompt, setPrompt] = useState('');
+  const [prompt, setPrompt] = useState(initialPrompt || '');
   const [isRunning, setIsRunning] = useState(false);
 
   // Active agent execution state
@@ -28,40 +32,58 @@ export const AgentsView: React.FC = () => {
   const [latestTask, setLatestTask] = useState<Task | null>(null);
 
   useEffect(() => {
+    if (initialPrompt) {
+      setPrompt(initialPrompt);
+    }
+  }, [initialPrompt]);
+
+  useEffect(() => {
     loadProjects();
 
     if (window.chirmo) {
-      const unsubPlan = window.chirmo.onAgentPlan((taskId, plan) => {
-        if (taskId === currentTaskId || !currentTaskId) {
-          setCurrentTaskId(taskId);
-          setCurrentPlan(plan);
-        }
-      });
-
-      const unsubStep = window.chirmo.onAgentStep((taskId, step) => {
-        if (taskId === currentTaskId) {
-          setCurrentPlan((prev) => {
-            if (!prev) return null;
-            const updatedSteps = prev.steps.map((s) => (s.id === step.id ? { ...s, ...step } : s));
-            return { ...prev, steps: updatedSteps };
-          });
-
-          // Refresh task data to get logs and results
-          window.chirmo.getTasks().then((allTasks) => {
-            const found = allTasks.find((t) => t.id === taskId);
-            if (found) {
-              setLatestTask(found);
-              if (found.status === 'completed' || found.status === 'error' || found.status === 'cancelled') {
-                setIsRunning(false);
+      const unsubPlan =
+        typeof window.chirmo.onAgentPlan === 'function'
+          ? window.chirmo.onAgentPlan((taskId, plan) => {
+              if (taskId === currentTaskId || !currentTaskId) {
+                setCurrentTaskId(taskId);
+                setCurrentPlan(plan);
               }
-            }
-          });
-        }
-      });
+            })
+          : () => {};
+
+      const unsubStep =
+        typeof window.chirmo.onAgentStep === 'function'
+          ? window.chirmo.onAgentStep((taskId, step) => {
+              if (taskId === currentTaskId) {
+                setCurrentPlan((prev) => {
+                  if (!prev) return null;
+                  const updatedSteps = prev.steps.map((s) =>
+                    s.id === step.id ? { ...s, ...step } : s
+                  );
+                  return { ...prev, steps: updatedSteps };
+                });
+
+                // Refresh task data to get logs and results
+                window.chirmo.getTasks().then((allTasks) => {
+                  const found = allTasks.find((t) => t.id === taskId);
+                  if (found) {
+                    setLatestTask(found);
+                    if (
+                      found.status === 'completed' ||
+                      found.status === 'error' ||
+                      found.status === 'cancelled'
+                    ) {
+                      setIsRunning(false);
+                    }
+                  }
+                });
+              }
+            })
+          : () => {};
 
       return () => {
-        unsubPlan();
-        unsubStep();
+        if (typeof unsubPlan === 'function') unsubPlan();
+        if (typeof unsubStep === 'function') unsubStep();
       };
     }
   }, [currentTaskId]);

@@ -18,6 +18,7 @@ export const App: React.FC = () => {
   const [tabs, setTabs] = useState<Tab[]>([]);
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
   const [isTaskPanelOpen, setIsTaskPanelOpen] = useState(false);
+  const [agentInitialPrompt, setAgentInitialPrompt] = useState<string>('');
 
   useEffect(() => {
     // Initial load
@@ -164,7 +165,7 @@ export const App: React.FC = () => {
             {/* AI Agents View */}
             {activeMenu === 'agents' && (
               <div className="absolute inset-0 z-10 flex">
-                <AgentsView />
+                <AgentsView initialPrompt={agentInitialPrompt} />
               </div>
             )}
 
@@ -218,7 +219,8 @@ export const App: React.FC = () => {
                       });
                     }
                   }}
-                  onNavigateToAgents={() => {
+                  onNavigateToAgents={(prompt: string) => {
+                    setAgentInitialPrompt(prompt);
                     setActiveMenu('agents');
                   }}
                   onNavigateToProjects={() => setActiveMenu('projects')}
