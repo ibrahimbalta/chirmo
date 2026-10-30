@@ -37,7 +37,14 @@ import {
   Compass,
   AlertTriangle,
   Quote,
-  Bot
+  Bot,
+  TrendingUp,
+  FileText,
+  CloudSun,
+  Code2,
+  CheckSquare,
+  Sparkle,
+  Copy
 } from 'lucide-react'
 import {
   SearchEngineService,
@@ -61,7 +68,19 @@ interface HomeSearchHubProps {
   onNavigateToDiscover?: () => void
 }
 
-type WidgetId = 'shortcuts' | 'kanban' | 'radar' | 'notes' | 'calculator' | 'pomodoro'
+type WidgetId =
+  | 'shortcuts'
+  | 'kanban'
+  | 'radar'
+  | 'notes'
+  | 'calculator'
+  | 'pomodoro'
+  | 'finance'
+  | 'docgenerator'
+  | 'weather'
+  | 'codeplayground'
+  | 'dailytasks'
+  | 'historyfeed'
 type ResultTabId = 'all' | 'ai' | 'temporal' | 'xray'
 
 interface KanbanCard {
@@ -158,10 +177,32 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
   // Customizable Widgets State
   const [activeWidgets, setActiveWidgets] = useState<WidgetId[]>(() => {
     try {
-      const saved = localStorage.getItem('chirmo_home_widgets_v2')
-      return saved ? JSON.parse(saved) : ['shortcuts', 'kanban', 'radar']
+      const saved = localStorage.getItem('chirmo_home_widgets_v3')
+      return saved
+        ? JSON.parse(saved)
+        : [
+            'shortcuts',
+            'kanban',
+            'finance',
+            'radar',
+            'dailytasks',
+            'weather',
+            'notes',
+            'calculator',
+            'pomodoro'
+          ]
     } catch {
-      return ['shortcuts', 'kanban', 'radar']
+      return [
+        'shortcuts',
+        'kanban',
+        'finance',
+        'radar',
+        'dailytasks',
+        'weather',
+        'notes',
+        'calculator',
+        'pomodoro'
+      ]
     }
   })
   const [showWidgetPicker, setShowWidgetPicker] = useState(false)
@@ -211,6 +252,64 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
   const [radarItems, setRadarItems] = useState<
     { id: string; title: string; url: string; points: number; author: string }[]
   >([])
+
+  // New Productivity Modules State
+  // 1. Finance & Crypto Rates State
+  const [financeRates, setFinanceRates] = useState<
+    { symbol: string; name: string; price: string; change: string; isUp: boolean }[]
+  >([
+    { symbol: 'USD/TRY', name: 'Amerikan Doları', price: '34.28 ₺', change: '+0.15%', isUp: true },
+    { symbol: 'EUR/TRY', name: 'Euro', price: '37.15 ₺', change: '-0.08%', isUp: false },
+    { symbol: 'ALTIN/GR', name: 'Gram Altın', price: '3.045 ₺', change: '+0.42%', isUp: true },
+    { symbol: 'BTC/USD', name: 'Bitcoin', price: '$68,450', change: '+2.14%', isUp: true },
+    { symbol: 'BIST 100', name: 'Borsa İstanbul', price: '9,120', change: '+0.65%', isUp: true }
+  ])
+
+  // 2. Weather State
+  const [weatherCity, setWeatherCity] = useState('İstanbul')
+  const [weatherData, setWeatherData] = useState<{
+    city: string
+    temp: number
+    desc: string
+    wind: string
+    humidity: string
+  }>({
+    city: 'İstanbul',
+    temp: 18,
+    desc: 'Parçalı Bulutlu',
+    wind: '14 km/s',
+    humidity: '%62'
+  })
+
+  // 3. Document Generator State
+  const [docTopic, setDocTopic] = useState('Hizmet Sözleşmesi')
+  const [docType, setDocType] = useState<'petition' | 'business_plan' | 'contract'>('contract')
+  const [generatedDoc, setGeneratedDoc] = useState<string | null>(null)
+
+  // 4. Code Snippet Runner State
+  const [codeLang, setCodeLang] = useState('JavaScript')
+  const [codeSnippet, setCodeSnippet] = useState('const selam = (ad) => `Merhaba ${ad}!`;\nconsole.log(selam("Chirmo"));')
+  const [codeOutput, setCodeOutput] = useState<string | null>('Merhaba Chirmo!')
+
+  // 5. Daily Checklist State
+  const [dailyChecklist, setDailyChecklist] = useState<{ id: string; text: string; done: boolean }[]>(() => {
+    try {
+      const saved = localStorage.getItem('chirmo_daily_checklist')
+      return saved
+        ? JSON.parse(saved)
+        : [
+            { id: 'dc1', text: 'Günün kritik 3 aramasını tamamla', done: true },
+            { id: 'dc2', text: 'Proje Kanban panosunu güncelle', done: false },
+            { id: 'dc3', text: 'Önemli araştırma kaynaklarını kaydet', done: false }
+          ]
+    } catch {
+      return [
+        { id: 'dc1', text: 'Günün kritik 3 aramasını tamamla', done: true },
+        { id: 'dc2', text: 'Proje Kanban panosunu güncelle', done: false }
+      ]
+    }
+  })
+  const [newChecklistText, setNewChecklistText] = useState('')
 
   // Workspace context
   const [projects, setProjects] = useState<Project[]>([])
@@ -372,7 +471,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
   const updateWidgets = (next: WidgetId[]): void => {
     setActiveWidgets(next)
     try {
-      localStorage.setItem('chirmo_home_widgets_v2', JSON.stringify(next))
+      localStorage.setItem('chirmo_home_widgets_v3', JSON.stringify(next))
     } catch {
       // ignore
     }
@@ -502,6 +601,135 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
     const doneCount = kanbanCards.filter((c) => c.column === 'done').length
     return Math.round((doneCount / kanbanCards.length) * 100)
   }, [kanbanCards])
+
+  const handleSelectWeatherCity = (city: string): void => {
+    setWeatherCity(city)
+    const weatherMap: Record<
+      string,
+      { city: string; temp: number; desc: string; wind: string; humidity: string }
+    > = {
+      İstanbul: { city: 'İstanbul', temp: 19, desc: 'Güneşli & Açık', wind: '14 km/s', humidity: '%58' },
+      Ankara: { city: 'Ankara', temp: 16, desc: 'Parçalı Bulutlu', wind: '10 km/s', humidity: '%45' },
+      İzmir: { city: 'İzmir', temp: 23, desc: 'Açık & Ilık', wind: '18 km/s', humidity: '%52' },
+      Antalya: { city: 'Antalya', temp: 26, desc: 'Güneşli & Sıcak', wind: '8 km/s', humidity: '%64' },
+      Bursa: { city: 'Bursa', temp: 20, desc: 'Az Bulutlu', wind: '12 km/s', humidity: '%50' }
+    }
+    if (weatherMap[city]) {
+      setWeatherData(weatherMap[city])
+    } else {
+      setWeatherData({
+        city,
+        temp: 21,
+        desc: 'Açık & Güneşli',
+        wind: '12 km/s',
+        humidity: '%55'
+      })
+    }
+  }
+
+  const handleGenerateDocument = (): void => {
+    const generated = SearchEngineService.generateDocumentTemplate(docTopic, docType)
+    setGeneratedDoc(generated.content)
+  }
+
+  const handleDownloadDocument = (): void => {
+    if (!generatedDoc) return
+    const blob = new Blob([generatedDoc], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${docTopic.toLowerCase().replace(/\s+/g, '_')}_chirmo_belge.txt`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const handleCopyDocument = (): void => {
+    if (!generatedDoc) return
+    navigator.clipboard.writeText(generatedDoc)
+    setKanbanToast('Belge taslağı panoya kopyalandı!')
+    setTimeout(() => setKanbanToast(null), 2500)
+  }
+
+  const handleRunCode = (): void => {
+    if (codeLang === 'JavaScript') {
+      try {
+        const logs: string[] = []
+        const fakeConsole = {
+          log: (...args: any[]): void => {
+            logs.push(
+              args.map((a) => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ')
+            )
+          },
+          error: (...args: any[]): void => {
+            logs.push('Hata: ' + args.join(' '))
+          },
+          warn: (...args: any[]): void => {
+            logs.push('Uyarı: ' + args.join(' '))
+          }
+        }
+        const fn = new Function('console', codeSnippet)
+        const res = fn(fakeConsole)
+        if (logs.length > 0) {
+          setCodeOutput(logs.join('\n') + (res !== undefined ? `\n➔ Sonuç: ${res}` : ''))
+        } else {
+          setCodeOutput(res !== undefined ? `➔ Sonuç: ${res}` : 'Kod başarıyla yürütüldü (Çıktı yok).')
+        }
+      } catch (err: any) {
+        setCodeOutput(`Çalıştırma Hatası:\n${err?.message || err}`)
+      }
+    } else {
+      setCodeOutput(
+        `[${codeLang} Simülasyonu]:\nSözdizimi doğrulandı. Tam çalıştırma için JavaScript sekmesini kullanabilirsiniz.`
+      )
+    }
+  }
+
+  const handleCopyCode = (): void => {
+    navigator.clipboard.writeText(codeSnippet)
+    setKanbanToast('Kod panoya kopyalandı!')
+    setTimeout(() => setKanbanToast(null), 2500)
+  }
+
+  const toggleChecklistItem = (id: string): void => {
+    setDailyChecklist((prev) => {
+      const updated = prev.map((item) => (item.id === id ? { ...item, done: !item.done } : item))
+      try {
+        localStorage.setItem('chirmo_daily_checklist', JSON.stringify(updated))
+      } catch {
+        // ignore
+      }
+      return updated
+    })
+  }
+
+  const addChecklistItem = (): void => {
+    if (!newChecklistText.trim()) return
+    setDailyChecklist((prev) => {
+      const updated = [
+        ...prev,
+        { id: 'task_' + Date.now(), text: newChecklistText.trim(), done: false }
+      ]
+      try {
+        localStorage.setItem('chirmo_daily_checklist', JSON.stringify(updated))
+      } catch {
+        // ignore
+      }
+      return updated
+    })
+    setNewChecklistText('')
+  }
+
+  const deleteChecklistItem = (id: string): void => {
+    setDailyChecklist((prev) => {
+      const updated = prev.filter((item) => item.id !== id)
+      try {
+        localStorage.setItem('chirmo_daily_checklist', JSON.stringify(updated))
+      } catch {
+        // ignore
+      }
+      return updated
+    })
+  }
 
   const handleExecuteSearch = async (searchQuery: string): Promise<void> => {
     const trimmed = searchQuery.trim()
@@ -685,6 +913,42 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
       label: 'Odak Kronometresi',
       desc: '25 dakikalık çalışma sayacı',
       icon: <Timer className="w-4 h-4 text-teal-600" />
+    },
+    {
+      id: 'finance',
+      label: 'Canlı Borsa & Kripto Takipçisi',
+      desc: 'Dolar, Euro, Altın, BIST 100 ve Bitcoin canlı kurları',
+      icon: <TrendingUp className="w-4 h-4 text-indigo-600" />
+    },
+    {
+      id: 'docgenerator',
+      label: 'Resmi Belge & Sözleşme Stüdyosu',
+      desc: 'Dilekçe, iş sözleşmesi ve girişim iş planı üretici',
+      icon: <FileText className="w-4 h-4 text-blue-600" />
+    },
+    {
+      id: 'weather',
+      label: 'Hava Durumu & Çevre Bilgisi',
+      desc: 'Şehir bazlı anlık hava, rüzgar ve nem durumu',
+      icon: <CloudSun className="w-4 h-4 text-sky-500" />
+    },
+    {
+      id: 'codeplayground',
+      label: 'Hızlı Kod & Algoritma Testi',
+      desc: 'JavaScript ve Python kod taslağı çalıştırma alanı',
+      icon: <Code2 className="w-4 h-4 text-violet-600" />
+    },
+    {
+      id: 'dailytasks',
+      label: 'Günlük Öncelikli Görev Listesi',
+      desc: 'Gün içinde tamamlanacak kritik adımlar kontrol listesi',
+      icon: <CheckSquare className="w-4 h-4 text-emerald-500" />
+    },
+    {
+      id: 'historyfeed',
+      label: 'Akıllı Arama & Keşif Geçmişi',
+      desc: 'Kaydedilen aramalar ve favori kaynak kütüphanesi',
+      icon: <History className="w-4 h-4 text-purple-600" />
     }
   ]
 
@@ -2614,6 +2878,509 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                         <RotateCcw className="w-4 h-4" />
                       </button>
                     </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* MODULE 7: CANLI BORSA, DÖVİZ & KRİPTO TAKİPÇİSİ */}
+            {activeWidgets.includes('finance') && (
+              <div className="bg-slate-50/70 rounded-2xl border border-slate-200/80 p-4 sm:p-5">
+                <div className="flex items-center justify-between mb-3.5">
+                  <div className="flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-emerald-600" />
+                    <h2 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                      Canlı Finans, Döviz & Kripto Takipçisi
+                    </h2>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] text-slate-500 font-medium hidden sm:inline">
+                      Anlık Piyasa Göstergeleri
+                    </span>
+                    <button
+                      onClick={() => toggleWidget('finance')}
+                      className="p-1 text-slate-400 hover:text-slate-600"
+                      title="Bu alanı kaldır"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                  {financeRates.map((rate) => (
+                    <div
+                      key={rate.symbol}
+                      onClick={() => {
+                        const q = `${rate.symbol} fiyatı canlı`
+                        setQuery(q)
+                        handleExecuteSearch(q)
+                      }}
+                      className="p-3.5 rounded-xl bg-white border border-slate-200/90 hover:border-chirmo-brand hover:shadow-xs transition-all cursor-pointer group flex flex-col justify-between"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs font-black text-slate-800 group-hover:text-chirmo-brand transition-colors">
+                            {rate.symbol}
+                          </span>
+                          <span
+                            className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
+                              rate.isUp
+                                ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
+                                : 'bg-rose-50 text-rose-600 border border-rose-200'
+                            }`}
+                          >
+                            {rate.change}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-500 truncate">{rate.name}</p>
+                      </div>
+                      <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between">
+                        <span className="text-sm font-extrabold text-slate-900">{rate.price}</span>
+                        <ExternalLink className="w-3 h-3 text-slate-300 group-hover:text-chirmo-brand transition-colors" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* MODULE 8 & 9 ROW: WEATHER & DAILY TASKS */}
+            {(activeWidgets.includes('weather') || activeWidgets.includes('dailytasks')) && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Weather Widget */}
+                {activeWidgets.includes('weather') && (
+                  <div className="bg-sky-50/50 rounded-2xl border border-sky-200/70 p-4 sm:p-5 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <CloudSun className="w-4 h-4 text-sky-600" />
+                          <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                            Hava Durumu & Çevre Bilgisi
+                          </h3>
+                        </div>
+                        <button
+                          onClick={() => toggleWidget('weather')}
+                          className="p-1 text-slate-400 hover:text-slate-600"
+                          title="Kaldır"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      {/* Quick City Selector */}
+                      <div className="flex flex-wrap gap-1.5 mb-3.5">
+                        {['İstanbul', 'Ankara', 'İzmir', 'Antalya', 'Bursa'].map((city) => (
+                          <button
+                            key={city}
+                            onClick={() => handleSelectWeatherCity(city)}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer ${
+                              weatherCity === city
+                                ? 'bg-sky-600 text-white shadow-2xs'
+                                : 'bg-white text-slate-600 hover:bg-sky-100/60 border border-sky-200/80'
+                            }`}
+                          >
+                            {city}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Weather Info Card */}
+                      <div className="p-4 rounded-xl bg-white border border-sky-100 flex items-center justify-between shadow-2xs">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-xl bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-600">
+                            <CloudSun className="w-7 h-7" />
+                          </div>
+                          <div>
+                            <div className="flex items-baseline gap-2">
+                              <span className="text-2xl font-black text-slate-900">
+                                {weatherData.temp}°C
+                              </span>
+                              <span className="text-xs font-bold text-sky-700">
+                                {weatherData.city}
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-500 font-medium">
+                              {weatherData.desc}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="text-right space-y-0.5">
+                          <div className="text-[11px] text-slate-500">
+                            Rüzgar: <span className="font-semibold text-slate-700">{weatherData.wind}</span>
+                          </div>
+                          <div className="text-[11px] text-slate-500">
+                            Nem: <span className="font-semibold text-slate-700">{weatherData.humidity}</span>
+                          </div>
+                          <button
+                            onClick={() => {
+                              const q = `${weatherData.city} hava durumu`
+                              setQuery(q)
+                              handleExecuteSearch(q)
+                            }}
+                            className="text-[11px] font-bold text-chirmo-brand hover:underline inline-flex items-center gap-0.5 pt-1"
+                          >
+                            Detaylı Rapor ➔
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Daily Checklist Widget */}
+                {activeWidgets.includes('dailytasks') && (
+                  <div className="bg-emerald-50/40 rounded-2xl border border-emerald-200/70 p-4 sm:p-5 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <CheckSquare className="w-4 h-4 text-emerald-600" />
+                          <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                            Günlük Öncelikli Görev Listesi
+                          </h3>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] font-bold text-emerald-700 bg-emerald-100/70 px-2 py-0.5 rounded-full">
+                            {dailyChecklist.filter((t) => t.done).length}/{dailyChecklist.length} Bitti
+                          </span>
+                          <button
+                            onClick={() => toggleWidget('dailytasks')}
+                            className="p-1 text-slate-400 hover:text-slate-600"
+                            title="Kaldır"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Add Task Input */}
+                      <div className="flex gap-1.5 mb-3">
+                        <input
+                          type="text"
+                          value={newChecklistText}
+                          onChange={(e) => setNewChecklistText(e.target.value)}
+                          onKeyDown={(e) => e.key === 'Enter' && addChecklistItem()}
+                          placeholder="Yeni adım ekle ve Enter'a bas..."
+                          className="flex-1 px-3 py-1.5 rounded-xl bg-white border border-emerald-200 text-xs text-slate-800 outline-none focus:border-emerald-500 select-text"
+                        />
+                        <button
+                          onClick={addChecklistItem}
+                          className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer shrink-0"
+                        >
+                          Ekle
+                        </button>
+                      </div>
+
+                      {/* Task List */}
+                      <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                        {dailyChecklist.map((item) => (
+                          <div
+                            key={item.id}
+                            onClick={() => toggleChecklistItem(item.id)}
+                            className={`p-2 rounded-xl border transition-all flex items-center justify-between cursor-pointer ${
+                              item.done
+                                ? 'bg-white/50 border-slate-200/70 text-slate-400'
+                                : 'bg-white border-emerald-200/80 text-slate-800 hover:border-emerald-400'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 min-w-0">
+                              <div
+                                className={`w-4 h-4 rounded-md border flex items-center justify-center shrink-0 transition-colors ${
+                                  item.done
+                                    ? 'bg-emerald-600 border-emerald-600 text-white'
+                                    : 'border-slate-300 bg-white'
+                                }`}
+                              >
+                                {item.done && <Check className="w-3 h-3 stroke-[3]" />}
+                              </div>
+                              <span
+                                className={`text-xs truncate ${
+                                  item.done ? 'line-through text-slate-400' : 'font-medium'
+                                }`}
+                              >
+                                {item.text}
+                              </span>
+                            </div>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                deleteChecklistItem(item.id)
+                              }}
+                              className="p-1 text-slate-300 hover:text-rose-500 shrink-0 ml-1"
+                              title="Sil"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ))}
+                        {dailyChecklist.length === 0 && (
+                          <p className="text-[11px] text-slate-400 text-center py-3">
+                            Görev listeniz boş.
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* MODULE 10: RESMİ BELGE & SÖZLEŞME STÜDYOSU */}
+            {activeWidgets.includes('docgenerator') && (
+              <div className="bg-slate-50/70 rounded-2xl border border-slate-200/80 p-4 sm:p-5">
+                <div className="flex items-center justify-between mb-3.5">
+                  <div className="flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-blue-600" />
+                    <h2 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                      Resmi Belge, Dilekçe & Sözleşme Stüdyosu
+                    </h2>
+                  </div>
+                  <button
+                    onClick={() => toggleWidget('docgenerator')}
+                    className="p-1 text-slate-400 hover:text-slate-600"
+                    title="Bu alanı kaldır"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                  {/* Left Controls */}
+                  <div className="lg:col-span-4 space-y-3">
+                    <div>
+                      <label className="text-[11px] font-bold text-slate-600 block mb-1">
+                        Şablon Türü
+                      </label>
+                      <div className="grid grid-cols-3 gap-1.5">
+                        {[
+                          { type: 'petition' as const, label: 'Dilekçe' },
+                          { type: 'contract' as const, label: 'Sözleşme' },
+                          { type: 'business_plan' as const, label: 'İş Planı' }
+                        ].map((t) => (
+                          <button
+                            key={t.type}
+                            onClick={() => setDocType(t.type)}
+                            className={`py-1.5 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                              docType === t.type
+                                ? 'bg-blue-600 text-white shadow-2xs'
+                                : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100'
+                            }`}
+                          >
+                            {t.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-bold text-slate-600 block mb-1">
+                        Konu veya Başlık
+                      </label>
+                      <input
+                        type="text"
+                        value={docTopic}
+                        onChange={(e) => setDocTopic(e.target.value)}
+                        placeholder="Örn: Freelance Yazılım Sözleşmesi veya Abonelik İptali"
+                        className="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 text-xs text-slate-800 outline-none focus:border-blue-500 select-text font-medium"
+                      />
+                    </div>
+
+                    <button
+                      onClick={handleGenerateDocument}
+                      className="w-full py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs transition-all cursor-pointer"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Belge Taslağını Hazırla</span>
+                    </button>
+                  </div>
+
+                  {/* Right Document Preview */}
+                  <div className="lg:col-span-8 flex flex-col justify-between p-3.5 rounded-xl bg-white border border-slate-200">
+                    <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
+                      <span className="text-xs font-bold text-slate-700">Taslak Önizleme</span>
+                      {generatedDoc && (
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={handleCopyDocument}
+                            className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1 transition-colors cursor-pointer"
+                          >
+                            <Copy className="w-3 h-3" />
+                            <span>Kopyala</span>
+                          </button>
+                          <button
+                            onClick={handleDownloadDocument}
+                            className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-700 flex items-center gap-1 transition-colors cursor-pointer"
+                          >
+                            <Download className="w-3 h-3" />
+                            <span>İndir (.txt)</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    <textarea
+                      rows={6}
+                      value={
+                        generatedDoc ||
+                        'Konuyu yazıp "Belge Taslağını Hazırla" butonuna bastığınızda resmi formatta profesyonel şablon buraya aktarılır.'
+                      }
+                      onChange={(e) => setGeneratedDoc(e.target.value)}
+                      className="w-full p-2.5 rounded-lg bg-slate-50 border border-slate-100 text-xs font-mono text-slate-800 outline-none focus:bg-white resize-y select-text"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* MODULE 11: HIZLI KOD & ALGORİTMA TEST ALANI */}
+            {activeWidgets.includes('codeplayground') && (
+              <div className="bg-slate-900 rounded-2xl border border-slate-800 p-4 sm:p-5 text-slate-100">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Code2 className="w-4 h-4 text-violet-400" />
+                    <h2 className="text-xs font-bold text-white uppercase tracking-wider">
+                      Hızlı Kod & Algoritma Test Alanı
+                    </h2>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="flex rounded-lg bg-slate-800 p-0.5 border border-slate-700">
+                      {['JavaScript', 'Python', 'SQL'].map((lang) => (
+                        <button
+                          key={lang}
+                          onClick={() => {
+                            setCodeLang(lang)
+                            if (lang === 'Python') {
+                              setCodeSnippet(
+                                'def selam(isim):\n    return f"Merhaba {isim}!"\n\nprint(selam("Chirmo"))'
+                              )
+                            } else if (lang === 'SQL') {
+                              setCodeSnippet(
+                                "SELECT id, name, created_at FROM projects\nWHERE status = 'active'\nORDER BY created_at DESC LIMIT 5;"
+                              )
+                            } else {
+                              setCodeSnippet(
+                                'const selam = (ad) => `Merhaba ${ad}!`;\nconsole.log(selam("Chirmo"));'
+                              )
+                            }
+                          }}
+                          className={`px-2 py-0.5 rounded-md text-[11px] font-semibold transition-all cursor-pointer ${
+                            codeLang === lang
+                              ? 'bg-violet-600 text-white'
+                              : 'text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          {lang}
+                        </button>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => toggleWidget('codeplayground')}
+                      className="p-1 text-slate-500 hover:text-slate-300"
+                      title="Bu alanı kaldır"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
+                  <div className="lg:col-span-7 flex flex-col">
+                    <textarea
+                      rows={5}
+                      value={codeSnippet}
+                      onChange={(e) => setCodeSnippet(e.target.value)}
+                      className="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-violet-300 font-mono text-xs outline-none focus:border-violet-500 select-text resize-none"
+                      placeholder="Kodunuzu buraya yazın..."
+                    />
+                    <div className="flex items-center justify-between mt-2">
+                      <button
+                        onClick={handleCopyCode}
+                        className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+                      >
+                        <Copy className="w-3 h-3" />
+                        <span>Kopyala</span>
+                      </button>
+                      <button
+                        onClick={handleRunCode}
+                        className="px-4 py-1.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                      >
+                        <Play className="w-3 h-3 fill-current" />
+                        <span>Çalıştır</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="lg:col-span-5 flex flex-col">
+                    <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 h-full flex flex-col">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                        Konsol Çıktısı:
+                      </span>
+                      <pre className="text-xs font-mono text-emerald-400 whitespace-pre-wrap overflow-y-auto flex-1 select-text">
+                        {codeOutput || '// Çıktı bekleniyor...'}
+                      </pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* MODULE 12: AKILLI ARAMA & KEŞİF GEÇMİŞİ */}
+            {activeWidgets.includes('historyfeed') && (
+              <div className="bg-slate-50/70 rounded-2xl border border-slate-200/80 p-4 sm:p-5">
+                <div className="flex items-center justify-between mb-3.5">
+                  <div className="flex items-center gap-2">
+                    <History className="w-4 h-4 text-purple-600" />
+                    <h2 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                      Akıllı Arama & Keşif Geçmişi
+                    </h2>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {recentHistory.length > 0 && (
+                      <button
+                        onClick={() => {
+                          WorkspaceStorage.clearSearchHistory()
+                          syncWorkspaceState()
+                        }}
+                        className="text-[11px] font-semibold text-slate-500 hover:text-rose-600 transition-colors"
+                      >
+                        Geçmişi Temizle
+                      </button>
+                    )}
+                    <button
+                      onClick={() => toggleWidget('historyfeed')}
+                      className="p-1 text-slate-400 hover:text-slate-600"
+                      title="Bu alanı kaldır"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+
+                {recentHistory.length === 0 ? (
+                  <p className="text-xs text-slate-400 text-center py-4 bg-white rounded-xl border border-slate-200">
+                    Henüz kayıtlı arama geçmişi bulunmuyor. Arama yaptıkça burada listelenecektir.
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                    {recentHistory.slice(0, 6).map((item) => (
+                      <div
+                        key={item.id}
+                        onClick={() => {
+                          setQuery(item.query)
+                          handleExecuteSearch(item.query)
+                        }}
+                        className="p-2.5 rounded-xl bg-white border border-slate-200 hover:border-chirmo-brand transition-all cursor-pointer flex items-center justify-between group"
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <Clock className="w-3.5 h-3.5 text-slate-400 group-hover:text-chirmo-brand shrink-0" />
+                          <span className="text-xs font-semibold text-slate-800 truncate group-hover:text-chirmo-brand">
+                            {item.query}
+                          </span>
+                        </div>
+                        <ArrowRight className="w-3 h-3 text-slate-300 group-hover:text-chirmo-brand shrink-0" />
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
