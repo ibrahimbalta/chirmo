@@ -12,7 +12,12 @@ import {
   Sparkles,
   Check,
   X,
-  User
+  User,
+  Home,
+  Compass,
+  Image as ImageIcon,
+  Scale,
+  Layers
 } from 'lucide-react';
 import { TabBar } from './components/browser/TabBar';
 import { AddressBar } from './components/browser/AddressBar';
@@ -195,189 +200,220 @@ export const App: React.FC = () => {
       }`}
     >
       {/* ==================== TOP GLOBAL NAVIGATION HEADER ==================== */}
-      <header className="w-full h-16 px-4 sm:px-8 lg:px-12 flex items-center justify-between bg-white/90 backdrop-blur-md border-b border-slate-100/80 z-40 shrink-0">
-        {/* Left: Brand Logo + Primary Navigation Links */}
-        <div className="flex items-center gap-6 lg:gap-10">
+      <header className="w-full h-16 px-4 sm:px-6 lg:px-10 flex items-center justify-between bg-white/95 backdrop-blur-md border-b border-slate-100/90 z-40 shrink-0">
+        {/* Left: Primary Navigation Pill Dock */}
+        <div className="flex items-center gap-1.5 sm:gap-2.5 overflow-x-auto no-scrollbar py-1">
+          {/* Ana Sayfa */}
           <button
             onClick={handleGoHome}
-            className="flex items-center cursor-pointer focus:outline-none group"
-            title="Chirmo Ana Sayfa"
+            className={`px-3.5 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shrink-0 shadow-2xs ${
+              activeMenu === 'home'
+                ? 'bg-slate-900 text-white shadow-xs ring-2 ring-slate-900/10 scale-[1.02]'
+                : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/80 hover:border-slate-300'
+            }`}
+            title="Ana Sayfaya Dön"
           >
-            <ChirmoLogo size="md" variant="header" />
+            <Home className="w-3.5 h-3.5 text-indigo-500" />
+            <span>Ana Sayfa</span>
           </button>
 
-          <nav className="hidden md:flex items-center gap-6 lg:gap-8">
-            <button
-              onClick={() => setActiveMenu('discover')}
-              className={`text-sm lg:text-[15px] font-semibold transition-colors cursor-pointer ${
-                activeMenu === 'discover'
-                  ? 'text-[#6534F8]'
-                  : 'text-slate-700 hover:text-[#6534F8]'
-              }`}
-            >
-              Keşfet
-            </button>
+          {/* Keşfet */}
+          <button
+            onClick={() => setActiveMenu('discover')}
+            className={`px-3.5 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shrink-0 shadow-2xs ${
+              activeMenu === 'discover'
+                ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-500/25 ring-2 ring-purple-200 scale-[1.02]'
+                : 'bg-purple-50/70 hover:bg-purple-100/90 text-purple-700 border border-purple-200/80 hover:border-purple-300'
+            }`}
+            title="Canlı Gündem & Keşifler"
+          >
+            <Compass
+              className={`w-3.5 h-3.5 ${activeMenu === 'discover' ? 'text-white' : 'text-purple-600'}`}
+            />
+            <span>Keşfet</span>
+          </button>
 
-            <button
-              onClick={() => setActiveMenu('agents')}
-              className={`text-sm lg:text-[15px] font-semibold transition-colors cursor-pointer ${
-                activeMenu === 'agents'
-                  ? 'text-[#6534F8]'
-                  : 'text-slate-700 hover:text-[#6534F8]'
-              }`}
-            >
-              Araştırma
-            </button>
+          {/* AI Araştırma */}
+          <button
+            onClick={() => setActiveMenu('agents')}
+            className={`px-3.5 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shrink-0 shadow-2xs ${
+              activeMenu === 'agents'
+                ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-500/25 ring-2 ring-emerald-200 scale-[1.02]'
+                : 'bg-emerald-50/70 hover:bg-emerald-100/90 text-emerald-700 border border-emerald-200/80 hover:border-emerald-300'
+            }`}
+            title="Derin Yapay Zeka Ajanı & Araştırma"
+          >
+            <Sparkles
+              className={`w-3.5 h-3.5 ${activeMenu === 'agents' ? 'text-white' : 'text-emerald-600'}`}
+            />
+            <span>Araştırma</span>
+          </button>
 
-            <button
-              onClick={() => setActiveMenu('visual')}
-              className={`text-sm lg:text-[15px] font-semibold transition-colors cursor-pointer ${
-                activeMenu === 'visual'
-                  ? 'text-[#6534F8]'
-                  : 'text-slate-700 hover:text-[#6534F8]'
-              }`}
-            >
-              Görsel
-            </button>
+          {/* Görsel */}
+          <button
+            onClick={() => setActiveMenu('visual')}
+            className={`px-3.5 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shrink-0 shadow-2xs ${
+              activeMenu === 'visual'
+                ? 'bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-md shadow-sky-500/25 ring-2 ring-sky-200 scale-[1.02]'
+                : 'bg-sky-50/70 hover:bg-sky-100/90 text-sky-700 border border-sky-200/80 hover:border-sky-300'
+            }`}
+            title="Görsel & Medya Arama"
+          >
+            <ImageIcon
+              className={`w-3.5 h-3.5 ${activeMenu === 'visual' ? 'text-white' : 'text-sky-600'}`}
+            />
+            <span>Görsel</span>
+          </button>
 
-            <button
-              onClick={() => setActiveMenu('compare')}
-              className={`text-sm lg:text-[15px] font-semibold transition-colors cursor-pointer ${
-                activeMenu === 'compare'
-                  ? 'text-[#6534F8]'
-                  : 'text-slate-700 hover:text-[#6534F8]'
-              }`}
-            >
-              Karşılaştır
-            </button>
+          {/* Karşılaştır */}
+          <button
+            onClick={() => setActiveMenu('compare')}
+            className={`px-3.5 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shrink-0 shadow-2xs ${
+              activeMenu === 'compare'
+                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/25 ring-2 ring-amber-200 scale-[1.02]'
+                : 'bg-amber-50/70 hover:bg-amber-100/90 text-amber-700 border border-amber-200/80 hover:border-amber-300'
+            }`}
+            title="Çift Kaynak & Ürün Karşılaştırma"
+          >
+            <Scale
+              className={`w-3.5 h-3.5 ${activeMenu === 'compare' ? 'text-white' : 'text-amber-600'}`}
+            />
+            <span>Karşılaştır</span>
+          </button>
 
-            {/* "Daha Fazla" Dropdown */}
-            <div ref={moreMenuRef} className="relative">
-              <button
-                onClick={() => setShowMoreMenu((prev) => !prev)}
-                className={`flex items-center gap-1 text-sm lg:text-[15px] font-semibold transition-colors cursor-pointer ${
-                  ['projects', 'tools', 'workflows', 'browser', 'history', 'settings'].includes(
-                    activeMenu
-                  )
-                    ? 'text-[#6534F8]'
-                    : 'text-slate-700 hover:text-[#6534F8]'
+          {/* Çalışma Alanı */}
+          <button
+            onClick={() => setActiveMenu('projects')}
+            className={`px-3.5 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shrink-0 shadow-2xs ${
+              activeMenu === 'projects'
+                ? 'bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-md shadow-rose-500/25 ring-2 ring-rose-200 scale-[1.02]'
+                : 'bg-rose-50/70 hover:bg-rose-100/90 text-rose-700 border border-rose-200/80 hover:border-rose-300'
+            }`}
+            title="Kişisel Proje & Görev Yönetimi"
+          >
+            <FolderKanban
+              className={`w-3.5 h-3.5 ${activeMenu === 'projects' ? 'text-white' : 'text-rose-600'}`}
+            />
+            <span>Çalışma Alanı</span>
+          </button>
+
+          {/* "Daha Fazla Araçlar" Dropdown */}
+          <div ref={moreMenuRef} className="relative shrink-0">
+            <button
+              onClick={() => setShowMoreMenu((prev) => !prev)}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs ${
+                ['tools', 'workflows', 'browser', 'history', 'settings'].includes(activeMenu) ||
+                showMoreMenu
+                  ? 'bg-slate-900 text-white shadow-xs'
+                  : 'bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 border border-slate-200/80'
+              }`}
+              title="Daha Fazla Araç"
+            >
+              <Layers className="w-3.5 h-3.5 text-slate-500" />
+              <span>Daha Fazla</span>
+              <ChevronDown
+                className={`w-3 h-3 transition-transform ${
+                  showMoreMenu ? 'rotate-180 text-slate-400' : 'text-slate-500'
                 }`}
-              >
-                <span>Daha Fazla</span>
-                <ChevronDown
-                  className={`w-4 h-4 transition-transform ${
-                    showMoreMenu ? 'rotate-180 text-[#6534F8]' : 'text-slate-500'
-                  }`}
-                />
-              </button>
+              />
+            </button>
 
-              {showMoreMenu && (
-                <div className="absolute left-0 mt-3 w-60 rounded-2xl bg-white shadow-xl border border-slate-100 py-2 z-50 animate-fadeIn">
-                  <button
-                    onClick={() => {
-                      setActiveMenu('projects');
-                      setShowMoreMenu(false);
-                    }}
-                    className="w-full px-4 py-2.5 text-left text-xs font-semibold text-slate-700 hover:bg-purple-50 hover:text-[#6534F8] flex items-center gap-3 transition-colors"
-                  >
-                    <FolderKanban className="w-4 h-4 text-[#6534F8]" />
-                    <div>
-                      <div className="text-slate-900">Kişisel Çalışma Alanı</div>
-                      <div className="text-[11px] font-normal text-slate-400">
-                        Koleksiyonlar, projeler ve kayıtlar
-                      </div>
+            {showMoreMenu && (
+              <div className="absolute left-0 mt-3 w-64 rounded-2xl bg-white shadow-2xl border border-slate-100 py-2.5 z-50 animate-fadeIn ring-1 ring-slate-900/5">
+                <button
+                  onClick={() => {
+                    setActiveMenu('tools');
+                    setShowMoreMenu(false);
+                  }}
+                  className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 flex items-center gap-3 transition-colors cursor-pointer"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-indigo-50 border border-indigo-100 flex items-center justify-center shrink-0">
+                    <Wrench className="w-3.5 h-3.5 text-indigo-600" />
+                  </div>
+                  <div>
+                    <div className="text-slate-900 font-bold">Web Analiz Araçları</div>
+                    <div className="text-[10px] font-normal text-slate-400">
+                      SEO, hız ve sayfa denetimi
                     </div>
-                  </button>
+                  </div>
+                </button>
 
-                  <button
-                    onClick={() => {
-                      setActiveMenu('tools');
-                      setShowMoreMenu(false);
-                    }}
-                    className="w-full px-4 py-2.5 text-left text-xs font-semibold text-slate-700 hover:bg-purple-50 hover:text-[#6534F8] flex items-center gap-3 transition-colors"
-                  >
-                    <Wrench className="w-4 h-4 text-indigo-600" />
-                    <div>
-                      <div className="text-slate-900">Web Analiz Araçları</div>
-                      <div className="text-[11px] font-normal text-slate-400">
-                        SEO, okunabilirlik ve sayfa denetimi
-                      </div>
+                <button
+                  onClick={() => {
+                    setActiveMenu('workflows');
+                    setShowMoreMenu(false);
+                  }}
+                  className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center gap-3 transition-colors cursor-pointer"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center shrink-0">
+                    <Workflow className="w-3.5 h-3.5 text-emerald-600" />
+                  </div>
+                  <div>
+                    <div className="text-slate-900 font-bold">Otomasyon İş Akışları</div>
+                    <div className="text-[10px] font-normal text-slate-400">
+                      Çoklu kaynak tarama robotları
                     </div>
-                  </button>
+                  </div>
+                </button>
 
-                  <button
-                    onClick={() => {
-                      setActiveMenu('workflows');
-                      setShowMoreMenu(false);
-                    }}
-                    className="w-full px-4 py-2.5 text-left text-xs font-semibold text-slate-700 hover:bg-purple-50 hover:text-[#6534F8] flex items-center gap-3 transition-colors"
-                  >
-                    <Workflow className="w-4 h-4 text-emerald-600" />
-                    <div>
-                      <div className="text-slate-900">Otomasyon İş Akışları</div>
-                      <div className="text-[11px] font-normal text-slate-400">
-                        Çoklu kaynak tarama şablonları
-                      </div>
+                <button
+                  onClick={() => {
+                    setActiveMenu('browser');
+                    setShowMoreMenu(false);
+                  }}
+                  className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-sky-50 hover:text-sky-600 flex items-center gap-3 transition-colors cursor-pointer"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-sky-50 border border-sky-100 flex items-center justify-center shrink-0">
+                    <Globe className="w-3.5 h-3.5 text-sky-600" />
+                  </div>
+                  <div>
+                    <div className="text-slate-900 font-bold">Dahili Web Tarayıcı</div>
+                    <div className="text-[10px] font-normal text-slate-400">
+                      Sekmeli canlı web gezintisi
                     </div>
-                  </button>
+                  </div>
+                </button>
 
-                  <button
-                    onClick={() => {
-                      setActiveMenu('browser');
-                      setShowMoreMenu(false);
-                    }}
-                    className="w-full px-4 py-2.5 text-left text-xs font-semibold text-slate-700 hover:bg-purple-50 hover:text-[#6534F8] flex items-center gap-3 transition-colors"
-                  >
-                    <Globe className="w-4 h-4 text-sky-600" />
-                    <div>
-                      <div className="text-slate-900">Dahili Web Tarayıcı</div>
-                      <div className="text-[11px] font-normal text-slate-400">
-                        Sekmeli web gezintisi
-                      </div>
-                    </div>
-                  </button>
+                <div className="my-1.5 border-t border-slate-100" />
 
-                  <div className="my-1 border-t border-slate-100" />
+                <button
+                  onClick={() => {
+                    setActiveMenu('history');
+                    setShowMoreMenu(false);
+                  }}
+                  className="w-full px-4 py-2 text-left text-xs font-medium text-slate-600 hover:bg-purple-50 hover:text-[#6534F8] flex items-center gap-3 transition-colors cursor-pointer"
+                >
+                  <History className="w-4 h-4 text-purple-500" />
+                  <span>Arama & Gezinti Geçmişi</span>
+                </button>
 
-                  <button
-                    onClick={() => {
-                      setActiveMenu('history');
-                      setShowMoreMenu(false);
-                    }}
-                    className="w-full px-4 py-2 text-left text-xs font-medium text-slate-600 hover:bg-purple-50 hover:text-[#6534F8] flex items-center gap-3 transition-colors"
-                  >
-                    <History className="w-4 h-4 text-slate-400" />
-                    <span>Gezinti & İşlem Geçmişi</span>
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setActiveMenu('settings');
-                      setShowMoreMenu(false);
-                    }}
-                    className="w-full px-4 py-2 text-left text-xs font-medium text-slate-600 hover:bg-purple-50 hover:text-[#6534F8] flex items-center gap-3 transition-colors"
-                  >
-                    <Settings className="w-4 h-4 text-slate-400" />
-                    <span>Ayarlar & Veri Yönetimi</span>
-                  </button>
-                </div>
-              )}
-            </div>
-          </nav>
+                <button
+                  onClick={() => {
+                    setActiveMenu('settings');
+                    setShowMoreMenu(false);
+                  }}
+                  className="w-full px-4 py-2 text-left text-xs font-medium text-slate-600 hover:bg-purple-50 hover:text-[#6534F8] flex items-center gap-3 transition-colors cursor-pointer"
+                >
+                  <Settings className="w-4 h-4 text-slate-500" />
+                  <span>Ayarlar & Tercihler</span>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Right: Theme Icon + Giriş Yap + Kayıt Ol */}
-        <div className="flex items-center gap-2.5 sm:gap-3.5">
+        <div className="flex items-center gap-2.5 sm:gap-3.5 shrink-0">
           <button
             onClick={() => setAmbientWarmMode((prev) => !prev)}
-            className="w-9 h-9 rounded-full flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
-            title="Görünüm Modu"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all cursor-pointer border border-transparent hover:border-slate-200"
+            title="Görünüm Modunu Değiştir"
             aria-label="Görünüm Modu"
           >
             {ambientWarmMode ? (
               <Moon className="w-[18px] h-[18px] text-[#6534F8]" />
             ) : (
-              <Sun className="w-[18px] h-[18px]" />
+              <Sun className="w-[18px] h-[18px] text-amber-500" />
             )}
           </button>
 
@@ -405,13 +441,13 @@ export const App: React.FC = () => {
             <>
               <button
                 onClick={() => setAuthModalMode('login')}
-                className="px-4 sm:px-5 py-2 rounded-full border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 text-xs sm:text-sm font-medium transition-all cursor-pointer"
+                className="px-4 sm:px-5 py-2 rounded-full border border-slate-300 hover:border-slate-400 bg-white hover:bg-slate-50 text-slate-800 text-xs sm:text-sm font-semibold transition-all shadow-2xs cursor-pointer"
               >
                 Giriş Yap
               </button>
               <button
                 onClick={() => setAuthModalMode('register')}
-                className="px-4 sm:px-5 py-2 rounded-full bg-gradient-to-r from-[#6C38FF] to-[#5624E0] hover:from-[#5E2CE6] hover:to-[#4A1CC4] text-white text-xs sm:text-sm font-medium shadow-[0_4px_14px_rgba(101,52,248,0.35)] transition-all cursor-pointer"
+                className="px-4.5 sm:px-5.5 py-2 rounded-full bg-gradient-to-r from-[#6534F8] via-[#7846f7] to-[#8E51FF] hover:from-[#5724e8] hover:to-[#7b3df5] text-white text-xs sm:text-sm font-bold shadow-[0_4px_16px_rgba(101,52,248,0.35)] hover:shadow-[0_6px_20px_rgba(101,52,248,0.45)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
               >
                 Kayıt Ol
               </button>
@@ -421,54 +457,72 @@ export const App: React.FC = () => {
       </header>
 
       {/* Mobile Secondary Quick Nav Bar */}
-      <div className="flex md:hidden items-center justify-around border-b border-slate-100 bg-white/95 px-2 py-1.5 text-xs font-medium text-slate-600 shrink-0">
+      <div className="flex md:hidden items-center justify-around border-b border-slate-100 bg-white/95 px-2 py-2 text-xs font-semibold text-slate-600 shrink-0 overflow-x-auto no-scrollbar gap-1">
         <button
           onClick={handleGoHome}
-          className={`px-2.5 py-1 rounded-full ${
-            activeMenu === 'home' ? 'bg-purple-50 text-[#6534F8] font-semibold' : ''
+          className={`px-2.5 py-1 rounded-full shrink-0 flex items-center gap-1 transition-all ${
+            activeMenu === 'home'
+              ? 'bg-slate-900 text-white shadow-2xs font-bold'
+              : 'bg-slate-50 text-slate-600 border border-slate-200/80'
           }`}
         >
-          Arama
+          <Home className="w-3 h-3 text-indigo-500" />
+          <span>Ana Sayfa</span>
         </button>
         <button
           onClick={() => setActiveMenu('discover')}
-          className={`px-2.5 py-1 rounded-full ${
-            activeMenu === 'discover' ? 'bg-purple-50 text-[#6534F8] font-semibold' : ''
+          className={`px-2.5 py-1 rounded-full shrink-0 flex items-center gap-1 transition-all ${
+            activeMenu === 'discover'
+              ? 'bg-purple-600 text-white font-bold shadow-2xs'
+              : 'bg-purple-50/70 text-purple-700 border border-purple-200/80'
           }`}
         >
-          Keşfet
+          <Compass className="w-3 h-3" />
+          <span>Keşfet</span>
         </button>
         <button
           onClick={() => setActiveMenu('agents')}
-          className={`px-2.5 py-1 rounded-full ${
-            activeMenu === 'agents' ? 'bg-purple-50 text-[#6534F8] font-semibold' : ''
+          className={`px-2.5 py-1 rounded-full shrink-0 flex items-center gap-1 transition-all ${
+            activeMenu === 'agents'
+              ? 'bg-emerald-600 text-white font-bold shadow-2xs'
+              : 'bg-emerald-50/70 text-emerald-700 border border-emerald-200/80'
           }`}
         >
-          Araştırma
+          <Sparkles className="w-3 h-3" />
+          <span>Araştırma</span>
         </button>
         <button
           onClick={() => setActiveMenu('visual')}
-          className={`px-2.5 py-1 rounded-full ${
-            activeMenu === 'visual' ? 'bg-purple-50 text-[#6534F8] font-semibold' : ''
+          className={`px-2.5 py-1 rounded-full shrink-0 flex items-center gap-1 transition-all ${
+            activeMenu === 'visual'
+              ? 'bg-sky-600 text-white font-bold shadow-2xs'
+              : 'bg-sky-50/70 text-sky-700 border border-sky-200/80'
           }`}
         >
-          Görsel
+          <ImageIcon className="w-3 h-3" />
+          <span>Görsel</span>
         </button>
         <button
           onClick={() => setActiveMenu('compare')}
-          className={`px-2.5 py-1 rounded-full ${
-            activeMenu === 'compare' ? 'bg-purple-50 text-[#6534F8] font-semibold' : ''
+          className={`px-2.5 py-1 rounded-full shrink-0 flex items-center gap-1 transition-all ${
+            activeMenu === 'compare'
+              ? 'bg-amber-600 text-white font-bold shadow-2xs'
+              : 'bg-amber-50/70 text-amber-700 border border-amber-200/80'
           }`}
         >
-          Karşılaştır
+          <Scale className="w-3 h-3" />
+          <span>Karşılaştır</span>
         </button>
         <button
           onClick={() => setActiveMenu('projects')}
-          className={`px-2.5 py-1 rounded-full ${
-            activeMenu === 'projects' ? 'bg-purple-50 text-[#6534F8] font-semibold' : ''
+          className={`px-2.5 py-1 rounded-full shrink-0 flex items-center gap-1 transition-all ${
+            activeMenu === 'projects'
+              ? 'bg-rose-600 text-white font-bold shadow-2xs'
+              : 'bg-rose-50/70 text-rose-700 border border-rose-200/80'
           }`}
         >
-          Alanım
+          <FolderKanban className="w-3 h-3" />
+          <span>Alanım</span>
         </button>
       </div>
 
