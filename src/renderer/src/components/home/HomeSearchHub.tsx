@@ -104,7 +104,7 @@ const DEFAULT_KANBAN: KanbanCard[] = [
     column: 'todo'
   },
   { id: 'k2', title: 'Proje yol haritasını ve görevleri planla', tag: 'Plan', column: 'doing' },
-  { id: 'k3', title: 'Chirmo çalışma alanını kişiselleştir', tag: 'Tamam', column: 'done' }
+  { id: 'k3', title: 'COGKO çalışma alanını kişiselleştir', tag: 'Tamam', column: 'done' }
 ]
 
 const DEFAULT_SHORTCUTS: ShortcutItem[] = [
@@ -288,8 +288,8 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
 
   // 4. Code Snippet Runner State
   const [codeLang, setCodeLang] = useState('JavaScript')
-  const [codeSnippet, setCodeSnippet] = useState('const selam = (ad) => `Merhaba ${ad}!`;\nconsole.log(selam("Chirmo"));')
-  const [codeOutput, setCodeOutput] = useState<string | null>('Merhaba Chirmo!')
+  const [codeSnippet, setCodeSnippet] = useState('const selam = (ad) => `Merhaba ${ad}!`;\nconsole.log(selam("COGKO"));')
+  const [codeOutput, setCodeOutput] = useState<string | null>('Merhaba COGKO!')
 
   // 5. Daily Checklist State
   const [dailyChecklist, setDailyChecklist] = useState<{ id: string; text: string; done: boolean }[]>(() => {
@@ -551,7 +551,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `chirmo-not-${new Date().toISOString().slice(0, 10)}.txt`
+    a.download = `cogko-not-${new Date().toISOString().slice(0, 10)}.txt`
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -638,7 +638,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `${docTopic.toLowerCase().replace(/\s+/g, '_')}_chirmo_belge.txt`
+    a.download = `${docTopic.toLowerCase().replace(/\s+/g, '_')}_cogko_belge.txt`
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -1618,7 +1618,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                     </div>
                     <div className="flex items-center gap-2">
                       <h3 className="text-sm font-bold text-slate-900 tracking-tight">
-                        Chirmo AI Yanıtı
+                        COGKO AI Yanıtı
                       </h3>
                       {searchResponse.aiSynthesis.intentLabel && (
                         <span className="text-[11px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 font-medium">
@@ -3134,7 +3134,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                             setCodeLang(lang)
                             if (lang === 'Python') {
                               setCodeSnippet(
-                                'def selam(isim):\n    return f"Merhaba {isim}!"\n\nprint(selam("Chirmo"))'
+                                'def selam(isim):\n    return f"Merhaba {isim}!"\n\nprint(selam("COGKO"))'
                               )
                             } else if (lang === 'SQL') {
                               setCodeSnippet(
@@ -3142,7 +3142,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                               )
                             } else {
                               setCodeSnippet(
-                                'const selam = (ad) => `Merhaba ${ad}!`;\nconsole.log(selam("Chirmo"));'
+                                'const selam = (ad) => `Merhaba ${ad}!`;\nconsole.log(selam("COGKO"));'
                               )
                             }
                           }}
