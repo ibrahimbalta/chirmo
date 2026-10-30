@@ -603,7 +603,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
   ]
 
   return (
-    <div className="flex-1 h-full overflow-y-auto bg-white text-slate-900 select-none flex flex-col relative">
+    <div className="flex-1 h-full overflow-y-auto bg-white text-slate-900 select-none flex flex-col relative scroll-smooth">
       {/* TOAST NOTIFICATION */}
       {kanbanToast && (
         <div className="fixed bottom-16 md:bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-xl text-xs font-semibold flex items-center gap-2 animate-fadeIn">
@@ -612,116 +612,442 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
         </div>
       )}
 
-      {/* TOP BAR */}
-      <div className="w-full px-4 sm:px-6 py-3 flex items-center justify-between border-b border-slate-100">
-        <div className="flex items-center gap-3">
-          {searchResponse ? (
-            <button
-              onClick={() => {
-                setSearchResponse(null)
-                setQuery('')
-              }}
-              className="flex items-center gap-2 cursor-pointer"
-            >
-              <ChirmoLogo size="sm" />
-            </button>
-          ) : (
-            <span className="text-[11px] font-semibold text-slate-500 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-chirmo-brand" />
-              <span>Chirmo AI Keşif ve Araştırma Platformu</span>
-            </span>
-          )}
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowWidgetPicker(!showWidgetPicker)}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all border ${
-              showWidgetPicker
-                ? 'bg-chirmo-brand text-white border-chirmo-brand shadow-xs'
-                : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
-            }`}
-          >
-            <LayoutGrid className="w-3.5 h-3.5" />
-            <span>Çalışma Panosu Modülleri ({activeWidgets.length})</span>
-          </button>
-        </div>
-      </div>
-
-      {/* WIDGET CUSTOMIZER DRAWER */}
-      {showWidgetPicker && (
-        <div className="w-full bg-slate-50 border-b border-slate-200 px-4 sm:px-6 py-4 animate-fadeIn">
-          <div className="max-w-5xl mx-auto">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-bold text-slate-700">
-                Ana Sayfa Çalışma Alanı Modüllerini Özelleştirin
-              </span>
-              <button
-                onClick={() => setShowWidgetPicker(false)}
-                className="text-xs font-semibold text-chirmo-brand hover:underline"
-              >
-                Kapat
-              </button>
+      {/* ==================== 1. FULL-BLEED HERO VIEWPORT (WHEN NO ACTIVE SEARCH) ==================== */}
+      {!searchResponse ? (
+        <div
+          className="w-full min-h-[calc(100vh-4rem)] relative flex flex-col items-center justify-between overflow-hidden px-4 sm:px-8 pt-6 sm:pt-10 pb-6 shrink-0"
+          style={{
+            backgroundImage: "url('./chirmo-hero-bg.jpg')",
+            backgroundSize: '100% 100%',
+            backgroundPosition: 'center bottom',
+            backgroundRepeat: 'no-repeat'
+          }}
+        >
+          {/* Main Hero Center Content */}
+          <div className="w-full max-w-5xl mx-auto flex flex-col items-center text-center z-10 mt-1 sm:mt-3">
+            {/* Top Lavender Pill Badge */}
+            <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#F3EFFE] border border-purple-200/60 text-[#6534F8] text-xs font-semibold tracking-wide mb-4 shadow-2xs">
+              Yapay Zeka Destekli Yeni Nesil Arama Motoru
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
-              {availableWidgets.map((w) => {
-                const isAdded = activeWidgets.includes(w.id)
-                return (
+            {/* Main Hero Logo (4-Point Sparkle Diamond + Bold Chirmo) */}
+            <div className="mb-3">
+              <ChirmoLogo size="xl" variant="hero" />
+            </div>
+
+            {/* Two-Line Bold Headline */}
+            <h1 className="text-2xl sm:text-4xl md:text-[40px] font-extrabold tracking-tight leading-[1.18] text-[#111827]">
+              Aradığını yalnızca bulma.
+              <span className="block bg-gradient-to-r from-[#6C38FF] via-[#6534F8] to-[#7C3AED] bg-clip-text text-transparent mt-0.5">
+                Anla, keşfet, karşılaştır, karar ver.
+              </span>
+            </h1>
+
+            {/* Two-Line Subtitle */}
+            <p className="text-xs sm:text-sm md:text-[15px] text-slate-600 font-normal mt-3 leading-relaxed max-w-xl">
+              Chirmo, yapay zeka gücüyle interneti senin için daha anlamlı hale getirir.
+              <br className="hidden sm:inline" /> Sadece arama yapma, bilgiye derinlemesine ulaş.
+            </p>
+
+            {/* Main Pill Search Bar with Soft Lavender Glow */}
+            <div ref={searchBoxContainerRef} className="w-full max-w-[720px] relative mt-6">
+              <div className="absolute -inset-2.5 bg-gradient-to-r from-purple-300/35 via-indigo-300/30 to-purple-300/35 rounded-full blur-xl pointer-events-none" />
+
+              <form onSubmit={handleSubmit} className="w-full relative">
+                <div className="relative flex items-center w-full bg-white/95 backdrop-blur-md rounded-full border border-purple-100/90 shadow-[0_10px_35px_-5px_rgba(101,52,248,0.18)] focus-within:border-[#6534F8]/60 focus-within:shadow-[0_12px_42px_-5px_rgba(101,52,248,0.28)] transition-all pl-5 sm:pl-6 pr-2.5 py-2 sm:py-2.5">
+                  <Search className="w-5 h-5 text-slate-800 shrink-0 mr-3 stroke-[2.2]" />
+
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={query}
+                    onFocus={() => setShowDropdown(true)}
+                    onChange={(e) => {
+                      setQuery(e.target.value)
+                      setShowDropdown(true)
+                    }}
+                    placeholder='Ne aramak istersin? Örneğin: "Elektrikli araçların 2026 fiyatları"'
+                    className="w-full text-sm sm:text-[15px] text-slate-800 placeholder:text-slate-400 bg-transparent border-none outline-none select-text"
+                  />
+
+                  {query && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setQuery('')
+                        setSearchResponse(null)
+                        inputRef.current?.focus()
+                      }}
+                      aria-label="Aramayı temizle"
+                      className="p-1.5 text-slate-400 hover:text-slate-600 mr-1"
+                      title="Temizle"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
+
+                  {/* 1. Voice Search Circle Button */}
                   <button
-                    key={w.id}
-                    onClick={() => toggleWidget(w.id)}
-                    className={`p-3 rounded-2xl border text-left transition-all flex items-start justify-between ${
-                      isAdded
-                        ? 'bg-white border-chirmo-brand ring-2 ring-chirmo-brand/10 shadow-xs'
-                        : 'bg-white/60 border-slate-200 opacity-70 hover:opacity-100'
+                    type="button"
+                    onClick={handleToggleVoiceSearch}
+                    aria-label="Sesli Arama"
+                    title="Sesli Arama"
+                    className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
+                      isListening
+                        ? 'bg-rose-100 border-rose-300 text-rose-600 animate-pulse'
+                        : 'border-purple-200/80 bg-[#F8F5FF] hover:bg-purple-100 text-[#6534F8]'
                     }`}
                   >
-                    <div className="flex items-start gap-2.5">
-                      <div className="mt-0.5">{w.icon}</div>
-                      <div>
-                        <span className="text-xs font-bold text-slate-900 block">{w.label}</span>
-                        <span className="text-[11px] text-slate-500 block mt-0.5">{w.desc}</span>
-                      </div>
-                    </div>
-                    <div
-                      className={`w-5 h-5 rounded-full flex items-center justify-center text-xs shrink-0 ${
-                        isAdded ? 'bg-chirmo-brand text-white' : 'bg-slate-200 text-slate-600'
-                      }`}
-                    >
-                      {isAdded ? <Check className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
-                    </div>
+                    {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
                   </button>
-                )
-              })}
+
+                  {/* 2. Visual Search Circle Button */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (onNavigateToVisual) {
+                        onNavigateToVisual(query.trim())
+                      }
+                    }}
+                    aria-label="Görsel ile Ara"
+                    title="Görsel Keşif ve Görsel Arama"
+                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-purple-200/80 bg-[#F8F5FF] hover:bg-purple-100 text-[#6534F8] flex items-center justify-center transition-all shrink-0 ml-2 cursor-pointer"
+                  >
+                    <ImageIcon className="w-4 h-4" />
+                  </button>
+
+                  {/* 3. Purple Gradient Submit Arrow Circle Button */}
+                  <button
+                    type="submit"
+                    disabled={isSearching}
+                    aria-label="Ara"
+                    title="Ara"
+                    className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-r from-[#7342FF] to-[#5826E8] hover:from-[#6534F8] hover:to-[#4C1D95] text-white shadow-[0_4px_14px_rgba(101,52,248,0.4)] flex items-center justify-center transition-all shrink-0 ml-2 cursor-pointer"
+                  >
+                    <ArrowRight className="w-5 h-5" />
+                  </button>
+                </div>
+              </form>
+
+              {/* Instant Autocomplete & Search History Dropdown */}
+              {showDropdown && (suggestions.length > 0 || recentHistory.length > 0) && (
+                <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl border border-purple-100 shadow-2xl z-40 overflow-hidden py-2 text-left">
+                  {suggestions.length > 0 && (
+                    <div className="px-3 py-1.5">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#6534F8] px-2 block mb-1">
+                        Anlık Arama Önerileri
+                      </span>
+                      {suggestions.map((sug) => (
+                        <button
+                          key={sug}
+                          type="button"
+                          onClick={() => {
+                            setQuery(sug)
+                            handleExecuteSearch(sug)
+                          }}
+                          className="w-full text-left px-3 py-2 rounded-xl hover:bg-purple-50 flex items-center gap-2.5 text-xs sm:text-sm text-slate-800 font-medium transition-colors"
+                        >
+                          <Search className="w-3.5 h-3.5 text-[#6534F8] shrink-0" />
+                          <span>{sug}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {recentHistory.length > 0 && (
+                    <div className="px-3 py-1.5 border-t border-slate-100">
+                      <div className="flex items-center justify-between px-2 mb-1">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                          Son Aramalarınız
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            WorkspaceStorage.clearSearchHistory()
+                            setRecentHistory([])
+                          }}
+                          className="text-[10px] text-slate-400 hover:text-rose-600"
+                        >
+                          Temizle
+                        </button>
+                      </div>
+                      {recentHistory.slice(0, 4).map((h) => (
+                        <div
+                          key={h.id}
+                          className="flex items-center justify-between rounded-xl hover:bg-slate-50 px-3 py-1.5"
+                        >
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setQuery(h.query)
+                              handleExecuteSearch(h.query)
+                            }}
+                            className="flex items-center gap-2.5 text-xs text-slate-700 font-medium flex-1 text-left"
+                          >
+                            <History className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                            <span>{h.query}</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              WorkspaceStorage.removeSearchHistoryItem(h.id)
+                              setRecentHistory(WorkspaceStorage.getSearchHistory())
+                            }}
+                            className="p-1 text-slate-300 hover:text-rose-500"
+                            title="Geçmişten kaldır"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Instant Calculator/Unit Answer Pill right under input while typing */}
+              {livePreview && (
+                <div
+                  onClick={() => handleExecuteSearch(query)}
+                  className="mt-2 mx-2 px-4 py-2.5 rounded-2xl bg-purple-50/90 border border-purple-200 flex items-center justify-between cursor-pointer hover:bg-purple-100 transition-colors"
+                >
+                  <div className="flex items-center gap-2 text-xs">
+                    <span className="font-bold text-[#6534F8]">{livePreview.title}:</span>
+                    <span className="font-black text-slate-900 text-sm">{livePreview.result}</span>
+                  </div>
+                  <span className="text-[11px] font-semibold text-[#6534F8] flex items-center gap-1">
+                    Detay <ArrowRight className="w-3 h-3" />
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Popular Searches Row ("Popüler Aramalar:") */}
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 mr-1">
+                <Sparkles className="w-3.5 h-3.5 text-[#6534F8]" />
+                <span>Popüler Aramalar:</span>
+              </span>
+              {[
+                'En iyi laptoplar 2025',
+                "İstanbul'da gezilecek yerler",
+                'Sağlıklı beslenme önerileri',
+                'Uzay hakkında son gelişmeler'
+              ].map((popQuery) => (
+                <button
+                  key={popQuery}
+                  type="button"
+                  onClick={() => {
+                    setQuery(popQuery)
+                    handleExecuteSearch(popQuery)
+                  }}
+                  className="px-3.5 py-1.5 rounded-full bg-white/85 hover:bg-white border border-purple-200/80 hover:border-[#6534F8]/50 text-xs font-medium text-slate-700 hover:text-[#6534F8] shadow-2xs transition-all cursor-pointer"
+                >
+                  {popQuery}
+                </button>
+              ))}
+            </div>
+
+            {/* 6 Feature Icon Columns Grid */}
+            <div className="w-full max-w-5xl mt-7 sm:mt-9 relative">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 sm:gap-5">
+                {/* 1. Akıllı Arama */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (query.trim()) {
+                      handleExecuteSearch(query)
+                    } else {
+                      inputRef.current?.focus()
+                    }
+                  }}
+                  className="group flex flex-col items-center text-center p-2 rounded-2xl transition-transform hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-[#F3E8FF]/90 border border-purple-200/60 flex items-center justify-center text-[#7C3AED] shadow-xs mb-2.5 group-hover:scale-105 transition-transform">
+                    <Search className="w-6 h-6 stroke-[2]" />
+                  </div>
+                  <span className="text-xs sm:text-[13px] font-bold text-slate-900">
+                    Akıllı Arama
+                  </span>
+                  <span className="text-[11px] text-slate-600 leading-snug mt-1 max-w-[145px]">
+                    Yapay zeka destekli, sonuç odaklı arama deneyimi.
+                  </span>
+                </button>
+
+                {/* 2. AI Araştırma */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    onNavigateToAgents(
+                      query.trim() ||
+                        'Elektrikli araçların 2026 yılındaki fiyatlarını, menzillerini ve avantajlarını karşılaştır.'
+                    )
+                  }
+                  className="group flex flex-col items-center text-center p-2 rounded-2xl transition-transform hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-[#EEF2FF]/90 border border-indigo-200/60 flex items-center justify-center text-[#4F46E5] shadow-xs mb-2.5 group-hover:scale-105 transition-transform">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      className="w-6 h-6"
+                      stroke="currentColor"
+                      strokeWidth="1.9"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 21a9 9 0 1 0-7.94-4.76L3 21l4.76-1.06A8.96 8.96 0 0 0 12 21Z"
+                      />
+                      <path
+                        d="M12 7.5C12.4 9.8 14.2 11.6 16.5 12C14.2 12.4 12.4 14.2 12 16.5C11.6 14.2 9.8 12.4 7.5 12C9.8 11.6 11.6 9.8 12 7.5Z"
+                        fill="currentColor"
+                        stroke="none"
+                      />
+                    </svg>
+                  </div>
+                  <span className="text-xs sm:text-[13px] font-bold text-slate-900">
+                    AI Araştırma
+                  </span>
+                  <span className="text-[11px] text-slate-600 leading-snug mt-1 max-w-[145px]">
+                    Derinlemesine analizler, özetler ve kaynaklar.
+                  </span>
+                </button>
+
+                {/* 3. Görsel Keşif */}
+                <button
+                  type="button"
+                  onClick={() => onNavigateToVisual && onNavigateToVisual(query.trim())}
+                  className="group flex flex-col items-center text-center p-2 rounded-2xl transition-transform hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-[#FCE7F3]/90 border border-pink-200/60 flex items-center justify-center text-[#DB2777] shadow-xs mb-2.5 group-hover:scale-105 transition-transform">
+                    <ImageIcon className="w-6 h-6 stroke-[1.9]" />
+                  </div>
+                  <span className="text-xs sm:text-[13px] font-bold text-slate-900">
+                    Görsel Keşif
+                  </span>
+                  <span className="text-[11px] text-slate-600 leading-snug mt-1 max-w-[145px]">
+                    Görsellerle ara, daha fazlasını keşfet.
+                  </span>
+                </button>
+
+                {/* 4. Karşılaştırma */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    onNavigateToCompare &&
+                    onNavigateToCompare('Elektrikli otomobil', 'Hibrit otomobil')
+                  }
+                  className="group flex flex-col items-center text-center p-2 rounded-2xl transition-transform hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-[#D1FAE5]/90 border border-emerald-200/60 flex items-center justify-center text-[#059669] shadow-xs mb-2.5 group-hover:scale-105 transition-transform">
+                    <Scale className="w-6 h-6 stroke-[1.9]" />
+                  </div>
+                  <span className="text-xs sm:text-[13px] font-bold text-slate-900">
+                    Karşılaştırma
+                  </span>
+                  <span className="text-[11px] text-slate-600 leading-snug mt-1 max-w-[145px]">
+                    Ürün ve hizmetleri kolayca karşılaştır.
+                  </span>
+                </button>
+
+                {/* 5. Keşif Merkezi */}
+                <button
+                  type="button"
+                  onClick={() => onNavigateToDiscover && onNavigateToDiscover()}
+                  className="group flex flex-col items-center text-center p-2 rounded-2xl transition-transform hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-[#FEF3C7]/90 border border-amber-200/60 flex items-center justify-center text-[#D97706] shadow-xs mb-2.5 group-hover:scale-105 transition-transform">
+                    <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6" stroke="currentColor" strokeWidth="1.9">
+                      <path
+                        strokeLinejoin="round"
+                        d="M12 3C12.8 8.2 15.8 11.2 21 12C15.8 12.8 12.8 15.8 12 21C11.2 15.8 8.2 12.8 3 12C8.2 11.2 11.2 8.2 12 3Z"
+                      />
+                    </svg>
+                  </div>
+                  <span className="text-xs sm:text-[13px] font-bold text-slate-900">
+                    Keşif Merkezi
+                  </span>
+                  <span className="text-[11px] text-slate-600 leading-snug mt-1 max-w-[145px]">
+                    Dünyayı keşfet, yeni fikirler bul.
+                  </span>
+                </button>
+
+                {/* 6. Kişisel Alan */}
+                <button
+                  type="button"
+                  onClick={onNavigateToProjects}
+                  className="group flex flex-col items-center text-center p-2 rounded-2xl transition-transform hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-[#EDE9FE]/90 border border-violet-200/60 flex items-center justify-center text-[#6D28D9] shadow-xs mb-2.5 group-hover:scale-105 transition-transform">
+                    <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6" stroke="currentColor" strokeWidth="1.9">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 7.5A2.5 2.5 0 0 1 5.5 5h3.8a2 2 0 0 1 1.4.58l1.2 1.22a2 2 0 0 0 1.4.58h5.2A2.5 2.5 0 0 1 21 9.88v7.62A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5v-10Z"
+                      />
+                    </svg>
+                  </div>
+                  <span className="text-xs sm:text-[13px] font-bold text-slate-900">
+                    Kişisel Alan
+                  </span>
+                  <span className="text-[11px] text-slate-600 leading-snug mt-1 max-w-[145px]">
+                    Aramalarını kaydet, projelerini yönet.
+                  </span>
+                </button>
+              </div>
+
+              {/* Right Handwritten Callout: "Daha fazlasını keşfet..." */}
+              <div className="hidden lg:flex items-center justify-end pr-4 mt-2">
+                <button
+                  type="button"
+                  onClick={() => onNavigateToDiscover && onNavigateToDiscover()}
+                  className="flex items-center gap-1.5 text-[#5E3BEE] hover:text-[#4C1D95] -rotate-6 transition-transform hover:scale-105 cursor-pointer"
+                >
+                  <span
+                    className="text-base italic font-medium leading-tight text-center"
+                    style={{ fontFamily: "'Segoe Print', 'Bradley Hand', 'Caveat', cursive" }}
+                  >
+                    Daha fazlasını
+                    <br />
+                    keşfet...
+                  </span>
+                  <svg viewBox="0 0 48 36" fill="none" className="w-10 h-8 text-[#5E3BEE] mt-3">
+                    <path
+                      d="M4 28C16 28 30 22 40 8M40 8L32 10M40 8L41 17"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
+
+          {/* Bottom-Center Scroll Indicator ("Aşağı kaydır") */}
+          <div className="w-full flex flex-col items-center justify-center z-10 mt-6 pb-1">
+            <a
+              href="#chirmo-workspace-modules"
+              className="flex flex-col items-center gap-1.5 text-white/95 hover:text-white transition-opacity group cursor-pointer"
+            >
+              <div className="w-6 h-9 rounded-full border-2 border-white/85 flex flex-col items-center justify-center gap-1 bg-white/10 backdrop-blur-2xs shadow-xs">
+                <span className="w-1 h-1.5 rounded-full bg-white animate-bounce" />
+                <span className="w-0.5 h-1 rounded-full bg-white/70" />
+              </div>
+              <span className="text-[11px] font-medium tracking-wide drop-shadow-[0_1px_3px_rgba(15,23,42,0.5)]">
+                Aşağı kaydır
+              </span>
+            </a>
+          </div>
         </div>
-      )}
-
-      {/* MAIN CONTENT AREA */}
-      <div className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 pb-24 md:pb-12 flex flex-col">
-        {/* ==================== 1. SEARCH HERO & AUTOCOMPLETE ==================== */}
-        <div
-          className={`w-full flex flex-col items-center transition-all ${
-            searchResponse ? 'pt-4 pb-5' : 'pt-7 sm:pt-12 pb-7'
-          }`}
-        >
-          {!searchResponse && (
-            <div className="mb-6 text-center">
-              <ChirmoLogo size="xl" />
-              <p className="text-sm sm:text-base md:text-lg font-semibold text-slate-600 mt-3 tracking-tight">
-                Aradığını yalnızca bulma. Anla, keşfet, karşılaştır ve karar ver.
-              </p>
-            </div>
-          )}
-
-          {/* Search Bar Container with Instant Suggestions & History Dropdown */}
-          <div ref={searchBoxContainerRef} className="w-full max-w-2xl relative">
-            <form onSubmit={handleSubmit} className="w-full">
-              <div className="relative flex items-center w-full bg-white rounded-full border border-slate-300 hover:border-slate-400 focus-within:border-chirmo-brand focus-within:ring-4 focus-within:ring-chirmo-brand/10 shadow-xs hover:shadow-md transition-all px-5 sm:px-6 py-3 sm:py-3.5">
-                <Search className="w-5 h-5 text-chirmo-brand shrink-0 mr-3" />
-
+      ) : (
+        /* ==================== COMPACT STICKY SEARCH BAR WHEN VIEWING RESULTS ==================== */
+        <div className="w-full border-b border-slate-100 bg-white/95 px-4 sm:px-6 py-3.5">
+          <div ref={searchBoxContainerRef} className="max-w-4xl mx-auto flex items-center gap-3 relative">
+            <form onSubmit={handleSubmit} className="flex-1">
+              <div className="relative flex items-center w-full bg-white rounded-full border border-purple-200 focus-within:border-[#6534F8] shadow-xs pl-5 pr-2 py-2">
+                <Search className="w-4 h-4 text-[#6534F8] shrink-0 mr-3" />
                 <input
                   ref={inputRef}
                   type="text"
@@ -731,219 +1057,39 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
                     setQuery(e.target.value)
                     setShowDropdown(true)
                   }}
-                  placeholder="Web'de arayın, yapay zekâya sorun, iki seçeneği karşılaştırın veya hesaplayın..."
-                  className="w-full text-base sm:text-lg text-slate-900 placeholder:text-slate-400 bg-transparent border-none outline-none select-text"
+                  placeholder="Yeni bir arama yapın veya soru sorun..."
+                  className="w-full text-sm sm:text-base text-slate-900 bg-transparent border-none outline-none select-text"
                 />
-
                 {query && (
                   <button
                     type="button"
                     onClick={() => {
                       setQuery('')
                       setSearchResponse(null)
-                      inputRef.current?.focus()
                     }}
-                    aria-label="Aramayı temizle"
-                    className="p-1 text-slate-400 hover:text-slate-600 mr-1"
-                    title="Temizle"
+                    className="p-1.5 text-slate-400 hover:text-slate-600"
+                    title="Ana Sayfaya Dön"
                   >
                     <X className="w-4 h-4" />
                   </button>
                 )}
-
-                <button
-                  type="button"
-                  onClick={handleToggleVoiceSearch}
-                  aria-label="Sesli Arama"
-                  className={`p-2 rounded-full mr-1.5 transition-colors ${
-                    isListening
-                      ? 'bg-rose-100 text-rose-600 animate-pulse'
-                      : 'hover:bg-slate-100 text-slate-500 hover:text-chirmo-brand'
-                  }`}
-                  title="Sesli Arama"
-                >
-                  {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-                </button>
-
                 <button
                   type="submit"
-                  disabled={isSearching || !query.trim()}
-                  className="px-5 py-2 rounded-xl bg-chirmo-brand hover:bg-chirmo-brand-hover text-white text-xs sm:text-sm font-semibold transition-colors disabled:opacity-40 shrink-0 shadow-xs"
+                  className="w-9 h-9 rounded-full bg-gradient-to-r from-[#7342FF] to-[#5826E8] text-white flex items-center justify-center ml-1.5 shrink-0"
                 >
-                  {isSearching ? 'Aranıyor...' : 'Ara'}
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </form>
-
-            {/* Instant Autocomplete & Search History Dropdown */}
-            {showDropdown && (suggestions.length > 0 || recentHistory.length > 0) && (
-              <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl border border-slate-200 shadow-xl z-40 overflow-hidden py-2">
-                {suggestions.length > 0 && (
-                  <div className="px-3 py-1.5">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-chirmo-brand px-2 block mb-1">
-                      Anlık Arama Önerileri
-                    </span>
-                    {suggestions.map((sug) => (
-                      <button
-                        key={sug}
-                        type="button"
-                        onClick={() => {
-                          setQuery(sug)
-                          handleExecuteSearch(sug)
-                        }}
-                        className="w-full text-left px-3 py-2 rounded-xl hover:bg-chirmo-brand-light/50 flex items-center gap-2.5 text-xs sm:text-sm text-slate-800 font-medium transition-colors"
-                      >
-                        <Search className="w-3.5 h-3.5 text-chirmo-brand shrink-0" />
-                        <span>{sug}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                {recentHistory.length > 0 && (
-                  <div className="px-3 py-1.5 border-t border-slate-100">
-                    <div className="flex items-center justify-between px-2 mb-1">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                        Son Aramalarınız
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          WorkspaceStorage.clearSearchHistory()
-                          setRecentHistory([])
-                        }}
-                        className="text-[10px] text-slate-400 hover:text-rose-600"
-                      >
-                        Temizle
-                      </button>
-                    </div>
-                    {recentHistory.slice(0, 4).map((h) => (
-                      <div
-                        key={h.id}
-                        className="flex items-center justify-between rounded-xl hover:bg-slate-50 px-3 py-1.5"
-                      >
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setQuery(h.query)
-                            handleExecuteSearch(h.query)
-                          }}
-                          className="flex items-center gap-2.5 text-xs text-slate-700 font-medium flex-1 text-left"
-                        >
-                          <History className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                          <span>{h.query}</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            WorkspaceStorage.removeSearchHistoryItem(h.id)
-                            setRecentHistory(WorkspaceStorage.getSearchHistory())
-                          }}
-                          className="p-1 text-slate-300 hover:text-rose-500"
-                          title="Geçmişten kaldır"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Instant Calculator/Unit Answer Pill right under input while typing */}
-            {livePreview && !searchResponse && (
-              <div
-                onClick={() => handleExecuteSearch(query)}
-                className="mt-2 mx-2 px-4 py-2.5 rounded-2xl bg-chirmo-brand-light/70 border border-chirmo-brand/25 flex items-center justify-between cursor-pointer hover:bg-chirmo-brand-light transition-colors"
-              >
-                <div className="flex items-center gap-2 text-xs">
-                  <span className="font-bold text-chirmo-brand">{livePreview.title}:</span>
-                  <span className="font-black text-slate-900 text-sm">{livePreview.result}</span>
-                </div>
-                <span className="text-[11px] font-semibold text-chirmo-brand flex items-center gap-1">
-                  Detay <ArrowRight className="w-3 h-3" />
-                </span>
-              </div>
-            )}
-
-            {/* Suggested Searches & Platform Mode Shortcuts Below Search Bar */}
-            {!searchResponse && (
-              <div className="mt-4 space-y-3">
-                {/* Suggested Queries */}
-                <div className="flex flex-wrap items-center justify-center gap-1.5">
-                  <span className="text-[11px] font-semibold text-slate-400 mr-1">
-                    Önerilen Aramalar:
-                  </span>
-                  {SUGGESTED_DISCOVERY_QUERIES.map((sq) => (
-                    <button
-                      key={sq}
-                      type="button"
-                      onClick={() => {
-                        setQuery(sq)
-                        handleExecuteSearch(sq)
-                      }}
-                      className="px-2.5 py-1 rounded-full bg-slate-50 hover:bg-chirmo-brand-light border border-slate-200 hover:border-chirmo-brand/30 text-[11px] font-medium text-slate-600 hover:text-chirmo-brand transition-colors"
-                    >
-                      {sq}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Quick Feature Entry Buttons */}
-                <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
-                  {onNavigateToDiscover && (
-                    <button
-                      type="button"
-                      onClick={onNavigateToDiscover}
-                      className="px-3.5 py-2 rounded-xl bg-chirmo-brand-light hover:bg-chirmo-brand text-chirmo-brand hover:text-white text-xs font-semibold transition-colors flex items-center gap-1.5"
-                    >
-                      <Compass className="w-3.5 h-3.5" />
-                      <span>Keşif Merkezi (Discover)</span>
-                    </button>
-                  )}
-
-                  {onNavigateToVisual && (
-                    <button
-                      type="button"
-                      onClick={() => onNavigateToVisual(query.trim())}
-                      className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-700 text-xs font-semibold transition-colors flex items-center gap-1.5"
-                    >
-                      <ImageIcon className="w-3.5 h-3.5 text-chirmo-brand" />
-                      <span>Görsel Keşif</span>
-                    </button>
-                  )}
-
-                  {onNavigateToCompare && (
-                    <button
-                      type="button"
-                      onClick={() => onNavigateToCompare('Elektrikli otomobil', 'Hibrit otomobil')}
-                      className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-700 text-xs font-semibold transition-colors flex items-center gap-1.5"
-                    >
-                      <Scale className="w-3.5 h-3.5 text-chirmo-brand" />
-                      <span>Akıllı Karşılaştırma</span>
-                    </button>
-                  )}
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      onNavigateToAgents(
-                        query.trim() ||
-                          'Elektrikli araçların 2026 yılındaki fiyatlarını, menzillerini ve avantajlarını karşılaştır.'
-                      )
-                    }
-                    className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-700 text-xs font-semibold transition-colors flex items-center gap-1.5"
-                  >
-                    <Bot className="w-3.5 h-3.5 text-chirmo-brand" />
-                    <span>Derin Araştırma (Research)</span>
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         </div>
+      )}
 
+      {/* MAIN CONTENT AREA (RESULTS OR BELOW-THE-FOLD WORKSPACE MODULES) */}
+      <div
+        id="chirmo-workspace-modules"
+        className="w-full max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-24 md:pb-12 flex flex-col"
+      >
         {/* ==================== 2. SEARCH RESULTS & AI ANSWER ENGINE VIEW ==================== */}
         {searchResponse ? (
           <div className="w-full max-w-4xl mx-auto space-y-5 animate-fadeIn">
@@ -1568,6 +1714,64 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
         ) : (
           /* ==================== 3. MODULAR WORKSPACE & KANBAN ==================== */
           <div className="w-full space-y-6 mt-2">
+            {/* Below-the-fold Workspace Customizer Bar */}
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div>
+                <h2 className="text-sm font-bold text-slate-800">
+                  Kişisel Çalışma Panosu & Üretkenlik Modülleri
+                </h2>
+                <p className="text-xs text-slate-500">
+                  Kanban görev panosu, hızlı kısayollar, canlı teknoloji radarı ve araçlarınızı yönetin.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowWidgetPicker(!showWidgetPicker)}
+                className={`px-3.5 py-2 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all border cursor-pointer ${
+                  showWidgetPicker
+                    ? 'bg-chirmo-brand text-white border-chirmo-brand shadow-xs'
+                    : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                }`}
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+                <span>Modülleri Özelleştir ({activeWidgets.length})</span>
+              </button>
+            </div>
+
+            {showWidgetPicker && (
+              <div className="w-full bg-slate-50 rounded-2xl border border-slate-200 p-4 animate-fadeIn">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+                  {availableWidgets.map((w) => {
+                    const isAdded = activeWidgets.includes(w.id)
+                    return (
+                      <button
+                        key={w.id}
+                        onClick={() => toggleWidget(w.id)}
+                        className={`p-3 rounded-2xl border text-left transition-all flex items-start justify-between cursor-pointer ${
+                          isAdded
+                            ? 'bg-white border-chirmo-brand ring-2 ring-chirmo-brand/10 shadow-xs'
+                            : 'bg-white/60 border-slate-200 opacity-70 hover:opacity-100'
+                        }`}
+                      >
+                        <div className="flex items-start gap-2.5">
+                          <div className="mt-0.5">{w.icon}</div>
+                          <div>
+                            <span className="text-xs font-bold text-slate-900 block">{w.label}</span>
+                            <span className="text-[11px] text-slate-500 block mt-0.5">{w.desc}</span>
+                          </div>
+                        </div>
+                        <div
+                          className={`w-5 h-5 rounded-full flex items-center justify-center text-xs shrink-0 ${
+                            isAdded ? 'bg-chirmo-brand text-white' : 'bg-slate-200 text-slate-600'
+                          }`}
+                        >
+                          {isAdded ? <Check className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
             {/* MODULE 1: QUICK SHORTCUTS */}
             {activeWidgets.includes('shortcuts') && (
               <div className="bg-slate-50/70 rounded-2xl border border-slate-200/80 p-4 sm:p-5">
