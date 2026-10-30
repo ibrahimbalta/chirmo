@@ -28,14 +28,14 @@ export const CogkoLogo: React.FC<CogkoLogoProps> = ({
     sm: 'text-[24px] sm:text-[26px]',
     md: 'text-[30px] sm:text-[34px]',
     lg: 'text-[44px] sm:text-[50px]',
-    xl: 'text-[64px] sm:text-[76px] md:text-[88px]'
+    xl: 'text-[68px] sm:text-[80px] md:text-[92px]'
   }[size];
 
   return (
     <div
       role="img"
       aria-label="Cogko"
-      className={`inline-flex items-center justify-center font-['Outfit','Plus_Jakarta_Sans',system-ui,sans-serif] font-medium tracking-[-0.025em] select-none leading-none ${sizeClasses} ${className}`}
+      className={`inline-flex items-center justify-center font-['Outfit','Plus_Jakarta_Sans',system-ui,sans-serif] font-semibold tracking-[-0.03em] select-none leading-none ${sizeClasses} ${className}`}
     >
       <span className="text-[#4285F4] inline-block">C</span>
       <span className="text-[#EA4335] inline-block">o</span>
