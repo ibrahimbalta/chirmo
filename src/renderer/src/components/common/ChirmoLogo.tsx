@@ -9,38 +9,42 @@ export interface CogkoLogoProps {
 }
 
 /**
- * Official 3D Multi-Color Cogko Wordmark Logo
- * Exact visual replica of user's custom 3D ribbon Cogko logo
+ * Official Corporate Multi-Color Cogko Wordmark Logo
+ * Clean, geometric, authoritative typography inspired by Google's corporate brand identity.
+ *
+ * Letters & Colors:
+ * - C: Google Blue (#4285F4)
+ * - o: Google Red (#EA4335)
+ * - g: Google Amber/Yellow (#FBBC05)
+ * - k: Google Blue (#4285F4)
+ * - o: Google Green (#34A853)
  */
 export const CogkoLogo: React.FC<CogkoLogoProps> = ({
   size = 'md',
   className = ''
 }) => {
-  const heightClasses = {
-    xs: 'h-6 sm:h-7',
-    sm: 'h-8 sm:h-9',
-    md: 'h-10 sm:h-12',
-    lg: 'h-14 sm:h-16 md:h-18',
-    xl: 'h-20 sm:h-24 md:h-28'
+  const sizeClasses = {
+    xs: 'text-[20px] sm:text-[22px]',
+    sm: 'text-[24px] sm:text-[26px]',
+    md: 'text-[30px] sm:text-[34px]',
+    lg: 'text-[44px] sm:text-[50px]',
+    xl: 'text-[64px] sm:text-[76px] md:text-[88px]'
   }[size];
 
   return (
     <div
-      className={`inline-flex items-center justify-center select-none ${className}`}
+      role="img"
       aria-label="Cogko"
+      className={`inline-flex items-center justify-center font-['Outfit','Plus_Jakarta_Sans',system-ui,sans-serif] font-medium tracking-[-0.025em] select-none leading-none ${sizeClasses} ${className}`}
     >
-      <img
-        src="./cogko-logo.png"
-        alt="Cogko"
-        className={`${heightClasses} w-auto object-contain select-none pointer-events-none drop-shadow-[0_6px_20px_rgba(99,102,241,0.18)] hover:scale-[1.02] transition-transform duration-300`}
-        draggable={false}
-      />
+      <span className="text-[#4285F4] inline-block">C</span>
+      <span className="text-[#EA4335] inline-block">o</span>
+      <span className="text-[#FBBC05] inline-block">g</span>
+      <span className="text-[#4285F4] inline-block">k</span>
+      <span className="text-[#34A853] inline-block">o</span>
     </div>
   );
 };
 
 // Backward-compatible alias
 export const ChirmoLogo = CogkoLogo;
-
-
-

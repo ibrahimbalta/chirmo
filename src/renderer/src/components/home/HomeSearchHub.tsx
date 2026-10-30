@@ -980,7 +980,7 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
               Yapay Zeka Destekli Yeni Nesil Arama Motoru
             </div>
 
-            {/* Main 3D Metallic Gold & Violet Chirmo Hero Logo */}
+            {/* Main Corporate Multi-Color Cogko Hero Wordmark */}
             <div className="mb-4 sm:mb-6">
               <ChirmoLogo size="xl" variant="hero" />
             </div>
