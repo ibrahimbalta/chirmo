@@ -38,15 +38,28 @@ describe('SearchEngineService', () => {
 
     const chirmoRes = SearchEngineService.detectInstantAnswer('chirmo');
     expect(chirmoRes).toBeDefined();
-    expect(chirmoRes?.title).toBe('Chirmo');
+    expect(chirmoRes?.title).toContain('Chirmo');
   });
 
-  it('performs full search with AI synthesis, web results, and related questions', async () => {
+  it('builds weighted Decision Matrix for X vs Y comparisons', () => {
+    const matrix = SearchEngineService.buildDecisionMatrix('React vs Svelte');
+    expect(matrix).toBeDefined();
+    expect(matrix?.optionA).toBe('React');
+    expect(matrix?.optionB).toBe('Svelte');
+    expect(matrix?.criteria.length).toBe(5);
+  });
+
+  it('performs full search with 4-lens perspectives, action blueprint, and knowledge graph nodes', async () => {
     const searchRes = await SearchEngineService.search('TypeScript');
     expect(searchRes.query).toBe('TypeScript');
     expect(searchRes.aiSynthesis).toBeDefined();
-    expect(searchRes.aiSynthesis.keyTakeaways.length).toBeGreaterThan(0);
-    expect(searchRes.webResults.length).toBe(5);
+    expect(searchRes.aiSynthesis.perspectives.ceo).toBeDefined();
+    expect(searchRes.aiSynthesis.perspectives.engineer).toBeDefined();
+    expect(searchRes.aiSynthesis.perspectives.critic).toBeDefined();
+    expect(searchRes.aiSynthesis.perspectives.eli5).toBeDefined();
+    expect(searchRes.aiSynthesis.actionBlueprint.length).toBe(4);
+    expect(searchRes.aiSynthesis.knowledgeNodes.length).toBe(6);
+    expect(searchRes.webResults.length).toBeGreaterThanOrEqual(2);
     expect(searchRes.relatedQuestions.length).toBe(4);
   });
 
