@@ -1,8 +1,13 @@
-# ⚡ CHIRMO — Yapay Zekâ Destekli Masaüstü Tarayıcısı ve İş Yönetim Platformu
+# ⚡ CHIRMO — AI Browser & Workspace
+### Yapay Zekâ Destekli Masaüstü Tarayıcısı ve Akıllı Çalışma Alanı
 
 <div align="center">
 
-![Chirmo Banner](https://img.shields.io/badge/Chirmo-Desktop%20AI%20Browser-6652C9?style=for-the-badge&logo=electron&logoColor=white)
+<img src="./public/chirmo-logo.png" alt="Chirmo Logo" width="420" />
+
+<br /><br />
+
+![Chirmo Banner](https://img.shields.io/badge/Chirmo-AI%20Browser%20%26%20Workspace-4B36D2?style=for-the-badge&logo=electron&logoColor=white)
 [![Tests](https://img.shields.io/badge/Tests-30%2F30%20Passing-10B981?style=for-the-badge&logo=vitest&logoColor=white)](tests/)
 [![Electron](https://img.shields.io/badge/Electron-v33.4-47848F?style=for-the-badge&logo=electron&logoColor=white)](https://electronjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)

@@ -1,9 +1,9 @@
 {
   "name": "chirmo",
   "version": "0.1.0",
-  "description": "COGKO - AI-Assisted Desktop Browser and Workspace Platform",
+  "description": "Chirmo - AI Browser & Workspace",
   "main": "dist/main/index.js",
-  "author": "COGKO Team",
+  "author": "Chirmo Team",
   "license": "MIT",
   "scripts": {
     "dev": "node scripts/dev.mjs",

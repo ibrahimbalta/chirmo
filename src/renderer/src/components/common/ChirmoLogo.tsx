@@ -1,115 +1,93 @@
 import React from 'react';
 
-export interface CogkoLogoProps {
+export interface ChirmoLogoProps {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  variant?: 'header' | 'hero';
+  variant?: 'header' | 'hero' | 'icon-only' | 'wordmark';
   showText?: boolean;
+  showTagline?: boolean;
   animated?: boolean;
   className?: string;
 }
 
+export type CogkoLogoProps = ChirmoLogoProps;
+
 /**
- * Premium High-End Cogko Wordmark Logo
- * Designed with bold geometric neo-grotesque typography, rich prismatic gradient fills,
- * subtle tactile depth, ambient aura, and an iconic radiant AI spark.
- *
- * Fully preserves letter descenders (e.g. lowercase 'g') via baseline-compensated
- * bottom padding to prevent bg-clip-text truncation.
+ * Chirmo Brand Identity Logo Component
+ * Reference: High-end 3D iridescent violet-to-cyan 'C' emblem with golden orbit ring,
+ * luminous star accent, bold deep indigo/cobalt 'Chirmo' wordmark with spherical gradient dot on 'i',
+ * and the iconic 'AI Browser & Workspace' tagline flanked by gradient lines.
  */
-export const CogkoLogo: React.FC<CogkoLogoProps> = ({
+export const ChirmoLogo: React.FC<ChirmoLogoProps> = ({
   size = 'md',
   variant = 'header',
+  showText = true,
+  showTagline,
+  animated = true,
   className = ''
 }) => {
-  const sizeClasses = {
-    xs: 'text-[21px] sm:text-[23px]',
-    sm: 'text-[26px] sm:text-[28px]',
-    md: 'text-[34px] sm:text-[38px]',
-    lg: 'text-[50px] sm:text-[56px]',
-    xl: 'text-[72px] sm:text-[88px] md:text-[100px]'
-  }[size];
-
-  const sparkSizes = {
-    xs: 'w-2.5 h-2.5 -top-0.5 -right-2',
-    sm: 'w-3 h-3 -top-1 -right-2.5',
-    md: 'w-4 h-4 -top-1.5 -right-3.5',
-    lg: 'w-5 h-5 -top-2 -right-4.5',
-    xl: 'w-7 h-7 sm:w-8 sm:h-8 -top-3 -right-6 sm:-top-4 sm:-right-8'
-  }[size];
-
+  const isIconOnly = variant === 'icon-only' || !showText || size === 'xs';
   const isHero = variant === 'hero' || size === 'xl';
+  const displayTagline = showTagline ?? isHero;
 
-  // Base styling for each letter:
-  // pb-[0.38em] -mb-[0.38em] extends the element box downwards so that
-  // bg-clip-text covers the full descender tail of lowercase 'g' without clipping!
-  const letterBase =
-    'inline-block bg-clip-text text-transparent pb-[0.38em] -mb-[0.38em] pt-[0.1em] -mt-[0.1em] transition-transform duration-300 hover:scale-105';
+  // Sizes for image rendering
+  const heightClasses = {
+    xs: 'h-6 w-auto',
+    sm: 'h-7 sm:h-8 w-auto',
+    md: 'h-9 sm:h-10 w-auto',
+    lg: 'h-12 sm:h-14 w-auto',
+    xl: 'h-20 sm:h-24 md:h-28 w-auto max-w-full'
+  }[size];
+
+  // Icon only sizes
+  const iconSizes = {
+    xs: 'w-6 h-6',
+    sm: 'w-7 h-7',
+    md: 'w-9 h-9',
+    lg: 'w-12 h-12',
+    xl: 'w-20 h-20'
+  }[size];
 
   return (
     <div
       role="img"
-      aria-label="Cogko"
-      className={`relative inline-flex items-center justify-center font-['Outfit','Plus_Jakarta_Sans',system-ui,sans-serif] font-black tracking-[-0.04em] select-none py-1.5 overflow-visible ${className}`}
+      aria-label="Chirmo - AI Browser & Workspace"
+      className={`relative inline-flex items-center justify-center select-none overflow-visible ${
+        animated ? 'transition-transform duration-300 hover:scale-[1.02]' : ''
+      } ${className}`}
     >
-      {/* Subtle atmospheric ambient glow for hero mode */}
+      {/* Ambient ethereal backlight glow for hero display */}
       {isHero && (
         <div
-          className="absolute -inset-6 sm:-inset-10 bg-gradient-to-r from-indigo-500/20 via-rose-500/18 to-cyan-500/20 blur-3xl rounded-full pointer-events-none -z-10"
+          className="absolute -inset-6 sm:-inset-10 bg-gradient-to-r from-purple-500/18 via-indigo-500/22 to-blue-500/18 blur-3xl rounded-full pointer-events-none -z-10"
           aria-hidden="true"
         />
       )}
 
-      {/* Main typographic wordmark with rich multi-stop prismatic gradients */}
-      <div className={`relative flex items-baseline drop-shadow-[0_4px_16px_rgba(99,102,241,0.22)] overflow-visible ${sizeClasses}`}>
-        {/* C: Electric Cobalt to Deep Indigo */}
-        <span className={`${letterBase} bg-gradient-to-b from-[#38BDF8] via-[#6366F1] to-[#4338CA]`}>
-          C
-        </span>
-
-        {/* o: Vivid Coral to Crimson Rose */}
-        <span className={`${letterBase} bg-gradient-to-b from-[#FB7185] via-[#F43F5E] to-[#E11D48]`}>
-          o
-        </span>
-
-        {/* g: Solar Gold to Vibrant Amber - Full descender loop rendered */}
-        <span className={`${letterBase} bg-gradient-to-b from-[#FDE047] via-[#F59E0B] to-[#EA580C]`}>
-          g
-        </span>
-
-        {/* k: Royal Violet to Cyber Orchid */}
-        <span className={`${letterBase} bg-gradient-to-b from-[#C084FC] via-[#8B5CF6] to-[#6D28D9]`}>
-          k
-        </span>
-
-        {/* o: Emerald Mint to Pacific Cyan */}
-        <span className={`${letterBase} bg-gradient-to-b from-[#34D399] via-[#06B6D4] to-[#0284C7]`}>
-          o
-        </span>
-
-        {/* Radiant 4-Point AI Intelligence Spark Accent */}
-        <svg
-          className={`absolute ${sparkSizes} text-amber-400 drop-shadow-[0_0_12px_rgba(251,191,36,0.85)] animate-pulse pointer-events-none`}
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <path
-            d="M12 0C12 7 7 12 0 12C7 12 12 17 12 24C12 17 17 12 24 12C17 12 12 7 12 0Z"
-            fill="url(#sparkle-gradient)"
-          />
-          <defs>
-            <linearGradient id="sparkle-gradient" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stopColor="#FDE047" />
-              <stop offset="50%" stopColor="#FB923C" />
-              <stop offset="100%" stopColor="#818CF8" />
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
+      {isIconOnly ? (
+        <img
+          src="./chirmo-icon.png"
+          alt="Chirmo Icon"
+          className={`${iconSizes} object-contain shrink-0 drop-shadow-[0_2px_10px_rgba(99,102,241,0.25)]`}
+          draggable={false}
+        />
+      ) : displayTagline ? (
+        <img
+          src="./chirmo-logo.png"
+          alt="Chirmo — AI Browser & Workspace"
+          className={`${heightClasses} object-contain drop-shadow-[0_4px_18px_rgba(99,102,241,0.20)]`}
+          draggable={false}
+        />
+      ) : (
+        <img
+          src="./chirmo-wordmark.png"
+          alt="Chirmo"
+          className={`${heightClasses} object-contain drop-shadow-[0_3px_12px_rgba(99,102,241,0.18)]`}
+          draggable={false}
+        />
+      )}
     </div>
   );
 };
 
 // Backward-compatible alias
-export const ChirmoLogo = CogkoLogo;
+export const CogkoLogo = ChirmoLogo;

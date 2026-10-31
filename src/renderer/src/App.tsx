@@ -180,7 +180,7 @@ export const App: React.FC = () => {
     e.preventDefault();
     if (!authEmail.trim()) return;
     const displayName =
-      authName.trim() || authEmail.split('@')[0] || 'COGKO Kullanıcısı';
+      authName.trim() || authEmail.split('@')[0] || 'Chirmo Kullanıcısı';
     const profile = { name: displayName, email: authEmail.trim() };
     setUserProfile(profile);
     try {
@@ -252,8 +252,8 @@ export const App: React.FC = () => {
                   ? 'bg-slate-200 text-slate-900'
                   : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
               }`}
-              title="COGKO Uygulamaları"
-              aria-label="COGKO Uygulamaları"
+              title="Chirmo Uygulamaları"
+              aria-label="Chirmo Uygulamaları"
             >
               <LayoutGrid className="w-5 h-5" />
             </button>
@@ -266,7 +266,7 @@ export const App: React.FC = () => {
                     Favorileriniz
                   </span>
                   <span className="text-[11px] font-semibold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full">
-                    COGKO Apps
+                    Chirmo Apps
                   </span>
                 </div>
 
@@ -612,7 +612,7 @@ export const App: React.FC = () => {
             <div className="flex flex-col items-center text-center mb-6">
               <ChirmoLogo size="md" variant="header" />
               <h3 className="text-xl font-bold text-slate-900 mt-4">
-                {authModalMode === 'login' ? 'COGKO Hesabına Giriş Yap' : 'Yeni COGKO Hesabı Oluştur'}
+                {authModalMode === 'login' ? 'Chirmo Hesabına Giriş Yap' : 'Yeni Chirmo Hesabı Oluştur'}
               </h3>
               <p className="text-xs text-slate-500 mt-1">
                 Araştırmalarınızı, koleksiyonlarınızı ve kişisel çalışma alanınızı senkronize edin.
@@ -644,7 +644,7 @@ export const App: React.FC = () => {
                   type="email"
                   value={authEmail}
                   onChange={(e) => setAuthEmail(e.target.value)}
-                  placeholder="ornek@cogko.com"
+                  placeholder="ornek@chirmo.com"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-[#6534F8] outline-none"
                   required
                 />

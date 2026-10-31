@@ -25,7 +25,7 @@ export class GoogleSuggestService {
 
     // In Browser: JSONP gives 100% reliable, zero-CORS real-time Google search suggestions
     return new Promise<string[]>((resolve) => {
-      const callbackName = `cogko_google_suggest_${Date.now()}_${Math.floor(Math.random() * 100000)}`;
+      const callbackName = `chirmo_google_suggest_${Date.now()}_${Math.floor(Math.random() * 100000)}`;
       const script = document.createElement('script');
 
       const timer = setTimeout(() => {
