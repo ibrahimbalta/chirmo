@@ -11,14 +11,17 @@ import {
   Check, 
   Home,
   Bookmark,
-  PanelRight
+  PanelRight,
+  Columns2
 } from 'lucide-react';
-import { Tab } from '../../types';
+import { Tab, SplitMode } from '../../types';
 
 interface AddressBarProps {
   activeTab: Tab | null;
   isTaskPanelOpen: boolean;
   onToggleTaskPanel: () => void;
+  splitMode?: SplitMode;
+  onToggleSplitMode?: () => void;
   onNavigate: (url: string) => void;
   onGoBack: () => void;
   onGoForward: () => void;
@@ -31,6 +34,8 @@ export const AddressBar: React.FC<AddressBarProps> = ({
   activeTab,
   isTaskPanelOpen,
   onToggleTaskPanel,
+  splitMode = 'none',
+  onToggleSplitMode,
   onNavigate,
   onGoBack,
   onGoForward,
@@ -178,6 +183,22 @@ export const AddressBar: React.FC<AddressBarProps> = ({
             <Copy className="w-4 h-4" />
           )}
         </button>
+
+        {/* Split Canvas Workspace Toggle */}
+        {onToggleSplitMode && (
+          <button
+            onClick={onToggleSplitMode}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+              splitMode === 'canvas'
+                ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xs'
+                : 'hover:bg-chirmo-secondary text-slate-600 hover:text-slate-900'
+            }`}
+            title="Ayrık Çalışma Alanı (AI Canvas) Aç/Kapat"
+          >
+            <Columns2 className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Ayrık Canvas</span>
+          </button>
+        )}
 
         {/* Task & AI Side Panel Toggle */}
         <button

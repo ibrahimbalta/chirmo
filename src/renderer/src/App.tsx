@@ -37,7 +37,9 @@ import { DiscoverView } from './components/discover/DiscoverView';
 import { VisualDiscoveryView } from './components/visual/VisualDiscoveryView';
 import { CompareView } from './components/compare/CompareView';
 import { ChirmoLogo } from './components/common/ChirmoLogo';
-import { Tab, ActiveNavMenu } from './types';
+import { SplitCanvasWorkspace } from './components/browser/SplitCanvasWorkspace';
+import { TabGroupService } from './services/tabGroupService';
+import { Tab, TabGroup, SplitMode, ActiveNavMenu } from './types';
 
 export const App: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<ActiveNavMenu>('home');
@@ -52,6 +54,10 @@ export const App: React.FC = () => {
     a: 'Elektrikli otomobil',
     b: 'Hibrit otomobil'
   });
+
+  // AI Tab Groups & Split Workspace
+  const [tabGroups, setTabGroups] = useState<TabGroup[]>(() => TabGroupService.loadGroups());
+  const [splitMode, setSplitMode] = useState<SplitMode>('none');
 
   // Top Header Dropdown & Auth Modal State
   const [showAppLauncher, setShowAppLauncher] = useState(false);
@@ -99,13 +105,40 @@ export const App: React.FC = () => {
       });
 
       const unsubTabs = window.chirmo.onTabsUpdated((updatedTabs, currentActiveId) => {
-        setTabs(updatedTabs);
+        setTabs((prev) => {
+          return updatedTabs.map((incoming) => {
+            const existing = prev.find((p) => p.id === incoming.id);
+            if (existing) {
+              return {
+                ...incoming,
+                groupId: existing.groupId,
+                groupTitle: existing.groupTitle,
+                groupColor: existing.groupColor,
+                isPinned: existing.isPinned,
+                isSuspended: existing.isSuspended
+              };
+            }
+            return incoming;
+          });
+        });
         setActiveTabId(currentActiveId);
       });
 
       const unsubState = window.chirmo.onTabStateChanged((updatedTab) => {
         setTabs((prev) =>
-          prev.map((t) => (t.id === updatedTab.id ? { ...t, ...updatedTab } : t))
+          prev.map((t) => {
+            if (t.id === updatedTab.id) {
+              return {
+                ...t,
+                ...updatedTab,
+                groupId: t.groupId,
+                groupTitle: t.groupTitle,
+                groupColor: t.groupColor,
+                isPinned: t.isPinned
+              };
+            }
+            return t;
+          })
         );
       });
 
@@ -117,6 +150,56 @@ export const App: React.FC = () => {
   }, []);
 
   const activeTab = tabs.find((t) => t.id === activeTabId) || null;
+
+  // AI Tab Grouping Actions
+  const handleAutoGroupTabs = () => {
+    const result = TabGroupService.autoGroupTabs(tabs);
+    setTabGroups(result.groups);
+    setTabs(result.updatedTabs);
+    TabGroupService.saveGroups(result.groups);
+  };
+
+  const handleToggleGroupCollapse = (groupId: string) => {
+    setTabGroups((prev) => {
+      const updated = prev.map((g) =>
+        g.id === groupId ? { ...g, isCollapsed: !g.isCollapsed } : g
+      );
+      TabGroupService.saveGroups(updated);
+      return updated;
+    });
+  };
+
+  const handleUngroup = (groupId: string) => {
+    setTabGroups((prev) => {
+      const updated = prev.filter((g) => g.id !== groupId);
+      TabGroupService.saveGroups(updated);
+      return updated;
+    });
+    setTabs((prev) =>
+      prev.map((t) =>
+        t.groupId === groupId
+          ? { ...t, groupId: undefined, groupTitle: undefined, groupColor: undefined }
+          : t
+      )
+    );
+  };
+
+  const handleTogglePinTab = (tabId: string) => {
+    setTabs((prev) =>
+      prev.map((t) => (t.id === tabId ? { ...t, isPinned: !t.isPinned } : t))
+    );
+  };
+
+  const handleChangeGroupColor = (groupId: string, color: string) => {
+    setTabGroups((prev) => {
+      const updated = prev.map((g) => (g.id === groupId ? { ...g, color } : g));
+      TabGroupService.saveGroups(updated);
+      return updated;
+    });
+    setTabs((prev) =>
+      prev.map((t) => (t.groupId === groupId ? { ...t, groupColor: color } : t))
+    );
+  };
 
   const handleGoHome = () => {
     setSharedSearchQuery('');
@@ -439,16 +522,26 @@ export const App: React.FC = () => {
           <>
             <TabBar
               tabs={tabs}
+              groups={tabGroups}
               activeTabId={activeTabId}
               onSelectTab={handleSelectTab}
               onCloseTab={handleCloseTab}
               onNewTab={handleNewTab}
               onGoHome={handleGoHome}
+              onAutoGroupTabs={handleAutoGroupTabs}
+              onToggleGroupCollapse={handleToggleGroupCollapse}
+              onUngroup={handleUngroup}
+              onTogglePinTab={handleTogglePinTab}
+              onChangeGroupColor={handleChangeGroupColor}
             />
             <AddressBar
               activeTab={activeTab}
               isTaskPanelOpen={isTaskPanelOpen}
               onToggleTaskPanel={() => setIsTaskPanelOpen(!isTaskPanelOpen)}
+              splitMode={splitMode}
+              onToggleSplitMode={() =>
+                setSplitMode((prev) => (prev === 'canvas' ? 'none' : 'canvas'))
+              }
               onNavigate={handleNavigate}
               onGoBack={handleGoBack}
               onGoForward={handleGoForward}
@@ -588,6 +681,20 @@ export const App: React.FC = () => {
               </div>
             )}
           </div>
+
+          {isBrowserActive && splitMode === 'canvas' && (
+            <div className="w-[42%] min-w-[340px] max-w-[650px] border-l border-slate-200/80 dark:border-slate-800 flex flex-col z-20 bg-white dark:bg-slate-900 shadow-xl animate-fadeIn">
+              <SplitCanvasWorkspace
+                currentTab={activeTab}
+                onClose={() => setSplitMode('none')}
+                onNavigate={handleNavigate}
+                onExecuteAgentPrompt={(prompt) => {
+                  setAgentInitialPrompt(prompt);
+                  setIsTaskPanelOpen(true);
+                }}
+              />
+            </div>
+          )}
 
           {isBrowserActive && isTaskPanelOpen && (
             <TaskSidebar

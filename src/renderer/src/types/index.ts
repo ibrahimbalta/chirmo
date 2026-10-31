@@ -7,6 +7,32 @@ export interface Tab {
   canGoBack: boolean;
   canGoForward: boolean;
   isSecure: boolean;
+  groupId?: string;
+  groupTitle?: string;
+  groupColor?: string;
+  isPinned?: boolean;
+  isSuspended?: boolean;
+}
+
+export interface TabGroup {
+  id: string;
+  title: string;
+  color: string;
+  isCollapsed?: boolean;
+  tabCount?: number;
+}
+
+export type SplitMode = 'none' | 'canvas' | 'dual';
+
+export interface CanvasNote {
+  id: string;
+  title: string;
+  content: string;
+  tags: string[];
+  sourceUrl?: string;
+  sourceTitle?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface BrowserBounds {

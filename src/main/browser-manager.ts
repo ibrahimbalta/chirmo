@@ -14,6 +14,11 @@ export interface TabData {
   canGoBack: boolean;
   canGoForward: boolean;
   isSecure: boolean;
+  groupId?: string;
+  groupTitle?: string;
+  groupColor?: string;
+  isPinned?: boolean;
+  isSuspended?: boolean;
 }
 
 export interface BrowserBounds {

@@ -8,7 +8,7 @@
 <br /><br />
 
 ![Chirmo Banner](https://img.shields.io/badge/Chirmo-AI%20Browser%20%26%20Workspace-4B36D2?style=for-the-badge&logo=electron&logoColor=white)
-[![Tests](https://img.shields.io/badge/Tests-30%2F30%20Passing-10B981?style=for-the-badge&logo=vitest&logoColor=white)](tests/)
+[![Tests](https://img.shields.io/badge/Tests-42%2F42%20Passing-10B981?style=for-the-badge&logo=vitest&logoColor=white)](tests/)
 [![Electron](https://img.shields.io/badge/Electron-v33.4-47848F?style=for-the-badge&logo=electron&logoColor=white)](https://electronjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20x64-0078D6?style=for-the-badge&logo=windows&logoColor=white)](release/)
@@ -39,9 +39,11 @@ Kullanıcı yalnızca web sitelerini ziyaret etmekle kalmaz; yapay zekâya göre
   - **🗄️ Yerel Bellek İndeksi:** Bilgisayarınızdaki tüm projeleri, görevleri ve denetim kayıtlarını tam metin arama.
 - **Perplexity Tarzı AI Sentezi:** Önemli çıkarımlar, tavsiye edilen adımlar, güvenilirlik skoru (%98) ve kaynakça.
 
-### 2. 🌐 Güvenli Masaüstü Tarayıcısı (Browser Core)
+### 2. 🌐 Güvenli Masaüstü Tarayıcısı & AI Çalışma Alanı (Browser Core & Split Workspace)
 - **Modern `WebContentsView`:** Electron 33 üzerinde sekmeleri tam izole, güvenli ve donanım hızlandırmalı olarak çalıştıran sekme yöneticisi.
-- **Gelişmiş Navigasyon:** Sekmeler (`+` / `✕`), akıllı adres çubuğu, geri / ileri / yenile / durdur kontrolleri.
+- **✨ Akıllı AI Sekme Gruplandırma:** Açık sekmeleri semantik kategori algoritmalarıyla (Araştırma, Kod/Geliştirme, Haber, Finans, Sosyal vb.) tek tıkla renkli gruplara böler, daraltma/genişletme ve sabitleme (pin) desteği sunar.
+- **🪟 Ayrık Çalışma Alanı (Split Canvas Workspace):** Tarayıcı ile eşzamanlı çalışan yan yana not ve sentez kanvası; canlı web sayfasından tek tıkla alıntı/kaynak ekleme, AI özetleme ve Markdown dışa aktarma.
+- **Gelişmiş Navigasyon:** Sekmeler (`+` / `✕`), akıllı adres çubuğu, geri / ileri / yenile / durdur kontrolleri, sekme sabitleme ve grup yönetimi menüsü.
 - **Tarayıcı İçi Görev Paneli:** Gezinilen aktif web sayfasını tek tıkla projelere görev olarak bağlayan yan panel.
 - **Özel Türkçe Hata Sayfası:** Ağ kopması veya DNS hatalarında modern marka uyumlu kurtarma ekranı.
 
