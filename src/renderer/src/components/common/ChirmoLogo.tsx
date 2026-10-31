@@ -52,36 +52,28 @@ export const ChirmoLogo: React.FC<ChirmoLogoProps> = ({
       role="img"
       aria-label="Chirmo - AI Browser & Workspace"
       className={`relative inline-flex items-center justify-center select-none overflow-visible ${
-        animated ? 'transition-transform duration-300 hover:scale-[1.02]' : ''
+        animated ? 'transition-transform duration-300 hover:scale-[1.01]' : ''
       } ${className}`}
     >
-      {/* Ambient ethereal backlight glow for hero display */}
-      {isHero && (
-        <div
-          className="absolute -inset-6 sm:-inset-10 bg-gradient-to-r from-purple-500/18 via-indigo-500/22 to-blue-500/18 blur-3xl rounded-full pointer-events-none -z-10"
-          aria-hidden="true"
-        />
-      )}
-
       {isIconOnly ? (
         <img
           src="./chirmo-icon.png"
           alt="Chirmo Icon"
-          className={`${iconSizes} object-contain shrink-0 drop-shadow-[0_2px_10px_rgba(99,102,241,0.25)]`}
+          className={`${iconSizes} object-contain shrink-0`}
           draggable={false}
         />
       ) : displayTagline ? (
         <img
           src="./chirmo-logo.png"
           alt="Chirmo — AI Browser & Workspace"
-          className={`${heightClasses} object-contain drop-shadow-[0_4px_18px_rgba(99,102,241,0.20)]`}
+          className={`${heightClasses} object-contain`}
           draggable={false}
         />
       ) : (
         <img
           src="./chirmo-wordmark.png"
           alt="Chirmo"
-          className={`${heightClasses} object-contain drop-shadow-[0_3px_12px_rgba(99,102,241,0.18)]`}
+          className={`${heightClasses} object-contain`}
           draggable={false}
         />
       )}

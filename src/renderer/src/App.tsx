@@ -199,11 +199,11 @@ export const App: React.FC = () => {
   return (
     <div
       className={`flex flex-col h-screen w-screen overflow-hidden text-chirmo-text ${
-        ambientWarmMode ? 'bg-[#FDFCFE]' : 'bg-white'
+        ambientWarmMode ? 'bg-[#FAF9FE]' : 'bg-[#FAF9FE]'
       }`}
     >
       {/* ==================== TOP MINIMAL HEADER (GOOGLE APPS STYLE) ==================== */}
-      <header className="w-full h-14 sm:h-16 px-4 sm:px-8 flex items-center justify-between bg-white/95 backdrop-blur-md border-b border-slate-100/90 z-40 shrink-0">
+      <header className="w-full h-14 sm:h-16 px-4 sm:px-8 flex items-center justify-between bg-[#FAF9FE]/90 backdrop-blur-md border-b border-purple-100/40 z-40 shrink-0">
         {/* Left: Return to Home button when away from Home */}
         <div className="flex items-center">
           {activeMenu !== 'home' ? (

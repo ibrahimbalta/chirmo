@@ -965,11 +965,11 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
       {/* ==================== 1. FULL-BLEED HERO VIEWPORT (WHEN NO ACTIVE SEARCH) ==================== */}
       {!searchResponse ? (
         <div
-          className="w-full min-h-[calc(100vh-4rem)] relative flex flex-col items-center justify-between overflow-y-auto sm:overflow-visible px-4 sm:px-8 pt-3 sm:pt-5 pb-24 sm:pb-3 shrink-0"
+          className="w-full min-h-[calc(100vh-4rem)] relative flex flex-col items-center justify-between overflow-y-auto sm:overflow-visible px-4 sm:px-8 pt-3 sm:pt-5 pb-24 sm:pb-3 shrink-0 bg-[#FAF9FE]"
           style={{
-            backgroundImage: "url('./chirmo-hero-bg.jpg')",
+            backgroundImage: "url('./chirmo-hero-bg.png')",
             backgroundSize: 'cover',
-            backgroundPosition: 'center bottom',
+            backgroundPosition: 'center top',
             backgroundRepeat: 'no-repeat'
           }}
         >
