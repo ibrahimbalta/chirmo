@@ -416,6 +416,32 @@ export const SimpleSearchHome: React.FC<SimpleSearchHomeProps> = ({
           </div>
         </div>
 
+        {/* ==================== ÇOCUK & YETİŞKİN İNGİLİZCE OYUN ALANI BANNERI ==================== */}
+        <div
+          onClick={onNavigateToLearn}
+          className="w-full max-w-2xl p-4 rounded-3xl bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600 text-white shadow-lg hover:shadow-xl transition-all cursor-pointer flex items-center justify-between gap-4 group hover:scale-[1.01]"
+        >
+          <div className="flex items-center space-x-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center text-2xl group-hover:rotate-12 transition-transform shrink-0">
+              🎮
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <span className="text-xs font-black uppercase tracking-wider bg-white/20 px-2 py-0.5 rounded-full">
+                  Yeni Oyun Alanı ⭐
+                </span>
+                <span className="text-[11px] text-amber-200 font-bold">🎈 Çocuk & 🎯 Yetişkin</span>
+              </div>
+              <div className="text-sm font-black mt-0.5">
+                Oyunlarla İngilizceyi Yaşa! (Hafıza Kartları, Hızlı Refleks, Cümle Roketi)
+              </div>
+            </div>
+          </div>
+          <div className="px-3.5 py-2 rounded-xl bg-white text-slate-900 text-xs font-black shrink-0 group-hover:bg-amber-100 transition-colors">
+            Oyna 🚀
+          </div>
+        </div>
+
         {/* ==================== HIZLI DİL ARAÇLARI (4 KART) ==================== */}
         <div className="w-full max-w-2xl grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
           <div

@@ -13,20 +13,22 @@ import {
   Award,
   Zap,
   Compass,
-  HeartHandshake
+  HeartHandshake,
+  Gamepad2
 } from 'lucide-react';
 import { CEFRLevel, VocabularyWord } from '../../types';
 import { LearningStorageService } from '../../services/learningStorage';
 import { ThirtyDayCampView } from '../kids/ThirtyDayCampView';
 import { GradeVocabularyView } from '../kids/GradeVocabularyView';
 import { DailyEnglishStudio } from './DailyEnglishStudio';
+import { EnglishGameArcade } from './EnglishGameArcade';
 import { CampStorageService } from '../../services/curriculumData';
 
 interface SimpleLearningHubProps {
   userLevel: CEFRLevel;
   onLevelChange: (level: CEFRLevel) => void;
   onOpenInBrowser: (url: string) => void;
-  initialTab?: 'camp' | 'studio' | 'grade' | 'vault' | 'flashcards' | 'quiz';
+  initialTab?: 'camp' | 'games' | 'studio' | 'grade' | 'vault' | 'flashcards' | 'quiz';
 }
 
 export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
@@ -35,7 +37,7 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
   onOpenInBrowser,
   initialTab = 'camp'
 }) => {
-  const [activeTab, setActiveTab] = useState<'camp' | 'studio' | 'grade' | 'vault' | 'flashcards' | 'quiz'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'camp' | 'games' | 'studio' | 'grade' | 'vault' | 'flashcards' | 'quiz'>(initialTab);
   const [words, setWords] = useState<VocabularyWord[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [campProgress, setCampProgress] = useState(() => CampStorageService.getProgress());
@@ -144,6 +146,18 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
           </button>
 
           <button
+            onClick={() => setActiveTab('games')}
+            className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'games'
+                ? 'bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600 text-white shadow-md'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
+            }`}
+          >
+            <Gamepad2 className="w-3.5 h-3.5 text-amber-300" />
+            <span>🎮 Oyun Alanı (Çocuk & Yetişkin) ⭐</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('studio')}
             className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
               activeTab === 'studio'
@@ -218,7 +232,12 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
           />
         )}
 
-        {/* 2. GÜNLÜK İNGİLİZCE PRATİK STÜDYOSU (DİYALOG, CÜMLE KURMA, DİNLEME) */}
+        {/* 2. ÇOCUK & YETİŞKİN İNGİLİZCE OYUN ALANI (ARCADE) */}
+        {activeTab === 'games' && (
+          <EnglishGameArcade />
+        )}
+
+        {/* 3. GÜNLÜK İNGİLİZCE PRATİK STÜDYOSU (DİYALOG, CÜMLE KURMA, DİNLEME) */}
         {activeTab === 'studio' && (
           <DailyEnglishStudio />
         )}
