@@ -56,6 +56,7 @@ import { WatchingView } from './components/learning/WatchingView';
 import { SpeakingView } from './components/learning/SpeakingView';
 import { WritingAssistantView } from './components/learning/WritingAssistantView';
 import { PlacementTestModal } from './components/learning/PlacementTestModal';
+import { SmartReaderModal } from './components/learning/SmartReaderModal';
 import { LearnBottomBar } from './components/learning/LearnBottomBar';
 import { AiTutorSidebar } from './components/learning/AiTutorSidebar';
 import { LearningStorageService } from './services/learningStorage';
@@ -83,6 +84,7 @@ export const App: React.FC = () => {
   );
   const [isAiTutorOpen, setIsAiTutorOpen] = useState(true);
   const [isPlacementTestOpen, setIsPlacementTestOpen] = useState(false);
+  const [isSmartReaderOpen, setIsSmartReaderOpen] = useState(false);
   const [activeLearningText, setActiveLearningText] = useState<string>(
     'Artificial intelligence is helping businesses improve their services and reduce costs.'
   );
@@ -752,6 +754,7 @@ export const App: React.FC = () => {
                 onToggleSplitMode={() =>
                   setSplitMode((prev) => (prev === 'canvas' ? 'none' : 'canvas'))
                 }
+                onToggleSmartReader={() => setIsSmartReaderOpen(true)}
                 onNavigate={handleNavigate}
                 onGoBack={handleGoBack}
                 onGoForward={handleGoForward}
@@ -1009,6 +1012,16 @@ export const App: React.FC = () => {
         isOpen={isPlacementTestOpen}
         onClose={() => setIsPlacementTestOpen(false)}
         onCompleteLevel={handleLevelChange}
+      />
+
+      {/* Chirmo Akıllı Sayfa Sadeleştirici & Okuma Modu Modal */}
+      <SmartReaderModal
+        isOpen={isSmartReaderOpen}
+        onClose={() => setIsSmartReaderOpen(false)}
+        pageTitle={activeTab?.title}
+        pageUrl={activeTab?.url}
+        userLevel={learningProgress.currentLevel}
+        onWordAdded={() => setLearningProgress({ ...LearningStorageService.getProgress() })}
       />
     </div>
 

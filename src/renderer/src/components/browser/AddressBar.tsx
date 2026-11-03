@@ -12,7 +12,8 @@ import {
   Home,
   Bookmark,
   PanelRight,
-  Columns2
+  Columns2,
+  BookOpen
 } from 'lucide-react';
 import { Tab, SplitMode } from '../../types';
 
@@ -22,6 +23,7 @@ interface AddressBarProps {
   onToggleTaskPanel: () => void;
   splitMode?: SplitMode;
   onToggleSplitMode?: () => void;
+  onToggleSmartReader?: () => void;
   onNavigate: (url: string) => void;
   onGoBack: () => void;
   onGoForward: () => void;
@@ -36,6 +38,7 @@ export const AddressBar: React.FC<AddressBarProps> = ({
   onToggleTaskPanel,
   splitMode = 'none',
   onToggleSplitMode,
+  onToggleSmartReader,
   onNavigate,
   onGoBack,
   onGoForward,
@@ -183,6 +186,18 @@ export const AddressBar: React.FC<AddressBarProps> = ({
             <Copy className="w-4 h-4" />
           )}
         </button>
+
+        {/* Chirmo AI Smart Reader Mode Button */}
+        {onToggleSmartReader && (
+          <button
+            onClick={onToggleSmartReader}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 transition-all cursor-pointer shadow-2xs"
+            title="Bu web sayfasını CEFR seviyenize göre sadeleştirip kelimeleri ve mini anlama testini gösterir"
+          >
+            <BookOpen className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+            <span className="hidden sm:inline">Seviyeme Göre Sadeleştir</span>
+          </button>
+        )}
 
         {/* Split Canvas Workspace Toggle */}
         {onToggleSplitMode && (
