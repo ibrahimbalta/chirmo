@@ -22,6 +22,8 @@ import { SimpleSearchHome } from './components/home/SimpleSearchHome';
 import { SimpleLearningHub } from './components/learning/SimpleLearningHub';
 import { SimpleTaskWorkspace } from './components/tasks/SimpleTaskWorkspace';
 import { SimpleAiTutorDrawer } from './components/learning/SimpleAiTutorDrawer';
+import { LearningCenterSidebar } from './components/home/LearningCenterSidebar';
+import { ChirmoAiTeacherSidebar } from './components/home/ChirmoAiTeacherSidebar';
 import { SmartReaderModal } from './components/learning/SmartReaderModal';
 import { InstallAppModal } from './components/common/InstallAppModal';
 import { LearningStorageService } from './services/learningStorage';
@@ -57,6 +59,18 @@ export const App: React.FC = () => {
 
   // Mobil Uygulama & APK İndirme Modalı
   const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
+
+  // Sol Öğrenme Merkezi Paneli
+  const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true);
+
+  const handleLeftSidebarSelect = (itemId: string) => {
+    if (itemId === 'home') {
+      setActiveTab('search');
+      setIsBrowserNavigating(false);
+    } else {
+      setActiveTab('learn');
+    }
+  };
 
   useEffect(() => {
     if (window.chirmo) {
@@ -253,6 +267,18 @@ export const App: React.FC = () => {
             <Sparkles className="w-3.5 h-3.5" />
             <span>Türkçe Yardımcı</span>
           </button>
+
+          {/* Kullanıcı Profil Resmi */}
+          <div
+            className="w-8 h-8 rounded-full overflow-hidden border border-slate-200 dark:border-slate-700 shadow-xs cursor-pointer hover:ring-2 hover:ring-blue-400 transition-all shrink-0"
+            title="Profil: İbrahim (Seviye A2)"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80"
+              alt="İbrahim"
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
       </header>
 
@@ -261,16 +287,41 @@ export const App: React.FC = () => {
         {/* BÖLÜM 1: ARAMA & TARAYICI */}
         {activeTab === 'search' && (
           <div className="flex-1 relative flex flex-col h-full overflow-hidden">
-            {/* Eğer bir siteye girilmemişse: Sade Google Tarzı Arama Ana Sayfası */}
+            {/* Eğer bir siteye girilmemişse: 3 Panelli Masaüstü Arama & Öğrenme Paneli */}
             {!isBrowserNavigating ? (
-              <SimpleSearchHome
-                onSearch={handleNavigate}
-                onNavigateToLearn={() => setActiveTab('learn')}
-                onNavigateToTasks={() => setActiveTab('tasks')}
-                onOpenInstallModal={() => setIsInstallModalOpen(true)}
-                userLevel={learningProgress.currentLevel}
-                pendingTaskCount={pendingTaskCount}
-              />
+              <div className="flex-1 flex flex-row h-full overflow-hidden">
+                {/* SOL PANEL: ÖĞRENME MERKEZİ (Masaüstü/Tablet) */}
+                <div className="hidden md:flex shrink-0 h-full">
+                  <LearningCenterSidebar
+                    isOpen={isLeftSidebarOpen}
+                    onSelectItem={handleLeftSidebarSelect}
+                    onToggle={() => setIsLeftSidebarOpen(!isLeftSidebarOpen)}
+                  />
+                </div>
+
+                {/* ORTA PANEL: ARAMA & GÖREVLER */}
+                <div className="flex-1 h-full overflow-y-auto">
+                  <SimpleSearchHome
+                    onSearch={handleNavigate}
+                    onNavigateToLearn={() => setActiveTab('learn')}
+                    onNavigateToTasks={() => setActiveTab('tasks')}
+                    onOpenInstallModal={() => setIsInstallModalOpen(true)}
+                    userLevel={learningProgress.currentLevel}
+                    pendingTaskCount={pendingTaskCount}
+                  />
+                </div>
+
+                {/* SAĞ PANEL: CHIRMO AI ÖĞRETMENİ */}
+                {isTutorOpen && (
+                  <div className="hidden lg:flex shrink-0 h-full">
+                    <ChirmoAiTeacherSidebar
+                      isOpen={isTutorOpen}
+                      onClose={() => setIsTutorOpen(false)}
+                      userLevel={learningProgress.currentLevel}
+                    />
+                  </div>
+                )}
+              </div>
             ) : (
               /* Bir siteye girilmişse: Sade Tarayıcı Barı + Chromium Web Sayfası */
               <div className="flex-1 flex flex-col h-full overflow-hidden relative">
