@@ -14,7 +14,9 @@ import {
   Globe,
   Smartphone,
   Download,
-  Gamepad2
+  Gamepad2,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { ChirmoLogo } from './components/common/ChirmoLogo';
 import { BrowserContainer, PageSentenceItem } from './components/browser/BrowserContainer';
@@ -303,18 +305,44 @@ export const App: React.FC = () => {
           <div className="flex-1 relative flex flex-col h-full overflow-hidden">
             {/* Eğer bir siteye girilmemişse: 3 Panelli Masaüstü Arama & Öğrenme Paneli */}
             {!isBrowserNavigating ? (
-              <div className="flex-1 flex flex-row h-full overflow-hidden">
-                {/* SOL PANEL: ÖĞRENME MERKEZİ (Masaüstü/Tablet) */}
-                <div className="hidden md:flex shrink-0 h-full">
-                  <LearningCenterSidebar
-                    isOpen={isLeftSidebarOpen}
-                    onSelectItem={handleLeftSidebarSelect}
-                    onToggle={() => setIsLeftSidebarOpen(!isLeftSidebarOpen)}
-                  />
+              <div className="flex-1 flex flex-row h-full overflow-hidden relative">
+                {/* SOL AKORDİYON PANEL: ÖĞRENME MERKEZİ (Masaüstü/Tablet) */}
+                <div
+                  className={`hidden md:flex shrink-0 h-full transition-all duration-300 ease-in-out relative ${
+                    isLeftSidebarOpen ? 'w-64' : 'w-0'
+                  } overflow-hidden`}
+                >
+                  <div className="w-64 h-full shrink-0">
+                    <LearningCenterSidebar
+                      isOpen={true}
+                      onSelectItem={handleLeftSidebarSelect}
+                      onToggle={() => setIsLeftSidebarOpen(false)}
+                    />
+                  </div>
                 </div>
 
-                {/* ORTA PANEL: ARAMA & GÖREVLER */}
-                <div className="flex-1 h-full overflow-y-auto">
+                {/* SOL KENAR AKORDİYON KAYDIRMA / GENİŞLETME BUTONU */}
+                <button
+                  onClick={() => setIsLeftSidebarOpen(!isLeftSidebarOpen)}
+                  className={`hidden md:flex absolute top-1/2 -translate-y-1/2 z-30 transition-all duration-300 ease-in-out items-center justify-center w-5 h-14 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xs border border-slate-200/90 dark:border-slate-700 shadow-md hover:shadow-lg hover:bg-indigo-50 dark:hover:bg-slate-700 text-slate-500 hover:text-indigo-600 rounded-r-xl cursor-pointer select-none group ${
+                    isLeftSidebarOpen ? 'left-64' : 'left-0'
+                  }`}
+                  title={
+                    isLeftSidebarOpen
+                      ? 'Sol Paneli Sola Kaydırarak Kapat (Sayfayı Genişlet)'
+                      : 'Öğrenme Merkezini Sağa Kaydırarak Aç'
+                  }
+                  aria-label={isLeftSidebarOpen ? 'Sol Paneli Daralt' : 'Sol Paneli Genişlet'}
+                >
+                  {isLeftSidebarOpen ? (
+                    <ChevronLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+                  ) : (
+                    <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform text-indigo-600" />
+                  )}
+                </button>
+
+                {/* ORTA PANEL: ARAMA & GÖREVLER (Akordiyon kayarak kapandıkça tam genişler) */}
+                <div className="flex-1 h-full overflow-y-auto transition-all duration-300">
                   <SimpleSearchHome
                     onSearch={handleNavigate}
                     onNavigateToLearn={() => setActiveTab('learn')}
@@ -325,16 +353,40 @@ export const App: React.FC = () => {
                   />
                 </div>
 
-                {/* SAĞ PANEL: CHIRMO AI ÖĞRETMENİ */}
-                {isTutorOpen && (
-                  <div className="hidden lg:flex shrink-0 h-full">
+                {/* SAĞ KENAR AKORDİYON KAYDIRMA / GENİŞLETME BUTONU */}
+                <button
+                  onClick={() => setIsTutorOpen(!isTutorOpen)}
+                  className={`hidden lg:flex absolute top-1/2 -translate-y-1/2 z-30 transition-all duration-300 ease-in-out items-center justify-center w-5 h-14 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xs border border-slate-200/90 dark:border-slate-700 shadow-md hover:shadow-lg hover:bg-purple-50 dark:hover:bg-slate-700 text-slate-500 hover:text-purple-600 rounded-l-xl cursor-pointer select-none group ${
+                    isTutorOpen ? 'right-72' : 'right-0'
+                  }`}
+                  title={
+                    isTutorOpen
+                      ? 'Sağ Paneli Sağa Kaydırarak Kapat (Sayfayı Genişlet)'
+                      : 'Chirmo AI Öğretmeni Sola Kaydırarak Aç'
+                  }
+                  aria-label={isTutorOpen ? 'Sağ Paneli Daralt' : 'Sağ Paneli Genişlet'}
+                >
+                  {isTutorOpen ? (
+                    <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                  ) : (
+                    <ChevronLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform text-purple-600" />
+                  )}
+                </button>
+
+                {/* SAĞ AKORDİYON PANEL: CHIRMO AI ÖĞRETMENİ */}
+                <div
+                  className={`hidden lg:flex shrink-0 h-full transition-all duration-300 ease-in-out relative ${
+                    isTutorOpen ? 'w-72' : 'w-0'
+                  } overflow-hidden`}
+                >
+                  <div className="w-72 h-full shrink-0">
                     <ChirmoAiTeacherSidebar
-                      isOpen={isTutorOpen}
+                      isOpen={true}
                       onClose={() => setIsTutorOpen(false)}
                       userLevel={learningProgress.currentLevel}
                     />
                   </div>
-                )}
+                </div>
               </div>
             ) : (
               /* Bir siteye girilmişse: Sade Tarayıcı Barı + Chromium Web Sayfası */

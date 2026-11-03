@@ -10,6 +10,8 @@ import {
   BarChart2,
   ChevronUp,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Target,
   Trophy,
   Crown,
@@ -61,13 +63,24 @@ export const LearningCenterSidebar: React.FC<LearningCenterSidebarProps> = ({
             </div>
             <span>Öğrenme Merkezi</span>
           </div>
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition-colors"
-            title="Daralt / Genişlet"
-          >
-            {isCollapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
-          </button>
+          <div className="flex items-center space-x-1">
+            <button
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition-colors"
+              title="İçeriği Daralt / Genişlet"
+            >
+              {isCollapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
+            </button>
+            {onToggle && (
+              <button
+                onClick={onToggle}
+                className="p-1 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-800 cursor-pointer transition-colors"
+                title="Sola Kaydır ve Gizle (Sayfayı Genişlet)"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+            )}
+          </div>
         </div>
 
         {!isCollapsed && (
