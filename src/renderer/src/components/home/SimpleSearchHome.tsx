@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Search,
   Volume2,
@@ -16,12 +16,20 @@ import {
   BookOpen,
   Headphones,
   Lightbulb,
-  MessageSquare
+  MessageSquare,
+  Globe,
+  Plus,
+  Languages
 } from 'lucide-react';
 import { ChirmoLogo } from '../common/ChirmoLogo';
 import { LearningStorageService } from '../../services/learningStorage';
 import { CEFRLevel } from '../../types';
 import { CampStorageService, THIRTY_DAY_MISSIONS } from '../../services/curriculumData';
+import {
+  EnglishSearchHelper,
+  SearchLearningMode,
+  LearningCardResult
+} from '../../services/englishSearchHelper';
 
 interface SimpleSearchHomeProps {
   onSearch: (queryOrUrl: string) => void;
@@ -42,6 +50,19 @@ export const SimpleSearchHome: React.FC<SimpleSearchHomeProps> = ({
 }) => {
   const [searchInput, setSearchInput] = useState('');
   const [wordAdded, setWordAdded] = useState(false);
+  const [searchMode, setSearchMode] = useState<SearchLearningMode>('all');
+  const [activeLearningCard, setActiveLearningCard] = useState<LearningCardResult | null>(null);
+  const [learningCardAdded, setLearningCardAdded] = useState(false);
+
+  // Arama metni değiştikçe canlı İngilizce öğrenme kartı analiz edilir
+  useEffect(() => {
+    if (searchInput.trim().length >= 2) {
+      const card = EnglishSearchHelper.getLearningCard(searchInput);
+      setActiveLearningCard(card);
+    } else {
+      setActiveLearningCard(null);
+    }
+  }, [searchInput]);
 
   // Anında Telaffuz Aracı State'i
   const [practiceInput, setPracticeInput] = useState('Can I get an iced latte to go?');
@@ -66,11 +87,31 @@ export const SimpleSearchHome: React.FC<SimpleSearchHomeProps> = ({
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchInput.trim()) return;
-    onSearch(searchInput.trim());
+    const target = EnglishSearchHelper.buildSearchTarget(searchInput.trim(), searchMode);
+    onSearch(target);
   };
 
   const handleSpeak = (text: string) => {
     LearningStorageService.speak(text);
+  };
+
+  const handleAddLearningCardWord = (card: LearningCardResult) => {
+    LearningStorageService.addWord({
+      word: card.english,
+      translation: card.turkish,
+      phonetic: card.phonetic,
+      partOfSpeech: card.partOfSpeech,
+      level: card.level,
+      exampleSentence: card.exampleSentenceEn,
+      exampleTranslation: card.exampleSentenceTr
+    });
+    setLearningCardAdded(true);
+    setTimeout(() => setLearningCardAdded(false), 2500);
+  };
+
+  const handleTestPracticeFromCard = (englishText: string) => {
+    setPracticeInput(englishText);
+    evaluatePractice();
   };
 
   const handleAddDailyChunk = () => {
@@ -167,30 +208,264 @@ export const SimpleSearchHome: React.FC<SimpleSearchHomeProps> = ({
           </div>
         </div>
 
-        {/* ==================== ARAMA KUTUSU ==================== */}
+        {/* ==================== ARAMA KUTUSU & İNGİLİZCE ÖĞRENME ARAÇLARI ==================== */}
         <div className="w-full max-w-2xl">
+          {/* Arama Öğrenme Modları (Oval & Minimal Segmented Filter Bar) */}
+          <div className="flex items-center justify-center flex-wrap gap-1.5 mb-3">
+            <button
+              type="button"
+              onClick={() => setSearchMode('all')}
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center space-x-1.5 transition-all cursor-pointer ${
+                searchMode === 'all'
+                  ? 'bg-slate-900 text-white shadow-xs'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50'
+              }`}
+            >
+              <Globe className="w-3.5 h-3.5" />
+              <span>Web Arama</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setSearchMode('easy_english')}
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center space-x-1.5 transition-all cursor-pointer ${
+                searchMode === 'easy_english'
+                  ? 'bg-blue-600 text-white shadow-xs'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-blue-50'
+              }`}
+            >
+              <BookOpen className="w-3.5 h-3.5 text-blue-500" />
+              <span>🇬🇧 Kolay İngilizce</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setSearchMode('how_to_say')}
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center space-x-1.5 transition-all cursor-pointer ${
+                searchMode === 'how_to_say'
+                  ? 'bg-purple-600 text-white shadow-xs'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-purple-50'
+              }`}
+            >
+              <Mic className="w-3.5 h-3.5 text-purple-500" />
+              <span>🎙️ Nasıl Söylenir?</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setSearchMode('vocab')}
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center space-x-1.5 transition-all cursor-pointer ${
+                searchMode === 'vocab'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-emerald-50'
+              }`}
+            >
+              <Lightbulb className="w-3.5 h-3.5 text-emerald-500" />
+              <span>📖 Kelime Sözlüğü</span>
+            </button>
+          </div>
+
           <form onSubmit={handleSearchSubmit} className="relative">
-            <div className="relative flex items-center shadow-lg hover:shadow-xl transition-all rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 overflow-hidden focus-within:ring-2 focus-within:ring-blue-500">
-              <Search className="w-5 h-5 text-slate-400 ml-4 shrink-0" />
+            <div className="relative flex items-center shadow-lg hover:shadow-xl transition-all rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500">
+              {searchMode === 'how_to_say' ? (
+                <Mic className="w-5 h-5 text-purple-500 ml-4 shrink-0" />
+              ) : searchMode === 'easy_english' ? (
+                <BookOpen className="w-5 h-5 text-blue-500 ml-4 shrink-0" />
+              ) : searchMode === 'vocab' ? (
+                <Lightbulb className="w-5 h-5 text-emerald-500 ml-4 shrink-0" />
+              ) : (
+                <Search className="w-5 h-5 text-slate-400 ml-4 shrink-0" />
+              )}
+
               <input
                 type="text"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                placeholder="Web'de ara veya bir site adresi yaz (örn: bbc.com, wikipedia.org)..."
+                placeholder={
+                  searchMode === 'easy_english'
+                    ? "Kolay İngilizce ile araştır (örn: climate change, solar system)..."
+                    : searchMode === 'how_to_say'
+                    ? "Türkçe yaz, İngilizce konuşma kalıbını öğren (örn: hesabı alabilir miyim)..."
+                    : searchMode === 'vocab'
+                    ? "Kelime anlamı & telaffuz (örn: improve, sustainable, toplantı)..."
+                    : "Web'de ara veya İngilizce öğrenmek istediğin bir konu/kelime yaz..."
+                }
                 className="w-full py-3.5 px-3 text-sm text-slate-800 dark:text-slate-100 bg-transparent outline-none placeholder:text-slate-400"
                 autoFocus
               />
+
+              {/* Sesli Dinleme Butonu (Eğer arama kutusunda yazı varsa) */}
+              {searchInput.trim().length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => handleSpeak(searchInput)}
+                  className="p-2 mr-1 rounded-full text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-800 transition-colors"
+                  title="Sesli Dinle"
+                >
+                  <Volume2 className="w-4 h-4" />
+                </button>
+              )}
+
               <button
                 type="submit"
-                className="px-5 py-2.5 mr-1.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs hover:from-blue-700 hover:to-indigo-700 transition-all shadow-sm shrink-0 cursor-pointer"
+                className="px-5 py-2.5 mr-1.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs transition-all shadow-sm shrink-0 cursor-pointer flex items-center space-x-1"
               >
-                Ara veya Git
+                <span>Ara & Öğren</span>
               </button>
             </div>
           </form>
 
+          {/* ==================== CANLI CHIRMO İNGİLİZCE ÖĞRENME KARTI ==================== */}
+          {activeLearningCard && (
+            <div className="mt-3 p-4 bg-gradient-to-br from-indigo-50/95 via-purple-50/70 to-white dark:from-slate-800/95 dark:via-slate-800/80 dark:to-slate-900 border border-indigo-200/90 dark:border-indigo-800/80 rounded-2xl shadow-lg backdrop-blur-md transition-all text-left">
+              {/* Üst Bilgi Rozetleri */}
+              <div className="flex items-center justify-between pb-2 border-b border-indigo-100 dark:border-slate-700/60">
+                <div className="flex items-center space-x-2">
+                  <span className="px-2.5 py-0.5 rounded-full bg-indigo-600 text-white text-[10px] font-black uppercase tracking-wider flex items-center space-x-1">
+                    <Sparkles className="w-3 h-3" />
+                    <span>
+                      {activeLearningCard.detectedLang === 'tr'
+                        ? 'Türkçe ➔ Doğal İngilizce'
+                        : 'İngilizce ➔ Türkçe'}
+                    </span>
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 text-[10px] font-bold">
+                    {activeLearningCard.partOfSpeech}
+                  </span>
+                </div>
+
+                <div className="flex items-center space-x-1.5">
+                  <span className="px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 text-[10px] font-extrabold">
+                    {activeLearningCard.level} Seviye
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setActiveLearningCard(null)}
+                    className="text-slate-400 hover:text-slate-600 p-1 rounded-full text-xs cursor-pointer"
+                    title="Kapat"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+
+              {/* Ana İngilizce & Türkçe İfade & Dinleme */}
+              <div className="py-2.5 flex items-start justify-between gap-3">
+                <div className="space-y-0.5">
+                  <div className="flex items-baseline space-x-2">
+                    <h4 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
+                      {activeLearningCard.english}
+                    </h4>
+                    {activeLearningCard.phonetic && (
+                      <span className="text-xs font-mono text-indigo-600 dark:text-indigo-400 font-semibold">
+                        {activeLearningCard.phonetic}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+                    {activeLearningCard.turkish}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleSpeak(activeLearningCard.english)}
+                  className="p-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs cursor-pointer transition-transform hover:scale-105 shrink-0"
+                  title="Telaffuzu Dinle"
+                >
+                  <Volume2 className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Günlük Konuşma Örneği */}
+              <div className="p-3 rounded-xl bg-white/90 dark:bg-slate-900/90 border border-indigo-100/90 dark:border-slate-700/60 space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    Örnek Cümle:
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleSpeak(activeLearningCard.exampleSentenceEn)}
+                    className="text-indigo-600 dark:text-indigo-400 hover:underline text-[11px] font-semibold flex items-center space-x-1 cursor-pointer"
+                  >
+                    <Volume2 className="w-3 h-3" />
+                    <span>Cümleyi Dinle</span>
+                  </button>
+                </div>
+                <p className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                  "{activeLearningCard.exampleSentenceEn}"
+                </p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 italic">
+                  "{activeLearningCard.exampleSentenceTr}"
+                </p>
+                {activeLearningCard.tip && (
+                  <p className="text-[10px] text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 p-1.5 rounded-lg border border-amber-200/60 dark:border-amber-900/40 mt-1">
+                    💡 <strong>İpucu:</strong> {activeLearningCard.tip}
+                  </p>
+                )}
+              </div>
+
+              {/* Aksiyon Butonları */}
+              <div className="mt-3 pt-2.5 border-t border-indigo-100/80 dark:border-slate-700/60 flex items-center justify-between flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleAddLearningCardWord(activeLearningCard)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-all cursor-pointer ${
+                    learningCardAdded
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'bg-white dark:bg-slate-800 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-50'
+                  }`}
+                >
+                  {learningCardAdded ? <Check className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+                  <span>{learningCardAdded ? 'Kelimelerime Eklendi!' : 'Kelime Defterime Ekle'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleTestPracticeFromCard(activeLearningCard.english)}
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold bg-purple-600 hover:bg-purple-700 text-white flex items-center space-x-1.5 shadow-xs cursor-pointer transition-transform hover:scale-102"
+                >
+                  <Mic className="w-3.5 h-3.5" />
+                  <span>Telaffuzumu Test Et</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => onSearch(activeLearningCard.english)}
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white flex items-center space-x-1.5 cursor-pointer ml-auto"
+                >
+                  <Search className="w-3.5 h-3.5" />
+                  <span>İngilizce Ara</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* İngilizce Arama İlhamları (Pratik Hapları) */}
+          <div className="flex items-center justify-center flex-wrap gap-1.5 mt-3 text-xs">
+            <span className="text-[11px] font-bold text-slate-400 mr-1 flex items-center space-x-1">
+              <Sparkles className="w-3 h-3 text-amber-500" />
+              <span>Pratik Yap:</span>
+            </span>
+            {EnglishSearchHelper.getInspirationPrompts().map((prompt) => (
+              <button
+                key={prompt.id}
+                type="button"
+                onClick={() => {
+                  setSearchInput(prompt.text);
+                  setSearchMode(prompt.mode);
+                }}
+                className="px-2.5 py-1 rounded-full bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 text-[11px] font-medium transition-all shadow-2xs flex items-center space-x-1 cursor-pointer"
+                title={`${prompt.title} (${prompt.category})`}
+              >
+                <span>{prompt.icon}</span>
+                <span>{prompt.text}</span>
+              </button>
+            ))}
+          </div>
+
           {/* Hızlı Başlangıç Siteleri */}
-          <div className="flex items-center justify-center flex-wrap gap-2 mt-3.5 text-xs">
+          <div className="flex items-center justify-center flex-wrap gap-2 mt-2.5 text-xs">
             {quickSites.map((site) => (
               <button
                 key={site.name}
