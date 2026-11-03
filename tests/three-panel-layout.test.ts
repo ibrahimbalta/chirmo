@@ -9,7 +9,8 @@ describe('Chirmo 3-Column Learning Dashboard & Sidebar Layout', () => {
 
     const content = fs.readFileSync(filePath, 'utf-8');
     expect(content).toContain('Öğrenme Merkezi');
-    expect(content).toContain('Merhaba İbrahim!');
+    expect(content).toContain('Merhaba');
+    expect(content).toContain('profile.name');
     expect(content).toContain('Kelime Defterim');
     expect(content).toContain('İngilizce Derslerim');
     expect(content).toContain('Dinleme Pratiği');

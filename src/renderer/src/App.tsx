@@ -26,7 +26,9 @@ import { LearningCenterSidebar } from './components/home/LearningCenterSidebar';
 import { ChirmoAiTeacherSidebar } from './components/home/ChirmoAiTeacherSidebar';
 import { SmartReaderModal } from './components/learning/SmartReaderModal';
 import { InstallAppModal } from './components/common/InstallAppModal';
+import { ProfileEditModal } from './components/common/ProfileEditModal';
 import { LearningStorageService } from './services/learningStorage';
+import { UserProfileService, UserProfile } from './services/userProfileService';
 import { Tab, CEFRLevel, DailyGoalProgress } from './types';
 import { CampStorageService, StudentCampProgress } from './services/curriculumData';
 
@@ -59,6 +61,16 @@ export const App: React.FC = () => {
 
   // Mobil Uygulama & APK İndirme Modalı
   const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
+
+  // Kişiye Özel Kullanıcı Profili (Her tarayıcıda bağımsız ve özel)
+  const [userProfile, setUserProfile] = useState<UserProfile>(() => UserProfileService.getProfile());
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+
+  useEffect(() => {
+    return UserProfileService.subscribe((updated) => {
+      setUserProfile(updated);
+    });
+  }, []);
 
   // Sol Öğrenme Merkezi Paneli
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true);
@@ -268,16 +280,18 @@ export const App: React.FC = () => {
             <span>Türkçe Yardımcı</span>
           </button>
 
-          {/* Kullanıcı Profil Resmi */}
+          {/* Kişiye Özel Profil Butonu (Tıklanınca İsim ve Seviye Değiştirilebilir) */}
           <div
-            className="w-8 h-8 rounded-full overflow-hidden border border-slate-200 dark:border-slate-700 shadow-xs cursor-pointer hover:ring-2 hover:ring-blue-400 transition-all shrink-0"
-            title="Profil: İbrahim (Seviye A2)"
+            onClick={() => setIsProfileModalOpen(true)}
+            className="flex items-center space-x-1.5 p-1 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition-all shrink-0 group"
+            title={`${userProfile.hasCustomName ? userProfile.name : 'Profilini Düzenle'} (${userProfile.level})`}
           >
-            <img
-              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80"
-              alt="İbrahim"
-              className="w-full h-full object-cover"
-            />
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-sm shadow-xs border border-white dark:border-slate-700 group-hover:scale-105 transition-transform">
+              {userProfile.avatarEmoji || '🎓'}
+            </div>
+            <span className="hidden xl:inline text-xs font-black text-slate-700 dark:text-slate-300">
+              {userProfile.hasCustomName ? userProfile.name : 'Profilim'}
+            </span>
           </div>
         </div>
       </header>
@@ -454,6 +468,13 @@ export const App: React.FC = () => {
       <InstallAppModal
         isOpen={isInstallModalOpen}
         onClose={() => setIsInstallModalOpen(false)}
+      />
+
+      {/* Kişiye Özel Profil Düzenleme Modalı */}
+      <ProfileEditModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        onProfileUpdated={(updated) => setUserProfile(updated)}
       />
 
       {/* ==================== MOBİL ALT MENÜ (SMARTPHONE BOTTOM NAV) ==================== */}

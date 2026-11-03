@@ -13,8 +13,11 @@ import {
   Target,
   Trophy,
   Crown,
-  ArrowRight
+  ArrowRight,
+  Edit2
 } from 'lucide-react';
+import { UserProfileService, UserProfile } from '../../services/userProfileService';
+import { ProfileEditModal } from '../common/ProfileEditModal';
 
 interface LearningCenterSidebarProps {
   activeItem?: string;
@@ -31,6 +34,14 @@ export const LearningCenterSidebar: React.FC<LearningCenterSidebarProps> = ({
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState(activeItem);
+  const [profile, setProfile] = useState<UserProfile>(() => UserProfileService.getProfile());
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  React.useEffect(() => {
+    return UserProfileService.subscribe((updated) => {
+      setProfile(updated);
+    });
+  }, []);
 
   const handleItemClick = (id: string) => {
     setSelected(id);
@@ -61,31 +72,29 @@ export const LearningCenterSidebar: React.FC<LearningCenterSidebarProps> = ({
 
         {!isCollapsed && (
           <>
-            {/* ==================== KULLANICI PROFİL KARTI ==================== */}
-            <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-700/60 flex items-center space-x-3">
-              {/* Avatar Görseli */}
-              <div className="w-11 h-11 rounded-full overflow-hidden bg-gradient-to-br from-blue-400 to-indigo-600 border-2 border-white dark:border-slate-700 shadow-xs shrink-0 flex items-center justify-center text-white font-black text-base">
-                <img
-                  src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80"
-                  alt="İbrahim"
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    // Fallback avatar icon
-                    (e.target as HTMLElement).style.display = 'none';
-                  }}
-                />
-                <span className="hidden">İB</span>
+            {/* ==================== KULLANICI PROFİL KARTI (KİŞİYE ÖZEL) ==================== */}
+            <div
+              onClick={() => setIsEditModalOpen(true)}
+              className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-700/60 flex items-center space-x-3 cursor-pointer hover:border-purple-400 dark:hover:border-purple-600 transition-all group"
+              title="Profilini ve ismini değiştirmek için tıkla"
+            >
+              {/* Avatar Simgesi / Emojisi */}
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 border-2 border-white dark:border-slate-700 shadow-xs shrink-0 flex items-center justify-center text-white text-xl">
+                {profile.avatarEmoji || '🎓'}
               </div>
 
               {/* Kullanıcı Bilgileri & Seviye */}
               <div className="flex-1 min-w-0">
-                <div className="font-black text-xs text-slate-900 dark:text-white truncate">
-                  Merhaba İbrahim!
+                <div className="flex items-center justify-between">
+                  <div className="font-black text-xs text-slate-900 dark:text-white truncate">
+                    Merhaba {profile.hasCustomName ? profile.name : 'Öğrenci'}!
+                  </div>
+                  <Edit2 className="w-3 h-3 text-slate-400 group-hover:text-purple-600 transition-colors" />
                 </div>
                 <div className="flex items-center space-x-1.5 mt-0.5">
-                  <span className="text-[11px] text-slate-500 font-medium">Seviyen: A2</span>
+                  <span className="text-[11px] text-slate-500 font-medium">Seviyen: {profile.level}</span>
                   <span className="px-1.5 py-0.2 rounded-md bg-purple-600 text-white text-[9px] font-black">
-                    A2
+                    {profile.level}
                   </span>
                 </div>
                 {/* Seviye İlerleme Çubuğu */}
@@ -217,7 +226,7 @@ export const LearningCenterSidebar: React.FC<LearningCenterSidebarProps> = ({
                 <span>Günlük Hedefim</span>
               </div>
               <button
-                onClick={() => handleItemClick('target')}
+                onClick={() => setIsEditModalOpen(true)}
                 className="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
               >
                 Değiştir
@@ -225,18 +234,25 @@ export const LearningCenterSidebar: React.FC<LearningCenterSidebarProps> = ({
             </div>
 
             <div className="flex items-baseline space-x-1.5">
-              <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">12</span>
-              <span className="text-sm font-black text-slate-400">/ 20</span>
+              <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
+                {profile.completedWordsToday}
+              </span>
+              <span className="text-sm font-black text-slate-400">/ {profile.dailyGoal}</span>
             </div>
 
             {/* Hedef İlerleme Çubuğu */}
             <div className="h-2 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
-              <div className="h-full bg-emerald-500 rounded-full" style={{ width: '60%' }}></div>
+              <div
+                className="h-full bg-emerald-500 rounded-full"
+                style={{
+                  width: `${Math.min(100, Math.round((profile.completedWordsToday / profile.dailyGoal) * 100))}%`
+                }}
+              ></div>
             </div>
 
             <div className="flex items-center space-x-1 text-[11px] font-bold text-slate-500 dark:text-slate-400">
               <Trophy className="w-3.5 h-3.5 text-amber-500" />
-              <span>12 yeni kelime öğrendin!</span>
+              <span>{profile.completedWordsToday} yeni kelime öğrendin!</span>
             </div>
           </div>
 
@@ -259,6 +275,13 @@ export const LearningCenterSidebar: React.FC<LearningCenterSidebarProps> = ({
           </div>
         </div>
       )}
+
+      {/* Profil Düzenleme Modalı */}
+      <ProfileEditModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onProfileUpdated={(updated) => setProfile(updated)}
+      />
     </aside>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Bot,
   Volume2,
@@ -14,6 +14,7 @@ import {
   X
 } from 'lucide-react';
 import { LearningStorageService } from '../../services/learningStorage';
+import { UserProfileService, UserProfile } from '../../services/userProfileService';
 
 interface ChirmoAiTeacherSidebarProps {
   isOpen: boolean;
@@ -24,10 +25,17 @@ interface ChirmoAiTeacherSidebarProps {
 export const ChirmoAiTeacherSidebar: React.FC<ChirmoAiTeacherSidebarProps> = ({
   isOpen,
   onClose,
-  userLevel = 'A2'
+  userLevel
 }) => {
+  const [profile, setProfile] = useState<UserProfile>(() => UserProfileService.getProfile());
   const [showWordDetails, setShowWordDetails] = useState(false);
   const [activeActionModal, setActiveActionModal] = useState<string | null>(null);
+
+  useEffect(() => {
+    return UserProfileService.subscribe((updated) => {
+      setProfile(updated);
+    });
+  }, []);
 
   if (!isOpen) return null;
 
@@ -65,9 +73,9 @@ export const ChirmoAiTeacherSidebar: React.FC<ChirmoAiTeacherSidebarProps> = ({
           </button>
         </div>
 
-        {/* ==================== KARŞILAMA VE SOHBET BALONU ==================== */}
+        {/* ==================== KARŞILAMA VE SOHBET BALONU (KİŞİYE ÖZEL) ==================== */}
         <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-700/60 text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-medium relative">
-          Merhaba İbrahim! 👋 İngilizceni geliştirmek için buradayım. Bugün sana nasıl yardımcı olabilirim?
+          Merhaba {profile.hasCustomName ? profile.name : 'Arkadaşım'}! 👋 İngilizceni geliştirmek için buradayım. Bugün sana nasıl yardımcı olabilirim?
         </div>
 
         {/* ==================== BUGÜNÜN KELİMESİ KARTI ==================== */}
