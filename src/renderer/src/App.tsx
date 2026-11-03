@@ -20,12 +20,17 @@ import {
   Layers,
   LayoutGrid,
   Search,
-  ArrowLeft
+  ArrowLeft,
+  Bookmark,
+  Dumbbell,
+  TrendingUp,
+  BookOpen
 } from 'lucide-react';
 import { TabBar } from './components/browser/TabBar';
 import { AddressBar } from './components/browser/AddressBar';
 import { BrowserContainer } from './components/browser/BrowserContainer';
 import { TaskSidebar } from './components/browser/TaskSidebar';
+import { Sidebar } from './components/layout/Sidebar';
 import { ProjectsView } from './components/projects/ProjectsView';
 import { AgentsView } from './components/agents/AgentsView';
 import { ToolsView } from './components/tools/ToolsView';
@@ -39,10 +44,17 @@ import { CompareView } from './components/compare/CompareView';
 import { ChirmoLogo } from './components/common/ChirmoLogo';
 import { SplitCanvasWorkspace } from './components/browser/SplitCanvasWorkspace';
 import { TabGroupService } from './services/tabGroupService';
-import { Tab, TabGroup, SplitMode, ActiveNavMenu } from './types';
+import { Tab, TabGroup, SplitMode, ActiveNavMenu, CEFRLevel, LearningMode, DailyGoalProgress } from './types';
+import { ExploreEnglishView } from './components/learning/ExploreEnglishView';
+import { VocabularyVaultView } from './components/learning/VocabularyVaultView';
+import { PracticeView } from './components/learning/PracticeView';
+import { ProgressView } from './components/learning/ProgressView';
+import { LearnBottomBar } from './components/learning/LearnBottomBar';
+import { AiTutorSidebar } from './components/learning/AiTutorSidebar';
+import { LearningStorageService } from './services/learningStorage';
 
 export const App: React.FC = () => {
-  const [activeMenu, setActiveMenu] = useState<ActiveNavMenu>('home');
+  const [activeMenu, setActiveMenu] = useState<ActiveNavMenu>('browser');
   const [tabs, setTabs] = useState<Tab[]>([]);
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
   const [isTaskPanelOpen, setIsTaskPanelOpen] = useState(false);
@@ -54,6 +66,18 @@ export const App: React.FC = () => {
     a: 'Elektrikli otomobil',
     b: 'Hibrit otomobil'
   });
+
+  // Chirmo English Learning State
+  const [learningProgress, setLearningProgress] = useState<DailyGoalProgress>(() =>
+    LearningStorageService.getProgress()
+  );
+  const [learningMode, setLearningMode] = useState<LearningMode>(() =>
+    LearningStorageService.getLearningMode()
+  );
+  const [isAiTutorOpen, setIsAiTutorOpen] = useState(true);
+  const [activeLearningText, setActiveLearningText] = useState<string>(
+    'Artificial intelligence is helping businesses improve their services and reduce costs.'
+  );
 
   // AI Tab Groups & Split Workspace
   const [tabGroups, setTabGroups] = useState<TabGroup[]>(() => TabGroupService.loadGroups());
@@ -259,6 +283,35 @@ export const App: React.FC = () => {
     }
   };
 
+  const handleLevelChange = (lvl: CEFRLevel) => {
+    const updated = LearningStorageService.setUserLevel(lvl);
+    setLearningProgress({ ...updated });
+  };
+
+  const handleModeChange = (mode: LearningMode) => {
+    setLearningMode(mode);
+    LearningStorageService.setLearningMode(mode);
+    if (mode === 'reading') {
+      setActiveMenu('browser');
+    } else if (mode === 'practice') {
+      setActiveMenu('daily');
+    }
+  };
+
+  const handleOpenArticleInBrowser = (url: string) => {
+    if (activeTabId && window.chirmo) {
+      window.chirmo.navigate(activeTabId, url);
+      setActiveMenu('browser');
+    } else if (window.chirmo) {
+      window.chirmo.createTab(url).then((tab) => {
+        setActiveTabId(tab.id);
+        setActiveMenu('browser');
+      });
+    } else {
+      setActiveMenu('browser');
+    }
+  };
+
   const handleAuthSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!authEmail.trim()) return;
@@ -285,45 +338,105 @@ export const App: React.FC = () => {
         ambientWarmMode ? 'bg-[#FAF9FE]' : 'bg-[#FAF9FE]'
       }`}
     >
-      {/* ==================== TOP MINIMAL HEADER (GOOGLE APPS STYLE) ==================== */}
-      <header className="w-full h-14 sm:h-16 px-4 sm:px-8 flex items-center justify-between bg-[#FAF9FE]/90 backdrop-blur-md border-b border-purple-100/40 z-40 shrink-0">
-        {/* Left: Return to Home button when away from Home */}
-        <div className="flex items-center">
-          {activeMenu !== 'home' ? (
+      {/* ==================== TOP MINIMAL HEADER (LEARNING & APPS) ==================== */}
+      <header className="w-full h-14 sm:h-16 px-4 sm:px-6 flex items-center justify-between bg-[#FAF9FE]/95 backdrop-blur-md border-b border-purple-100/50 z-40 shrink-0">
+        {/* Left: Brand Identity & Quick Return */}
+        <div className="flex items-center space-x-3">
+          <div 
+            onClick={handleGoHome}
+            className="cursor-pointer flex items-center space-x-2 select-none group"
+            title="Chirmo Ana Sayfa"
+          >
+            <ChirmoLogo size="sm" variant="header" />
+          </div>
+
+          {activeMenu !== 'home' && (
             <button
               onClick={handleGoHome}
-              className="px-3.5 py-1.5 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-slate-900 border border-slate-200 text-xs font-semibold flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer"
+              className="px-3 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
             >
-              <ArrowLeft className="w-3.5 h-3.5 text-slate-600" />
-              <span>Ana Sayfaya Dön</span>
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Arama Hub</span>
             </button>
-          ) : (
-            <div className="w-4" />
           )}
         </div>
 
-        {/* Right: Quick Links + 9-Dot Apps Launcher (Google Style) + Theme + Auth */}
-        <div className="flex items-center gap-2 sm:gap-4">
+        {/* Center: English Learning Shortcuts */}
+        <div className="hidden md:flex items-center gap-1.5 bg-slate-100/80 dark:bg-slate-800/80 p-1 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 text-xs">
           <button
-            onClick={() => setActiveMenu('discover')}
-            className={`hidden sm:inline-block text-xs sm:text-sm font-medium transition-colors cursor-pointer ${
-              activeMenu === 'discover'
-                ? 'text-[#6534F8] font-bold'
-                : 'text-slate-700 hover:text-slate-900'
+            onClick={() => setActiveMenu('browser')}
+            className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer flex items-center space-x-1.5 ${
+              activeMenu === 'browser'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
             }`}
           >
-            Keşfet
+            <Globe className="w-3.5 h-3.5" />
+            <span>Tarayıcı (Reading)</span>
           </button>
 
           <button
-            onClick={() => setActiveMenu('visual')}
-            className={`hidden sm:inline-block text-xs sm:text-sm font-medium transition-colors cursor-pointer ${
-              activeMenu === 'visual'
-                ? 'text-[#6534F8] font-bold'
-                : 'text-slate-700 hover:text-slate-900'
+            onClick={() => setActiveMenu('explore')}
+            className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer flex items-center space-x-1.5 ${
+              activeMenu === 'explore'
+                ? 'bg-indigo-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
             }`}
           >
-            Görseller
+            <Compass className="w-3.5 h-3.5" />
+            <span>Keşfet</span>
+          </button>
+
+          <button
+            onClick={() => setActiveMenu('vocabulary')}
+            className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer flex items-center space-x-1.5 ${
+              activeMenu === 'vocabulary'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+            }`}
+          >
+            <Bookmark className="w-3.5 h-3.5" />
+            <span>Kelimelerim</span>
+          </button>
+
+          <button
+            onClick={() => setActiveMenu('daily')}
+            className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer flex items-center space-x-1.5 ${
+              activeMenu === 'daily'
+                ? 'bg-amber-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+            }`}
+          >
+            <Dumbbell className="w-3.5 h-3.5" />
+            <span>Pratik</span>
+          </button>
+
+          <button
+            onClick={() => setActiveMenu('progress')}
+            className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer flex items-center space-x-1.5 ${
+              activeMenu === 'progress'
+                ? 'bg-emerald-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+            }`}
+          >
+            <TrendingUp className="w-3.5 h-3.5" />
+            <span>İlerlemem</span>
+          </button>
+        </div>
+
+        {/* Right: AI Tutor Button + 9-Dot Apps Launcher + Auth */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          <button
+            onClick={() => setIsAiTutorOpen((prev) => !prev)}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center space-x-1.5 cursor-pointer ${
+              isAiTutorOpen
+                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-blue-500/20 ring-2 ring-blue-400/20'
+                : 'bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100'
+            }`}
+            title="Kişisel AI İngilizce Öğretmeni Panelini Aç/Kapat"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>AI Öğretmen</span>
           </button>
 
           {/* 9-DOT WAFFLE APP LAUNCHER */}
@@ -356,18 +469,46 @@ export const App: React.FC = () => {
                 <div className="grid grid-cols-3 gap-y-3.5 gap-x-2 text-center max-h-[70vh] overflow-y-auto no-scrollbar py-1">
                   {[
                     {
-                      id: 'search',
-                      label: 'Arama',
-                      icon: <Search className="w-5 h-5 text-white" />,
-                      bg: 'bg-gradient-to-tr from-blue-500 to-indigo-600 shadow-blue-500/20',
-                      action: () => handleGoHome()
+                      id: 'browser',
+                      label: 'Web Tarayıcı',
+                      icon: <Globe className="w-5 h-5 text-white" />,
+                      bg: 'bg-gradient-to-tr from-cyan-500 to-blue-600 shadow-cyan-500/20',
+                      action: () => setActiveMenu('browser')
                     },
                     {
-                      id: 'discover',
-                      label: 'Keşfet',
+                      id: 'explore',
+                      label: 'İngilizce Keşfet',
                       icon: <Compass className="w-5 h-5 text-white" />,
-                      bg: 'bg-gradient-to-tr from-purple-500 to-violet-600 shadow-purple-500/20',
-                      action: () => setActiveMenu('discover')
+                      bg: 'bg-gradient-to-tr from-indigo-500 to-violet-600 shadow-indigo-500/20',
+                      action: () => setActiveMenu('explore')
+                    },
+                    {
+                      id: 'vocabulary',
+                      label: 'Kelimelerim',
+                      icon: <Bookmark className="w-5 h-5 text-white" />,
+                      bg: 'bg-gradient-to-tr from-blue-600 to-indigo-700 shadow-blue-500/20',
+                      action: () => setActiveMenu('vocabulary')
+                    },
+                    {
+                      id: 'daily',
+                      label: 'Pratik & Test',
+                      icon: <Dumbbell className="w-5 h-5 text-white" />,
+                      bg: 'bg-gradient-to-tr from-amber-500 to-orange-600 shadow-amber-500/20',
+                      action: () => setActiveMenu('daily')
+                    },
+                    {
+                      id: 'progress',
+                      label: 'İlerlemem',
+                      icon: <TrendingUp className="w-5 h-5 text-white" />,
+                      bg: 'bg-gradient-to-tr from-emerald-500 to-teal-600 shadow-emerald-500/20',
+                      action: () => setActiveMenu('progress')
+                    },
+                    {
+                      id: 'search',
+                      label: 'AI Arama',
+                      icon: <Search className="w-5 h-5 text-white" />,
+                      bg: 'bg-gradient-to-tr from-purple-500 to-indigo-600 shadow-purple-500/20',
+                      action: () => handleGoHome()
                     },
                     {
                       id: 'agents',
@@ -515,49 +656,99 @@ export const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Workspace Area */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden relative pb-16 sm:pb-0">
-        {/* Browser TabBar & AddressBar only when built-in browser view is active */}
-        {isBrowserActive && (
-          <>
-            <TabBar
-              tabs={tabs}
-              groups={tabGroups}
-              activeTabId={activeTabId}
-              onSelectTab={handleSelectTab}
-              onCloseTab={handleCloseTab}
-              onNewTab={handleNewTab}
-              onGoHome={handleGoHome}
-              onAutoGroupTabs={handleAutoGroupTabs}
-              onToggleGroupCollapse={handleToggleGroupCollapse}
-              onUngroup={handleUngroup}
-              onTogglePinTab={handleTogglePinTab}
-              onChangeGroupColor={handleChangeGroupColor}
-            />
-            <AddressBar
-              activeTab={activeTab}
-              isTaskPanelOpen={isTaskPanelOpen}
-              onToggleTaskPanel={() => setIsTaskPanelOpen(!isTaskPanelOpen)}
-              splitMode={splitMode}
-              onToggleSplitMode={() =>
-                setSplitMode((prev) => (prev === 'canvas' ? 'none' : 'canvas'))
-              }
-              onNavigate={handleNavigate}
-              onGoBack={handleGoBack}
-              onGoForward={handleGoForward}
-              onReload={handleReload}
-              onStop={handleStop}
-              onGoHome={handleGoHome}
-            />
-          </>
-        )}
+      {/* Main Workspace Area with Left Sidebar, Center Browser/Views, Right AI Tutor, and Bottom Bar */}
+      <div className="flex-1 flex flex-row h-full overflow-hidden relative pb-16 sm:pb-0">
+        {/* Sol Navigasyon Barı */}
+        <Sidebar
+          activeMenu={activeMenu}
+          onSelectMenu={(menu) => {
+            setActiveMenu(menu);
+            if (menu === 'browser') {
+              window.chirmo?.setWebContentsVisible(true);
+            }
+          }}
+        />
 
-        {/* Content Viewports */}
-        <div className="flex-1 relative overflow-hidden flex flex-row">
-          <div className="flex-1 relative overflow-hidden flex flex-col">
-            <BrowserContainer isVisible={isBrowserActive} />
+        {/* Merkez Çalışma & Tarayıcı Alanı */}
+        <div className="flex-1 flex flex-col h-full overflow-hidden relative">
+          {/* Browser TabBar & AddressBar only when built-in browser view is active */}
+          {isBrowserActive && (
+            <>
+              <TabBar
+                tabs={tabs}
+                groups={tabGroups}
+                activeTabId={activeTabId}
+                onSelectTab={handleSelectTab}
+                onCloseTab={handleCloseTab}
+                onNewTab={handleNewTab}
+                onGoHome={handleGoHome}
+                onAutoGroupTabs={handleAutoGroupTabs}
+                onToggleGroupCollapse={handleToggleGroupCollapse}
+                onUngroup={handleUngroup}
+                onTogglePinTab={handleTogglePinTab}
+                onChangeGroupColor={handleChangeGroupColor}
+              />
+              <AddressBar
+                activeTab={activeTab}
+                isTaskPanelOpen={isTaskPanelOpen}
+                onToggleTaskPanel={() => setIsTaskPanelOpen(!isTaskPanelOpen)}
+                splitMode={splitMode}
+                onToggleSplitMode={() =>
+                  setSplitMode((prev) => (prev === 'canvas' ? 'none' : 'canvas'))
+                }
+                onNavigate={handleNavigate}
+                onGoBack={handleGoBack}
+                onGoForward={handleGoForward}
+                onReload={handleReload}
+                onStop={handleStop}
+                onGoHome={handleGoHome}
+              />
+            </>
+          )}
 
-            {activeMenu === 'discover' && (
+          {/* Content Viewports + Right AI Tutor */}
+          <div className="flex-1 relative overflow-hidden flex flex-row">
+            <div className="flex-1 relative overflow-hidden flex flex-col">
+              <BrowserContainer isVisible={isBrowserActive} />
+
+              {/* İngilizce Keşfet & Makaleler */}
+              {activeMenu === 'explore' && (
+                <div className="absolute inset-0 z-10 flex">
+                  <ExploreEnglishView
+                    userLevel={learningProgress.currentLevel}
+                    onOpenArticleInBrowser={handleOpenArticleInBrowser}
+                  />
+                </div>
+              )}
+
+              {/* Kelimelerim & Kişisel Öğrenme Havuzu */}
+              {activeMenu === 'vocabulary' && (
+                <div className="absolute inset-0 z-10 flex">
+                  <VocabularyVaultView />
+                </div>
+              )}
+
+              {/* Günlük Pratik & Test */}
+              {activeMenu === 'daily' && (
+                <div className="absolute inset-0 z-10 flex">
+                  <PracticeView
+                    userLevel={learningProgress.currentLevel}
+                    progress={learningProgress}
+                    onRefreshProgress={() =>
+                      setLearningProgress({ ...LearningStorageService.getProgress() })
+                    }
+                  />
+                </div>
+              )}
+
+              {/* İlerlemem & Kişisel Gelişim Raporu */}
+              {activeMenu === 'progress' && (
+                <div className="absolute inset-0 z-10 flex">
+                  <ProgressView progress={learningProgress} />
+                </div>
+              )}
+
+              {activeMenu === 'discover' && (
               <div className="absolute inset-0 z-10 flex">
                 <DiscoverView
                   onSearchTopic={(topic: string) => {
@@ -702,8 +893,33 @@ export const App: React.FC = () => {
               onClose={() => setIsTaskPanelOpen(false)}
             />
           )}
+
+          {/* Chirmo AI Kişisel İngilizce Öğretmeni Sağ Paneli */}
+          {isAiTutorOpen && (
+            <AiTutorSidebar
+              isOpen={isAiTutorOpen}
+              onClose={() => setIsAiTutorOpen(false)}
+              selectedText={activeLearningText}
+              userLevel={learningProgress.currentLevel}
+              onWordAdded={() => {
+                setLearningProgress({ ...LearningStorageService.getProgress() });
+              }}
+            />
+          )}
         </div>
+
+        {/* Chirmo Ambient English Learning Alt Çubuğu */}
+        <LearnBottomBar
+          progress={learningProgress}
+          activeMode={learningMode}
+          onModeChange={handleModeChange}
+          onLevelChange={handleLevelChange}
+          isAiTutorOpen={isAiTutorOpen}
+          onToggleAiTutor={() => setIsAiTutorOpen(!isAiTutorOpen)}
+          onOpenVocabulary={() => setActiveMenu('vocabulary')}
+        />
       </div>
+    </div>
 
       {/* ==================== GİRİŞ YAP / KAYIT OL MODAL ==================== */}
       {authModalMode && (

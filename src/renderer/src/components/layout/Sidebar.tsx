@@ -15,7 +15,11 @@ import {
   ChevronDown,
   Compass,
   Image as ImageIcon,
-  Scale
+  Scale,
+  Bookmark,
+  Dumbbell,
+  TrendingUp,
+  Sparkles
 } from 'lucide-react'
 import { ActiveNavMenu } from '../../types'
 import { ChirmoLogo } from '../common/ChirmoLogo'
@@ -28,22 +32,48 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) => {
   const [isCollapsed, setIsCollapsed] = useState(true)
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false)
-  const [openGroup, setOpenGroup] = useState<string>('main')
+  const [openGroup, setOpenGroup] = useState<string>('learning')
 
   const menuGroups = [
     {
+      id: 'learning',
+      title: 'İngilizce & Tarayıcı',
+      items: [
+        {
+          id: 'browser' as ActiveNavMenu,
+          label: 'Web Tarayıcı (Reading)',
+          icon: <Globe className="w-4 h-4 shrink-0" />
+        },
+        {
+          id: 'explore' as ActiveNavMenu,
+          label: 'Keşfet & Makaleler',
+          icon: <Compass className="w-4 h-4 shrink-0" />
+        },
+        {
+          id: 'vocabulary' as ActiveNavMenu,
+          label: 'Kelimelerim (Vault)',
+          icon: <Bookmark className="w-4 h-4 shrink-0" />
+        },
+        {
+          id: 'daily' as ActiveNavMenu,
+          label: 'Günlük Pratik & Test',
+          icon: <Dumbbell className="w-4 h-4 shrink-0" />
+        },
+        {
+          id: 'progress' as ActiveNavMenu,
+          label: 'İlerlemem & Rapor',
+          icon: <TrendingUp className="w-4 h-4 shrink-0" />
+        }
+      ]
+    },
+    {
       id: 'main',
-      title: 'Arama & Keşif',
+      title: 'AI Arama & Çalışma Alanı',
       items: [
         {
           id: 'home' as ActiveNavMenu,
-          label: 'AI Arama & Ana Sayfa',
+          label: 'AI Arama & Asistan',
           icon: <Search className="w-4 h-4 shrink-0" />
-        },
-        {
-          id: 'discover' as ActiveNavMenu,
-          label: 'Keşfet (Discover)',
-          icon: <Compass className="w-4 h-4 shrink-0" />
         },
         {
           id: 'visual' as ActiveNavMenu,
@@ -54,44 +84,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) =>
           id: 'compare' as ActiveNavMenu,
           label: 'Akıllı Karşılaştırma',
           icon: <Scale className="w-4 h-4 shrink-0" />
-        }
-      ]
-    },
-    {
-      id: 'workspace',
-      title: 'Araştırma & Çalışma Alanı',
-      items: [
+        },
         {
           id: 'agents' as ActiveNavMenu,
-          label: 'Derin Araştırma (Research)',
+          label: 'Derin Araştırma (Agents)',
           icon: <Bot className="w-4 h-4 shrink-0" />
         },
         {
           id: 'projects' as ActiveNavMenu,
-          label: 'Kişisel Çalışma Alanı',
+          label: 'Projelerim',
           icon: <FolderKanban className="w-4 h-4 shrink-0" />
-        },
-        {
-          id: 'tools' as ActiveNavMenu,
-          label: 'Sayfa Analiz Araçları',
-          icon: <Wrench className="w-4 h-4 shrink-0" />
-        },
-        {
-          id: 'workflows' as ActiveNavMenu,
-          label: 'Toplu İş Akışları',
-          icon: <Workflow className="w-4 h-4 shrink-0" />
         }
       ]
     },
     {
       id: 'system',
-      title: 'Tarayıcı & Sistem',
+      title: 'Sistem',
       items: [
-        {
-          id: 'browser' as ActiveNavMenu,
-          label: 'Web Tarayıcı',
-          icon: <Globe className="w-4 h-4 shrink-0" />
-        },
         {
           id: 'history' as ActiveNavMenu,
           label: 'Geçmiş',

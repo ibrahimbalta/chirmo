@@ -64,7 +64,56 @@ export type ActiveNavMenu =
   | 'tools'
   | 'workflows'
   | 'history'
-  | 'settings';
+  | 'settings'
+  | 'explore'
+  | 'vocabulary'
+  | 'daily'
+  | 'speaking'
+  | 'watching'
+  | 'progress';
+
+export type CEFRLevel = 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2';
+export type LearningMode = 'reading' | 'watching' | 'speaking' | 'practice';
+
+export interface VocabularyWord {
+  id: string;
+  word: string;
+  translation: string;
+  phonetic?: string;
+  partOfSpeech: string;
+  level: CEFRLevel;
+  exampleSentence: string;
+  exampleTranslation: string;
+  sourceUrl?: string;
+  sourceContext?: string;
+  learnedAt: string;
+  nextReviewAt: string;
+  reviewCount: number;
+  mastery: number; // 0-100
+  notes?: string;
+}
+
+export interface DailyGoalProgress {
+  targetWords: number;
+  wordsLearnedToday: number;
+  readingMinutesToday: number;
+  streakDays: number;
+  lastActiveDate: string;
+  totalWordsLearned: number;
+  currentLevel: CEFRLevel;
+}
+
+export interface ExploredArticle {
+  id: string;
+  title: string;
+  category: string;
+  level: CEFRLevel;
+  readTime: string;
+  url: string;
+  summary: string;
+  coverImage?: string;
+  keywords: string[];
+}
 
 export type TaskStatus = 
   | 'pending'
