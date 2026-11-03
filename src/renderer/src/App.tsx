@@ -11,7 +11,10 @@ import {
   X,
   Volume2,
   Lock,
-  Globe
+  Globe,
+  Smartphone,
+  Download,
+  Gamepad2
 } from 'lucide-react';
 import { ChirmoLogo } from './components/common/ChirmoLogo';
 import { BrowserContainer, PageSentenceItem } from './components/browser/BrowserContainer';
@@ -20,6 +23,7 @@ import { SimpleLearningHub } from './components/learning/SimpleLearningHub';
 import { SimpleTaskWorkspace } from './components/tasks/SimpleTaskWorkspace';
 import { SimpleAiTutorDrawer } from './components/learning/SimpleAiTutorDrawer';
 import { SmartReaderModal } from './components/learning/SmartReaderModal';
+import { InstallAppModal } from './components/common/InstallAppModal';
 import { LearningStorageService } from './services/learningStorage';
 import { Tab, CEFRLevel, DailyGoalProgress } from './types';
 import { CampStorageService, StudentCampProgress } from './services/curriculumData';
@@ -50,6 +54,9 @@ export const App: React.FC = () => {
 
   // İş Takibi Görev Sayısı
   const [pendingTaskCount, setPendingTaskCount] = useState(2);
+
+  // Mobil Uygulama & APK İndirme Modalı
+  const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
 
   useEffect(() => {
     if (window.chirmo) {
@@ -149,8 +156,8 @@ export const App: React.FC = () => {
           </span>
         </div>
 
-        {/* Orta: 3 Temel Ana Bölüm */}
-        <div className="flex items-center space-x-1 sm:space-x-2 bg-slate-100 p-1 rounded-2xl border border-slate-200">
+        {/* Orta: 3 Temel Ana Bölüm (Masaüstü/Tablet) */}
+        <div className="hidden sm:flex items-center space-x-1 sm:space-x-2 bg-slate-100 p-1 rounded-2xl border border-slate-200">
           <button
             onClick={() => {
               setActiveTab('search');
@@ -192,6 +199,17 @@ export const App: React.FC = () => {
 
         {/* Sağ: İlerleme & XP Rozetleri & Türkçe Yardımcı Butonu */}
         <div className="flex items-center space-x-2 sm:space-x-3">
+          {/* Mobil Uygulama & APK İndir Butonu */}
+          <button
+            onClick={() => setIsInstallModalOpen(true)}
+            className="flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white text-xs font-black shadow-xs cursor-pointer transition-transform hover:scale-105"
+            title="Chirmo'yu telefon veya bilgisayarına indir (PWA / APK)"
+          >
+            <Smartphone className="w-3.5 h-3.5" />
+            <span className="hidden xs:inline sm:inline">Uygulamayı İndir</span>
+            <span className="inline xs:hidden sm:hidden">İndir</span>
+          </button>
+
           {/* Konuşma Kampı Rozeti */}
           <button
             onClick={() => setActiveTab('learn')}
@@ -249,6 +267,7 @@ export const App: React.FC = () => {
                 onSearch={handleNavigate}
                 onNavigateToLearn={() => setActiveTab('learn')}
                 onNavigateToTasks={() => setActiveTab('tasks')}
+                onOpenInstallModal={() => setIsInstallModalOpen(true)}
                 userLevel={learningProgress.currentLevel}
                 pendingTaskCount={pendingTaskCount}
               />
@@ -379,6 +398,59 @@ export const App: React.FC = () => {
         userLevel={learningProgress.currentLevel}
         onWordAdded={() => setLearningProgress({ ...LearningStorageService.getProgress() })}
       />
+
+      {/* Mobil Uygulama & APK İndirme Modalı */}
+      <InstallAppModal
+        isOpen={isInstallModalOpen}
+        onClose={() => setIsInstallModalOpen(false)}
+      />
+
+      {/* ==================== MOBİL ALT MENÜ (SMARTPHONE BOTTOM NAV) ==================== */}
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/90 dark:border-slate-800 shadow-xl px-2 py-1.5 flex items-center justify-around">
+        <button
+          onClick={() => setActiveTab('search')}
+          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer ${
+            activeTab === 'search'
+              ? 'text-blue-600 dark:text-blue-400 font-black'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
+          }`}
+        >
+          <Search className="w-5 h-5 mb-0.5" />
+          <span className="text-[10px]">Arama</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('learn')}
+          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer ${
+            activeTab === 'learn'
+              ? 'text-blue-600 dark:text-blue-400 font-black'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
+          }`}
+        >
+          <BookOpen className="w-5 h-5 mb-0.5" />
+          <span className="text-[10px]">İngilizce</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('tasks')}
+          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer ${
+            activeTab === 'tasks'
+              ? 'text-blue-600 dark:text-blue-400 font-black'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
+          }`}
+        >
+          <CheckSquare className="w-5 h-5 mb-0.5" />
+          <span className="text-[10px]">İş Takibi</span>
+        </button>
+
+        <button
+          onClick={() => setIsInstallModalOpen(true)}
+          className="flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center text-amber-600 dark:text-amber-400 font-bold hover:text-amber-700 cursor-pointer"
+        >
+          <Smartphone className="w-5 h-5 mb-0.5 animate-bounce" />
+          <span className="text-[10px]">APK / PWA</span>
+        </button>
+      </nav>
     </div>
   );
 };

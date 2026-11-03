@@ -27,6 +27,7 @@ interface SimpleSearchHomeProps {
   onSearch: (queryOrUrl: string) => void;
   onNavigateToLearn: () => void;
   onNavigateToTasks: () => void;
+  onOpenInstallModal?: () => void;
   userLevel: CEFRLevel;
   pendingTaskCount: number;
 }
@@ -35,6 +36,7 @@ export const SimpleSearchHome: React.FC<SimpleSearchHomeProps> = ({
   onSearch,
   onNavigateToLearn,
   onNavigateToTasks,
+  onOpenInstallModal,
   userLevel,
   pendingTaskCount
 }) => {
@@ -478,6 +480,30 @@ export const SimpleSearchHome: React.FC<SimpleSearchHomeProps> = ({
             <span className="text-2xl group-hover:scale-110 inline-block transition-transform">📘</span>
             <div className="text-xs font-black text-slate-800 dark:text-slate-200">30 Kalıp Bankası</div>
             <div className="text-[10px] text-slate-400">7 Cümle Mantığı Kuralı</div>
+          </div>
+        </div>
+
+        {/* ==================== MOBİL UYGULAMA & APK İNDİRME KARTI ==================== */}
+        <div
+          onClick={onOpenInstallModal}
+          className="w-full max-w-2xl p-4 rounded-3xl bg-slate-900 text-white dark:bg-slate-800/90 border border-slate-700/60 shadow-lg hover:shadow-xl transition-all cursor-pointer flex items-center justify-between gap-4 group"
+        >
+          <div className="flex items-center space-x-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform">
+              📲
+            </div>
+            <div>
+              <div className="text-xs font-black text-slate-100 flex items-center space-x-1.5">
+                <span>Chirmo Mobil Uygulamasını İndir (PWA & APK)</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold">Ücretsiz</span>
+              </div>
+              <p className="text-[11px] text-slate-400 mt-0.5">
+                Telefonuna veya tabletine tek tıkla kur; internetsiz, tam ekran ve anında çalışsın.
+              </p>
+            </div>
+          </div>
+          <div className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black shrink-0 transition-colors">
+            İndir 📥
           </div>
         </div>
       </div>
