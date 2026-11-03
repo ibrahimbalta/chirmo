@@ -12,13 +12,14 @@ import {
   Search,
   Award,
   Zap,
-  GraduationCap
+  Compass,
+  HeartHandshake
 } from 'lucide-react';
 import { CEFRLevel, VocabularyWord } from '../../types';
 import { LearningStorageService } from '../../services/learningStorage';
 import { ThirtyDayCampView } from '../kids/ThirtyDayCampView';
 import { GradeVocabularyView } from '../kids/GradeVocabularyView';
-import { CampStorageService, GradeLevel } from '../../services/curriculumData';
+import { CampStorageService } from '../../services/curriculumData';
 
 interface SimpleLearningHubProps {
   userLevel: CEFRLevel;
@@ -76,22 +77,22 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
 
   const beginnerQuestions = [
     {
-      q: 'LGS 1. Ünite: "Count on" ifadesinin Türkçe karşılığı nedir?',
-      opts: ['Güvenmek / Sırtını dayamak', 'Koşmak', 'Yemek yemek', 'Uyumak'],
+      q: 'Kafede bir içecek isterken yerliler gibi en kibar ve doğal nasıl söylenir?',
+      opts: ['Can I get an iced latte to go, please?', 'I want latte now.', 'Give me coffee.', 'Latte is good.'],
       correct: 0,
-      expl: '"Count on", gerçek arkadaşların birbirine güvenmesi anlamında LGS sınavında çok sık sorulur.'
+      expl: '"Can I get..." kalıbı İngilizce konuşulan ülkelerde bir şey sipariş ederken en doğal ve saygılı ifadedir.'
     },
     {
-      q: '"Would you like to join us?" sorusuna kibarca bahane bildirerek ret nasıl verilir?',
-      opts: ['I would love to, but I have to study.', 'Yes, of course.', 'No, go away.', 'I don\'t know.'],
+      q: 'Biri çılgın bir haber verdiğinde şaşkınlıkla "Yok artık! Ciddi misin?" demek için hangisi kullanılır?',
+      opts: ['No way! Are you serious?', 'Yes I agree.', 'Good morning.', 'How much is it?'],
       correct: 0,
-      expl: '"I would love to, but..." LGS\'de en popüler kibarca reddetme kalıbıdır.'
+      expl: '"No way! Are you serious?" günlük hayatta en çok duyacağın samimi şaşırma refleksidir.'
     },
     {
-      q: '"Unbearable" kelimesi ne anlama gelir?',
-      opts: ['Katlanılmaz / Çekilmez', 'Çok eğlenceli', 'Lezzetli', 'Pahalı'],
+      q: 'Yabancı bir şehirde bir yerin yürüme mesafesinde olup olmadığını nasıl sorarsın?',
+      opts: ['Is it within walking distance?', 'Can my legs go there?', 'Is it far walking?', 'Where is car?'],
       correct: 0,
-      expl: '"Unbearable", katlanılması güç, rahatsız edici durumlar veya müzik türleri için kullanılır.'
+      expl: '"Within walking distance" (yürüme mesafesinde) kalıbı tüm gezginlerin en büyük hayat kurtarıcısıdır.'
     }
   ];
 
@@ -105,25 +106,22 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
           <div>
             <div className="flex items-center space-x-2 text-blue-600 dark:text-blue-400 mb-0.5">
               <Zap className="w-4 h-4 text-amber-500" />
-              <span className="text-[11px] font-extrabold uppercase tracking-wider">
-                5-8. Sınıf MEB & Konuşma Kampı
+              <span className="text-[11px] font-black uppercase tracking-wider">
+                20 Yıllık Öğretmen Metodu • Sıfırdan Konuşma Devrimi
               </span>
             </div>
             <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
-              1 Ayda İngilizce Konuşma & LGS Hazırlık
+              Gramer Ezberi Yok! 30 Günde Konuşma Refleksi
             </h1>
           </div>
 
-          {/* Sınıf & XP Rozeti */}
+          {/* İlerleme Rozetleri */}
           <div className="flex items-center space-x-2">
-            <span className="px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-950 border border-blue-200 text-blue-700 dark:text-blue-300 text-xs font-black">
-              {campProgress.selectedGrade}. Sınıf {campProgress.selectedGrade === '8' ? '(LGS)' : ''}
-            </span>
             <span className="px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950 border border-amber-200 text-amber-800 dark:text-amber-300 text-xs font-black">
-              🔥 {campProgress.streakDays} Gün Seri
+              🔥 {campProgress.streakDays} Gün Kesintisiz
             </span>
             <span className="px-3 py-1.5 rounded-xl bg-purple-50 dark:bg-purple-950 border border-purple-200 text-purple-700 dark:text-purple-300 text-xs font-black">
-              ⭐ {campProgress.totalXp} XP
+              ⭐ {campProgress.totalXp} XP Puan
             </span>
           </div>
         </div>
@@ -152,8 +150,8 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
             }`}
           >
-            <GraduationCap className="w-3.5 h-3.5" />
-            <span>5-8. Sınıf MEB Üniteleri 📚</span>
+            <Compass className="w-3.5 h-3.5" />
+            <span>Hayat Kurtaran Kalıplar (8 Durum) 🗺️</span>
           </button>
 
           <button
@@ -165,7 +163,7 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
             }`}
           >
             <Bookmark className="w-3.5 h-3.5" />
-            <span>Kelime Defterim ({words.length})</span>
+            <span>Kişisel Defterim ({words.length})</span>
           </button>
 
           <button
@@ -193,7 +191,7 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
             }`}
           >
             <Award className="w-3.5 h-3.5" />
-            <span>LGS Mini Test</span>
+            <span>Refleks Testi</span>
           </button>
         </div>
       </div>
@@ -207,18 +205,14 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
           />
         )}
 
-        {/* 2. 5-8. SINIF MEB MÜFREDAT KELİMELERİ */}
+        {/* 2. HAYAT KURTARAN 8 GERÇEK YAŞAM DURUMU */}
         {activeTab === 'grade' && (
           <GradeVocabularyView
-            initialGrade={campProgress.selectedGrade}
-            onGradeChange={(grade) => {
-              setCampProgress((prev) => ({ ...prev, selectedGrade: grade }));
-            }}
             onWordAdded={() => setWords(LearningStorageService.getSavedWords())}
           />
         )}
 
-        {/* 3. KELİME DEFTERİM */}
+        {/* 3. KELİME VE KALIP DEFTERİM */}
         {activeTab === 'vault' && (
           <div className="max-w-5xl mx-auto w-full p-6 space-y-4">
             <div className="flex items-center justify-between gap-3">
@@ -228,13 +222,13 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Kayıtlı kelimelerinde ara..."
+                  placeholder="Kayıtlı kalıplarında ara..."
                   className="w-full pl-9 pr-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs outline-none"
                 />
               </div>
 
               <div className="text-xs text-slate-500 font-semibold">
-                Toplam {filteredWords.length} Kelime Kayıtlı
+                Toplam {filteredWords.length} Kalıp Kayıtlı
               </div>
             </div>
 
@@ -242,10 +236,10 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
               <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800 p-8 space-y-3">
                 <Bookmark className="w-10 h-10 text-slate-300 mx-auto" />
                 <h3 className="text-base font-bold text-slate-700 dark:text-slate-300">
-                  Henüz bu filtreye uygun kelime yok
+                  Henüz kayıtlı kalıbın yok
                 </h3>
                 <p className="text-xs text-slate-400 max-w-xs mx-auto">
-                  Ünitelerden veya web sayfalarından kelime kaydederek kendi kişisel defterini oluşturabilirsin.
+                  Hayat kurtaran durumlardan veya web sayfalarından beğendiğin kalıpları defterine ekleyebilirsin.
                 </p>
               </div>
             ) : (
@@ -308,10 +302,10 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
                         {item.masteryLevel >= 4 ? (
                           <span className="text-emerald-600 font-bold flex items-center space-x-1">
                             <CheckCircle2 className="w-3 h-3" />
-                            <span>Öğrenildi</span>
+                            <span>Refleks Oldu</span>
                           </span>
                         ) : (
-                          <span>Tekrar Ediliyor</span>
+                          <span>Pratik Ediliyor</span>
                         )}
                       </span>
                       <span className="font-semibold text-slate-400">
@@ -329,7 +323,7 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
         {activeTab === 'flashcards' && (
           <div className="max-w-xl mx-auto w-full p-6 flex flex-col items-center justify-center min-h-[420px] space-y-6">
             {words.length === 0 ? (
-              <p className="text-slate-500 text-sm">Kart çevirmek için önce birkaç kelime kaydet.</p>
+              <p className="text-slate-500 text-sm">Kart çevirmek için önce birkaç kalıp kaydet.</p>
             ) : (
               <>
                 <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">
@@ -343,9 +337,9 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
                   {!showAnswer ? (
                     <div className="space-y-3">
                       <span className="text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">
-                        İngilizce Kelime
+                        İngilizce Kalıp
                       </span>
-                      <h2 className="text-3xl font-black text-slate-900 dark:text-white capitalize">
+                      <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white capitalize">
                         {words[cardIndex].word}
                       </h2>
                       {words[cardIndex].phonetic && (
@@ -354,15 +348,15 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
                         </p>
                       )}
                       <p className="text-xs text-slate-400 pt-4 group-hover:text-blue-600 transition-colors">
-                        Türkçe anlamını görmek için tıkla 👆
+                        Türkçe anlamını ve kullanımını görmek için tıkla 👆
                       </p>
                     </div>
                   ) : (
                     <div className="space-y-3 animate-in fade-in duration-200">
                       <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
-                        Türkçe Anlamı
+                        Türkçe Karşılığı
                       </span>
-                      <h2 className="text-2xl font-black text-slate-900 dark:text-white">
+                      <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
                         {words[cardIndex].translation}
                       </h2>
                       {words[cardIndex].exampleSentence && (
@@ -379,7 +373,7 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
                     onClick={() => handleMasteryVote(words[cardIndex].id, false)}
                     className="px-5 py-2.5 rounded-2xl bg-rose-50 text-rose-700 hover:bg-rose-100 font-bold text-xs flex items-center space-x-1.5 transition-all cursor-pointer"
                   >
-                    <span>❌ Henüz Bilmiyorum</span>
+                    <span>❌ Hatırlayamadım</span>
                   </button>
                   <button
                     onClick={() => handleSpeak(words[cardIndex].word)}
@@ -392,7 +386,7 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
                     onClick={() => handleMasteryVote(words[cardIndex].id, true)}
                     className="px-5 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center space-x-1.5 transition-all cursor-pointer shadow-md"
                   >
-                    <span>✅ Biliyorum (+XP)</span>
+                    <span>✅ Refleks Oldu (+XP)</span>
                   </button>
                 </div>
               </>
@@ -400,7 +394,7 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
           </div>
         )}
 
-        {/* 5. KOLAY TEST */}
+        {/* 5. REFLEKS TESTİ */}
         {activeTab === 'quiz' && (
           <div className="max-w-xl mx-auto w-full p-6 space-y-6">
             <div className="flex items-center justify-between text-xs font-bold text-slate-500">

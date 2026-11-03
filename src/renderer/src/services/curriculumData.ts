@@ -1,25 +1,27 @@
-export type GradeLevel = '5' | '6' | '7' | '8';
+// Chirmo 30 Günde Sıfırdan Konuşma Metodu (Chirmo Fluent Reflex Method)
+// 20 Yıllık Öğretmenlik Tecrübesiyle: Gramer Ezberi Yok, Konuşma ve Refleks Var!
 
-export interface CurriculumUnit {
+export interface RealLifeScenario {
   id: string;
-  unitNumber: number;
+  category: string;
   title: string;
-  grade: GradeLevel;
-  theme: string;
   badge: string;
-  keyWords: Array<{
+  description: string;
+  keyChunks: Array<{
     en: string;
     tr: string;
     phonetic: string;
     example: string;
     exampleTr: string;
   }>;
-  dailySpeakingPrompt: {
-    question: string;
-    questionTr: string;
-    expectedAnswerExample: string;
-    expectedAnswerTr: string;
-    audioTip: string;
+  interactiveChallenge: {
+    situation: string;
+    situationTr: string;
+    aiQuestion: string;
+    aiQuestionTr: string;
+    suggestedAnswer: string;
+    suggestedAnswerTr: string;
+    coachTip: string;
   };
 }
 
@@ -27,7 +29,7 @@ export interface DayMission {
   day: number;
   week: number;
   title: string;
-  targetSkill: string;
+  theme: string;
   speakingGoal: string;
   speakingGoalTr: string;
   aiPrompt: string;
@@ -36,670 +38,825 @@ export interface DayMission {
   suggestedAnswerTr: string;
   xpReward: number;
   keyVocabulary: string[];
+  nativeCoachTip: string;
 }
 
-export const GRADE_UNITS: Record<GradeLevel, CurriculumUnit[]> = {
-  '5': [
-    {
-      id: 'g5-u1',
-      unitNumber: 1,
-      grade: '5',
-      title: 'Hello & Getting to Know',
-      theme: 'Tanışma, Selamlaşma, Ülkeler & Diller',
-      badge: '👋 Tanışma',
-      keyWords: [
-        { en: 'country', tr: 'Ülke', phonetic: '/ˈkʌntri/', example: 'I live in Turkey.', exampleTr: "Türkiye'de yaşıyorum." },
-        { en: 'nationality', tr: 'Milliyet', phonetic: '/ˌnæʃəˈnæləti/', example: 'I am Turkish.', exampleTr: 'Ben Türküm.' },
-        { en: 'language', tr: 'Dil / Lisan', phonetic: '/ˈlæŋɡwɪdʒ/', example: 'I speak Turkish and English.', exampleTr: 'Türkçe ve İngilizce konuşurum.' },
-        { en: 'favorite', tr: 'En sevilen / Favori', phonetic: '/ˈfeɪvərɪt/', example: 'English is my favorite subject.', exampleTr: 'İngilizce en sevdiğim derstir.' }
-      ],
-      dailySpeakingPrompt: {
-        question: 'Hello! What is your name and which country are you from?',
-        questionTr: 'Merhaba! Adın ne ve hangi ülkedensin?',
-        expectedAnswerExample: 'Hello! My name is Ali and I am from Turkey.',
-        expectedAnswerTr: 'Merhaba! Benim adım Ali ve ben Türkiyeliyim.',
-        audioTip: '"from" kelimesini net telaffuz etmeye özen göster!'
+// ==================== 1. HAYAT KURTARAN 8 GERÇEK YAŞAM SENARYOSU ====================
+export const REAL_LIFE_SCENARIOS: RealLifeScenario[] = [
+  {
+    id: 'scenario-coffee',
+    category: 'Kafe & Restoran',
+    title: 'Kahve & Yemek Siparişi (Yerli Gibi İste)',
+    badge: '☕ Kafe & Bar',
+    description: 'Yurtdışında veya Starbucks\'ta paniklemeden, en doğal Amerikan/İngiliz kalıbıyla sipariş ver.',
+    keyChunks: [
+      {
+        en: 'Can I get an iced latte to go?',
+        tr: 'Buzlu latte alabilir miyim, paket olsun?',
+        phonetic: '/kæn aɪ ɡet ən aɪst ˈlɑːteɪ tə ɡəʊ/',
+        example: 'Can I get an iced latte to go, please?',
+        exampleTr: 'Buzlu latte alabilir miyim lütfen, paket olsun?'
+      },
+      {
+        en: 'What do you recommend?',
+        tr: 'Neyi tavsiye edersiniz? / Ne önerirsiniz?',
+        phonetic: '/wɒt duː juː ˌrekəˈmend/',
+        example: 'It\'s my first time here, what do you recommend?',
+        exampleTr: 'Buraya ilk gelişim, siz ne önerirsiniz?'
+      },
+      {
+        en: 'Could we have the bill, please?',
+        tr: 'Hesabı alabilir miyiz lütfen?',
+        phonetic: '/kʊd wiː hæv ðə bɪl pliːz/',
+        example: 'Could we have the bill, please? We are in a hurry.',
+        exampleTr: 'Hesabı alabilir miyiz lütfen? Biraz acelemiz var.'
+      },
+      {
+        en: 'Keep the change',
+        tr: 'Üstü kalsın',
+        phonetic: '/kiːp ðə tʃeɪndʒ/',
+        example: 'Here is twenty dollars, keep the change.',
+        exampleTr: 'Buyrun yirmi dolar, üstü kalsın.'
       }
-    },
-    {
-      id: 'g5-u2',
-      unitNumber: 2,
-      grade: '5',
-      title: 'My Town & Directions',
-      theme: 'Şehrim, Yerler ve Yol Tarifi',
-      badge: '🗺️ Şehir & Yol',
-      keyWords: [
-        { en: 'library', tr: 'Kütüphane', phonetic: '/ˈlaɪbrəri/', example: 'The library is next to the school.', exampleTr: 'Kütüphane okulun yanındadır.' },
-        { en: 'hospital', tr: 'Hastane', phonetic: '/ˈhɒspɪtl/', example: 'Where is the hospital?', exampleTr: 'Hastane nerede?' },
-        { en: 'bakery', tr: 'Fırın / Pastane', phonetic: '/ˈbeɪkəri/', example: 'I buy bread from the bakery.', exampleTr: 'Fırından ekmek alırım.' },
-        { en: 'straight', tr: 'Düz / Dosdoğru', phonetic: '/streɪt/', example: 'Go straight ahead and turn left.', exampleTr: 'Dosdoğru git ve sola dön.' }
-      ],
-      dailySpeakingPrompt: {
-        question: 'Excuse me, where is your school library?',
-        questionTr: 'Affedersiniz, okulunuzun kütüphanesi nerede?',
-        expectedAnswerExample: 'Go straight ahead. It is next to the cafe.',
-        expectedAnswerTr: 'Dosdoğru gidin. Kafenin yanındadır.',
-        audioTip: '"straight" derken gh harflerini okuma, streyt olarak söyle!'
-      }
-    },
-    {
-      id: 'g5-u3',
-      unitNumber: 3,
-      grade: '5',
-      title: 'Games and Hobbies',
-      theme: 'Oyunlar, Hobiler ve Yetenekler',
-      badge: '🎮 Hobiler',
-      keyWords: [
-        { en: 'chess', tr: 'Satranç', phonetic: '/tʃes/', example: 'I like playing chess with my dad.', exampleTr: 'Babamla satranç oynamayı severim.' },
-        { en: 'dodgeball', tr: 'Yakar top', phonetic: '/ˈdɒdʒbɔːl/', example: 'We play dodgeball in P.E. class.', exampleTr: 'Beden dersinde yakar top oynuyoruz.' },
-        { en: 'origami', tr: 'Kağıt katlama sanatı', phonetic: '/ˌɒrɪˈɡɑːmi/', example: 'She can fold nice origami animals.', exampleTr: 'Güzel origami hayvanları katlayabilir.' },
-        { en: 'hiking', tr: 'Doğa yürüyüşü', phonetic: '/ˈhaɪkɪŋ/', example: 'We go hiking on Sundays.', exampleTr: 'Pazar günleri doğa yürüyüşüne çıkarız.' }
-      ],
-      dailySpeakingPrompt: {
-        question: 'What is your favorite hobby in your free time?',
-        questionTr: 'Boş zamanında en sevdiğin hobi nedir?',
-        expectedAnswerExample: 'I enjoy playing chess and riding a bike.',
-        expectedAnswerTr: 'Satranç oynamaktan ve bisiklete binmekten keyif alırım.',
-        audioTip: '"enjoy" dedikten sonra fiile -ing eklemeyi unutma!'
-      }
+    ],
+    interactiveChallenge: {
+      situation: 'Garson masanıza geldi ve siparişinizi sordu.',
+      situationTr: 'Kahve dükkanında paket bir filtre kahve ve kruvasan isteyeceksin.',
+      aiQuestion: 'Hi there! What can I get started for you today?',
+      aiQuestionTr: 'Merhaba! Bugün sizin için ne hazırlayabilirim?',
+      suggestedAnswer: 'Can I get a black coffee and a croissant to go, please?',
+      suggestedAnswerTr: 'Bir sade kahve ve bir kruvasan alabilir miyim lütfen, paket olsun?',
+      coachTip: '"Can I get..." kalıbı İngilizcede bir şey isterken en sihirli ve en doğal anahtardır! "I want" kaba duyulabilir.'
     }
-  ],
-  '6': [
-    {
-      id: 'g6-u1',
-      unitNumber: 1,
-      grade: '6',
-      title: 'Life & Daily Routine',
-      theme: 'Günlük Yaşam, Saatler ve Alışkanlıklar',
-      badge: '⏰ Günlük Yaşam',
-      keyWords: [
-        { en: 'wake up', tr: 'Uyanmak', phonetic: '/weɪk ʌp/', example: 'I wake up at seven o\'clock.', exampleTr: 'Saat yedide uyanırım.' },
-        { en: 'have breakfast', tr: 'Kahvaltı yapmak', phonetic: '/hæv ˈbrekfəst/', example: 'I have breakfast with my family.', exampleTr: 'Ailemle kahvaltı yaparım.' },
-        { en: 'attend', tr: 'Katılmak (derse/kursa)', phonetic: '/əˈtend/', example: 'I attend an English course on Saturday.', exampleTr: 'Cumartesi günü İngilizce kursuna katılırım.' },
-        { en: 'take a nap', tr: 'Şekerleme yapmak', phonetic: '/teɪk ə næp/', example: 'I take a nap after school.', exampleTr: 'Okuldan sonra kestiririm.' }
-      ],
-      dailySpeakingPrompt: {
-        question: 'What time do you wake up on weekdays?',
-        questionTr: 'Hafta içi saat kaçta uyanırsın?',
-        expectedAnswerExample: 'I usually wake up at seven o\'clock in the morning.',
-        expectedAnswerTr: 'Sabahları genellikle saat yedide uyanırım.',
-        audioTip: '"usually" kelimesinde \'j\' sesine dikkat et!'
+  },
+  {
+    id: 'scenario-travel',
+    category: 'Havalimanı & Seyahat',
+    title: 'Havalimanı, Pasaport & Otel',
+    badge: '✈️ Seyahat',
+    description: 'Uçakta koltuk sormaktan bagaj bulmaya ve otele giriş yapmaya kadar tüm seyahat refleksleri.',
+    keyChunks: [
+      {
+        en: 'Where is the baggage claim?',
+        tr: 'Bagaj alım yeri nerede?',
+        phonetic: '/weər ɪz ðə ˈbæɡɪdʒ kleɪm/',
+        example: 'Excuse me, where is the baggage claim for flight TK18?',
+        exampleTr: 'Affedersiniz, TK18 uçuşunun bagaj teslimi nerede?'
+      },
+      {
+        en: 'I have a reservation under the name...',
+        tr: '... adına bir rezervasyonum var',
+        phonetic: '/aɪ hæv ə ˌrezəˈveɪʃn ˈʌndər ðə neɪm/',
+        example: 'I have a reservation under the name John Smith.',
+        exampleTr: 'John Smith adına yapılmış bir rezervasyonum var.'
+      },
+      {
+        en: 'Window or aisle seat?',
+        tr: 'Cam kenarı mı koridor mu?',
+        phonetic: '/ˈwɪndəʊ ɔːr aɪl siːt/',
+        example: 'I would prefer a window seat, please.',
+        exampleTr: 'Cam kenarı bir koltuk tercih ederim lütfen.'
+      },
+      {
+        en: 'Is breakfast included?',
+        tr: 'Kahvaltı dahil mi?',
+        phonetic: '/ɪz ˈbrekfəst ɪnˈkluːdɪd/',
+        example: 'Quick question: Is breakfast included in the room rate?',
+        exampleTr: 'Kısa bir soru: Oda fiyatına kahvaltı dahil mi?'
       }
-    },
-    {
-      id: 'g6-u2',
-      unitNumber: 2,
-      grade: '6',
-      title: 'Yummy Breakfast',
-      theme: 'Yiyecekler, İçecekler ve Tercihler',
-      badge: '🥞 Kahvaltı',
-      keyWords: [
-        { en: 'nutritious', tr: 'Besleyici / Yararlı', phonetic: '/njuːˈtrɪʃəs/', example: 'Eggs and milk are very nutritious.', exampleTr: 'Yumurta ve süt çok besleyicidir.' },
-        { en: 'junk food', tr: 'Abur cubur / Zararlı yiyecek', phonetic: '/dʒʌŋk fuːd/', example: 'Do not eat too much junk food.', exampleTr: 'Çok fazla abur cubur yeme.' },
-        { en: 'croissant', tr: 'Kruvasan', phonetic: '/ˈkwæsɒ̃/', example: 'I like eating croissants with honey.', exampleTr: 'Kruvasanı balla yemeyi severim.' },
-        { en: 'pancake', tr: 'Krep / Pankek', phonetic: '/ˈpænkeɪk/', example: 'My mom makes delicious pancakes.', exampleTr: 'Annem leziz pankekler yapar.' }
-      ],
-      dailySpeakingPrompt: {
-        question: 'What do you usually have for breakfast?',
-        questionTr: 'Kahvaltıda genellikle ne yersin?',
-        expectedAnswerExample: 'I usually have eggs, cheese, olives and a glass of milk.',
-        expectedAnswerTr: 'Genellikle yumurta, peynir, zeytin ve bir bardak süt tüketirim.',
-        audioTip: '"usually" ve "have" akıcı şekilde bağlayarak söyle!'
-      }
+    ],
+    interactiveChallenge: {
+      situation: 'Otel resepsiyonundasın, check-in yapıyorsun.',
+      situationTr: 'Otele vardın ve rezervasyonun olduğunu belirtip anahtarını isteyeceksin.',
+      aiQuestion: 'Good evening! Welcome to the Grand Central Hotel. How may I help you?',
+      aiQuestionTr: 'İyi akşamlar! Otele hoş geldiniz. Size nasıl yardımcı olabilirim?',
+      suggestedAnswer: 'Hello! I have a reservation under the name Ali. I would like to check in.',
+      suggestedAnswerTr: 'Merhaba! Ali adına bir rezervasyonum var. Giriş (check-in) yapmak istiyorum.',
+      coachTip: '"aisle" derken \'s\' harfini kesinlikle okuma, "ayıl" şeklinde telaffuz edilir!'
     }
-  ],
-  '7': [
-    {
-      id: 'g7-u1',
-      unitNumber: 1,
-      grade: '7',
-      title: 'Appearance and Personality',
-      theme: 'Fiziksel Özellikler ve Karakter',
-      badge: '✨ Karakter',
-      keyWords: [
-        { en: 'generous', tr: 'Cömert', phonetic: '/ˈdʒenərəs/', example: 'My best friend is very generous.', exampleTr: 'En yakın arkadaşım çok cömerttir.' },
-        { en: 'punctual', tr: 'Dakik / Zamanında gelen', phonetic: '/ˈpʌŋktʃuəl/', example: 'She is always punctual for class.', exampleTr: 'Derse her zaman vaktinde gelir.' },
-        { en: 'outgoing', tr: 'Cana yakın / Dışa dönük', phonetic: '/ˌaʊtˈɡəʊɪŋ/', example: 'He is friendly and outgoing.', exampleTr: 'O arkadaş canlısı ve dışa dönüktür.' },
-        { en: 'honest', tr: 'Dürüst', phonetic: '/ˈɒnɪst/', example: 'An honest person never tells lies.', exampleTr: 'Dürüst bir insan asla yalan söylemez.' }
-      ],
-      dailySpeakingPrompt: {
-        question: 'How would you describe your best friend\'s personality?',
-        questionTr: 'En iyi arkadaşının karakterini nasıl tarif edersin?',
-        expectedAnswerExample: 'My best friend is very generous, honest and cheerful.',
-        expectedAnswerTr: 'En iyi arkadaşım çok cömert, dürüst ve neşelidir.',
-        audioTip: '"honest" kelimesinde \'h\' harfi okunmaz, sessizdir!'
+  },
+  {
+    id: 'scenario-icebreaker',
+    category: 'Sosyal Tanışma',
+    title: 'İlk Tanışma & Havadan Sudan Konuşma',
+    badge: '👋 Tanışma & Muhabbet',
+    description: 'Biriyle ilk karşılaştığında sessizlik anını kıracak samimi ve havalı başlangıçlar.',
+    keyChunks: [
+      {
+        en: 'Nice to finally meet you!',
+        tr: 'Sonunda seninle tanıştığıma çok memnun oldum!',
+        phonetic: '/naɪs tə ˈfaɪnəli miːt juː/',
+        example: 'Nice to finally meet you in person!',
+        exampleTr: 'Sonunda seninle yüz yüze tanıştığıma çok memnun oldum!'
+      },
+      {
+        en: 'What do you do for a living?',
+        tr: 'Ne iş yapıyorsunuz? / Mesleğiniz ne?',
+        phonetic: '/wɒt duː juː duː fər ə ˈlɪvɪŋ/',
+        example: 'So, what do you do for a living in Berlin?',
+        exampleTr: 'Peki, Berlin\'de ne işle meşgulsünüz?'
+      },
+      {
+        en: 'How do you know each other?',
+        tr: 'Birbirinizi nereden tanıyorsunuz?',
+        phonetic: '/haʊ duː juː nəʊ iːtʃ ˈʌðər/',
+        example: 'You two look like old friends, how do you know each other?',
+        exampleTr: 'Eski dost gibisiniz, birbirinizi nereden tanıyorsunuz?'
+      },
+      {
+        en: 'Long time no see!',
+        tr: 'Görüşmeyeli uzun zaman oldu! / Nerelerdesin!',
+        phonetic: '/lɒŋ taɪm nəʊ siː/',
+        example: 'Hey Mark! Long time no see! How have you been?',
+        exampleTr: 'Selam Mark! Nerelerdesin ya! Nasıl gidiyor?'
       }
-    },
-    {
-      id: 'g7-u2',
-      unitNumber: 2,
-      grade: '7',
-      title: 'Sports & Training',
-      theme: 'Spor Dalları, Ekipmanlar ve Başarı',
-      badge: '🏅 Spor & Başarı',
-      keyWords: [
-        { en: 'spectator', tr: 'Seyirci', phonetic: '/spekˈteɪtər/', example: 'Thousands of spectators watched the match.', exampleTr: 'Binlerce seyirci maçı izledi.' },
-        { en: 'equipment', tr: 'Ekipman / Malzeme', phonetic: '/ɪˈkwɪpmənt/', example: 'You need protective equipment for skating.', exampleTr: 'Paten için koruyucu ekipmana ihtiyacın var.' },
-        { en: 'achieve', tr: 'Başarmak / Elde etmek', phonetic: '/əˈtʃiːv/', example: 'Practice every day to achieve your goals.', exampleTr: 'Hedeflerine ulaşmak için her gün pratik yap.' },
-        { en: 'beat', tr: 'Yenmek (rakibi)', phonetic: '/biːt/', example: 'Our school team beat the rivals.', exampleTr: 'Okul takımımız rakipleri yendi.' }
-      ],
-      dailySpeakingPrompt: {
-        question: 'How often do you do sports or exercise?',
-        questionTr: 'Ne sıklıkla spor veya egzersiz yaparsın?',
-        expectedAnswerExample: 'I play basketball twice a week and ride my bike every day.',
-        expectedAnswerTr: 'Haftada iki kez basketbol oynarım ve her gün bisiklete binerim.',
-        audioTip: '"twice a week" (haftada iki kez) kalıbını unutma!'
-      }
+    ],
+    interactiveChallenge: {
+      situation: 'Bir partide veya etkinlikte yanındaki yabancı sana selam verdi.',
+      situationTr: 'Kendini kısaca tanıt ve ne iş yaptığını samimi bir dille söyle.',
+      aiQuestion: 'Hey there! Nice party, isn\'t it? I\'m Alex. Where are you from?',
+      aiQuestionTr: 'Selam! Harika bir parti değil mi? Ben Alex. Nerelisin?',
+      suggestedAnswer: 'Hi Alex! Nice to meet you. I am from Turkey and I work in software.',
+      suggestedAnswerTr: 'Selam Alex! Tanıştığıma sevindim. Türkiyeliyim ve yazılım sektöründe çalışıyorum.',
+      coachTip: '"What is your job?" yerine her zaman "What do you do for a living?" kalıbını kullan. Çok daha samimidir.'
     }
-  ],
-  '8': [
-    {
-      id: 'g8-u1',
-      unitNumber: 1,
-      grade: '8',
-      title: 'Friendship (LGS 1. Ünite)',
-      theme: 'Arkadaşlık, Davetler ve LGS Soru Kalıpları',
-      badge: '🎯 LGS 1. Ünite',
-      keyWords: [
-        { en: 'count on', tr: 'Güvenmek / Sırtını dayamak', phonetic: '/kaʊnt ɒn/', example: 'True friends always count on each other.', exampleTr: 'Gerçek dostlar daima birbirine güvenir.' },
-        { en: 'back up', tr: 'Desteklemek / Arka çıkmak', phonetic: '/bæk ʌp/', example: 'He always backs me up when I need help.', exampleTr: 'Yardıma ihtiyacım olduğunda hep beni destekler.' },
-        { en: 'get on well', tr: 'İyi geçinmek', phonetic: '/ɡet ɒn wel/', example: 'We get on well with my classmates.', exampleTr: 'Sınıf arkadaşlarımla çok iyi geçiniriz.' },
-        { en: 'apologize', tr: 'Özür dilemek', phonetic: '/əˈpɒlədʒaɪz/', example: 'You should apologize for being late.', exampleTr: 'Geç kaldığın için özür dilemelisin.' }
-      ],
-      dailySpeakingPrompt: {
-        question: 'LGS Practice: Would you like to come to my birthday party on Sunday?',
-        questionTr: 'Pazar günü doğum günü partime gelmek ister misin?',
-        expectedAnswerExample: 'I would love to, but I have to study for the LGS exam.',
-        expectedAnswerTr: 'Çok isterdim ama LGS sınavına çalışmak zorundayım.',
-        audioTip: 'LGS\'de daveti kibarca reddetme kalıbı (I would love to, but...) çok sık sorulur!'
+  },
+  {
+    id: 'scenario-reactions',
+    category: 'Doğal Tepkiler',
+    title: 'Amerikalı / İngiliz Gibi Tepki Verme',
+    badge: '⚡ Doğal Tepkiler',
+    description: 'Robot gibi "Yes/No" demek yerine sohbete canlılık katan refleks cümleleri.',
+    keyChunks: [
+      {
+        en: 'No way! Are you serious?',
+        tr: 'Yok artık! Ciddi misin?',
+        phonetic: '/nəʊ weɪ ɑːr juː ˈsɪəriəs/',
+        example: 'No way! Are you serious? That is incredible!',
+        exampleTr: 'Yok artık! Ciddi misin sen? Bu inanılmaz!'
+      },
+      {
+        en: 'That makes total sense.',
+        tr: 'Bu çok mantıklı / Haklısın.',
+        phonetic: '/ðæt meɪks ˈtəʊtl sens/',
+        example: 'Thanks for explaining, that makes total sense.',
+        exampleTr: 'Açıkladığın için sağ ol, kafama çok iyi yattı.'
+      },
+      {
+        en: 'Never mind, it doesn\'t matter.',
+        tr: 'Boşver, hiç önemli değil.',
+        phonetic: '/ˈnevər maɪnd ɪt ˈdʌznt ˈmætər/',
+        example: 'Oh, never mind, it doesn\'t matter at all.',
+        exampleTr: 'Aman boşver, zerre kadar önemli değil.'
+      },
+      {
+        en: 'I couldn\'t agree more!',
+        tr: 'Kesinlikle tamamen katılıyorum!',
+        phonetic: '/aɪ ˈkʊdnt əˈɡriː mɔː/',
+        example: 'You are so right, I couldn\'t agree more!',
+        exampleTr: 'Çok haklısın, sana daha fazla katılamazdım!'
       }
-    },
-    {
-      id: 'g8-u2',
-      unitNumber: 2,
-      grade: '8',
-      title: 'Teen Life & Preferences',
-      theme: 'Gençlerin Hayatı, Müzik ve Spor Tercihleri',
-      badge: '🎧 LGS 2. Ünite',
-      keyWords: [
-        { en: 'fond of', tr: 'Düşkün olmak / Çok sevmek', phonetic: '/fɒnd ɒv/', example: 'I am fond of listening to rock music.', exampleTr: 'Rock müzik dinlemeye bayılırım.' },
-        { en: 'unbearable', tr: 'Katlanılmaz / Çekilmez', phonetic: '/ʌnˈbeərəbl/', example: 'I think heavy metal is unbearable.', exampleTr: 'Bence heavy metal katlanılmaz.' },
-        { en: 'prefer', tr: 'Tercih etmek', phonetic: '/prɪˈfɜː/', example: 'I prefer playing football to basketball.', exampleTr: 'Futbol oynamayı basketbola tercih ederim.' },
-        { en: 'snob', tr: 'Kibirli / Züppe', phonetic: '/snɒb/', example: 'He is not a snob, he is very modest.', exampleTr: 'O kibirli biri değil, çok alçakgönüllüdür.' }
-      ],
-      dailySpeakingPrompt: {
-        question: 'Which music type do you prefer listening to?',
-        questionTr: 'Hangi tür müzik dinlemeyi tercih edersin?',
-        expectedAnswerExample: 'I prefer pop music because it is energetic and fun.',
-        expectedAnswerTr: 'Pop müziği tercih ederim çünkü enerjik ve eğlencelidir.',
-        audioTip: '"prefer A to B" yapısına dikkat et!'
-      }
-    },
-    {
-      id: 'g8-u3',
-      unitNumber: 3,
-      grade: '8',
-      title: 'In the Kitchen (LGS 3. Ünite)',
-      theme: 'Mutfak, Yemek Tarifleri ve Sıralama Zarfları',
-      badge: '🍳 LGS 3. Ünite',
-      keyWords: [
-        { en: 'chop', tr: 'İnce ince doğramak', phonetic: '/tʃɒp/', example: 'First, chop the tomatoes.', exampleTr: 'Önce domatesleri doğrayın.' },
-        { en: 'stir', tr: 'Karıştırmak', phonetic: '/stɜː/', example: 'Stir the soup continuously.', exampleTr: 'Çorbayı sürekli karıştırın.' },
-        { en: 'recipe', tr: 'Yemek tarifi', phonetic: '/ˈresəpi/', example: 'This is my grandmother\'s secret recipe.', exampleTr: 'Bu anneannemin gizli tarifidir.' },
-        { en: 'ingredient', tr: 'Malzeme / İçerik', phonetic: '/ɪnˈɡriːdiənt/', example: 'We have all the ingredients for the cake.', exampleTr: 'Kek için tüm malzemelerimiz var.' }
-      ],
-      dailySpeakingPrompt: {
-        question: 'How do you make an omelette?',
-        questionTr: 'Omleti nasıl yaparsın?',
-        expectedAnswerExample: 'First crack two eggs. Then whisk them and fry in a pan.',
-        expectedAnswerTr: 'Önce iki yumurta kırın. Sonra çırpın ve tavada kızartın.',
-        audioTip: 'LGS\'de First, Second, Then, After that, Finally sıralaması kesin çıkar!'
-      }
+    ],
+    interactiveChallenge: {
+      situation: 'Arkadaşın sana çılgın bir haber verdi: Piyangodan para kazanmış!',
+      situationTr: 'Şaşkınlığını ve tebriğini samimi bir şekilde dile getir.',
+      aiQuestion: 'Guess what! I just won two free tickets to London!',
+      aiQuestionTr: 'Tahmin et ne oldu! Londra\'ya iki ücretsiz uçak bileti kazandım!',
+      suggestedAnswer: 'No way! Are you serious? That is amazing news, congratulations!',
+      suggestedAnswerTr: 'Yok artık! Ciddi misin? Bu harika bir haber, tebrik ederim!',
+      coachTip: '"No way!" derken ses tonunu şaşırmış gibi yükselt. Dilde duygu konuşmayı 10 kat hızlandırır!'
     }
-  ]
-};
+  },
+  {
+    id: 'scenario-directions',
+    category: 'Yol Tarifi & Şehir',
+    title: 'Şehirde Kaybolunca Yol Bulma',
+    badge: '🗺️ Yol & Şehir',
+    description: 'Yurtdışında kaybolduğunda metro, taksi ve sokakta insanlara sorma rehberi.',
+    keyChunks: [
+      {
+        en: 'Is it within walking distance?',
+        tr: 'Yürüme mesafesinde mi?',
+        phonetic: '/ɪz ɪt wɪðˈɪn ˈwɔːkɪŋ ˈdɪstəns/',
+        example: 'Excuse me, is the museum within walking distance?',
+        exampleTr: 'Affedersiniz, müze yürüme mesafesinde mi?'
+      },
+      {
+        en: 'How can I get to the nearest subway?',
+        tr: 'En yakın metroya nasıl gidebilirim?',
+        phonetic: '/haʊ kæn aɪ ɡet tə ðə ˈnɪərɪst ˈsʌbweɪ/',
+        example: 'How can I get to the nearest subway station from here?',
+        exampleTr: 'Buradan en yakın metro istasyonuna nasıl gidebilirim?'
+      },
+      {
+        en: 'You can\'t miss it.',
+        tr: 'Gözünden kaçması imkansız / Hemen görürsün.',
+        phonetic: '/juː kɑːnt mɪs ɪt/',
+        example: 'It\'s right on the corner, you can\'t miss it.',
+        exampleTr: 'Hemen köşede, görmemen imkansız.'
+      }
+    ],
+    interactiveChallenge: {
+      situation: 'Yabancı bir şehirde taksiye bindin ve gitmek istediğin yeri söylüyorsun.',
+      situationTr: 'Havalimanına gitmek istediğini ve ne kadar süreceğini sor.',
+      aiQuestion: 'Hello there! Where can I take you today?',
+      aiQuestionTr: 'Merhaba! Sizi bugün nereye götüreyim?',
+      suggestedAnswer: 'To the airport please. How long does it usually take from here?',
+      suggestedAnswerTr: 'Havalimanına lütfen. Buradan oraya gitmek genellikle ne kadar sürer?',
+      coachTip: '"Within walking distance" kalıbı turistlerin en çok kullandığı ve sevdikleri kalıptır.'
+    }
+  },
+  {
+    id: 'scenario-work-web',
+    category: 'İş & İnternet',
+    title: 'Online Görüşmeler & E-posta Dili',
+    badge: '💻 İş & Dijital',
+    description: 'Zoom toplantılarında ses gitmeyince ne denir? E-posta ve iş görüşmesi refleksleri.',
+    keyChunks: [
+      {
+        en: 'You are on mute!',
+        tr: 'Mikrofonun kapalı / Sessizdesin!',
+        phonetic: '/juː ɑːr ɒn mjuːt/',
+        example: 'Hey David, you are on mute, we can\'t hear you.',
+        exampleTr: 'Hey David, sessizdesin, seni duyamıyoruz.'
+      },
+      {
+        en: 'Could you speak a bit slower, please?',
+        tr: 'Biraz daha yavaş konuşabilir misiniz lütfen?',
+        phonetic: '/kʊd juː spiːk ə bɪt ˈsləʊər pliːz/',
+        example: 'My connection was laggy, could you speak a bit slower?',
+        exampleTr: 'Bağlantım takıldı, biraz daha yavaş konuşabilir misiniz?'
+      },
+      {
+        en: 'I\'ll shoot you an email.',
+        tr: 'Sana e-posta atacağım.',
+        phonetic: '/aɪl ʃuːt juː ən ˈiːmeɪl/',
+        example: 'Let\'s talk tomorrow, I\'ll shoot you an email with the details.',
+        exampleTr: 'Yarın konuşalım, detayları sana e-posta ile gönderirim.'
+      }
+    ],
+    interactiveChallenge: {
+      situation: 'Online toplantıdasın ve karşı taraf çok hızlı konuştu.',
+      situationTr: 'Kibarca tekrar etmesini ve yavaş konuşmasını iste.',
+      aiQuestion: 'Did everyone understand the project roadmap for the next quarter?',
+      aiQuestionTr: 'Gelecek çeyrek için proje yol haritasını herkes anladı mı?',
+      suggestedAnswer: 'Sorry, could you repeat the last point a bit slower, please?',
+      suggestedAnswerTr: 'Affedersiniz, son maddeyi biraz daha yavaş tekrar edebilir misiniz lütfen?',
+      coachTip: 'Anlamadığın zaman susup kalma! "Could you speak a bit slower?" demek profesyonel bir özgüvendir.'
+    }
+  },
+  {
+    id: 'scenario-emergency',
+    category: 'Acil Durumlar',
+    title: 'Doktor, Eczane & Acil Yardım',
+    badge: '🚨 Acil Durum',
+    description: 'Yurtdışında rahatsızlandığında derdini anlatabilme ve ilaç isteyebilme güvencesi.',
+    keyChunks: [
+      {
+        en: 'I have a terrible headache.',
+        tr: 'Korkunç bir baş ağrım var.',
+        phonetic: '/aɪ hæv ə ˈterəbl ˈhedeɪk/',
+        example: 'I have a terrible headache and fever.',
+        exampleTr: 'Korkunç bir baş ağrım ve ateşim var.'
+      },
+      {
+        en: 'Do you have something for a sore throat?',
+        tr: 'Boğaz ağrısı için bir şeyiniz var mı?',
+        phonetic: '/duː juː hæv ˈsʌmθɪŋ fər ə sɔːr θrəʊt/',
+        example: 'Excuse me, do you have something for a sore throat?',
+        exampleTr: 'Affedersiniz, boğaz ağrısı için bir ilacınız var mı?'
+      },
+      {
+        en: 'I lost my passport, where is the embassy?',
+        tr: 'Pasaportumu kaybettim, elçilik nerede?',
+        phonetic: '/aɪ lɒst maɪ ˈpɑːspɔːt weər ɪz ðə ˈembəsi/',
+        example: 'Help me please, I lost my passport.',
+        exampleTr: 'Bana yardım edin lütfen, pasaportumu kaybettim.'
+      }
+    ],
+    interactiveChallenge: {
+      situation: 'Eczaneye girdin, boğazın ağrıyor ve pastil istiyorsun.',
+      situationTr: 'Eczacıya şikayetini anlat ve boğaz pastili iste.',
+      aiQuestion: 'Hello, how can I help you today?',
+      aiQuestionTr: 'Merhaba, bugün size nasıl yardımcı olabilirim?',
+      suggestedAnswer: 'Hello, I have a sore throat. Do you have throat lozenges?',
+      suggestedAnswerTr: 'Merhaba, boğazım ağrıyor. Boğaz pastiliniz var mı?',
+      coachTip: '"I have a sore throat" kalıbında \'th\' sesini dilinin ucunu dişlerinin arasına hafifçe değdirerek çıkar.'
+    }
+  },
+  {
+    id: 'scenario-shopping',
+    category: 'Alışveriş & Mağaza',
+    title: 'Mağazada Beden & İndirim Sorma',
+    badge: '🛍️ Alışveriş',
+    description: 'Yurtdışında kıyafet denerken kabin, beden ve indirim sorma pratikleri.',
+    keyChunks: [
+      {
+        en: 'Do you have this in a medium?',
+        tr: 'Bunun M (medium) bedeni var mı?',
+        phonetic: '/duː juː hæv ðɪs ɪn ə ˈmiːdiəm/',
+        example: 'I love this jacket, do you have this in a medium?',
+        exampleTr: 'Bu cekete bayıldım, bunun M bedeni var mı?'
+      },
+      {
+        en: 'Where are the fitting rooms?',
+        tr: 'Deneme kabinleri nerede?',
+        phonetic: '/weər ɑːr ðə ˈfɪtɪŋ ruːmz/',
+        example: 'Excuse me, where are the fitting rooms located?',
+        exampleTr: 'Affedersiniz, deneme kabinleri nerede kalıyor?'
+      },
+      {
+        en: 'I\'m just browsing, thank you.',
+        tr: 'Sadece bakınıyorum, teşekkürler.',
+        phonetic: '/aɪm dʒʌst ˈbraʊzɪŋ θæŋk juː/',
+        example: 'No help needed, I\'m just browsing, thank you!',
+        exampleTr: 'Yardıma gerek yok, sadece bakınıyorum, sağ olun!'
+      }
+    ],
+    interactiveChallenge: {
+      situation: 'Mağaza görevlisi yanına gelip yardım isteyip istemediğini sordu.',
+      situationTr: 'Sadece bakındığını söyle veya başka bir beden sor.',
+      aiQuestion: 'Hi! Can I help you find anything specific today?',
+      aiQuestionTr: 'Selam! Özel olarak aradığınız bir şeyde yardımcı olabilir miyim?',
+      suggestedAnswer: 'I\'m just browsing for now, thank you so much!',
+      suggestedAnswerTr: 'Şimdilik sadece bakınıyorum, çok teşekkür ederim!',
+      coachTip: 'Yurtdışındaki mağazalarda yapışkan personelden kurtulmanın en zarif yolu: "I\'m just browsing, thanks!"'
+    }
+  }
+];
 
-// 30 GÜNLÜK HIZLI KONUŞMA KAMPI (1-30 GÜN EKSİKSİZ)
+// ==================== 2. 30 GÜNLÜK SIFIRDAN ZİRVEYE KONUŞMA KAMPI (1-30 GÜN EKSİKSİZ) ====================
 export const THIRTY_DAY_MISSIONS: DayMission[] = [
-  // ==================== HAFTA 1: KENDİNİ VE ÇEVRENİ TANIT (1-7) ====================
+  // ---------- HAFTA 1: DİL KASINI AÇ & KORKUYU KIR (1-7. GÜN) ----------
   {
     day: 1,
     week: 1,
-    title: 'Kendini Tanıtma (İlk Adım)',
-    targetSkill: 'Adını, yaşını ve nereden olduğunu söyleme',
-    speakingGoal: 'Say: Hello, my name is... and I am... years old.',
-    speakingGoalTr: 'Adını ve yaşını sesli olarak söyle.',
-    aiPrompt: 'Hello! I am Chirmo, your AI English buddy. What is your name and how old are you?',
-    aiPromptTr: 'Merhaba! Ben senin yapay zekâ İngilizce arkadaşınım. Adın ne ve kaç yaşındasın?',
-    suggestedAnswer: 'Hello! My name is Eren and I am twelve years old.',
-    suggestedAnswerTr: 'Merhaba! Benim adım Eren ve ben 12 yaşındayım.',
+    title: 'Buzları Kır: Adın, Nereli Olduğun ve Merhaba!',
+    theme: 'Sesini duymaya alış ve korkuyu çöpe at',
+    speakingGoal: 'Say: Hello, my name is... and I am from Turkey.',
+    speakingGoalTr: 'Adını ve Türkiyeli olduğunu sesli ve net bir şekilde söyle.',
+    aiPrompt: 'Hello! I am Chirmo, your English speaking buddy. What is your name?',
+    aiPromptTr: 'Merhaba! Ben senin İngilizce konuşma arkadaşın Chirmo. Adın ne?',
+    suggestedAnswer: 'Hello Chirmo! My name is Can and I am from Turkey. Nice to meet you!',
+    suggestedAnswerTr: 'Merhaba Chirmo! Benim adım Can ve Türkiyeliyim. Tanıştığımıza sevindim!',
     xpReward: 50,
-    keyVocabulary: ['name', 'years old', 'hello', 'student']
+    keyVocabulary: ['hello', 'name', 'from', 'nice to meet you'],
+    nativeCoachTip: 'Gramer hatasından hiç korkma! Dilin kas hafızası var; sesli söylemek beyninde yeni sinir yolları açar.'
   },
   {
     day: 2,
     week: 1,
-    title: 'Nerede Yaşıyorsun?',
-    targetSkill: 'Şehrini ve ülkene ait bilgiyi söyleme',
-    speakingGoal: 'Say: I live in Turkey / I am from...',
-    speakingGoalTr: 'Hangi şehirde yaşadığını söyle.',
-    aiPrompt: 'Nice to meet you! Which city do you live in?',
-    aiPromptTr: 'Tanıştığımıza sevindim! Hangi şehirde yaşıyorsun?',
-    suggestedAnswer: 'I live in Istanbul. It is a big and beautiful city.',
-    suggestedAnswerTr: "İstanbul'da yaşıyorum. Büyük ve güzel bir şehir.",
+    title: 'Ne İle Meşgulsün? (İşini / Hayatını Anlat)',
+    theme: 'Mesleğini veya günlük hayatını tek cümlede söyle',
+    speakingGoal: 'Say: I work as a... / I am a student.',
+    speakingGoalTr: 'Ne işle uğraştığını veya öğrenci olduğunu söyle.',
+    aiPrompt: 'So tell me, what do you do for a living?',
+    aiPromptTr: 'Peki söyle bakalım, ne işle meşgulsün?',
+    suggestedAnswer: 'I work in marketing, and I really enjoy learning new things.',
+    suggestedAnswerTr: 'Pazarlama alanında çalışıyorum ve yeni şeyler öğrenmekten çok keyif alıyorum.',
     xpReward: 50,
-    keyVocabulary: ['live', 'city', 'beautiful', 'big']
+    keyVocabulary: ['work as', 'enjoy', 'learning', 'living'],
+    nativeCoachTip: '"I am working in..." yerine sade geniş zamanla "I work in..." demek kulağa çok daha profesyonel gelir.'
   },
   {
     day: 3,
     week: 1,
-    title: 'En Sevdiğin Ders ve Renk',
-    targetSkill: 'Favori şeylerini ifade etme ("My favorite...")',
-    speakingGoal: 'Say: My favorite school subject is English.',
-    speakingGoalTr: 'En sevdiğin dersi söyle.',
-    aiPrompt: 'What is your favorite subject at school?',
-    aiPromptTr: 'Okulda en sevdiğin ders hangisi?',
-    suggestedAnswer: 'My favorite subject is English because it is very exciting.',
-    suggestedAnswerTr: 'En sevdiğim ders İngilizce çünkü çok heyecan verici.',
-    xpReward: 50,
-    keyVocabulary: ['favorite', 'subject', 'school', 'exciting']
+    title: 'Nelerden Hoşlanırsın? (Kendi Tutkunu Anlat)',
+    theme: 'İlgi alanlarını ve boş zamanlarını ifade etme',
+    speakingGoal: 'Say: In my free time, I love...',
+    speakingGoalTr: 'Boş zamanlarında ne yapmaktan keyif aldığını söyle.',
+    aiPrompt: 'What do you like doing when you have free time?',
+    aiPromptTr: 'Boş vaktin olduğunda ne yapmaktan hoşlanırsın?',
+    suggestedAnswer: 'In my free time, I love listening to podcasts, cooking and traveling.',
+    suggestedAnswerTr: 'Boş zamanlarımda podcast dinlemeyi, yemek yapmayı ve gezmeyi severim.',
+    xpReward: 55,
+    keyVocabulary: ['free time', 'love', 'cooking', 'traveling'],
+    nativeCoachTip: '"love" veya "like" dedikten sonra fiile -ing takısı ekle (cooking, listening).'
   },
   {
     day: 4,
     week: 1,
-    title: 'Hobilerin ve Boş Zamanın',
-    targetSkill: 'Ne yapmaktan hoşlandığını anlatma ("I like / I enjoy")',
-    speakingGoal: 'Say: In my free time, I like playing games and reading.',
-    speakingGoalTr: 'Boş zamanlarında ne yapmayı sevdiğini söyle.',
-    aiPrompt: 'What do you like doing in your free time?',
-    aiPromptTr: 'Boş zamanlarında ne yapmayı seversin?',
-    suggestedAnswer: 'I like reading books and playing basketball with my friends.',
-    suggestedAnswerTr: 'Kitap okumayı ve arkadaşlarımla basketbol oynamayı severim.',
+    title: 'Bir Şey İsterken Sihirli Kalıp: "Can I have...?"',
+    theme: 'Kibarca isteme sanatı',
+    speakingGoal: 'Say: Can I have a glass of water, please?',
+    speakingGoalTr: 'Bir bardak su rica et.',
+    aiPrompt: 'Welcome! Can I get you something to drink?',
+    aiPromptTr: 'Hoş geldiniz! Size içecek bir şey getirebilir miyim?',
+    suggestedAnswer: 'Can I have a cup of coffee with milk, please?',
+    suggestedAnswerTr: 'Sütlü bir fincan kahve alabilir miyim lütfen?',
     xpReward: 60,
-    keyVocabulary: ['free time', 'reading', 'playing', 'enjoy']
+    keyVocabulary: ['can I have', 'please', 'coffee', 'milk'],
+    nativeCoachTip: 'Türkler genelde "I want" der; bu İngilizcede emreder gibi duyulabilir. Hep "Can I have...?" kalıbını kullan.'
   },
   {
     day: 5,
     week: 1,
-    title: 'Aileni Anlat',
-    targetSkill: 'Aile üyelerinden bahsetme',
-    speakingGoal: 'Say: I have a brother/sister. We are a family of four.',
-    speakingGoalTr: 'Kaç kardeş olduğunuzu veya aileni söyle.',
-    aiPrompt: 'Do you have any brothers or sisters?',
-    aiPromptTr: 'Hiç erkek veya kız kardeşin var mı?',
-    suggestedAnswer: 'Yes, I have one sister. She is very funny and cute.',
-    suggestedAnswerTr: 'Evet, bir kız kardeşim var. Çok komik ve tatlıdır.',
+    title: 'Hızlı Fikir Belirtme: "Bence..." (In my opinion)',
+    theme: 'Kendi fikrini rahatça masaya koyma',
+    speakingGoal: 'Say: I think learning English is great fun.',
+    speakingGoalTr: 'İngilizce öğrenmenin çok eğlenceli olduğunu düşündüğünü söyle.',
+    aiPrompt: 'Do you think learning English is difficult?',
+    aiPromptTr: 'Sence İngilizce öğrenmek zor mu?',
+    suggestedAnswer: 'I think it is easy and fun when you practice speaking every day.',
+    suggestedAnswerTr: 'Bence her gün konuşma pratiği yaptığında çok kolay ve eğlenceli.',
     xpReward: 60,
-    keyVocabulary: ['brother', 'sister', 'family', 'parents']
+    keyVocabulary: ['I think', 'easy', 'fun', 'practice'],
+    nativeCoachTip: '"I think..." konuşmaya başlarken sana 2 saniye düşünme zamanı kazandıran cankurtaran bir kalıptır.'
   },
   {
     day: 6,
     week: 1,
-    title: 'Saat Kaçta Uyanırsın?',
-    targetSkill: 'Günlük saatleri ve rutinleri söyleme',
-    speakingGoal: 'Say: I wake up at 7 o\'clock and go to school.',
-    speakingGoalTr: 'Sabah saat kaçta uyandığını söyle.',
-    aiPrompt: 'What time do you usually wake up on school days?',
-    aiPromptTr: 'Okul günlerinde genellikle saat kaçta uyanırsın?',
-    suggestedAnswer: 'I wake up at seven o\'clock and have breakfast.',
-    suggestedAnswerTr: 'Saat yedide uyanırım ve kahvaltı yaparım.',
-    xpReward: 60,
-    keyVocabulary: ['wake up', 'breakfast', 'o\'clock', 'morning']
+    title: 'Anlamadığın Anda Ne Yapacaksın? (Kurtarma Simidi)',
+    theme: 'Paniklemek yerine durumu profesyonelce kontrol etme',
+    speakingGoal: 'Say: Could you repeat that more slowly, please?',
+    speakingGoalTr: 'Karşıdakinden daha yavaş tekrar etmesini iste.',
+    aiPrompt: 'Thequarterlygrowthprojectionsexceededourinitialbenchmarks.',
+    aiPromptTr: '(Hızlı konuşulduğunda)',
+    suggestedAnswer: 'Sorry, I didn\'t catch that. Could you speak a bit slower, please?',
+    suggestedAnswerTr: 'Kusura bakmayın tam yakalayamadım. Biraz daha yavaş konuşabilir misiniz lütfen?',
+    xpReward: 65,
+    keyVocabulary: ['catch that', 'repeat', 'slower', 'sorry'],
+    nativeCoachTip: 'Asla "I don\'t understand" deyip susma! "Could you speak a bit slower?" de; ana dili İngilizce olanlar sana hayran kalır.'
   },
   {
     day: 7,
     week: 1,
-    title: 'Hafta 1 Konuşma Mezuniyeti! 🎓',
-    targetSkill: '1. Haftanın tüm kelimeleriyle 3 cümlelik tam konuşma',
-    speakingGoal: 'Kendini, aileni ve sevdiğin şeyleri tek nefeste tanıt!',
-    speakingGoalTr: 'Kendini baştan sona İngilizce tanıt.',
-    aiPrompt: 'Awesome! Can you introduce yourself completely in three sentences?',
-    aiPromptTr: 'Harikasın! Bana kendini 3 cümleyle baştan sona tanıtır mısın?',
-    suggestedAnswer: 'Hello, my name is Deniz. I am twelve years old and I live in Ankara. My favorite hobby is drawing.',
-    suggestedAnswerTr: "Merhaba, adım Deniz. 12 yaşındayım ve Ankara'da yaşıyorum. En sevdiğim hobim resim çizmektir.",
-    xpReward: 100,
-    keyVocabulary: ['introduce', 'hobby', 'student', 'champion']
+    title: '1. Hafta Mezuniyeti: 1 Dakikalık Kendini Tanıtma Röportajı! 🎓',
+    theme: 'İlk haftanın tüm kalıplarını tek bir akıcı konuşmada birleştir',
+    speakingGoal: 'Kendini, işini, zevklerini 3 akıcı cümlede Chirmo\'ya anlat!',
+    speakingGoalTr: 'Tek nefeste kendini baştan sona tanıt.',
+    aiPrompt: 'You finished week one! Introduce yourself completely to the world!',
+    aiPromptTr: 'İlk haftayı bitirdin! Kendini tüm dünyaya baştan sona tanıt!',
+    suggestedAnswer: 'Hello, my name is Deniz. I live in Istanbul and I work in design. In my free time, I love photography and learning languages!',
+    suggestedAnswerTr: 'Merhaba, adım Deniz. İstanbul\'da yaşıyorum ve tasarım alanında çalışıyorum. Boş zamanlarımda fotoğrafçılığı ve dil öğrenmeyi çok seviyorum!',
+    xpReward: 120,
+    keyVocabulary: ['introduce', 'fluent', 'confident', 'champion'],
+    nativeCoachTip: 'Tebrikler! 1. haftayı bitirdin ve beynindeki "konuşamam" bariyerini yıktın. Artık sesin çıkıyor!'
   },
 
-  // ==================== HAFTA 2: OKUL, ŞEHİR VE ÇEVRE (8-14) ====================
+  // ---------- HAFTA 2: DÜNYAYA AÇIL & HAYATTA KAL (8-14. GÜN) ----------
   {
     day: 8,
     week: 2,
-    title: 'Okulunda Neler Var?',
-    targetSkill: 'Okul bölümlerini tarif etme (library, canteen, sports hall)',
-    speakingGoal: 'Say: There is a big library in my school.',
-    speakingGoalTr: 'Okulundaki kütüphane veya kantini söyle.',
-    aiPrompt: 'Tell me about your school! Is there a canteen or a library?',
-    aiPromptTr: 'Bana okulunu anlat! Kantin veya kütüphane var mı?',
-    suggestedAnswer: 'Yes, our school has a large library and a nice sports hall.',
-    suggestedAnswerTr: 'Evet, okulumuzun büyük bir kütüphanesi ve güzel bir spor salonu var.',
+    title: 'Starbucks / Kafe Testi: Yerli Biri Gibi Sipariş Ver',
+    theme: 'Sipariş verirken paket isteme ve süt seçimi',
+    speakingGoal: 'Say: Can I get an iced Americano to go, please?',
+    speakingGoalTr: 'Buzlu Americano iste, paket olsun de.',
+    aiPrompt: 'Hi there! What can I get started for you today?',
+    aiPromptTr: 'Selam! Bugün size ne hazırlayabilirim?',
+    suggestedAnswer: 'Can I get a large iced Americano with oat milk to go, please?',
+    suggestedAnswerTr: 'Yulaf sütlü büyük boy buzlu Americano alabilir miyim lütfen, paket olsun?',
     xpReward: 70,
-    keyVocabulary: ['library', 'canteen', 'sports hall', 'classroom']
+    keyVocabulary: ['iced Americano', 'oat milk', 'to go', 'large'],
+    nativeCoachTip: '"To go" (paket) ve "for here" (burada içeceğim) ayrımını asla unutma.'
   },
   {
     day: 9,
     week: 2,
-    title: 'Yol Tarifi İsteme & Verme',
-    targetSkill: 'Yol tarif etme (Turn left, turn right, go straight)',
-    speakingGoal: 'Say: Go straight and turn right.',
-    speakingGoalTr: 'Birine dosdoğru gitmesini söyle.',
-    aiPrompt: 'Excuse me! How can I go to the science lab?',
-    aiPromptTr: 'Affedersiniz! Fen laboratuvarına nasıl gidebilirim?',
-    suggestedAnswer: 'Go straight ahead and turn left. It is on the second floor.',
-    suggestedAnswerTr: 'Dosdoğru gidin ve sola dönün. İkinci kattadır.',
+    title: 'Şehirde Yol Bulma: "Burası Yürüme Mesafesinde mi?"',
+    theme: 'Turist gibi kaybolmadan yön sorma',
+    speakingGoal: 'Say: Excuse me, is the central station within walking distance?',
+    speakingGoalTr: 'Merkez istasyonun yürüme mesafesinde olup olmadığını sor.',
+    aiPrompt: 'You look lost! Can I help you find something?',
+    aiPromptTr: 'Kaybolmuş görünüyorsunuz! Bir şey bulmanıza yardımcı olayım mı?',
+    suggestedAnswer: 'Excuse me, could you tell me how to get to the museum? Is it within walking distance?',
+    suggestedAnswerTr: 'Affedersiniz, müzeye nasıl gidebileceğimi söyler misiniz? Yürüme mesafesinde mi?',
     xpReward: 70,
-    keyVocabulary: ['straight', 'turn left', 'turn right', 'floor']
+    keyVocabulary: ['walking distance', 'museum', 'excuse me', 'how to get'],
+    nativeCoachTip: '"Within walking distance" kalıbını ezberle, tüm seyahatlerinde hayatını kurtaracak.'
   },
   {
     day: 10,
     week: 2,
-    title: 'Sevdiğin ve Sevmediğin Yemekler',
-    targetSkill: 'Yemek tercihleri (I like / I dislike / yummy / nutritious)',
-    speakingGoal: 'Say: I like pizza, but I dislike broccoli.',
-    speakingGoalTr: 'Hangi yiyeceği sevip hangisini sevmediğini söyle.',
-    aiPrompt: 'What is your favorite food and what do you dislike eating?',
-    aiPromptTr: 'En sevdiğin yemek ne ve neyi yemekten hoşlanmazsın?',
-    suggestedAnswer: 'I love pasta and grilled meatballs, but I dislike fast food.',
-    suggestedAnswerTr: 'Makarna ve ızgara köfteye bayılırım ama fast food sevmem.',
+    title: 'Hesabı İsteme & Bahşiş Bırakma',
+    theme: 'Restoranda hesabı isteme ve üstünü bırakma',
+    speakingGoal: 'Say: Could we have the bill, please? Keep the change.',
+    speakingGoalTr: 'Hesabı iste ve para üstünün kalabileceğini söyle.',
+    aiPrompt: 'Was everything alright with your dinner tonight?',
+    aiPromptTr: 'Bu akşamki yemeğiniz her şeyiyle yolunda mıydı?',
+    suggestedAnswer: 'Everything was delicious, thank you! Could we get the bill, please?',
+    suggestedAnswerTr: 'Her şey çok lezzetliydi, teşekkürler! Hesabı alabilir miyiz lütfen?',
     xpReward: 70,
-    keyVocabulary: ['pasta', 'meatballs', 'dislike', 'nutritious']
+    keyVocabulary: ['delicious', 'bill', 'check', 'keep the change'],
+    nativeCoachTip: 'İngiltere\'de "bill", Amerika\'da genelde "check" denir. İkisi de anlaşılır.'
   },
   {
     day: 11,
     week: 2,
-    title: 'Bugün Hava Nasıl?',
-    targetSkill: 'Hava durumunu tarif etme (sunny, rainy, snowy, cold)',
-    speakingGoal: 'Say: Today the weather is sunny and warm.',
-    speakingGoalTr: 'Bugünkü hava durumunu İngilizce anlat.',
-    aiPrompt: 'How is the weather in your city today?',
-    aiPromptTr: 'Bugün senin şehrinde hava nasıl?',
-    suggestedAnswer: 'The weather is sunny and warm today. Perfect for playing outside!',
-    suggestedAnswerTr: 'Bugün hava güneşli ve ılık. Dışarıda oynamak için mükemmel!',
-    xpReward: 70,
-    keyVocabulary: ['sunny', 'warm', 'rainy', 'weather']
+    title: 'Otelde Check-in: Odanı ve Anahtarını Al',
+    theme: 'Otel resepsiyonuyla doğal diyalog',
+    speakingGoal: 'Say: I have a reservation under the name...',
+    speakingGoalTr: 'Kendi adına rezervasyon olduğunu söyle.',
+    aiPrompt: 'Good afternoon! Welcome to London. Do you have a booking?',
+    aiPromptTr: 'İyi günler! Londra\'ya hoş geldiniz. Rezervasyonunuz var mıydı?',
+    suggestedAnswer: 'Good afternoon! Yes, I have a reservation under the name Sarah. Here is my passport.',
+    suggestedAnswerTr: 'İyi günler! Evet, Sarah adına bir rezervasyonum var. Buyrun pasaportum.',
+    xpReward: 75,
+    keyVocabulary: ['reservation', 'booking', 'passport', 'under the name'],
+    nativeCoachTip: '"under the name..." (Şu isim adına) demek İngilizcede en yaygın kalıptır.'
   },
   {
     day: 12,
     week: 2,
-    title: 'Sevimli Hayvanlar',
-    targetSkill: 'Hayvanları tanıtma ve sevdiğin hayvanı anlatma',
-    speakingGoal: 'Say: My favorite animal is a dog because it is loyal.',
-    speakingGoalTr: 'En sevdiğin hayvanı ve nedenini söyle.',
-    aiPrompt: 'Do you have a pet or what is your favorite animal?',
-    aiPromptTr: 'Evcil hayvanın var mı veya en sevdiğin hayvan hangisi?',
-    suggestedAnswer: 'My favorite animal is a cat. They are very playful and soft.',
-    suggestedAnswerTr: 'En sevdiğim hayvan kedi. Çok oyuncu ve yumuşacıklar.',
-    xpReward: 70,
-    keyVocabulary: ['cat', 'dog', 'playful', 'pet']
+    title: 'Taksi / Uber Çağırma & Adres Verme',
+    theme: 'Taksi şoförüyle nereye gideceğini konuşma',
+    speakingGoal: 'Say: Could you take me to the airport, please?',
+    speakingGoalTr: 'Beni havalimanına götürür müsünüz lütfen de.',
+    aiPrompt: 'Where are you heading today?',
+    aiPromptTr: 'Bugün nereye gidiyorsunuz?',
+    suggestedAnswer: 'Could you take me to the city center, please? How long will it take?',
+    suggestedAnswerTr: 'Beni şehir merkezine götürür müsünüz lütfen? Ne kadar sürer?',
+    xpReward: 75,
+    keyVocabulary: ['heading', 'take me to', 'how long', 'city center'],
+    nativeCoachTip: '"Where are you heading?" = "Nereye gidiyorsun?" demektir. Günlük hayatta "Where are you going?" yerine çok duyarsın.'
   },
   {
     day: 13,
     week: 2,
-    title: 'Spor ve Yeteneklerin',
-    targetSkill: 'Neler yapabildiğini söyleme ("I can play...", "I can swim")',
-    speakingGoal: 'Say: I can swim and play football very well.',
-    speakingGoalTr: 'Hangi sporda iyi olduğunu söyle.',
-    aiPrompt: 'Which sports can you play well?',
-    aiPromptTr: 'Hangi sporları iyi oynayabilirsin?',
-    suggestedAnswer: 'I can play volleyball and table tennis very well.',
-    suggestedAnswerTr: 'Voleybol ve masa tenisini çok iyi oynayabilirim.',
-    xpReward: 75,
-    keyVocabulary: ['can', 'volleyball', 'table tennis', 'well']
+    title: 'Mağazada Alışveriş: "Bunun Başka Rengi Var mı?"',
+    theme: 'Kıyafet denerken beden ve renk sorma',
+    speakingGoal: 'Say: Do you have this in black and medium size?',
+    speakingGoalTr: 'Bunun siyahı ve M bedeni var mı diye sor.',
+    aiPrompt: 'Can I help you find your size in that shirt?',
+    aiPromptTr: 'O gömlekte bedeninizi bulmanıza yardımcı olabilir miyim?',
+    suggestedAnswer: 'Yes, please! Do you have this jacket in medium, and where are the fitting rooms?',
+    suggestedAnswerTr: 'Evet lütfen! Bu ceketin M bedeni var mı ve deneme kabinleri nerede?',
+    xpReward: 80,
+    keyVocabulary: ['fitting rooms', 'medium', 'jacket', 'size'],
+    nativeCoachTip: '"Fitting room" deneme kabini demektir.'
   },
   {
     day: 14,
     week: 2,
-    title: '2. Hafta Mezuniyet Röportajı! 🌟',
-    targetSkill: 'Haftalık kazanımları birleştirip okulunu ve gününü anlatma',
-    speakingGoal: 'Okulunu, sevdiğin dersi ve sporu akıcı bir şekilde anlat!',
-    speakingGoalTr: 'Okulun ve hobilerin hakkında kısa bir konuşma yap.',
-    aiPrompt: 'You are halfway there! Tell me about your school and your favorite sport!',
-    aiPromptTr: 'Yolun yarısına geldin! Bana okulunu ve en sevdiğin sporu anlat!',
-    suggestedAnswer: 'My school is very modern. I have great friends and I love playing football after school.',
-    suggestedAnswerTr: 'Okulum çok modern. Harika arkadaşlarım var ve okuldan sonra futbol oynamayı çok severim.',
-    xpReward: 120,
-    keyVocabulary: ['modern', 'friends', 'after school', 'superstar']
+    title: '2. Hafta Mezuniyeti: Canlı Londra Turisti Rolü! 🌟',
+    theme: 'Sokakta, kafede ve otelde sorunsuz hayatta kalma testi',
+    speakingGoal: 'Londra\'da oteline yerleşip akşam yemeği için tavsiye iste!',
+    speakingGoalTr: 'Otel görevlisine yakınlarda iyi bir İtalyan restoranı olup olmadığını sor.',
+    aiPrompt: 'Welcome to our hotel! Is there anything else I can help you with tonight?',
+    aiPromptTr: 'Otelimize hoş geldiniz! Bu akşam size yardımcı olabileceğim başka bir konu var mı?',
+    suggestedAnswer: 'Yes, could you recommend a nice Italian restaurant within walking distance?',
+    suggestedAnswerTr: 'Evet, yürüme mesafesinde güzel bir İtalyan restoranı tavsiye edebilir misiniz?',
+    xpReward: 140,
+    keyVocabulary: ['recommend', 'italian restaurant', 'walking distance', 'superstar'],
+    nativeCoachTip: 'Artık yurtdışına tek başına gitsen bile kaybolmaz, aç kalmaz, her derdini anlatırsın!'
   },
 
-  // ==================== HAFTA 3: SOSYAL HAYAT & İLETİŞİM (15-21) ====================
+  // ---------- HAFTA 3: DOĞAL TEPKİLER & HİKAYE ANLATIMI (15-21. GÜN) ----------
   {
     day: 15,
     week: 3,
-    title: 'Kafede / Markette Sipariş Verme',
-    targetSkill: 'Kibarca bir şey isteme ("Can I have...?")',
-    speakingGoal: 'Say: Can I have a glass of apple juice, please?',
-    speakingGoalTr: 'Kafede kibarca elma suyu iste.',
-    aiPrompt: 'Welcome to the school cafe! What would you like to drink?',
-    aiPromptTr: 'Okul kafesine hoş geldin! Ne içmek istersin?',
-    suggestedAnswer: 'Can I have an orange juice and a sandwich, please?',
-    suggestedAnswerTr: 'Bir portakal suyu ve bir sandviç alabilir miyim lütfen?',
-    xpReward: 80,
-    keyVocabulary: ['can I have', 'please', 'orange juice', 'sandwich']
+    title: 'Doğal Tepkiler: "Yok Artık! Ciddi misin?"',
+    theme: 'Amerikalı gibi şaşırma ve onaylama refleksleri',
+    speakingGoal: 'Say: No way! Are you kidding me?',
+    speakingGoalTr: 'Yok artık! Benimle dalga mı geçiyorsun de.',
+    aiPrompt: 'Did you hear that? Our flight is delayed by four hours!',
+    aiPromptTr: 'Duydun mu? Uçuşumuz 4 saat rötar yapmış!',
+    suggestedAnswer: 'No way! Are you kidding me? That is unbelievable!',
+    suggestedAnswerTr: 'Yok artık! Dalga mı geçiyorsun? Bu inanılmaz bir şey!',
+    xpReward: 85,
+    keyVocabulary: ['no way', 'are you kidding me', 'unbelievable', 'delayed'],
+    nativeCoachTip: '"No way!" derken ses tonunla enerjini hissettir. Vurgu her şeydir.'
   },
   {
     day: 16,
     week: 3,
-    title: 'Sağlık ve Doktorda İfade',
-    targetSkill: 'Şikayetleri dile getirme (headache, cough, cold)',
-    speakingGoal: 'Say: I have a headache and I need to rest.',
-    speakingGoalTr: 'Başının ağrıdığını ve dinlenmen gerektiğini söyle.',
-    aiPrompt: 'Are you feeling okay today? What is the matter?',
-    aiPromptTr: 'Bugün iyi hissediyor musun? Neyin var?',
-    suggestedAnswer: 'I have a sore throat and a slight fever, so I need to rest.',
-    suggestedAnswerTr: 'Boğazım ağrıyor ve hafif ateşim var, bu yüzden dinlenmeliyim.',
-    xpReward: 80,
-    keyVocabulary: ['headache', 'sore throat', 'fever', 'rest']
+    title: 'Dün Ne Oldu Biliyor musun? (Basit Geçmiş Zaman)',
+    theme: 'Dün yaptığın bir olayı hikaye gibi anlatma',
+    speakingGoal: 'Say: Guess what happened yesterday! I met an old friend.',
+    speakingGoalTr: 'Dün eski bir arkadaşımla karşılaştım de.',
+    aiPrompt: 'How was your weekend? Did you do anything special?',
+    aiPromptTr: 'Hafta sonun nasıldı? Özel bir şeyler yaptın mı?',
+    suggestedAnswer: 'It was fantastic! I went to a concert and met an old friend from university.',
+    suggestedAnswerTr: 'Harikaydı! Bir konsere gittim ve üniversiteden eski bir arkadaşımla karşılaştım.',
+    xpReward: 85,
+    keyVocabulary: ['guess what', 'fantastic', 'concert', 'met'],
+    nativeCoachTip: 'Geçmiş zamanı anlatırken tüm fiil çekimlerini düşünme. En çok kullandığın 5 fiili bil yeter: went, met, ate, saw, had.'
   },
   {
     day: 17,
     week: 3,
-    title: 'Dün Ne Yaptın? (Geçmiş Zaman)',
-    targetSkill: 'Geçmişte yapılanları anlatma (went, studied, played)',
-    speakingGoal: 'Say: Yesterday I studied English and watched TV.',
-    speakingGoalTr: 'Dün neler yaptığını İngilizce söyle.',
-    aiPrompt: 'What did you do yesterday afternoon?',
-    aiPromptTr: 'Dün öğleden sonra ne yaptın?',
-    suggestedAnswer: 'Yesterday I finished my homework and played online games with my friends.',
-    suggestedAnswerTr: 'Dün ödevlerimi bitirdim ve arkadaşlarımla internetten oyun oynadım.',
-    xpReward: 85,
-    keyVocabulary: ['yesterday', 'finished', 'homework', 'played']
+    title: 'Katılma ve Onaylama: "Kesinlikle Katılıyorum!"',
+    theme: 'Sohbette karşındakini destekleme kalıpları',
+    speakingGoal: 'Say: I couldn\'t agree more. That makes total sense.',
+    speakingGoalTr: 'Tamamen katılıyorum, çok mantıklı de.',
+    aiPrompt: 'I think drinking enough water every day improves your energy so much.',
+    aiPromptTr: 'Bence her gün yeterince su içmek enerjini çok artırıyor.',
+    suggestedAnswer: 'I couldn\'t agree more! That makes total sense, I feel much better when I hydrate.',
+    suggestedAnswerTr: 'Kesinlikle tamamen katılıyorum! Çok mantıklı, su içtiğimde kendimi çok daha iyi hissediyorum.',
+    xpReward: 90,
+    keyVocabulary: ['couldn\'t agree more', 'total sense', 'energy', 'hydrate'],
+    nativeCoachTip: '"I agree with you" yerine "I couldn\'t agree more" (Sana daha fazla katılamazdım) de; seviyen anında C1 gibi duyulsun!'
   },
   {
     day: 18,
     week: 3,
-    title: 'Hafta Sonu Planları (Gelecek Zaman)',
-    targetSkill: 'Planları anlatma ("I am going to...")',
-    speakingGoal: 'Say: This weekend, I am going to visit my grandparents.',
-    speakingGoalTr: 'Hafta sonu ne yapacağını söyle.',
-    aiPrompt: 'What are you going to do this weekend?',
-    aiPromptTr: 'Bu hafta sonu ne yapacaksın?',
-    suggestedAnswer: 'I am going to ride my bicycle in the park and read a new book.',
-    suggestedAnswerTr: 'Parkta bisiklete bineceğim ve yeni bir kitap okuyacağım.',
-    xpReward: 85,
-    keyVocabulary: ['going to', 'weekend', 'park', 'bicycle']
+    title: 'Zevkler ve Karşılaştırma: "Kahveyi Çaya Tercih Ederim"',
+    theme: '"Prefer" kalıbıyla tercih yapma',
+    speakingGoal: 'Say: I prefer drinking coffee to tea in the morning.',
+    speakingGoalTr: 'Sabahları kahveyi çaya tercih ettiğini söyle.',
+    aiPrompt: 'Do you prefer working from home or working in an office?',
+    aiPromptTr: 'Evden çalışmayı mı yoksa ofiste çalışmayı mı tercih edersin?',
+    suggestedAnswer: 'I prefer working from home because it saves a lot of time on commuting.',
+    suggestedAnswerTr: 'Evden çalışmayı tercih ederim çünkü yolda geçen zamandan çok tasarruf ettiriyor.',
+    xpReward: 90,
+    keyVocabulary: ['prefer', 'working from home', 'commuting', 'saves time'],
+    nativeCoachTip: '"Prefer A to B" yapısına dikkat et. "than" değil "to" kullanılır.'
   },
   {
     day: 19,
     week: 3,
-    title: 'Müzik ve Sinema Zevkin',
-    targetSkill: 'Tercih belirtme (prefer, exciting, comedy)',
-    speakingGoal: 'Say: I prefer watching comedies to action movies.',
-    speakingGoalTr: 'Komedi filmlerini aksiyona tercih ettiğini söyle.',
-    aiPrompt: 'What kind of movies do you enjoy watching?',
-    aiPromptTr: 'Ne tür filmler izlemekten keyif alırsın?',
-    suggestedAnswer: 'I love animation and adventure movies because they are very creative.',
-    suggestedAnswerTr: 'Animasyon ve macera filmlerini severim çünkü çok yaratıcılar.',
-    xpReward: 85,
-    keyVocabulary: ['prefer', 'animation', 'adventure', 'creative']
+    title: 'Gelecek Planları: "Bu Hafta Sonu Ne Yapacaksın?"',
+    theme: '"I am planning to..." ve "I am gonna..." kalıpları',
+    speakingGoal: 'Say: This weekend, I am gonna relax and watch a movie.',
+    speakingGoalTr: 'Bu hafta sonu dinlenip film izleyeceğim de.',
+    aiPrompt: 'Any exciting plans for the upcoming holiday?',
+    aiPromptTr: 'Yaklaşan tatil için heyecan verici bir planın var mı?',
+    suggestedAnswer: 'I am planning to go to the seaside with my family and just unplug for a few days.',
+    suggestedAnswerTr: 'Ailemle deniz kenarına gitmeyi ve birkaç gün kafamı dinlemeyi planlıyorum.',
+    xpReward: 95,
+    keyVocabulary: ['planning to', 'unplug', 'seaside', 'holiday'],
+    nativeCoachTip: '"Going to" yerine günlük konuşmada rahatça "gonna" diyebilirsin.'
   },
   {
     day: 20,
     week: 3,
-    title: 'Güvenli İnternet ve Teknoloji',
-    targetSkill: 'İnternet kullanımını anlatma (social media, search, online)',
-    speakingGoal: 'Say: I use Chirmo to search the web and learn English.',
-    speakingGoalTr: 'Chirmo ile internette arama yapıp İngilizce öğrendiğini söyle.',
-    aiPrompt: 'How does the internet help you in your daily life?',
-    aiPromptTr: 'İnternet günlük hayatında sana nasıl yardımcı oluyor?',
-    suggestedAnswer: 'I use the internet to do research for my projects and practice English.',
-    suggestedAnswerTr: 'İnterneti projelerim için araştırma yapmak ve İngilizce pratik yapmak için kullanırım.',
-    xpReward: 85,
-    keyVocabulary: ['research', 'practice', 'projects', 'safe']
+    title: 'Tavsiye İsteme ve Verme: "Sen Olsan Ne Yapardın?"',
+    theme: '"If I were you..." ve "What would you do?" kalıpları',
+    speakingGoal: 'Say: If I were you, I would take that opportunity.',
+    speakingGoalTr: 'Senin yerinde olsam o fırsatı kaçırmazdım de.',
+    aiPrompt: 'I got two different job offers, and I cannot decide which one to pick!',
+    aiPromptTr: 'İki farklı iş teklifi aldım ve hangisini seçeceğime karar veremiyorum!',
+    suggestedAnswer: 'If I were you, I would choose the one that gives you more freedom to grow.',
+    suggestedAnswerTr: 'Senin yerinde olsaydım, sana gelişim için daha fazla özgürlük tanıyanı seçerdim.',
+    xpReward: 95,
+    keyVocabulary: ['if I were you', 'opportunity', 'freedom', 'grow'],
+    nativeCoachTip: '"If I were you..." kalıbı dostça tavsiye vermenin en şık yoludur.'
   },
   {
     day: 21,
     week: 3,
-    title: '3. Hafta Sosyal Sohbet Mezuniyeti! 🚀',
-    targetSkill: 'Kendini ve planlarını akıcı şekilde tartışabilme',
-    speakingGoal: 'Haftalık öğrendiklerinle Chirmo\'ya bir soru sor!',
-    speakingGoalTr: 'Yapay zekâ arkadaşına kendin hakkında soru sorarak sohbet et.',
-    aiPrompt: 'You speak English so naturally now! Tell me your biggest dream for the future!',
-    aiPromptTr: 'Artık çok doğal İngilizce konuşuyorsun! Bana gelecekle ilgili en büyük hayalini anlat!',
-    suggestedAnswer: 'My dream is to travel the world, visit London and speak fluent English with everyone.',
-    suggestedAnswerTr: 'Hayalim dünyayı gezmek, Londra\'yı ziyaret etmek ve herkesle akıcı İngilizce konuşmaktır.',
-    xpReward: 140,
-    keyVocabulary: ['dream', 'travel', 'fluent', 'world']
+    title: '3. Hafta Mezuniyeti: Doğal Sosyal Sohbet Ustası! 🚀',
+    theme: 'Arkadaş ortamında akıcı fikir alışverişi ve esprilere katılma',
+    speakingGoal: 'En sevdiğin filmi ve neden herkese tavsiye ettiğini anlat!',
+    speakingGoalTr: 'En sevdiğin filmi ve seni neden büyülediğini anlat.',
+    aiPrompt: 'What is the best movie or TV show you have seen recently?',
+    aiPromptTr: 'Son zamanlarda izlediğin en iyi film veya dizi hangisiydi?',
+    suggestedAnswer: 'I recently watched Inception again. The concept of dreams inside dreams is mind-blowing!',
+    suggestedAnswerTr: 'Geçenlerde Başlangıç (Inception) filmini tekrar izledim. Rüya içinde rüya konsepti gerçekten akıllara durgunluk verici!',
+    xpReward: 150,
+    keyVocabulary: ['mind-blowing', 'recently', 'concept', 'master'],
+    nativeCoachTip: '"Mind-blowing" (akıl almaz / büyüleyici) kelimesini bir şeyi çok övmek istediğinde kullan.'
   },
 
-  // ==================== HAFTA 4: LGS ŞAMPİYONLUĞU & AKICI KONUŞMA (22-30) ====================
+  // ---------- HAFTA 4: ÖZGÜVEN PATLAMASI & AKICI İNGİLİZCE (22-30. GÜN) ----------
   {
     day: 22,
     week: 4,
-    title: 'LGS Şampiyonu: Davet Etme & Kabul Etme',
-    targetSkill: 'LGS Friendship ünitesi davet kalıbı (Would you like to...?)',
-    speakingGoal: 'Say: Would you like to join our study group?',
-    speakingGoalTr: 'Arkadaşını çalışma grubuna davet et.',
-    aiPrompt: 'Would you like to come over to my house after school?',
-    aiPromptTr: 'Okuldan sonra bize gelmek ister misin?',
-    suggestedAnswer: 'That sounds great, I would love to! Thank you for inviting me.',
-    suggestedAnswerTr: 'Kulağa harika geliyor, çok isterim! Beni davet ettiğin için teşekkürler.',
-    xpReward: 90,
-    keyVocabulary: ['would you like', 'sounds great', 'accept', 'invitation']
+    title: 'Diplomatik Kibarlık: "Kusura Bakmayın Ama..."',
+    theme: 'Kırmadan hayır diyebilme ve bahane sunma',
+    speakingGoal: 'Say: I would love to, but I have a prior commitment.',
+    speakingGoalTr: 'Çok isterdim ama önceden verilmiş bir sözüm var de.',
+    aiPrompt: 'Are you free to join our team dinner this Friday evening?',
+    aiPromptTr: 'Bu cuma akşamı takım yemeğimize katılmak için müsait misin?',
+    suggestedAnswer: 'I would love to join, but I already have plans with my family. Thank you for inviting me!',
+    suggestedAnswerTr: 'Katılmayı çok isterdim ama ailemle önceden yapılmış planım var. Beni davet ettiğin için teşekkürler!',
+    xpReward: 100,
+    keyVocabulary: ['prior commitment', 'would love to', 'already have plans', 'inviting'],
+    nativeCoachTip: 'İngilizcede "No" demek serttir. Her zaman "I would love to, but..." ile başla.'
   },
   {
     day: 23,
     week: 4,
-    title: 'LGS Şampiyonu: Kibarca Reddetme & Bahane',
-    targetSkill: 'LGS sınavında en çok çıkan: Bahane bildirerek reddetme',
-    speakingGoal: 'Say: I would love to, but I have to study for the exam.',
-    speakingGoalTr: 'Daveti kibarca reddedip LGS sınavına çalışacağını söyle.',
-    aiPrompt: 'Hey! We are going to the cinema this evening. Can you come?',
-    aiPromptTr: 'Selam! Bu akşam sinemaya gidiyoruz. Gelebilir misin?',
-    suggestedAnswer: 'I would love to, but I have an important test tomorrow. Maybe next time!',
-    suggestedAnswerTr: 'Çok isterdim ama yarın önemli bir sınavım var. Belki bir dahaki sefere!',
-    xpReward: 95,
-    keyVocabulary: ['would love to but', 'important', 'test', 'next time']
+    title: 'Telefon / Zoom Görüşmesi: "Bağlantım Koptu"',
+    theme: 'Dijital dünyada iletişim kazalarını yönetme',
+    speakingGoal: 'Say: Sorry, you broke up for a second. Can you hear me now?',
+    speakingGoalTr: 'Sesin bir saniye kesildi, şu an beni duyabiliyor musun de.',
+    aiPrompt: 'Hello? Can you hear me? Your video just froze.',
+    aiPromptTr: 'Alo? Beni duyabiliyor musun? Görüntün az önce dondu.',
+    suggestedAnswer: 'Yes, you broke up for a second, but I can hear and see you clearly now!',
+    suggestedAnswerTr: 'Evet, sesiniz bir an kesildi ama şu an sizi çok net duyabiliyor ve görebiliyorum!',
+    xpReward: 100,
+    keyVocabulary: ['broke up', 'froze', 'clearly', 'connection'],
+    nativeCoachTip: 'Ses kesildiğinde "Your voice is cutting" değil, "You are breaking up" denir.'
   },
   {
     day: 24,
     week: 4,
-    title: 'LGS 2. Ünite: Teen Life & Müzik Zevki',
-    targetSkill: 'Kişisel zevkleri ve sıfatları kullanma (unbearable, fond of)',
-    speakingGoal: 'Say: I am fond of pop music, but rap is unbearable for me.',
-    speakingGoalTr: 'Hangi müziğe düşkün olduğunu, hangisine katlanamadığını söyle.',
-    aiPrompt: 'What kind of music are you fond of listening to?',
-    aiPromptTr: 'Hangi tür müzik dinlemeye düşkünsün?',
-    suggestedAnswer: 'I am fond of acoustic guitar melodies. Heavy metal is unbearable for me.',
-    suggestedAnswerTr: 'Akustik gitar melodilerine bayılırım. Heavy metal benim için katlanılmaz.',
-    xpReward: 95,
-    keyVocabulary: ['fond of', 'unbearable', 'melodies', 'prefer']
+    title: 'Pazarlık & İndirim İsteme: "Daha İyisini Yapabilir misiniz?"',
+    theme: 'Yurtdışında kibarca indirim sorma sanatı',
+    speakingGoal: 'Say: Is that your best price? Can you do any better?',
+    speakingGoalTr: 'Son fiyatınız bu mu? Biraz daha indirim yapabilir misiniz de.',
+    aiPrompt: 'This handmade leather bag is two hundred dollars.',
+    aiPromptTr: 'Bu el yapımı deri çanta 200 dolar.',
+    suggestedAnswer: 'It looks beautiful! Is that your best price, or can you give a small discount if I pay cash?',
+    suggestedAnswerTr: 'Çok güzel görünüyor! Son fiyatınız bu mu, yoksa nakit ödersem küçük bir indirim yapabilir misiniz?',
+    xpReward: 105,
+    keyVocabulary: ['best price', 'discount', 'pay cash', 'handmade'],
+    nativeCoachTip: '"Can you do any better?" esnafa kibarca indirim sormanın en tatlı yoludur.'
   },
   {
     day: 25,
     week: 4,
-    title: 'LGS 3. Ünite: In The Kitchen - Tarif Verme',
-    targetSkill: 'Süreç bildiren bağlaçlar (First, then, next, after that, finally)',
-    speakingGoal: 'Say: First chop the tomatoes, then fry them.',
-    speakingGoalTr: 'Sıralama zarflarını kullanarak tarif ver.',
-    aiPrompt: 'Can you teach me how to prepare a healthy salad?',
-    aiPromptTr: 'Bana sağlıklı bir salatanın nasıl hazırlanacağını öğretir misin?',
-    suggestedAnswer: 'First wash the greens. Next chop them into a bowl. Finally add lemon juice and olive oil.',
-    suggestedAnswerTr: 'Önce yeşillikleri yıkayın. Sonra bir kaseye doğrayın. Son olarak limon suyu ve zeytinyağı ekleyin.',
-    xpReward: 100,
-    keyVocabulary: ['first', 'next', 'finally', 'chop', 'olive oil']
+    title: 'Görüş ve Argüman Savunma: "Artıları ve Eksileri Var"',
+    theme: 'Bir konuyu iki yönüyle değerlendirme',
+    speakingGoal: 'Say: There are both pros and cons to this situation.',
+    speakingGoalTr: 'Bu durumun hem artıları hem de eksileri var de.',
+    aiPrompt: 'Do you think Artificial Intelligence will replace human jobs?',
+    aiPromptTr: 'Sence Yapay Zekâ insanların işlerini tamamen ellerinden alacak mı?',
+    suggestedAnswer: 'There are definitely pros and cons. It automates repetitive tasks, but creativity is still unique to humans.',
+    suggestedAnswerTr: 'Kesinlikle hem artıları hem eksileri var. Tekrarlayan işleri otomatikleştiriyor ama yaratıcılık hâlâ insana özgü.',
+    xpReward: 110,
+    keyVocabulary: ['pros and cons', 'automates', 'creativity', 'unique'],
+    nativeCoachTip: '"Pros and cons" (Artılar ve eksiler) her tartışmada seni bilge gösterir.'
   },
   {
     day: 26,
     week: 4,
-    title: 'LGS 4. Ünite: On The Phone - Telefon Görüşmesi',
-    targetSkill: 'Telefonda resmi ve kibar kalıplar (Hang on, hold on, speak to)',
-    speakingGoal: 'Say: Hold on a minute, please. I will put you through.',
-    speakingGoalTr: 'Hatta beklemesini ve bağlayacağını söyle.',
-    aiPrompt: 'Hello! This is Mrs. Brown. May I speak to your teacher, please?',
-    aiPromptTr: 'Merhaba! Ben Bayan Brown. Öğretmeninizle görüşebilir miyim lütfen?',
-    suggestedAnswer: 'Hello Mrs. Brown! Hang on a minute, please. I will get him right now.',
-    suggestedAnswerTr: 'Merhaba Bayan Brown! Bir dakika hatta kalın lütfen. Hemen kendisini çağırıyorum.',
-    xpReward: 100,
-    keyVocabulary: ['hang on', 'hold on', 'put through', 'minute']
+    title: 'Özür Dileme ve Telafi Etme: "Tamamen Benim Hatam"',
+    theme: 'Bir hatayı dürüstçe kabullenip çözme',
+    speakingGoal: 'Say: That was totally my fault, let me make it up to you.',
+    speakingGoalTr: 'Tamamen benim hatamdı, kendimi affettirmeme izin ver de.',
+    aiPrompt: 'Hey, you forgot to send the report this morning!',
+    aiPromptTr: 'Hey, bu sabah raporu göndermeyi unuttun!',
+    suggestedAnswer: 'Oh, I am so sorry! That was completely my mistake. I am sending it right away.',
+    suggestedAnswerTr: 'Çok özür dilerim! Tamamen benim hatam. Hemen şimdi gönderiyorum.',
+    xpReward: 110,
+    keyVocabulary: ['my fault', 'completely', 'make it up to you', 'right away'],
+    nativeCoachTip: '"Make it up to you" = "Kendimi affettirmek, telafi etmek" demektir.'
   },
   {
     day: 27,
     week: 4,
-    title: 'LGS 5. Ünite: The Internet - Siber Güvenlik',
-    targetSkill: 'İnternet kuralları ve tavsiyeler (Never share, password, safe)',
-    speakingGoal: 'Say: Never share your passwords with strangers online.',
-    speakingGoalTr: 'Şifrelerin yabancılarla paylaşılmaması gerektiğini söyle.',
-    aiPrompt: 'What should we do to stay safe on the internet?',
-    aiPromptTr: 'İnternette güvende kalmak için ne yapmalıyız?',
-    suggestedAnswer: 'We should create strong passwords and never share personal information with strangers.',
-    suggestedAnswerTr: 'Güçlü şifreler oluşturmalı ve kişisel bilgileri yabancılarla asla paylaşmamalıyız.',
-    xpReward: 105,
-    keyVocabulary: ['password', 'strangers', 'safe', 'personal']
+    title: 'Espriyi Anlama ve Kahkaha Atma',
+    theme: 'İngilizce mizah ve samimi takılma',
+    speakingGoal: 'Say: That was hilarious! You made my day.',
+    speakingGoalTr: 'Bu çok komikti! Günümü neşelendirdin de.',
+    aiPrompt: 'Why do we tell actors to "break a leg"? Because every play has a cast!',
+    aiPromptTr: 'Aktörlere neden "bacağını kır" derler? Çünkü her oyunun bir alçısı (veya kadrosu) vardır!',
+    suggestedAnswer: 'Haha, that was a good one! You really made my day with that pun!',
+    suggestedAnswerTr: 'Haha, bu iyiydi! Bu kelime oyunuyla gerçekten günümü neşelendirdin!',
+    xpReward: 115,
+    keyVocabulary: ['hilarious', 'made my day', 'pun', 'good one'],
+    nativeCoachTip: '"You made my day" (Günümü güzelleştirdin / Beni çok mutlu ettin) harika bir iltifattır.'
   },
   {
     day: 28,
     week: 4,
-    title: 'LGS 6. Ünite: Adventures - Macera & Heyecan',
-    targetSkill: 'Karşılaştırma (more thrilling than, fascinating, extreme)',
-    speakingGoal: 'Say: Rafting is more exciting than cycling.',
-    speakingGoalTr: 'Macera sporlarını karşılaştır.',
-    aiPrompt: 'Which extreme sport would you dare to try?',
-    aiPromptTr: 'Hangi ekstrem sporu denemeye cesaret ederdin?',
-    suggestedAnswer: 'I would like to try paragliding because flying over the mountains looks fascinating.',
-    suggestedAnswerTr: 'Yamaç paraşütünü denemek isterim çünkü dağların üzerinde uçmak büyüleyici görünüyor.',
-    xpReward: 110,
-    keyVocabulary: ['paragliding', 'fascinating', 'extreme', 'thrilling']
+    title: 'Gelecek Hayalin: 5 Yıl Sonra Neredesin?',
+    theme: 'Büyük hedeflerini İngilizce seslendirme',
+    speakingGoal: 'Say: In five years, I see myself speaking fluent English and living my dream.',
+    speakingGoalTr: 'Beş yıl sonra kendimi akıcı İngilizce konuşurken görüyorum de.',
+    aiPrompt: 'Where do you see yourself five years from now?',
+    aiPromptTr: 'Bundan beş yıl sonra kendini nerede görüyorsun?',
+    suggestedAnswer: 'In five years, I see myself running my own projects, traveling globally, and inspiring people around me.',
+    suggestedAnswerTr: 'Beş yıl sonra kendimi kendi projelerimi yönetirken, dünyayı gezerken ve etrafımdaki insanlara ilham verirken görüyorum.',
+    xpReward: 120,
+    keyVocabulary: ['five years', 'inspiring', 'globally', 'vision'],
+    nativeCoachTip: 'İngilizce hayal kurabildiğin an, o dili gerçekten öğrenmişsin demektir.'
   },
   {
     day: 29,
     week: 4,
-    title: 'LGS 7. & 8. Ünite: Sorumluluklarım & Turizm',
-    targetSkill: 'Ev işleri ve turistik yerler (responsible for, tidying, ancient)',
-    speakingGoal: 'Say: I am responsible for tidying my room every morning.',
-    speakingGoalTr: 'Evdeki sorumluluğunu ve odanı topladığını söyle.',
-    aiPrompt: 'What are your daily responsibilities at home?',
-    aiPromptTr: 'Evdeki günlük sorumlulukların nelerdir?',
-    suggestedAnswer: 'I am responsible for making my bed, feeding my pet, and keeping my desk clean.',
-    suggestedAnswerTr: 'Yatağımı toplamak, evcil hayvanımı beslemek ve çalışma masamı temiz tutmaktan sorumluyum.',
-    xpReward: 115,
-    keyVocabulary: ['responsible', 'tidying', 'desk', 'clean']
+    title: 'Büyük Sınav Öncesi Son Genel Pratik',
+    theme: 'Bütün korkuları geride bırakıp özgüvenini hissetme',
+    speakingGoal: 'Say: I am proud of how much progress I have made in just one month.',
+    speakingGoalTr: 'Sadece bir ayda kat ettiğim ilerlemeden gurur duyuyorum de.',
+    aiPrompt: 'Look back to Day 1 when you were hesitant. How do you feel right now?',
+    aiPromptTr: 'Çekingen olduğun 1. Güne geri bak. Şu an nasıl hissediyorsun?',
+    suggestedAnswer: 'I feel incredibly proud! I used to be afraid of making mistakes, but now I speak freely and naturally.',
+    suggestedAnswerTr: 'İnanılmaz gururlu hissediyorum! Eskiden hata yapmaktan korkardım ama artık özgürce ve doğal konuşuyorum.',
+    xpReward: 130,
+    keyVocabulary: ['proud', 'progress', 'hesitant', 'naturally'],
+    nativeCoachTip: 'Hata yapmaktan korkmayan insan dili en hızlı konuşan insandır!'
   },
   {
     day: 30,
     week: 4,
-    title: 'Büyük Final: 1 Aylık Konuşma Şampiyonluğu! 🏆',
-    targetSkill: 'İngilizceyi korkusuzca, akıcı konuşabilme!',
-    speakingGoal: 'Artık İngilizce konuşabiliyorsun! Hayallerini anlat.',
-    speakingGoalTr: 'Gelecekte ne olmak istediğini ve İngilizce başarını kutla!',
-    aiPrompt: 'Congratulations! You completed the 30-day challenge! How do you feel about speaking English now?',
-    aiPromptTr: 'Tebrikler! 30 günlük kampı tamamladın! Artık İngilizce konuşurken nasıl hissediyorsun?',
-    suggestedAnswer: 'I feel very confident and proud! I can speak English easily now.',
-    suggestedAnswerTr: 'Çok özgüvenli ve gururlu hissediyorum! Artık İngilizceyi kolayca konuşabiliyorum.',
-    xpReward: 200,
-    keyVocabulary: ['confident', 'proud', 'easily', 'champion']
+    title: 'BÜYÜK FİNAL: 30 Günlük Konuşma Şampiyonluğu & Podcast! 🏆',
+    theme: '1 Aylık Dönüşümünü Kutla ve Chirmo ile Canlı Sohbet Et',
+    speakingGoal: 'Chirmo ile tam bir İngilizce podcast sohbeti yap ve mezun ol!',
+    speakingGoalTr: '30 günlük başarı hikayeni ve İngilizce konuşmanın sana kattığı özgüveni anlat.',
+    aiPrompt: 'CONGRATULATIONS! You have completed the 30-Day Speaking Challenge! Tell the world how you feel!',
+    aiPromptTr: 'TEBRİKLER! 30 Günlük Konuşma Kampını tamamladın! Tüm dünyaya nasıl hissettiğini anlat!',
+    suggestedAnswer: 'I am officially an English speaker now! Thank you Chirmo for this amazing journey. I can talk to anyone in the world with total confidence!',
+    suggestedAnswerTr: 'Artık resmen İngilizce konuşuyorum! Bu harika yolculuk için teşekkürler Chirmo. Artık dünyadaki herkesle tam bir özgüvenle konuşabilirim!',
+    xpReward: 300,
+    keyVocabulary: ['officially', 'confidence', 'journey', 'champion', 'fluent'],
+    nativeCoachTip: 'Sen bir şampiyonsun! Unutma: Konuşmak bir yetenek değil, her gün yapılan bir spordur. Bu sporu bırakma!'
   }
 ];
 
+// ==================== 3. İLERLEME VE VERİ SERVİSİ ====================
 export interface StudentCampProgress {
   currentDay: number;
   completedDays: number[];
   totalXp: number;
   streakDays: number;
-  selectedGrade: GradeLevel;
+  selectedCategory?: string;
   lastCompletedDate?: string;
 }
 
-const STORAGE_KEY = 'chirmo_student_camp_v1';
+const STORAGE_KEY = 'chirmo_fluent_camp_v2';
 
 export const CampStorageService = {
   getProgress(): StudentCampProgress {
@@ -714,9 +871,9 @@ export const CampStorageService = {
     return {
       currentDay: 1,
       completedDays: [],
-      totalXp: 120,
+      totalXp: 150,
       streakDays: 3,
-      selectedGrade: '8' // Varsayılan 8. Sınıf LGS hazırlığı
+      selectedCategory: 'Kafe & Restoran'
     };
   },
 
@@ -743,7 +900,7 @@ export const CampStorageService = {
     const updated: StudentCampProgress = {
       ...current,
       completedDays: Array.from(completedSet),
-      totalXp: current.totalXp + (wasAlreadyCompleted ? 15 : earnedXp),
+      totalXp: current.totalXp + (wasAlreadyCompleted ? 20 : earnedXp),
       streakDays: streak,
       currentDay: Math.min(30, Math.max(current.currentDay, day + 1)),
       lastCompletedDate: todayStr
@@ -753,9 +910,9 @@ export const CampStorageService = {
     return updated;
   },
 
-  setSelectedGrade(grade: GradeLevel): StudentCampProgress {
+  setSelectedCategory(cat: string): StudentCampProgress {
     const current = this.getProgress();
-    const updated = { ...current, selectedGrade: grade };
+    const updated = { ...current, selectedCategory: cat };
     this.saveProgress(updated);
     return updated;
   }

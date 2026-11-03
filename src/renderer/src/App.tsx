@@ -173,7 +173,7 @@ export const App: React.FC = () => {
             }`}
           >
             <BookOpen className="w-4 h-4" />
-            <span>İngilizce Konuş & MEB</span>
+            <span>İngilizce Konuş (30 Gün)</span>
           </button>
 
           <button
@@ -185,19 +185,20 @@ export const App: React.FC = () => {
             }`}
           >
             <CheckSquare className="w-4 h-4" />
-            <span>Ödev & İş Takibi</span>
+            <span>İş & Hedef Takibi</span>
           </button>
         </div>
 
-        {/* Sağ: Sınıf & XP Rozetleri & Türkçe Yardımcı Butonu */}
+        {/* Sağ: İlerleme & XP Rozetleri & Türkçe Yardımcı Butonu */}
         <div className="flex items-center space-x-2 sm:space-x-3">
-          {/* Sınıf Rozeti */}
+          {/* Konuşma Kampı Rozeti */}
           <button
             onClick={() => setActiveTab('learn')}
             className="hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold hover:bg-blue-100 transition-colors cursor-pointer"
-            title="Sınıfını ve Ünitelerini Değiştir"
+            title="30 Günlük Konuşma Kampına Git"
           >
-            <span>{campProgress.selectedGrade}. Sınıf {campProgress.selectedGrade === '8' ? '(LGS)' : ''}</span>
+            <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+            <span>30 Günlük Konuşma Kampı</span>
           </button>
 
           {/* Gün Serisi Sayacı */}
