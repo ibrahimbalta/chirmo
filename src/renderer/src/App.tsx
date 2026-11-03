@@ -1,125 +1,50 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Sun,
-  Moon,
-  ChevronDown,
-  FolderKanban,
-  Wrench,
-  Workflow,
-  Globe,
-  History,
-  Settings,
-  Sparkles,
-  Check,
-  X,
-  User,
-  Home,
-  Compass,
-  Image as ImageIcon,
-  Scale,
-  Layers,
-  LayoutGrid,
   Search,
-  ArrowLeft,
-  Bookmark,
-  Dumbbell,
-  TrendingUp,
   BookOpen,
-  Tv,
-  Mic,
-  PenTool
+  CheckSquare,
+  Sparkles,
+  ArrowLeft,
+  ArrowRight,
+  RotateCw,
+  Home,
+  X,
+  Volume2,
+  Lock,
+  Globe
 } from 'lucide-react';
-import { TabBar } from './components/browser/TabBar';
-import { AddressBar } from './components/browser/AddressBar';
-import { BrowserContainer } from './components/browser/BrowserContainer';
-import { TaskSidebar } from './components/browser/TaskSidebar';
-import { Sidebar } from './components/layout/Sidebar';
-import { ProjectsView } from './components/projects/ProjectsView';
-import { AgentsView } from './components/agents/AgentsView';
-import { ToolsView } from './components/tools/ToolsView';
-import { WorkflowsView } from './components/workflows/WorkflowsView';
-import { HistoryView } from './components/history/HistoryView';
-import { SettingsView } from './components/settings/SettingsView';
-import { HomeSearchHub } from './components/home/HomeSearchHub';
-import { DiscoverView } from './components/discover/DiscoverView';
-import { VisualDiscoveryView } from './components/visual/VisualDiscoveryView';
-import { CompareView } from './components/compare/CompareView';
 import { ChirmoLogo } from './components/common/ChirmoLogo';
-import { SplitCanvasWorkspace } from './components/browser/SplitCanvasWorkspace';
-import { TabGroupService } from './services/tabGroupService';
-import { Tab, TabGroup, SplitMode, ActiveNavMenu, CEFRLevel, LearningMode, DailyGoalProgress } from './types';
-import { ExploreEnglishView } from './components/learning/ExploreEnglishView';
-import { VocabularyVaultView } from './components/learning/VocabularyVaultView';
-import { PracticeView } from './components/learning/PracticeView';
-import { ProgressView } from './components/learning/ProgressView';
-import { WatchingView } from './components/learning/WatchingView';
-import { SpeakingView } from './components/learning/SpeakingView';
-import { WritingAssistantView } from './components/learning/WritingAssistantView';
-import { PlacementTestModal } from './components/learning/PlacementTestModal';
+import { BrowserContainer } from './components/browser/BrowserContainer';
+import { SimpleSearchHome } from './components/home/SimpleSearchHome';
+import { SimpleLearningHub } from './components/learning/SimpleLearningHub';
+import { SimpleTaskWorkspace } from './components/tasks/SimpleTaskWorkspace';
+import { SimpleAiTutorDrawer } from './components/learning/SimpleAiTutorDrawer';
 import { SmartReaderModal } from './components/learning/SmartReaderModal';
-import { LearnBottomBar } from './components/learning/LearnBottomBar';
-import { AiTutorSidebar } from './components/learning/AiTutorSidebar';
 import { LearningStorageService } from './services/learningStorage';
+import { Tab, CEFRLevel, DailyGoalProgress } from './types';
 
 export const App: React.FC = () => {
-  const [activeMenu, setActiveMenu] = useState<ActiveNavMenu>('browser');
+  // 3 Temel Bölüm: 'search' (Arama & Tarayıcı) | 'learn' (İngilizce Öğren) | 'tasks' (İş Takibi)
+  const [activeTab, setActiveTab] = useState<'search' | 'learn' | 'tasks'>('search');
+
+  // Tarayıcı Durumu
+  const [isBrowserNavigating, setIsBrowserNavigating] = useState(false);
   const [tabs, setTabs] = useState<Tab[]>([]);
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
-  const [isTaskPanelOpen, setIsTaskPanelOpen] = useState(false);
-  const [agentInitialPrompt, setAgentInitialPrompt] = useState<string>('');
-  const [sharedSearchQuery, setSharedSearchQuery] = useState<string>('');
-  const [homeResetTrigger, setHomeResetTrigger] = useState<number>(0);
-  const [visualInitialQuery, setVisualInitialQuery] = useState<string>('');
-  const [comparePair, setComparePair] = useState<{ a: string; b: string }>({
-    a: 'Elektrikli otomobil',
-    b: 'Hibrit otomobil'
-  });
+  const [addressBarUrl, setAddressBarUrl] = useState('');
 
-  // Chirmo English Learning State
+  // Öğrenme & Seviye Durumu (Türk kullanıcılar için varsayılan A1 Başlangıç)
   const [learningProgress, setLearningProgress] = useState<DailyGoalProgress>(() =>
     LearningStorageService.getProgress()
   );
-  const [learningMode, setLearningMode] = useState<LearningMode>(() =>
-    LearningStorageService.getLearningMode()
-  );
-  const [isAiTutorOpen, setIsAiTutorOpen] = useState(true);
-  const [isPlacementTestOpen, setIsPlacementTestOpen] = useState(false);
+  const [isTutorOpen, setIsTutorOpen] = useState(false);
   const [isSmartReaderOpen, setIsSmartReaderOpen] = useState(false);
-  const [activeLearningText, setActiveLearningText] = useState<string>(
+  const [activeLearningText, setActiveLearningText] = useState(
     'Artificial intelligence is helping businesses improve their services and reduce costs.'
   );
 
-  // AI Tab Groups & Split Workspace
-  const [tabGroups, setTabGroups] = useState<TabGroup[]>(() => TabGroupService.loadGroups());
-  const [splitMode, setSplitMode] = useState<SplitMode>('none');
-
-  // Top Header Dropdown & Auth Modal State
-  const [showAppLauncher, setShowAppLauncher] = useState(false);
-  const [authModalMode, setAuthModalMode] = useState<'login' | 'register' | null>(null);
-  const [userProfile, setUserProfile] = useState<{ name: string; email: string } | null>(() => {
-    try {
-      const saved = localStorage.getItem('chirmo_user_profile_v1');
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
-  });
-  const [authName, setAuthName] = useState('');
-  const [authEmail, setAuthEmail] = useState('');
-  const [authPassword, setAuthPassword] = useState('');
-  const [ambientWarmMode, setAmbientWarmMode] = useState(false);
-
-  const appLauncherRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (appLauncherRef.current && !appLauncherRef.current.contains(e.target as Node)) {
-        setShowAppLauncher(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  // İş Takibi Görev Sayısı
+  const [pendingTaskCount, setPendingTaskCount] = useState(2);
 
   useEffect(() => {
     if (window.chirmo) {
@@ -139,166 +64,61 @@ export const App: React.FC = () => {
       });
 
       const unsubTabs = window.chirmo.onTabsUpdated((updatedTabs, currentActiveId) => {
-        setTabs((prev) => {
-          return updatedTabs.map((incoming) => {
-            const existing = prev.find((p) => p.id === incoming.id);
-            if (existing) {
-              return {
-                ...incoming,
-                groupId: existing.groupId,
-                groupTitle: existing.groupTitle,
-                groupColor: existing.groupColor,
-                isPinned: existing.isPinned,
-                isSuspended: existing.isSuspended
-              };
-            }
-            return incoming;
-          });
-        });
+        setTabs(updatedTabs);
         setActiveTabId(currentActiveId);
-      });
-
-      const unsubState = window.chirmo.onTabStateChanged((updatedTab) => {
-        setTabs((prev) =>
-          prev.map((t) => {
-            if (t.id === updatedTab.id) {
-              return {
-                ...t,
-                ...updatedTab,
-                groupId: t.groupId,
-                groupTitle: t.groupTitle,
-                groupColor: t.groupColor,
-                isPinned: t.isPinned
-              };
-            }
-            return t;
-          })
-        );
+        const current = updatedTabs.find((t) => t.id === currentActiveId);
+        if (current && current.url && !current.url.startsWith('data:')) {
+          setAddressBarUrl(current.url);
+        }
       });
 
       const unsubText = window.chirmo.onTextSelected?.((selectedText) => {
         if (selectedText && selectedText.trim().length > 0) {
           setActiveLearningText(selectedText.trim());
-          setIsAiTutorOpen(true);
+          setIsTutorOpen(true);
         }
       });
 
       return () => {
         unsubTabs();
-        unsubState();
         unsubText?.();
       };
     }
   }, []);
 
-  const activeTab = tabs.find((t) => t.id === activeTabId) || null;
+  // WebContentsView görünürlük kontrolü
+  useEffect(() => {
+    const shouldShowBrowser = activeTab === 'search' && isBrowserNavigating;
+    window.chirmo?.setWebContentsVisible(shouldShowBrowser);
+  }, [activeTab, isBrowserNavigating]);
 
-  // AI Tab Grouping Actions
-  const handleAutoGroupTabs = () => {
-    const result = TabGroupService.autoGroupTabs(tabs);
-    setTabGroups(result.groups);
-    setTabs(result.updatedTabs);
-    TabGroupService.saveGroups(result.groups);
-  };
+  // Arama veya Web Sayfasına Gitme
+  const handleNavigate = (queryOrUrl: string) => {
+    let target = queryOrUrl.trim();
+    if (!target) return;
 
-  const handleToggleGroupCollapse = (groupId: string) => {
-    setTabGroups((prev) => {
-      const updated = prev.map((g) =>
-        g.id === groupId ? { ...g, isCollapsed: !g.isCollapsed } : g
-      );
-      TabGroupService.saveGroups(updated);
-      return updated;
-    });
-  };
+    if (!target.includes('.') || target.includes(' ')) {
+      target = `https://www.google.com/search?q=${encodeURIComponent(target)}`;
+    } else if (!target.startsWith('http://') && !target.startsWith('https://')) {
+      target = `https://${target}`;
+    }
 
-  const handleUngroup = (groupId: string) => {
-    setTabGroups((prev) => {
-      const updated = prev.filter((g) => g.id !== groupId);
-      TabGroupService.saveGroups(updated);
-      return updated;
-    });
-    setTabs((prev) =>
-      prev.map((t) =>
-        t.groupId === groupId
-          ? { ...t, groupId: undefined, groupTitle: undefined, groupColor: undefined }
-          : t
-      )
-    );
-  };
+    setAddressBarUrl(target);
+    setIsBrowserNavigating(true);
+    setActiveTab('search');
 
-  const handleTogglePinTab = (tabId: string) => {
-    setTabs((prev) =>
-      prev.map((t) => (t.id === tabId ? { ...t, isPinned: !t.isPinned } : t))
-    );
-  };
-
-  const handleChangeGroupColor = (groupId: string, color: string) => {
-    setTabGroups((prev) => {
-      const updated = prev.map((g) => (g.id === groupId ? { ...g, color } : g));
-      TabGroupService.saveGroups(updated);
-      return updated;
-    });
-    setTabs((prev) =>
-      prev.map((t) => (t.groupId === groupId ? { ...t, groupColor: color } : t))
-    );
+    if (activeTabId && window.chirmo) {
+      window.chirmo.navigate(activeTabId, target);
+    } else if (window.chirmo) {
+      window.chirmo.createTab(target).then((t) => {
+        setActiveTabId(t.id);
+      });
+    }
   };
 
   const handleGoHome = () => {
-    setSharedSearchQuery('');
-    setHomeResetTrigger((prev) => prev + 1);
-    setActiveMenu('home');
-  };
-
-  const handleNewTab = async () => {
-    if (window.chirmo) {
-      const newTab = await window.chirmo.createTab();
-      setActiveTabId(newTab.id);
-      setActiveMenu('browser');
-    }
-  };
-
-  const handleCloseTab = async (tabId: string) => {
-    if (window.chirmo) {
-      await window.chirmo.closeTab(tabId);
-    }
-  };
-
-  const handleSelectTab = async (tabId: string) => {
-    if (window.chirmo) {
-      await window.chirmo.switchTab(tabId);
-      setActiveTabId(tabId);
-      setActiveMenu('browser');
-    }
-  };
-
-  const handleNavigate = (url: string) => {
-    if (window.chirmo && activeTabId) {
-      window.chirmo.navigate(activeTabId, url);
-    }
-  };
-
-  const handleGoBack = () => {
-    if (window.chirmo && activeTabId) {
-      window.chirmo.goBack(activeTabId);
-    }
-  };
-
-  const handleGoForward = () => {
-    if (window.chirmo && activeTabId) {
-      window.chirmo.goForward(activeTabId);
-    }
-  };
-
-  const handleReload = () => {
-    if (window.chirmo && activeTabId) {
-      window.chirmo.reload(activeTabId);
-    }
-  };
-
-  const handleStop = () => {
-    if (window.chirmo && activeTabId) {
-      window.chirmo.stopLoading(activeTabId);
-    }
+    setIsBrowserNavigating(false);
+    setActiveTab('search');
   };
 
   const handleLevelChange = (lvl: CEFRLevel) => {
@@ -306,889 +126,234 @@ export const App: React.FC = () => {
     setLearningProgress({ ...updated });
   };
 
-  const handleModeChange = (mode: LearningMode) => {
-    setLearningMode(mode);
-    LearningStorageService.setLearningMode(mode);
-    if (mode === 'reading') {
-      setActiveMenu('browser');
-    } else if (mode === 'watching') {
-      setActiveMenu('watching');
-    } else if (mode === 'speaking') {
-      setActiveMenu('speaking');
-    } else if (mode === 'practice') {
-      setActiveMenu('daily');
-    }
-  };
-
-  const handleOpenArticleInBrowser = (url: string) => {
-    if (activeTabId && window.chirmo) {
-      window.chirmo.navigate(activeTabId, url);
-      setActiveMenu('browser');
-    } else if (window.chirmo) {
-      window.chirmo.createTab(url).then((tab) => {
-        setActiveTabId(tab.id);
-        setActiveMenu('browser');
-      });
-    } else {
-      setActiveMenu('browser');
-    }
-  };
-
-  const handleAuthSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!authEmail.trim()) return;
-    const displayName =
-      authName.trim() || authEmail.split('@')[0] || 'Chirmo Kullanıcısı';
-    const profile = { name: displayName, email: authEmail.trim() };
-    setUserProfile(profile);
-    try {
-      localStorage.setItem('chirmo_user_profile_v1', JSON.stringify(profile));
-    } catch {
-      // ignore
-    }
-    setAuthModalMode(null);
-    setAuthName('');
-    setAuthEmail('');
-    setAuthPassword('');
-  };
-
-  const isBrowserActive = activeMenu === 'browser';
+  const activeTabData = tabs.find((t) => t.id === activeTabId) || null;
 
   return (
-    <div
-      className={`flex flex-col h-screen w-screen overflow-hidden text-chirmo-text ${
-        ambientWarmMode ? 'bg-[#FAF9FE]' : 'bg-[#FAF9FE]'
-      }`}
-    >
-      {/* ==================== TOP MINIMAL HEADER (LEARNING & APPS) ==================== */}
-      <header className="w-full h-14 sm:h-16 px-4 sm:px-6 flex items-center justify-between bg-[#FAF9FE]/95 backdrop-blur-md border-b border-purple-100/50 z-40 shrink-0">
-        {/* Left: Brand Identity & Quick Return */}
-        <div className="flex items-center space-x-3">
-          <div 
-            onClick={handleGoHome}
-            className="cursor-pointer flex items-center space-x-2 select-none group"
-            title="Chirmo Ana Sayfa"
+    <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#FAF9FE] text-slate-800 select-none font-sans">
+      {/* ==================== ÜST SADE ANA BAŞLIK ==================== */}
+      <header className="h-16 px-4 sm:px-6 bg-white/95 backdrop-blur-md border-b border-slate-200/80 flex items-center justify-between z-30 shrink-0 shadow-xs">
+        {/* Sol: Logo */}
+        <div
+          onClick={handleGoHome}
+          className="cursor-pointer flex items-center space-x-2.5 hover:opacity-90 transition-opacity"
+          title="Chirmo Ana Sayfa"
+        >
+          <ChirmoLogo size="sm" variant="header" />
+          <span className="hidden sm:inline-block text-[11px] font-semibold text-slate-400 border-l border-slate-200 pl-2.5">
+            Gezin • Öğren • Yönet
+          </span>
+        </div>
+
+        {/* Orta: 3 Temel Ana Bölüm */}
+        <div className="flex items-center space-x-1 sm:space-x-2 bg-slate-100 p-1 rounded-2xl border border-slate-200">
+          <button
+            onClick={() => {
+              setActiveTab('search');
+            }}
+            className={`flex items-center space-x-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              activeTab === 'search'
+                ? 'bg-blue-600 text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+            }`}
           >
-            <ChirmoLogo size="sm" variant="header" />
+            <Search className="w-4 h-4" />
+            <span>Arama & İnternet</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('learn')}
+            className={`flex items-center space-x-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              activeTab === 'learn'
+                ? 'bg-blue-600 text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+            }`}
+          >
+            <BookOpen className="w-4 h-4" />
+            <span>İngilizce Öğren</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('tasks')}
+            className={`flex items-center space-x-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              activeTab === 'tasks'
+                ? 'bg-blue-600 text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+            }`}
+          >
+            <CheckSquare className="w-4 h-4" />
+            <span>İş & Görev Takibi</span>
+          </button>
+        </div>
+
+        {/* Sağ: Seviye & Türkçe Yardımcı Butonu */}
+        <div className="flex items-center space-x-2 sm:space-x-3">
+          {/* Seviye Rozeti */}
+          <button
+            onClick={() => setActiveTab('learn')}
+            className="hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold hover:bg-blue-100 transition-colors cursor-pointer"
+            title="Seviyeni Değiştir"
+          >
+            <span>Seviye: {learningProgress.currentLevel}</span>
+          </button>
+
+          {/* Günlük Kelime Sayacı */}
+          <div
+            onClick={() => setActiveTab('learn')}
+            className="hidden sm:flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold cursor-pointer"
+            title="Bugün Öğrenilen Kelimeler"
+          >
+            <span>🔥</span>
+            <span>{learningProgress.wordsLearnedToday}/{learningProgress.targetWords} Kelime</span>
           </div>
 
-          {activeMenu !== 'home' && (
-            <button
-              onClick={handleGoHome}
-              className="px-3 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Arama Hub</span>
-            </button>
-          )}
-        </div>
-
-        {/* Center: English Learning Shortcuts */}
-        <div className="hidden md:flex items-center gap-1.5 bg-slate-100/80 dark:bg-slate-800/80 p-1 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 text-xs">
+          {/* Türkçe Yardımcı Paneli */}
           <button
-            onClick={() => setActiveMenu('browser')}
-            className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer flex items-center space-x-1.5 ${
-              activeMenu === 'browser'
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-            }`}
-          >
-            <Globe className="w-3.5 h-3.5" />
-            <span>Tarayıcı (Reading)</span>
-          </button>
-
-          <button
-            onClick={() => setActiveMenu('explore')}
-            className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer flex items-center space-x-1.5 ${
-              activeMenu === 'explore'
-                ? 'bg-indigo-600 text-white shadow-sm'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-            }`}
-          >
-            <Compass className="w-3.5 h-3.5" />
-            <span>Keşfet</span>
-          </button>
-
-          <button
-            onClick={() => setActiveMenu('vocabulary')}
-            className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer flex items-center space-x-1.5 ${
-              activeMenu === 'vocabulary'
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-            }`}
-          >
-            <Bookmark className="w-3.5 h-3.5" />
-            <span>Kelimelerim</span>
-          </button>
-
-          <button
-            onClick={() => setActiveMenu('watching')}
-            className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer flex items-center space-x-1.5 ${
-              activeMenu === 'watching'
-                ? 'bg-purple-600 text-white shadow-sm'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-            }`}
-          >
-            <Tv className="w-3.5 h-3.5" />
-            <span>Watching</span>
-          </button>
-
-          <button
-            onClick={() => setActiveMenu('speaking')}
-            className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer flex items-center space-x-1.5 ${
-              activeMenu === 'speaking'
-                ? 'bg-emerald-600 text-white shadow-sm'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-            }`}
-          >
-            <Mic className="w-3.5 h-3.5" />
-            <span>Speaking</span>
-          </button>
-
-          <button
-            onClick={() => setActiveMenu('writing')}
-            className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer flex items-center space-x-1.5 ${
-              activeMenu === 'writing'
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-            }`}
-          >
-            <PenTool className="w-3.5 h-3.5" />
-            <span>Yazma</span>
-          </button>
-
-          <button
-            onClick={() => setActiveMenu('daily')}
-            className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer flex items-center space-x-1.5 ${
-              activeMenu === 'daily'
-                ? 'bg-amber-600 text-white shadow-sm'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-            }`}
-          >
-            <Dumbbell className="w-3.5 h-3.5" />
-            <span>Pratik</span>
-          </button>
-
-          <button
-            onClick={() => setActiveMenu('progress')}
-            className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer flex items-center space-x-1.5 ${
-              activeMenu === 'progress'
-                ? 'bg-emerald-600 text-white shadow-sm'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-            }`}
-          >
-            <TrendingUp className="w-3.5 h-3.5" />
-            <span>İlerlemem</span>
-          </button>
-        </div>
-
-        {/* Right: AI Tutor Button + 9-Dot Apps Launcher + Auth */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          <button
-            onClick={() => setIsAiTutorOpen((prev) => !prev)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center space-x-1.5 cursor-pointer ${
-              isAiTutorOpen
-                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-blue-500/20 ring-2 ring-blue-400/20'
+            onClick={() => setIsTutorOpen(!isTutorOpen)}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center space-x-1.5 cursor-pointer ${
+              isTutorOpen
+                ? 'bg-blue-600 text-white shadow-blue-500/20'
                 : 'bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100'
             }`}
-            title="Kişisel AI İngilizce Öğretmeni Panelini Aç/Kapat"
+            title="Sayfadaki kelime ve cümleleri Türkçe açıklayan yardımcı"
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>AI Öğretmen</span>
+            <span>Türkçe Yardımcı</span>
           </button>
-
-          {/* 9-DOT WAFFLE APP LAUNCHER */}
-          <div ref={appLauncherRef} className="relative">
-            <button
-              onClick={() => setShowAppLauncher((prev) => !prev)}
-              className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all cursor-pointer ${
-                showAppLauncher
-                  ? 'bg-slate-200 text-slate-900'
-                  : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
-              }`}
-              title="Chirmo Uygulamaları"
-              aria-label="Chirmo Uygulamaları"
-            >
-              <LayoutGrid className="w-5 h-5" />
-            </button>
-
-            {/* FLOATING APP LAUNCHER POPOVER (MATCHING GOOGLE WAFFLE APPS) */}
-            {showAppLauncher && (
-              <div className="fixed sm:absolute right-4 sm:right-0 top-16 sm:top-12 w-[calc(100vw-2rem)] max-w-sm sm:w-88 rounded-3xl bg-white/95 backdrop-blur-xl shadow-2xl border border-slate-200/90 p-4 sm:p-5 z-50 animate-fadeIn ring-1 ring-slate-900/5">
-                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
-                  <span className="text-xs font-bold text-slate-800 tracking-wide">
-                    Favorileriniz
-                  </span>
-                  <span className="text-[11px] font-semibold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full">
-                    Chirmo Apps
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-3 gap-y-3.5 gap-x-2 text-center max-h-[70vh] overflow-y-auto no-scrollbar py-1">
-                  {[
-                    {
-                      id: 'browser',
-                      label: 'Web Tarayıcı',
-                      icon: <Globe className="w-5 h-5 text-white" />,
-                      bg: 'bg-gradient-to-tr from-cyan-500 to-blue-600 shadow-cyan-500/20',
-                      action: () => setActiveMenu('browser')
-                    },
-                    {
-                      id: 'explore',
-                      label: 'İngilizce Keşfet',
-                      icon: <Compass className="w-5 h-5 text-white" />,
-                      bg: 'bg-gradient-to-tr from-indigo-500 to-violet-600 shadow-indigo-500/20',
-                      action: () => setActiveMenu('explore')
-                    },
-                    {
-                      id: 'vocabulary',
-                      label: 'Kelimelerim',
-                      icon: <Bookmark className="w-5 h-5 text-white" />,
-                      bg: 'bg-gradient-to-tr from-blue-600 to-indigo-700 shadow-blue-500/20',
-                      action: () => setActiveMenu('vocabulary')
-                    },
-                    {
-                      id: 'daily',
-                      label: 'Pratik & Test',
-                      icon: <Dumbbell className="w-5 h-5 text-white" />,
-                      bg: 'bg-gradient-to-tr from-amber-500 to-orange-600 shadow-amber-500/20',
-                      action: () => setActiveMenu('daily')
-                    },
-                    {
-                      id: 'progress',
-                      label: 'İlerlemem',
-                      icon: <TrendingUp className="w-5 h-5 text-white" />,
-                      bg: 'bg-gradient-to-tr from-emerald-500 to-teal-600 shadow-emerald-500/20',
-                      action: () => setActiveMenu('progress')
-                    },
-                    {
-                      id: 'search',
-                      label: 'AI Arama',
-                      icon: <Search className="w-5 h-5 text-white" />,
-                      bg: 'bg-gradient-to-tr from-purple-500 to-indigo-600 shadow-purple-500/20',
-                      action: () => handleGoHome()
-                    },
-                    {
-                      id: 'agents',
-                      label: 'Araştırma',
-                      icon: <Sparkles className="w-5 h-5 text-white" />,
-                      bg: 'bg-gradient-to-tr from-emerald-500 to-teal-600 shadow-emerald-500/20',
-                      action: () => setActiveMenu('agents')
-                    },
-                    {
-                      id: 'visual',
-                      label: 'Görseller',
-                      icon: <ImageIcon className="w-5 h-5 text-white" />,
-                      bg: 'bg-gradient-to-tr from-sky-400 to-blue-500 shadow-sky-500/20',
-                      action: () => setActiveMenu('visual')
-                    },
-                    {
-                      id: 'compare',
-                      label: 'Karşılaştır',
-                      icon: <Scale className="w-5 h-5 text-white" />,
-                      bg: 'bg-gradient-to-tr from-amber-400 to-orange-500 shadow-amber-500/20',
-                      action: () => setActiveMenu('compare')
-                    },
-                    {
-                      id: 'projects',
-                      label: 'Projeler',
-                      icon: <FolderKanban className="w-5 h-5 text-white" />,
-                      bg: 'bg-gradient-to-tr from-rose-500 to-pink-600 shadow-rose-500/20',
-                      action: () => setActiveMenu('projects')
-                    },
-                    {
-                      id: 'browser',
-                      label: 'Tarayıcı',
-                      icon: <Globe className="w-5 h-5 text-white" />,
-                      bg: 'bg-gradient-to-tr from-cyan-500 to-blue-600 shadow-cyan-500/20',
-                      action: () => setActiveMenu('browser')
-                    },
-                    {
-                      id: 'tools',
-                      label: 'Web Analiz',
-                      icon: <Wrench className="w-5 h-5 text-white" />,
-                      bg: 'bg-gradient-to-tr from-indigo-500 to-purple-700 shadow-indigo-500/20',
-                      action: () => setActiveMenu('tools')
-                    },
-                    {
-                      id: 'workflows',
-                      label: 'İş Akışları',
-                      icon: <Workflow className="w-5 h-5 text-white" />,
-                      bg: 'bg-gradient-to-tr from-teal-500 to-emerald-600 shadow-teal-500/20',
-                      action: () => setActiveMenu('workflows')
-                    },
-                    {
-                      id: 'history',
-                      label: 'Geçmiş',
-                      icon: <History className="w-5 h-5 text-white" />,
-                      bg: 'bg-gradient-to-tr from-slate-600 to-slate-800 shadow-slate-600/20',
-                      action: () => setActiveMenu('history')
-                    },
-                    {
-                      id: 'settings',
-                      label: 'Ayarlar',
-                      icon: <Settings className="w-5 h-5 text-white" />,
-                      bg: 'bg-gradient-to-tr from-slate-400 to-slate-600 shadow-slate-400/20',
-                      action: () => setActiveMenu('settings')
-                    },
-                    {
-                      id: 'account',
-                      label: userProfile ? userProfile.name : 'Hesap',
-                      icon: <User className="w-5 h-5 text-white" />,
-                      bg: 'bg-gradient-to-tr from-[#6534F8] to-[#9055FA] shadow-purple-500/20',
-                      action: () => {
-                        if (userProfile) {
-                          setActiveMenu('projects');
-                        } else {
-                          setAuthModalMode('login');
-                        }
-                      }
-                    }
-                  ].map((app) => (
-                    <button
-                      key={app.id}
-                      onClick={() => {
-                        app.action();
-                        setShowAppLauncher(false);
-                      }}
-                      className="flex flex-col items-center group p-2.5 rounded-2xl hover:bg-slate-50 transition-all cursor-pointer"
-                    >
-                      <div
-                        className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-1.5 transition-transform group-hover:scale-105 shadow-md ${app.bg}`}
-                      >
-                        {app.icon}
-                      </div>
-                      <span className="text-xs font-semibold text-slate-700 group-hover:text-slate-900 truncate max-w-full">
-                        {app.label}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Theme Toggle */}
-          <button
-            onClick={() => setAmbientWarmMode((prev) => !prev)}
-            className="w-10 h-10 rounded-full flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all cursor-pointer"
-            title="Görünüm Modu"
-            aria-label="Görünüm Modu"
-          >
-            {ambientWarmMode ? (
-              <Moon className="w-[18px] h-[18px] text-[#6534F8]" />
-            ) : (
-              <Sun className="w-[18px] h-[18px] text-amber-500" />
-            )}
-          </button>
-
-          {/* User Profile or Giriş Yap */}
-          {userProfile ? (
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setActiveMenu('projects')}
-                className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#6534F8] to-[#8B5CF6] text-white text-xs font-bold flex items-center justify-center shadow-xs cursor-pointer hover:scale-105 transition-transform"
-                title={userProfile.name}
-              >
-                {userProfile.name.slice(0, 1).toUpperCase()}
-              </button>
-              <button
-                onClick={() => {
-                  setUserProfile(null);
-                  localStorage.removeItem('chirmo_user_profile_v1');
-                }}
-                className="text-xs text-slate-400 hover:text-slate-600 px-1 py-1"
-                title="Çıkış Yap"
-              >
-                Çıkış
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => setAuthModalMode('login')}
-              className="px-5 py-2 rounded-full bg-[#6534F8] hover:bg-[#5625e6] text-white text-xs sm:text-sm font-semibold shadow-xs hover:shadow-md transition-all cursor-pointer"
-            >
-              Giriş yapın
-            </button>
-          )}
         </div>
       </header>
 
-      {/* Main Workspace Area with Left Sidebar, Center Browser/Views, Right AI Tutor, and Bottom Bar */}
-      <div className="flex-1 flex flex-row h-full overflow-hidden relative pb-16 sm:pb-0">
-        {/* Sol Navigasyon Barı */}
-        <Sidebar
-          activeMenu={activeMenu}
-          onSelectMenu={(menu) => {
-            setActiveMenu(menu);
-            if (menu === 'browser') {
-              window.chirmo?.setWebContentsVisible(true);
-            }
-          }}
-        />
-
-        {/* Merkez Çalışma & Tarayıcı Alanı */}
-        <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-          {/* Browser TabBar & AddressBar only when built-in browser view is active */}
-          {isBrowserActive && (
-            <>
-              <TabBar
-                tabs={tabs}
-                groups={tabGroups}
-                activeTabId={activeTabId}
-                onSelectTab={handleSelectTab}
-                onCloseTab={handleCloseTab}
-                onNewTab={handleNewTab}
-                onGoHome={handleGoHome}
-                onAutoGroupTabs={handleAutoGroupTabs}
-                onToggleGroupCollapse={handleToggleGroupCollapse}
-                onUngroup={handleUngroup}
-                onTogglePinTab={handleTogglePinTab}
-                onChangeGroupColor={handleChangeGroupColor}
+      {/* ==================== ANA ÇALIŞMA ALANI ==================== */}
+      <main className="flex-1 relative overflow-hidden flex flex-col">
+        {/* BÖLÜM 1: ARAMA & TARAYICI */}
+        {activeTab === 'search' && (
+          <div className="flex-1 relative flex flex-col h-full overflow-hidden">
+            {/* Eğer bir siteye girilmemişse: Sade Google Tarzı Arama Ana Sayfası */}
+            {!isBrowserNavigating ? (
+              <SimpleSearchHome
+                onSearch={handleNavigate}
+                onNavigateToLearn={() => setActiveTab('learn')}
+                onNavigateToTasks={() => setActiveTab('tasks')}
+                userLevel={learningProgress.currentLevel}
+                pendingTaskCount={pendingTaskCount}
               />
-              <AddressBar
-                activeTab={activeTab}
-                isTaskPanelOpen={isTaskPanelOpen}
-                onToggleTaskPanel={() => setIsTaskPanelOpen(!isTaskPanelOpen)}
-                splitMode={splitMode}
-                onToggleSplitMode={() =>
-                  setSplitMode((prev) => (prev === 'canvas' ? 'none' : 'canvas'))
-                }
-                onToggleSmartReader={() => setIsSmartReaderOpen(true)}
-                onNavigate={handleNavigate}
-                onGoBack={handleGoBack}
-                onGoForward={handleGoForward}
-                onReload={handleReload}
-                onStop={handleStop}
-                onGoHome={handleGoHome}
-              />
-            </>
-          )}
+            ) : (
+              /* Bir siteye girilmişse: Sade Tarayıcı Barı + Chromium Web Sayfası */
+              <div className="flex-1 flex flex-col h-full overflow-hidden relative">
+                {/* Sade Adres Çubuğu */}
+                <div className="h-12 bg-white border-b border-slate-200 px-3 flex items-center space-x-2 shrink-0 z-20">
+                  <button
+                    onClick={handleGoHome}
+                    className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
+                    title="Arama Ana Sayfasına Dön"
+                  >
+                    <Home className="w-4 h-4" />
+                  </button>
 
-          {/* Content Viewports + Right AI Tutor */}
-          <div className="flex-1 relative overflow-hidden flex flex-row">
-            <div className="flex-1 relative overflow-hidden flex flex-col">
-              <BrowserContainer isVisible={isBrowserActive} />
+                  <button
+                    onClick={() => activeTabId && window.chirmo?.goBack(activeTabId)}
+                    disabled={!activeTabData?.canGoBack}
+                    className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 disabled:opacity-30 hover:bg-slate-100 transition-colors"
+                    title="Geri"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                  </button>
 
-              {/* İngilizce Keşfet & Makaleler */}
-              {activeMenu === 'explore' && (
-                <div className="absolute inset-0 z-10 flex">
-                  <ExploreEnglishView
-                    userLevel={learningProgress.currentLevel}
-                    onOpenArticleInBrowser={handleOpenArticleInBrowser}
-                  />
-                </div>
-              )}
+                  <button
+                    onClick={() => activeTabId && window.chirmo?.goForward(activeTabId)}
+                    disabled={!activeTabData?.canGoForward}
+                    className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 disabled:opacity-30 hover:bg-slate-100 transition-colors"
+                    title="İleri"
+                  >
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
 
-              {/* Kelimelerim & Kişisel Öğrenme Havuzu */}
-              {activeMenu === 'vocabulary' && (
-                <div className="absolute inset-0 z-10 flex">
-                  <VocabularyVaultView />
-                </div>
-              )}
+                  <button
+                    onClick={() => activeTabId && window.chirmo?.reload(activeTabId)}
+                    className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
+                    title="Yenile"
+                  >
+                    <RotateCw className="w-4 h-4" />
+                  </button>
 
-              {/* Günlük Pratik & Test */}
-              {activeMenu === 'daily' && (
-                <div className="absolute inset-0 z-10 flex">
-                  <PracticeView
-                    userLevel={learningProgress.currentLevel}
-                    progress={learningProgress}
-                    onRefreshProgress={() =>
-                      setLearningProgress({ ...LearningStorageService.getProgress() })
-                    }
-                  />
-                </div>
-              )}
-
-              {/* İlerlemem & Kişisel Gelişim Raporu */}
-              {activeMenu === 'progress' && (
-                <div className="absolute inset-0 z-10 flex">
-                  <ProgressView progress={learningProgress} />
-                </div>
-              )}
-
-              {/* YouTube & Video Çift Altyazılı Öğrenme (Watching Mode) */}
-              {activeMenu === 'watching' && (
-                <div className="absolute inset-0 z-10 flex">
-                  <WatchingView
-                    onWordAdded={() => setLearningProgress({ ...LearningStorageService.getProgress() })}
-                    onOpenInTutor={(word) => {
-                      setActiveLearningText(word);
-                      setIsAiTutorOpen(true);
+                  {/* Adres Giriş Alanı */}
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleNavigate(addressBarUrl);
                     }}
-                  />
+                    className="flex-1 max-w-2xl"
+                  >
+                    <div className="flex items-center bg-slate-100 hover:bg-slate-200/80 focus-within:bg-white rounded-full px-3 py-1.5 border border-slate-200 text-xs transition-colors">
+                      <Lock className="w-3.5 h-3.5 text-emerald-600 mr-2 shrink-0" />
+                      <input
+                        type="text"
+                        value={addressBarUrl}
+                        onChange={(e) => setAddressBarUrl(e.target.value)}
+                        className="w-full bg-transparent outline-none text-slate-800 font-medium"
+                      />
+                    </div>
+                  </form>
+
+                  {/* Akıllı Sadeleştirici Butonu */}
+                  <button
+                    onClick={() => setIsSmartReaderOpen(true)}
+                    className="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold transition-all shadow-xs flex items-center space-x-1.5 cursor-pointer"
+                    title="Sayfayı Seviyeme Göre Sadeleştir ve Testini Gör"
+                  >
+                    <BookOpen className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Sayfayı Kolaylaştır</span>
+                  </button>
                 </div>
-              )}
 
-              {/* Yapay Zekâ Sesli Konuşma & Telaffuz (Speaking Mode) */}
-              {activeMenu === 'speaking' && (
-                <div className="absolute inset-0 z-10 flex">
-                  <SpeakingView userLevel={learningProgress.currentLevel} />
+                {/* Web Sayfası Görüntüleyici ve Sağ Türkçe Yardımcı */}
+                <div className="flex-1 relative flex flex-row overflow-hidden">
+                  <BrowserContainer isVisible={isBrowserNavigating} />
+
+                  {isTutorOpen && (
+                    <SimpleAiTutorDrawer
+                      isOpen={isTutorOpen}
+                      onClose={() => setIsTutorOpen(false)}
+                      selectedText={activeLearningText}
+                      userLevel={learningProgress.currentLevel}
+                      onWordAdded={() => {
+                        setLearningProgress({ ...LearningStorageService.getProgress() });
+                      }}
+                    />
+                  )}
                 </div>
-              )}
-
-              {/* İngilizce Yazma Asistanı (Writing Mode) */}
-              {activeMenu === 'writing' && (
-                <div className="absolute inset-0 z-10 flex">
-                  <WritingAssistantView userLevel={learningProgress.currentLevel} />
-                </div>
-              )}
-
-              {activeMenu === 'discover' && (
-              <div className="absolute inset-0 z-10 flex">
-                <DiscoverView
-                  onSearchTopic={(topic: string) => {
-                    setSharedSearchQuery(topic);
-                    setActiveMenu('home');
-                  }}
-                  onOpenVisualDiscovery={(q: string) => {
-                    setVisualInitialQuery(q);
-                    setActiveMenu('visual');
-                  }}
-                  onCompareTopics={(a: string, b: string) => {
-                    setComparePair({ a, b });
-                    setActiveMenu('compare');
-                  }}
-                />
-              </div>
-            )}
-
-            {activeMenu === 'visual' && (
-              <div className="absolute inset-0 z-10 flex">
-                <VisualDiscoveryView
-                  initialQuery={visualInitialQuery}
-                  onExploreTopic={(topic: string) => {
-                    setSharedSearchQuery(topic);
-                    setActiveMenu('home');
-                  }}
-                />
-              </div>
-            )}
-
-            {activeMenu === 'compare' && (
-              <div className="absolute inset-0 z-10 flex">
-                <CompareView
-                  initialOptionA={comparePair.a}
-                  initialOptionB={comparePair.b}
-                  onExploreTopic={(topic: string) => {
-                    setSharedSearchQuery(topic);
-                    setActiveMenu('home');
-                  }}
-                />
-              </div>
-            )}
-
-            {activeMenu === 'agents' && (
-              <div className="absolute inset-0 z-10 flex">
-                <AgentsView initialPrompt={agentInitialPrompt} />
-              </div>
-            )}
-
-            {activeMenu === 'projects' && (
-              <div className="absolute inset-0 z-10 flex">
-                <ProjectsView
-                  onOpenSearch={(q: string) => {
-                    setSharedSearchQuery(q);
-                    setActiveMenu('home');
-                  }}
-                  onOpenComparison={(a: string, b: string) => {
-                    setComparePair({ a, b });
-                    setActiveMenu('compare');
-                  }}
-                />
-              </div>
-            )}
-
-            {activeMenu === 'tools' && (
-              <div className="absolute inset-0 z-10 flex">
-                <ToolsView currentTab={activeTab} />
-              </div>
-            )}
-
-            {activeMenu === 'workflows' && (
-              <div className="absolute inset-0 z-10 flex">
-                <WorkflowsView />
-              </div>
-            )}
-
-            {activeMenu === 'history' && (
-              <div className="absolute inset-0 z-10 flex">
-                <HistoryView />
-              </div>
-            )}
-
-            {activeMenu === 'settings' && (
-              <div className="absolute inset-0 z-10 flex">
-                <SettingsView />
-              </div>
-            )}
-
-            {activeMenu === 'home' && (
-              <div className="absolute inset-0 z-10 flex">
-                <HomeSearchHub
-                  key={homeResetTrigger}
-                  initialQuery={sharedSearchQuery}
-                  onNavigateToBrowser={(url: string) => {
-                    if (activeTabId && window.chirmo) {
-                      window.chirmo.navigate(activeTabId, url);
-                      setActiveMenu('browser');
-                    } else if (window.chirmo) {
-                      window.chirmo.createTab(url).then((tab) => {
-                        setActiveTabId(tab.id);
-                        setActiveMenu('browser');
-                      });
-                    }
-                  }}
-                  onNavigateToAgents={(prompt: string) => {
-                    setAgentInitialPrompt(prompt);
-                    setActiveMenu('agents');
-                  }}
-                  onNavigateToProjects={() => setActiveMenu('projects')}
-                  onNavigateToTools={() => setActiveMenu('tools')}
-                  onNavigateToVisual={(q: string) => {
-                    setVisualInitialQuery(q);
-                    setActiveMenu('visual');
-                  }}
-                  onNavigateToCompare={(a: string, b: string) => {
-                    setComparePair({ a, b });
-                    setActiveMenu('compare');
-                  }}
-                  onNavigateToDiscover={() => setActiveMenu('discover')}
-                />
               </div>
             )}
           </div>
+        )}
 
-          {isBrowserActive && splitMode === 'canvas' && (
-            <div className="w-[42%] min-w-[340px] max-w-[650px] border-l border-slate-200/80 dark:border-slate-800 flex flex-col z-20 bg-white dark:bg-slate-900 shadow-xl animate-fadeIn">
-              <SplitCanvasWorkspace
-                currentTab={activeTab}
-                onClose={() => setSplitMode('none')}
-                onNavigate={handleNavigate}
-                onExecuteAgentPrompt={(prompt) => {
-                  setAgentInitialPrompt(prompt);
-                  setIsTaskPanelOpen(true);
-                }}
-              />
-            </div>
-          )}
-
-          {isBrowserActive && isTaskPanelOpen && (
-            <TaskSidebar
-              currentTab={activeTab}
-              onClose={() => setIsTaskPanelOpen(false)}
-            />
-          )}
-
-          {/* Chirmo AI Kişisel İngilizce Öğretmeni Sağ Paneli */}
-          {isAiTutorOpen && (
-            <AiTutorSidebar
-              isOpen={isAiTutorOpen}
-              onClose={() => setIsAiTutorOpen(false)}
-              selectedText={activeLearningText}
+        {/* BÖLÜM 2: İNGİLİZCE ÖĞRENME MERKEZİ */}
+        {activeTab === 'learn' && (
+          <div className="flex-1 flex flex-col h-full overflow-hidden">
+            <SimpleLearningHub
               userLevel={learningProgress.currentLevel}
-              onWordAdded={() => {
-                setLearningProgress({ ...LearningStorageService.getProgress() });
-              }}
+              onLevelChange={handleLevelChange}
+              onOpenInBrowser={(url) => handleNavigate(url)}
             />
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* Chirmo Ambient English Learning Alt Çubuğu */}
-        <LearnBottomBar
-          progress={learningProgress}
-          activeMode={learningMode}
-          onModeChange={handleModeChange}
-          onLevelChange={handleLevelChange}
-          isAiTutorOpen={isAiTutorOpen}
-          onToggleAiTutor={() => setIsAiTutorOpen(!isAiTutorOpen)}
-          onOpenVocabulary={() => setActiveMenu('vocabulary')}
-          onOpenPlacementTest={() => setIsPlacementTestOpen(true)}
-        />
-      </div>
+        {/* BÖLÜM 3: İŞ & GÖREV TAKİBİ */}
+        {activeTab === 'tasks' && (
+          <div className="flex-1 flex flex-col h-full overflow-hidden">
+            <SimpleTaskWorkspace />
+          </div>
+        )}
+      </main>
 
-      {/* 2 Dakikalık Hızlı Seviye Tespit Sınavı Modal */}
-      <PlacementTestModal
-        isOpen={isPlacementTestOpen}
-        onClose={() => setIsPlacementTestOpen(false)}
-        onCompleteLevel={handleLevelChange}
-      />
-
-      {/* Chirmo Akıllı Sayfa Sadeleştirici & Okuma Modu Modal */}
+      {/* Sayfa Sadeleştirici Modal */}
       <SmartReaderModal
         isOpen={isSmartReaderOpen}
         onClose={() => setIsSmartReaderOpen(false)}
-        pageTitle={activeTab?.title}
-        pageUrl={activeTab?.url}
+        pageTitle={activeTabData?.title || 'Web Sayfası'}
+        pageUrl={activeTabData?.url}
         userLevel={learningProgress.currentLevel}
         onWordAdded={() => setLearningProgress({ ...LearningStorageService.getProgress() })}
       />
-    </div>
-
-      {/* ==================== GİRİŞ YAP / KAYIT OL MODAL ==================== */}
-      {authModalMode && (
-        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-purple-100 relative">
-            <button
-              onClick={() => setAuthModalMode(null)}
-              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            <div className="flex flex-col items-center text-center mb-6">
-              <ChirmoLogo size="md" variant="header" />
-              <h3 className="text-xl font-bold text-slate-900 mt-4">
-                {authModalMode === 'login' ? 'Chirmo Hesabına Giriş Yap' : 'Yeni Chirmo Hesabı Oluştur'}
-              </h3>
-              <p className="text-xs text-slate-500 mt-1">
-                Araştırmalarınızı, koleksiyonlarınızı ve kişisel çalışma alanınızı senkronize edin.
-              </p>
-            </div>
-
-            <form onSubmit={handleAuthSubmit} className="space-y-3.5">
-              {authModalMode === 'register' && (
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Ad Soyad
-                  </label>
-                  <input
-                    type="text"
-                    value={authName}
-                    onChange={(e) => setAuthName(e.target.value)}
-                    placeholder="Örn: İbrahim Balta"
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-[#6534F8] outline-none"
-                    required
-                  />
-                </div>
-              )}
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  E-Posta Adresi
-                </label>
-                <input
-                  type="email"
-                  value={authEmail}
-                  onChange={(e) => setAuthEmail(e.target.value)}
-                  placeholder="ornek@chirmo.com"
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-[#6534F8] outline-none"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Şifre
-                </label>
-                <input
-                  type="password"
-                  value={authPassword}
-                  onChange={(e) => setAuthPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-[#6534F8] outline-none"
-                  required
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-3 rounded-full bg-gradient-to-r from-[#6C38FF] to-[#5624E0] hover:from-[#5E2CE6] hover:to-[#4A1CC4] text-white text-sm font-semibold shadow-md transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
-              >
-                <Sparkles className="w-4 h-4" />
-                <span>{authModalMode === 'login' ? 'Giriş Yap' : 'Ücretsiz Kayıt Ol'}</span>
-              </button>
-            </form>
-
-            <div className="mt-5 text-center text-xs text-slate-500">
-              {authModalMode === 'login' ? (
-                <>
-                  Hesabınız yok mu?{' '}
-                  <button
-                    type="button"
-                    onClick={() => setAuthModalMode('register')}
-                    className="text-[#6534F8] font-semibold hover:underline"
-                  >
-                    Kayıt Olun
-                  </button>
-                </>
-              ) : (
-                <>
-                  Zaten hesabınız var mı?{' '}
-                  <button
-                    type="button"
-                    onClick={() => setAuthModalMode('login')}
-                    className="text-[#6534F8] font-semibold hover:underline"
-                  >
-                    Giriş Yapın
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ==================== NATIVE MOBILE BOTTOM NAVIGATION BAR ==================== */}
-      <nav
-        className="sm:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-lg border-t border-slate-200/90 z-40 flex items-center justify-around px-2 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.06)]"
-        aria-label="Mobil Gezinme Menüsü"
-      >
-        {/* 1. Arama / Home */}
-        <button
-          onClick={handleGoHome}
-          className={`flex flex-col items-center justify-center flex-1 py-1.5 transition-colors cursor-pointer ${
-            activeMenu === 'home' ? 'text-[#6534F8] font-bold' : 'text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <Search className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px]">Arama</span>
-        </button>
-
-        {/* 2. Keşfet */}
-        <button
-          onClick={() => setActiveMenu('discover')}
-          className={`flex flex-col items-center justify-center flex-1 py-1.5 transition-colors cursor-pointer ${
-            activeMenu === 'discover' ? 'text-[#6534F8] font-bold' : 'text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <Compass className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px]">Keşfet</span>
-        </button>
-
-        {/* 3. Görseller */}
-        <button
-          onClick={() => setActiveMenu('visual')}
-          className={`flex flex-col items-center justify-center flex-1 py-1.5 transition-colors cursor-pointer ${
-            activeMenu === 'visual' ? 'text-[#6534F8] font-bold' : 'text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <ImageIcon className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px]">Görseller</span>
-        </button>
-
-        {/* 4. Karşılaştır */}
-        <button
-          onClick={() => setActiveMenu('compare')}
-          className={`flex flex-col items-center justify-center flex-1 py-1.5 transition-colors cursor-pointer ${
-            activeMenu === 'compare' ? 'text-[#6534F8] font-bold' : 'text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <Scale className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px]">Karşılaştır</span>
-        </button>
-
-        {/* 5. Menü / Apps */}
-        <button
-          onClick={() => setShowAppLauncher((prev) => !prev)}
-          className={`flex flex-col items-center justify-center flex-1 py-1.5 transition-colors cursor-pointer ${
-            showAppLauncher ? 'text-[#6534F8] font-bold' : 'text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <LayoutGrid className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px]">Uygulamalar</span>
-        </button>
-      </nav>
     </div>
   );
 };
