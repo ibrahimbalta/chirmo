@@ -170,67 +170,67 @@ export const App: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#FAF9FE] text-slate-800 select-none font-sans">
-      {/* ==================== ÜST SADE ANA BAŞLIK ==================== */}
-      <header className="h-16 px-4 sm:px-6 bg-white/95 backdrop-blur-md border-b border-slate-200/80 flex items-center justify-between z-30 shrink-0 shadow-xs">
+      {/* ==================== ÜST SADE & MİNİMAL OVAL ANA BAŞLIK ==================== */}
+      <header className="h-14 px-3 sm:px-5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200/70 dark:border-slate-800/80 flex items-center justify-between z-30 shrink-0">
         {/* Sol: Logo */}
         <div
           onClick={handleGoHome}
-          className="cursor-pointer flex items-center space-x-2.5 hover:opacity-90 transition-opacity"
+          className="cursor-pointer flex items-center space-x-2 hover:opacity-90 transition-opacity"
           title="Chirmo Ana Sayfa"
         >
           <ChirmoLogo size="sm" variant="header" />
-          <span className="hidden sm:inline-block text-[11px] font-semibold text-slate-400 border-l border-slate-200 pl-2.5">
+          <span className="hidden md:inline-block text-[11px] font-medium text-slate-400 border-l border-slate-200/80 dark:border-slate-700 pl-2">
             Gezin • Öğren • Yönet
           </span>
         </div>
 
-        {/* Orta: 3 Temel Ana Bölüm (Masaüstü/Tablet) */}
-        <div className="hidden sm:flex items-center space-x-1 sm:space-x-2 bg-slate-100 p-1 rounded-2xl border border-slate-200">
+        {/* Orta: 3 Temel Ana Bölüm (Oval & Minimal Segmented Control) */}
+        <div className="hidden sm:flex items-center p-0.5 bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/70 dark:border-slate-700/70 rounded-full shadow-2xs">
           <button
             onClick={() => {
               setActiveTab('search');
             }}
-            className={`flex items-center space-x-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer ${
               activeTab === 'search'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-semibold shadow-xs'
+                : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-white/50 font-medium'
             }`}
           >
-            <Search className="w-4 h-4" />
-            <span>Arama & İnternet</span>
+            <Search className={`w-3.5 h-3.5 ${activeTab === 'search' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'}`} />
+            <span>Arama & Web</span>
           </button>
 
           <button
             onClick={() => setActiveTab('learn')}
-            className={`flex items-center space-x-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer ${
               activeTab === 'learn'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-semibold shadow-xs'
+                : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-white/50 font-medium'
             }`}
           >
-            <BookOpen className="w-4 h-4" />
-            <span>İngilizce Konuş (30 Gün)</span>
+            <BookOpen className={`w-3.5 h-3.5 ${activeTab === 'learn' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`} />
+            <span>30 Gün Konuşma</span>
           </button>
 
           <button
             onClick={() => setActiveTab('tasks')}
-            className={`flex items-center space-x-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer ${
               activeTab === 'tasks'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-semibold shadow-xs'
+                : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-white/50 font-medium'
             }`}
           >
-            <CheckSquare className="w-4 h-4" />
-            <span>İş & Hedef Takibi</span>
+            <CheckSquare className={`w-3.5 h-3.5 ${activeTab === 'tasks' ? 'text-purple-600 dark:text-purple-400' : 'text-slate-400'}`} />
+            <span>İş & Hedefler</span>
           </button>
         </div>
 
-        {/* Sağ: İlerleme & XP Rozetleri & Türkçe Yardımcı Butonu */}
-        <div className="flex items-center space-x-2 sm:space-x-3">
-          {/* Mobil Uygulama & APK İndir Butonu */}
+        {/* Sağ: İlerleme Rozetleri, Minimal Oval Butonlar & Profil */}
+        <div className="flex items-center space-x-1.5 sm:space-x-2">
+          {/* Mobil Uygulama & APK İndir (Şık Oval Hap Buton) */}
           <button
             onClick={() => setIsInstallModalOpen(true)}
-            className="flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white text-xs font-black shadow-xs cursor-pointer transition-transform hover:scale-105"
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-semibold shadow-xs cursor-pointer transition-all hover:scale-[1.02]"
             title="Chirmo'yu telefon veya bilgisayarına indir (PWA / APK)"
           >
             <Smartphone className="w-3.5 h-3.5" />
@@ -238,60 +238,50 @@ export const App: React.FC = () => {
             <span className="inline xs:hidden sm:hidden">İndir</span>
           </button>
 
-          {/* Konuşma Kampı Rozeti */}
-          <button
-            onClick={() => setActiveTab('learn')}
-            className="hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold hover:bg-blue-100 transition-colors cursor-pointer"
-            title="30 Günlük Konuşma Kampına Git"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-            <span>30 Günlük Konuşma Kampı</span>
-          </button>
-
-          {/* Gün Serisi Sayacı */}
+          {/* Gün Serisi Sayacı (Minimal Oval Hap) */}
           <div
             onClick={() => setActiveTab('learn')}
-            className="hidden sm:flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold cursor-pointer"
+            className="hidden sm:flex items-center space-x-1 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-300 text-xs font-medium cursor-pointer hover:bg-amber-500/15 transition-colors"
             title="30 Günlük Kamp Kesintisiz Serisi"
           >
-            <span>🔥</span>
+            <span className="text-xs">🔥</span>
             <span>{campProgress.streakDays} Gün</span>
           </div>
 
-          {/* Toplam XP */}
+          {/* Toplam XP (Minimal Oval Hap) */}
           <div
             onClick={() => setActiveTab('learn')}
-            className="hidden lg:flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-purple-50 border border-purple-200 text-purple-700 text-xs font-bold cursor-pointer"
+            className="hidden lg:flex items-center space-x-1 px-2.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-700 dark:text-purple-300 text-xs font-medium cursor-pointer hover:bg-purple-500/15 transition-colors"
             title="Kazanılan Toplam Konuşma Puanı"
           >
-            <span>⭐</span>
+            <span className="text-xs">⭐</span>
             <span>{campProgress.totalXp} XP</span>
           </div>
 
-          {/* Türkçe Yardımcı Paneli */}
+          {/* Türkçe Yardımcı Paneli (Şık Oval Geçiş Butonu) */}
           <button
             onClick={() => setIsTutorOpen(!isTutorOpen)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center space-x-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center space-x-1.5 cursor-pointer ${
               isTutorOpen
-                ? 'bg-blue-600 text-white shadow-blue-500/20'
-                : 'bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100'
+                ? 'bg-indigo-600 text-white shadow-xs'
+                : 'bg-slate-100/90 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700 hover:bg-slate-200/70'
             }`}
             title="Sayfadaki kelime ve cümleleri Türkçe açıklayan yardımcı"
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Türkçe Yardımcı</span>
+            <span className="hidden md:inline">Türkçe Yardımcı</span>
           </button>
 
-          {/* Kişiye Özel Profil Butonu (Tıklanınca İsim ve Seviye Değiştirilebilir) */}
+          {/* Kişiye Özel Profil Çipi (Minimal Oval) */}
           <div
             onClick={() => setIsProfileModalOpen(true)}
-            className="flex items-center space-x-1.5 p-1 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition-all shrink-0 group"
+            className="flex items-center space-x-1.5 pl-0.5 pr-2 py-0.5 rounded-full bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-500 cursor-pointer transition-all shrink-0 group"
             title={`${userProfile.hasCustomName ? userProfile.name : 'Profilini Düzenle'} (${userProfile.level})`}
           >
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-sm shadow-xs border border-white dark:border-slate-700 group-hover:scale-105 transition-transform">
+            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-xs shadow-2xs group-hover:scale-105 transition-transform">
               {userProfile.avatarEmoji || '🎓'}
             </div>
-            <span className="hidden xl:inline text-xs font-black text-slate-700 dark:text-slate-300">
+            <span className="hidden xl:inline text-xs font-semibold text-slate-700 dark:text-slate-300">
               {userProfile.hasCustomName ? userProfile.name : 'Profilim'}
             </span>
           </div>
