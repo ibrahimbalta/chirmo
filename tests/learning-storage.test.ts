@@ -86,4 +86,16 @@ describe('LearningStorageService (Chirmo English Learning Engine)', () => {
     expect(updatedWord?.mastery).toBe(Math.min(100, initialMastery + 20));
     expect(updatedWord?.reviewCount).toBe(firstWord.reviewCount + 1);
   });
+
+  it('analyzes English writing, corrects grammar mistakes and suggests tone upgrades', () => {
+    const badText = 'I am agree with your proposal. Please explain me the details because I look forward to hear from you.';
+    const result = LearningStorageService.analyzeWriting(badText, 'formal');
+
+    expect(result).toBeDefined();
+    expect(result.suggestions.length).toBeGreaterThanOrEqual(3);
+    expect(result.improvedText).toContain('I agree');
+    expect(result.improvedText).toContain('explain to me');
+    expect(result.improvedText).toContain('look forward to hearing');
+    expect(result.readabilityScore).toBeGreaterThan(50);
+  });
 });

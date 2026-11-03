@@ -70,7 +70,24 @@ export type ActiveNavMenu =
   | 'daily'
   | 'speaking'
   | 'watching'
-  | 'progress';
+  | 'progress'
+  | 'writing';
+
+export interface WritingSuggestion {
+  id: string;
+  original: string;
+  replacement: string;
+  type: 'grammar' | 'vocabulary' | 'clarity' | 'tone';
+  explanation: string;
+}
+
+export interface WritingAnalysisResult {
+  originalText: string;
+  improvedText: string;
+  readabilityScore: number;
+  detectedLevel: CEFRLevel;
+  suggestions: WritingSuggestion[];
+}
 
 export type CEFRLevel = 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2';
 export type LearningMode = 'reading' | 'watching' | 'speaking' | 'practice';

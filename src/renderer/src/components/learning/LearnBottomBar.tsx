@@ -20,6 +20,7 @@ interface LearnBottomBarProps {
   isAiTutorOpen: boolean;
   onToggleAiTutor: () => void;
   onOpenVocabulary: () => void;
+  onOpenPlacementTest?: () => void;
 }
 
 export const LearnBottomBar: React.FC<LearnBottomBarProps> = ({
@@ -29,7 +30,8 @@ export const LearnBottomBar: React.FC<LearnBottomBarProps> = ({
   onLevelChange,
   isAiTutorOpen,
   onToggleAiTutor,
-  onOpenVocabulary
+  onOpenVocabulary,
+  onOpenPlacementTest
 }) => {
   const levels: CEFRLevel[] = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
   const percentComplete = Math.min(100, Math.round((progress.wordsLearnedToday / progress.targetWords) * 100));
@@ -60,6 +62,15 @@ export const LearnBottomBar: React.FC<LearnBottomBarProps> = ({
               </button>
             );
           })}
+          {onOpenPlacementTest && (
+            <button
+              onClick={onOpenPlacementTest}
+              className="px-2 py-0.5 rounded font-semibold text-[10px] text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 transition-colors ml-1"
+              title="2 Dakikalık Hızlı Seviye Tespit Sınavını Başlat"
+            >
+              🎯 Test Et
+            </button>
+          )}
         </div>
 
         {/* Günlük Hedef & Streak */}

@@ -1,4 +1,12 @@
-import { CEFRLevel, LearningMode, VocabularyWord, DailyGoalProgress, ExploredArticle } from '../types';
+import {
+  CEFRLevel,
+  LearningMode,
+  VocabularyWord,
+  DailyGoalProgress,
+  ExploredArticle,
+  WritingAnalysisResult,
+  WritingSuggestion
+} from '../types';
 
 const STORAGE_KEYS = {
   VOCABULARY: 'chirmo_vocabulary_v1',
@@ -424,5 +432,88 @@ export class LearningStorageService {
     utterance.lang = 'en-US';
     utterance.rate = 0.9; // Slightly slower for clear pedagogical comprehension
     window.speechSynthesis.speak(utterance);
+  }
+
+  // --- Writing Assistant & Proofreader ---
+  public static analyzeWriting(
+    text: string,
+    tone: 'formal' | 'casual' | 'academic' | 'friendly' = 'formal'
+  ): WritingAnalysisResult {
+    const suggestions: WritingSuggestion[] = [];
+    let improved = text;
+
+    const rules = [
+      {
+        regex: /\bI am agree\b/gi,
+        rep: 'I agree',
+        type: 'grammar' as const,
+        expl: '"agree" bir fiildir; İngilizcede "am" yardımcı fiili ile birlikte kullanılmaz.'
+      },
+      {
+        regex: /\bexplain me\b/gi,
+        rep: 'explain to me',
+        type: 'grammar' as const,
+        expl: '"explain" fiili dolaylı nesne aldığında "to" edatına ihtiyaç duyar.'
+      },
+      {
+        regex: /\blook forward to hear\b/gi,
+        rep: 'look forward to hearing',
+        type: 'grammar' as const,
+        expl: '"look forward to" kalıbından sonra gelen fiil daima -ing takısı alır.'
+      },
+      {
+        regex: /\binterested about\b/gi,
+        rep: 'interested in',
+        type: 'grammar' as const,
+        expl: '"interested" sıfatı İngilizcede "about" yerine "in" edatıyla eşleşir.'
+      },
+      {
+        regex: /\bvery good\b/gi,
+        rep: tone === 'formal' || tone === 'academic' ? 'exceptional' : 'terrific',
+        type: 'vocabulary' as const,
+        expl: '"very good" yerine daha nitelikli bir CEFR B2/C1 sıfatı metninizin profesyonelliğini artırır.'
+      },
+      {
+        regex: /\ba lot of\b/gi,
+        rep: tone === 'formal' || tone === 'academic' ? 'a substantial number of' : 'plenty of',
+        type: 'vocabulary' as const,
+        expl: 'Resmi yazılarda "a lot of" yerine daha kurumsal ve akademik ifadeler tercih edilir.'
+      },
+      {
+        regex: /\bneed to\b/gi,
+        rep: tone === 'formal' ? 'are required to' : 'should',
+        type: 'tone' as const,
+        expl: 'Ton ayarına bağlı olarak daha nazik ve kurumsal bir zorunluluk ifadesi seçildi.'
+      }
+    ];
+
+    rules.forEach((rule, idx) => {
+      if (rule.regex.test(improved)) {
+        const match = text.match(rule.regex);
+        suggestions.push({
+          id: 'sug-' + idx,
+          original: match ? match[0] : '',
+          replacement: rule.rep,
+          type: rule.type,
+          explanation: rule.expl
+        });
+        improved = improved.replace(rule.regex, rule.rep);
+      }
+    });
+
+    const words = text.trim().split(/\s+/).filter(Boolean);
+    const avgLen = words.reduce((acc, w) => acc + w.length, 0) / (words.length || 1);
+    let detectedLevel: CEFRLevel = 'B1';
+    if (avgLen > 6.5) detectedLevel = 'C1';
+    else if (avgLen > 5.5) detectedLevel = 'B2';
+    else if (avgLen < 4.2) detectedLevel = 'A2';
+
+    return {
+      originalText: text,
+      improvedText: improved,
+      readabilityScore: Math.min(100, Math.max(60, 95 - suggestions.length * 6)),
+      detectedLevel,
+      suggestions
+    };
   }
 }

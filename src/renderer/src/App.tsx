@@ -26,7 +26,8 @@ import {
   TrendingUp,
   BookOpen,
   Tv,
-  Mic
+  Mic,
+  PenTool
 } from 'lucide-react';
 import { TabBar } from './components/browser/TabBar';
 import { AddressBar } from './components/browser/AddressBar';
@@ -53,6 +54,8 @@ import { PracticeView } from './components/learning/PracticeView';
 import { ProgressView } from './components/learning/ProgressView';
 import { WatchingView } from './components/learning/WatchingView';
 import { SpeakingView } from './components/learning/SpeakingView';
+import { WritingAssistantView } from './components/learning/WritingAssistantView';
+import { PlacementTestModal } from './components/learning/PlacementTestModal';
 import { LearnBottomBar } from './components/learning/LearnBottomBar';
 import { AiTutorSidebar } from './components/learning/AiTutorSidebar';
 import { LearningStorageService } from './services/learningStorage';
@@ -79,6 +82,7 @@ export const App: React.FC = () => {
     LearningStorageService.getLearningMode()
   );
   const [isAiTutorOpen, setIsAiTutorOpen] = useState(true);
+  const [isPlacementTestOpen, setIsPlacementTestOpen] = useState(false);
   const [activeLearningText, setActiveLearningText] = useState<string>(
     'Artificial intelligence is helping businesses improve their services and reduce costs.'
   );
@@ -437,6 +441,18 @@ export const App: React.FC = () => {
           >
             <Mic className="w-3.5 h-3.5" />
             <span>Speaking</span>
+          </button>
+
+          <button
+            onClick={() => setActiveMenu('writing')}
+            className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer flex items-center space-x-1.5 ${
+              activeMenu === 'writing'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+            }`}
+          >
+            <PenTool className="w-3.5 h-3.5" />
+            <span>Yazma</span>
           </button>
 
           <button
@@ -808,6 +824,13 @@ export const App: React.FC = () => {
                 </div>
               )}
 
+              {/* İngilizce Yazma Asistanı (Writing Mode) */}
+              {activeMenu === 'writing' && (
+                <div className="absolute inset-0 z-10 flex">
+                  <WritingAssistantView userLevel={learningProgress.currentLevel} />
+                </div>
+              )}
+
               {activeMenu === 'discover' && (
               <div className="absolute inset-0 z-10 flex">
                 <DiscoverView
@@ -977,8 +1000,16 @@ export const App: React.FC = () => {
           isAiTutorOpen={isAiTutorOpen}
           onToggleAiTutor={() => setIsAiTutorOpen(!isAiTutorOpen)}
           onOpenVocabulary={() => setActiveMenu('vocabulary')}
+          onOpenPlacementTest={() => setIsPlacementTestOpen(true)}
         />
       </div>
+
+      {/* 2 Dakikalık Hızlı Seviye Tespit Sınavı Modal */}
+      <PlacementTestModal
+        isOpen={isPlacementTestOpen}
+        onClose={() => setIsPlacementTestOpen(false)}
+        onCompleteLevel={handleLevelChange}
+      />
     </div>
 
       {/* ==================== GİRİŞ YAP / KAYIT OL MODAL ==================== */}

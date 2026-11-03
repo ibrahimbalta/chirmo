@@ -21,7 +21,8 @@ import {
   TrendingUp,
   Sparkles,
   Tv,
-  Mic
+  Mic,
+  PenTool
 } from 'lucide-react'
 import { ActiveNavMenu } from '../../types'
 import { ChirmoLogo } from '../common/ChirmoLogo'
@@ -65,6 +66,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) =>
           id: 'speaking' as ActiveNavMenu,
           label: 'Sesli Konuşma (Speaking)',
           icon: <Mic className="w-4 h-4 shrink-0" />
+        },
+        {
+          id: 'writing' as ActiveNavMenu,
+          label: 'Yazma Asistanı (Writing)',
+          icon: <PenTool className="w-4 h-4 shrink-0" />
         },
         {
           id: 'daily' as ActiveNavMenu,
