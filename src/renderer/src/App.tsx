@@ -22,6 +22,7 @@ import { SimpleAiTutorDrawer } from './components/learning/SimpleAiTutorDrawer';
 import { SmartReaderModal } from './components/learning/SmartReaderModal';
 import { LearningStorageService } from './services/learningStorage';
 import { Tab, CEFRLevel, DailyGoalProgress } from './types';
+import { CampStorageService, StudentCampProgress } from './services/curriculumData';
 
 export const App: React.FC = () => {
   // 3 Temel Bölüm: 'search' (Arama & Tarayıcı) | 'learn' (İngilizce Öğren) | 'tasks' (İş Takibi)
@@ -36,6 +37,9 @@ export const App: React.FC = () => {
   // Öğrenme & Seviye Durumu (Türk kullanıcılar için varsayılan A1 Başlangıç)
   const [learningProgress, setLearningProgress] = useState<DailyGoalProgress>(() =>
     LearningStorageService.getProgress()
+  );
+  const [campProgress, setCampProgress] = useState<StudentCampProgress>(() =>
+    CampStorageService.getProgress()
   );
   const [isTutorOpen, setIsTutorOpen] = useState(false);
   const [isSmartReaderOpen, setIsSmartReaderOpen] = useState(false);
@@ -169,7 +173,7 @@ export const App: React.FC = () => {
             }`}
           >
             <BookOpen className="w-4 h-4" />
-            <span>İngilizce Öğren</span>
+            <span>İngilizce Konuş & MEB</span>
           </button>
 
           <button
@@ -181,29 +185,39 @@ export const App: React.FC = () => {
             }`}
           >
             <CheckSquare className="w-4 h-4" />
-            <span>İş & Görev Takibi</span>
+            <span>Ödev & İş Takibi</span>
           </button>
         </div>
 
-        {/* Sağ: Seviye & Türkçe Yardımcı Butonu */}
+        {/* Sağ: Sınıf & XP Rozetleri & Türkçe Yardımcı Butonu */}
         <div className="flex items-center space-x-2 sm:space-x-3">
-          {/* Seviye Rozeti */}
+          {/* Sınıf Rozeti */}
           <button
             onClick={() => setActiveTab('learn')}
             className="hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold hover:bg-blue-100 transition-colors cursor-pointer"
-            title="Seviyeni Değiştir"
+            title="Sınıfını ve Ünitelerini Değiştir"
           >
-            <span>Seviye: {learningProgress.currentLevel}</span>
+            <span>{campProgress.selectedGrade}. Sınıf {campProgress.selectedGrade === '8' ? '(LGS)' : ''}</span>
           </button>
 
-          {/* Günlük Kelime Sayacı */}
+          {/* Gün Serisi Sayacı */}
           <div
             onClick={() => setActiveTab('learn')}
             className="hidden sm:flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold cursor-pointer"
-            title="Bugün Öğrenilen Kelimeler"
+            title="30 Günlük Kamp Kesintisiz Serisi"
           >
             <span>🔥</span>
-            <span>{learningProgress.wordsLearnedToday}/{learningProgress.targetWords} Kelime</span>
+            <span>{campProgress.streakDays} Gün</span>
+          </div>
+
+          {/* Toplam XP */}
+          <div
+            onClick={() => setActiveTab('learn')}
+            className="hidden lg:flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-purple-50 border border-purple-200 text-purple-700 text-xs font-bold cursor-pointer"
+            title="Kazanılan Toplam Konuşma Puanı"
+          >
+            <span>⭐</span>
+            <span>{campProgress.totalXp} XP</span>
           </div>
 
           {/* Türkçe Yardımcı Paneli */}
