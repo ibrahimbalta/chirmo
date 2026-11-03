@@ -1150,7 +1150,9 @@ Detaylı bilgi için: [Web Siteniz / İletişim Adresiniz]`
         signal: controller.signal
       });
       clearTimeout(timer);
-      if (!res.ok) return [];
+      if (!res.ok) {
+        throw new Error(`Algolia API returned ${res.status}`);
+      }
       const json = await res.json();
       return (json.hits || []).slice(0, 6).map((h: any) => ({
         id: h.objectID,
