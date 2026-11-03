@@ -14,7 +14,7 @@ import {
   Globe
 } from 'lucide-react';
 import { ChirmoLogo } from './components/common/ChirmoLogo';
-import { BrowserContainer } from './components/browser/BrowserContainer';
+import { BrowserContainer, PageSentenceItem } from './components/browser/BrowserContainer';
 import { SimpleSearchHome } from './components/home/SimpleSearchHome';
 import { SimpleLearningHub } from './components/learning/SimpleLearningHub';
 import { SimpleTaskWorkspace } from './components/tasks/SimpleTaskWorkspace';
@@ -41,11 +41,12 @@ export const App: React.FC = () => {
   const [campProgress, setCampProgress] = useState<StudentCampProgress>(() =>
     CampStorageService.getProgress()
   );
-  const [isTutorOpen, setIsTutorOpen] = useState(false);
+  const [isTutorOpen, setIsTutorOpen] = useState(true);
   const [isSmartReaderOpen, setIsSmartReaderOpen] = useState(false);
   const [activeLearningText, setActiveLearningText] = useState(
     'Artificial intelligence is helping businesses improve their services and reduce costs.'
   );
+  const [selectedSentenceItem, setSelectedSentenceItem] = useState<PageSentenceItem | null>(null);
 
   // İş Takibi Görev Sayısı
   const [pendingTaskCount, setPendingTaskCount] = useState(2);
@@ -322,13 +323,22 @@ export const App: React.FC = () => {
 
                 {/* Web Sayfası Görüntüleyici ve Sağ Türkçe Yardımcı */}
                 <div className="flex-1 relative flex flex-row overflow-hidden">
-                  <BrowserContainer isVisible={isBrowserNavigating} />
+                  <BrowserContainer
+                    isVisible={isBrowserNavigating}
+                    currentUrl={addressBarUrl}
+                    onSentenceSelected={(item) => {
+                      setSelectedSentenceItem(item);
+                      setActiveLearningText(item.en);
+                    }}
+                    activeSentenceId={selectedSentenceItem?.id}
+                  />
 
                   {isTutorOpen && (
                     <SimpleAiTutorDrawer
                       isOpen={isTutorOpen}
                       onClose={() => setIsTutorOpen(false)}
                       selectedText={activeLearningText}
+                      selectedSentenceItem={selectedSentenceItem}
                       userLevel={learningProgress.currentLevel}
                       onWordAdded={() => {
                         setLearningProgress({ ...LearningStorageService.getProgress() });
