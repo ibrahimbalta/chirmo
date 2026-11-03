@@ -279,6 +279,7 @@ export interface ChirmoAPI {
   onTabStateChanged: (callback: (tab: Tab) => void) => () => void;
   onAgentPlan: (callback: (taskId: string, plan: AgentPlan) => void) => () => void;
   onAgentStep: (callback: (taskId: string, step: AgentStep) => void) => () => void;
+  onTextSelected?: (callback: (selectedText: string) => void) => () => void;
 }
 
 declare global {

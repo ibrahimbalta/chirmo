@@ -19,7 +19,9 @@ import {
   Bookmark,
   Dumbbell,
   TrendingUp,
-  Sparkles
+  Sparkles,
+  Tv,
+  Mic
 } from 'lucide-react'
 import { ActiveNavMenu } from '../../types'
 import { ChirmoLogo } from '../common/ChirmoLogo'
@@ -53,6 +55,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onSelectMenu }) =>
           id: 'vocabulary' as ActiveNavMenu,
           label: 'Kelimelerim (Vault)',
           icon: <Bookmark className="w-4 h-4 shrink-0" />
+        },
+        {
+          id: 'watching' as ActiveNavMenu,
+          label: 'Video & Altyazı (Watching)',
+          icon: <Tv className="w-4 h-4 shrink-0" />
+        },
+        {
+          id: 'speaking' as ActiveNavMenu,
+          label: 'Sesli Konuşma (Speaking)',
+          icon: <Mic className="w-4 h-4 shrink-0" />
         },
         {
           id: 'daily' as ActiveNavMenu,

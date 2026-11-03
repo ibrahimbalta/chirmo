@@ -125,6 +125,14 @@ const api = {
       ipcRenderer.removeListener('chirmo:agent-step', listener);
     };
   },
+
+  onTextSelected: (callback: (selectedText: string) => void) => {
+    const listener = (_: any, text: string) => callback(text);
+    ipcRenderer.on('chirmo:text-selected', listener);
+    return () => {
+      ipcRenderer.removeListener('chirmo:text-selected', listener);
+    };
+  },
 };
 
 contextBridge.exposeInMainWorld('chirmo', api);

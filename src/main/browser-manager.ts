@@ -163,6 +163,38 @@ export class BrowserManager {
       this.persistSession();
     });
 
+    // Setup in-page selection listener for Chirmo English Learning
+    contents.on('did-finish-load', () => {
+      contents.executeJavaScript(`
+        if (!window.__chirmoSelectionInjected) {
+          window.__chirmoSelectionInjected = true;
+          document.addEventListener('mouseup', () => {
+            try {
+              const sel = window.getSelection()?.toString().trim();
+              if (sel && sel.length > 0 && sel.length < 400) {
+                console.log('__CHIRMO_SELECTION__:' + sel);
+              }
+            } catch (e) {}
+          });
+        }
+      `).catch(() => {});
+    });
+
+    contents.on('console-message', (_, _level, message) => {
+      if (message && message.startsWith('__CHIRMO_SELECTION__:')) {
+        const text = message.replace('__CHIRMO_SELECTION__:', '').trim();
+        if (text) {
+          this.win.webContents.send('chirmo:text-selected', text);
+        }
+      }
+    });
+
+    contents.on('context-menu', (_, params) => {
+      if (params.selectionText && params.selectionText.trim().length > 0) {
+        this.win.webContents.send('chirmo:text-selected', params.selectionText.trim());
+      }
+    });
+
     // Handle network / loading errors with custom friendly error page
     contents.on('did-fail-load', (_, errorCode, errorDescription, validatedUrl) => {
       // Ignore ERR_ABORTED (-3) as it happens during normal redirect or user stop

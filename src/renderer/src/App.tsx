@@ -24,7 +24,9 @@ import {
   Bookmark,
   Dumbbell,
   TrendingUp,
-  BookOpen
+  BookOpen,
+  Tv,
+  Mic
 } from 'lucide-react';
 import { TabBar } from './components/browser/TabBar';
 import { AddressBar } from './components/browser/AddressBar';
@@ -49,6 +51,8 @@ import { ExploreEnglishView } from './components/learning/ExploreEnglishView';
 import { VocabularyVaultView } from './components/learning/VocabularyVaultView';
 import { PracticeView } from './components/learning/PracticeView';
 import { ProgressView } from './components/learning/ProgressView';
+import { WatchingView } from './components/learning/WatchingView';
+import { SpeakingView } from './components/learning/SpeakingView';
 import { LearnBottomBar } from './components/learning/LearnBottomBar';
 import { AiTutorSidebar } from './components/learning/AiTutorSidebar';
 import { LearningStorageService } from './services/learningStorage';
@@ -166,9 +170,17 @@ export const App: React.FC = () => {
         );
       });
 
+      const unsubText = window.chirmo.onTextSelected?.((selectedText) => {
+        if (selectedText && selectedText.trim().length > 0) {
+          setActiveLearningText(selectedText.trim());
+          setIsAiTutorOpen(true);
+        }
+      });
+
       return () => {
         unsubTabs();
         unsubState();
+        unsubText?.();
       };
     }
   }, []);
@@ -293,6 +305,10 @@ export const App: React.FC = () => {
     LearningStorageService.setLearningMode(mode);
     if (mode === 'reading') {
       setActiveMenu('browser');
+    } else if (mode === 'watching') {
+      setActiveMenu('watching');
+    } else if (mode === 'speaking') {
+      setActiveMenu('speaking');
     } else if (mode === 'practice') {
       setActiveMenu('daily');
     }
@@ -397,6 +413,30 @@ export const App: React.FC = () => {
           >
             <Bookmark className="w-3.5 h-3.5" />
             <span>Kelimelerim</span>
+          </button>
+
+          <button
+            onClick={() => setActiveMenu('watching')}
+            className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer flex items-center space-x-1.5 ${
+              activeMenu === 'watching'
+                ? 'bg-purple-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+            }`}
+          >
+            <Tv className="w-3.5 h-3.5" />
+            <span>Watching</span>
+          </button>
+
+          <button
+            onClick={() => setActiveMenu('speaking')}
+            className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer flex items-center space-x-1.5 ${
+              activeMenu === 'speaking'
+                ? 'bg-emerald-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+            }`}
+          >
+            <Mic className="w-3.5 h-3.5" />
+            <span>Speaking</span>
           </button>
 
           <button
@@ -745,6 +785,26 @@ export const App: React.FC = () => {
               {activeMenu === 'progress' && (
                 <div className="absolute inset-0 z-10 flex">
                   <ProgressView progress={learningProgress} />
+                </div>
+              )}
+
+              {/* YouTube & Video Çift Altyazılı Öğrenme (Watching Mode) */}
+              {activeMenu === 'watching' && (
+                <div className="absolute inset-0 z-10 flex">
+                  <WatchingView
+                    onWordAdded={() => setLearningProgress({ ...LearningStorageService.getProgress() })}
+                    onOpenInTutor={(word) => {
+                      setActiveLearningText(word);
+                      setIsAiTutorOpen(true);
+                    }}
+                  />
+                </div>
+              )}
+
+              {/* Yapay Zekâ Sesli Konuşma & Telaffuz (Speaking Mode) */}
+              {activeMenu === 'speaking' && (
+                <div className="absolute inset-0 z-10 flex">
+                  <SpeakingView userLevel={learningProgress.currentLevel} />
                 </div>
               )}
 
