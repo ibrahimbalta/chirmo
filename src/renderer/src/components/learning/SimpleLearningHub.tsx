@@ -19,13 +19,14 @@ import { CEFRLevel, VocabularyWord } from '../../types';
 import { LearningStorageService } from '../../services/learningStorage';
 import { ThirtyDayCampView } from '../kids/ThirtyDayCampView';
 import { GradeVocabularyView } from '../kids/GradeVocabularyView';
+import { DailyEnglishStudio } from './DailyEnglishStudio';
 import { CampStorageService } from '../../services/curriculumData';
 
 interface SimpleLearningHubProps {
   userLevel: CEFRLevel;
   onLevelChange: (level: CEFRLevel) => void;
   onOpenInBrowser: (url: string) => void;
-  initialTab?: 'camp' | 'grade' | 'vault' | 'flashcards' | 'quiz';
+  initialTab?: 'camp' | 'studio' | 'grade' | 'vault' | 'flashcards' | 'quiz';
 }
 
 export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
@@ -34,7 +35,7 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
   onOpenInBrowser,
   initialTab = 'camp'
 }) => {
-  const [activeTab, setActiveTab] = useState<'camp' | 'grade' | 'vault' | 'flashcards' | 'quiz'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'camp' | 'studio' | 'grade' | 'vault' | 'flashcards' | 'quiz'>(initialTab);
   const [words, setWords] = useState<VocabularyWord[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [campProgress, setCampProgress] = useState(() => CampStorageService.getProgress());
@@ -143,6 +144,18 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
           </button>
 
           <button
+            onClick={() => setActiveTab('studio')}
+            className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'studio'
+                ? 'bg-blue-600 text-white shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
+            }`}
+          >
+            <span>🗣️</span>
+            <span>Pratik Stüdyosu (Rol Yap & Cümle Kur) ⭐</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('grade')}
             className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
               activeTab === 'grade'
@@ -205,7 +218,12 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
           />
         )}
 
-        {/* 2. HAYAT KURTARAN 8 GERÇEK YAŞAM DURUMU */}
+        {/* 2. GÜNLÜK İNGİLİZCE PRATİK STÜDYOSU (DİYALOG, CÜMLE KURMA, DİNLEME) */}
+        {activeTab === 'studio' && (
+          <DailyEnglishStudio />
+        )}
+
+        {/* 3. HAYAT KURTARAN 8 GERÇEK YAŞAM DURUMU */}
         {activeTab === 'grade' && (
           <GradeVocabularyView
             onWordAdded={() => setWords(LearningStorageService.getSavedWords())}

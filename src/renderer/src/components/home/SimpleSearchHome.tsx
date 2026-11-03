@@ -419,42 +419,42 @@ export const SimpleSearchHome: React.FC<SimpleSearchHomeProps> = ({
           </div>
         </div>
 
-        {/* ==================== HIZLI REHBER MODÜLLERİ (4 KART) ==================== */}
+        {/* ==================== HIZLI DİL ARAÇLARI (4 KART) ==================== */}
         <div className="w-full max-w-2xl grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
           <div
             onClick={onNavigateToLearn}
-            className="p-3 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-center hover:border-blue-300 transition-all cursor-pointer shadow-2xs space-y-1"
+            className="p-3.5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-center hover:border-blue-400 transition-all cursor-pointer shadow-2xs space-y-1 group"
           >
-            <span className="text-lg">☕</span>
-            <div className="text-xs font-black text-slate-800 dark:text-slate-200">Kafe & Yemek</div>
-            <div className="text-[10px] text-slate-400">Sipariş Kalıpları</div>
+            <span className="text-2xl group-hover:scale-110 inline-block transition-transform">🗣️</span>
+            <div className="text-xs font-black text-slate-800 dark:text-slate-200">Diyalog & Rol Yap</div>
+            <div className="text-[10px] text-slate-400">22 Gerçek Hayat Senaryosu</div>
           </div>
 
           <div
             onClick={onNavigateToLearn}
-            className="p-3 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-center hover:border-blue-300 transition-all cursor-pointer shadow-2xs space-y-1"
+            className="p-3.5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-center hover:border-blue-400 transition-all cursor-pointer shadow-2xs space-y-1 group"
           >
-            <span className="text-lg">✈️</span>
-            <div className="text-xs font-black text-slate-800 dark:text-slate-200">Havalimanı</div>
-            <div className="text-[10px] text-slate-400">Pasaport & Otel</div>
+            <span className="text-2xl group-hover:scale-110 inline-block transition-transform">🧩</span>
+            <div className="text-xs font-black text-slate-800 dark:text-slate-200">Cümle Kurma</div>
+            <div className="text-[10px] text-slate-400">Kelime Dizmece Oyunu</div>
           </div>
 
           <div
             onClick={onNavigateToLearn}
-            className="p-3 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-center hover:border-blue-300 transition-all cursor-pointer shadow-2xs space-y-1"
+            className="p-3.5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-center hover:border-blue-400 transition-all cursor-pointer shadow-2xs space-y-1 group"
           >
-            <span className="text-lg">⚡</span>
-            <div className="text-xs font-black text-slate-800 dark:text-slate-200">Doğal Tepkiler</div>
-            <div className="text-[10px] text-slate-400">Amerikalı Gibi</div>
+            <span className="text-2xl group-hover:scale-110 inline-block transition-transform">👂</span>
+            <div className="text-xs font-black text-slate-800 dark:text-slate-200">Kulak Antrenmanı</div>
+            <div className="text-[10px] text-slate-400">Dinle & Anla Testi</div>
           </div>
 
           <div
             onClick={onNavigateToLearn}
-            className="p-3 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-center hover:border-blue-300 transition-all cursor-pointer shadow-2xs space-y-1"
+            className="p-3.5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-center hover:border-blue-400 transition-all cursor-pointer shadow-2xs space-y-1 group"
           >
-            <span className="text-lg">🗺️</span>
-            <div className="text-xs font-black text-slate-800 dark:text-slate-200">Yol & Şehir</div>
-            <div className="text-[10px] text-slate-400">Kaybolmadan Bul</div>
+            <span className="text-2xl group-hover:scale-110 inline-block transition-transform">📘</span>
+            <div className="text-xs font-black text-slate-800 dark:text-slate-200">30 Kalıp Bankası</div>
+            <div className="text-[10px] text-slate-400">7 Cümle Mantığı Kuralı</div>
           </div>
         </div>
       </div>
