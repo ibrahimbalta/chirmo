@@ -163,9 +163,6 @@ export const SimpleSearchHome: React.FC<SimpleSearchHomeProps> = ({
             <Sparkles className="w-4 h-4 text-amber-500" />
             <span>Sıfırdan 30 Günde Konuşma Garantili Yapay Zekâ Tarayıcısı</span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium max-w-lg">
-            20 yıllık öğretmen metoduyla gramer ezberini unut! İnternette gezinirken günde 5 dakika konuşma refleksi kazan, tüm hedeflerini tek yerden yönet.
-          </p>
         </div>
 
         {/* ==================== ARAMA KUTUSU ==================== */}
