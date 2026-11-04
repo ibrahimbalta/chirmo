@@ -25,6 +25,7 @@ import {
 import { LearningStorageService } from '../../services/learningStorage';
 import { UserProfileService, UserProfile } from '../../services/userProfileService';
 import { CampComparisonModal } from '../learning/CampComparisonModal';
+import { ChirmoInteractiveGraduationDialogueModal } from '../learning/ChirmoInteractiveGraduationDialogueModal';
 
 interface ThirtyDayCampViewProps {
   onDayCompleted?: (newProgress: StudentCampProgress) => void;
@@ -39,6 +40,7 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
     return saved.currentDay || 1;
   });
   const [isReportOpen, setIsReportOpen] = useState(false);
+  const [isGraduationDialogueOpen, setIsGraduationDialogueOpen] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile>(() => UserProfileService.getProfile());
 
   // Voice recording & feedback state
@@ -158,7 +160,9 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
     setIsCompletedForToday(true);
     onDayCompleted?.(updated);
 
-    if (selectedMission.day < 30) {
+    if (selectedMission.day === 30 || updated.completedDays.length >= 30) {
+      setIsGraduationDialogueOpen(true);
+    } else if (selectedMission.day < 30) {
       setSelectedDayNumber(selectedMission.day + 1);
     }
   };
@@ -186,6 +190,15 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
 
             {/* İstatistik Rozetleri & Karne Butonu */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0">
+              <button
+                type="button"
+                onClick={() => setIsGraduationDialogueOpen(true)}
+                className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-purple-950 font-black text-xs transition-all shadow-md flex items-center space-x-1.5 cursor-pointer"
+              >
+                <Sparkles className="w-3.5 h-3.5 fill-purple-950" />
+                <span>🤖 Chirmo Canlı Mezuniyet Sohbeti</span>
+              </button>
+
               <button
                 type="button"
                 onClick={() => setIsReportOpen(true)}
@@ -457,6 +470,13 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
         onClose={() => setIsReportOpen(false)}
         progress={progress}
         userProfile={userProfile}
+      />
+
+      {/* 30 Günlük Kamp Mezuniyeti & Milestone Canlı Konuşma Modalı */}
+      <ChirmoInteractiveGraduationDialogueModal
+        isOpen={isGraduationDialogueOpen}
+        onClose={() => setIsGraduationDialogueOpen(false)}
+        dayNumber={selectedDayNumber}
       />
     </div>
   );

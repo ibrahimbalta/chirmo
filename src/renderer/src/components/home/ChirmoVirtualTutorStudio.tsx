@@ -18,6 +18,7 @@ import { ChirmoSubscriptionModal } from '../subscription/ChirmoSubscriptionModal
 import { ChirmoAiChatModal } from './ChirmoAiChatModal';
 import { ChirmoFluencyBooster } from '../learning/ChirmoFluencyBooster';
 import { ChirmoStoryDialogueStudio } from '../learning/ChirmoStoryDialogueStudio';
+import { ChirmoInteractiveGraduationDialogueModal } from '../learning/ChirmoInteractiveGraduationDialogueModal';
 import { CEFRLevel } from '../../types';
 
 export interface ChirmoVirtualTutorStudioProps {
@@ -45,6 +46,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [isBoosterModalOpen, setIsBoosterModalOpen] = useState(false);
   const [isStoryModalOpen, setIsStoryModalOpen] = useState(false);
+  const [isRobotDialogueOpen, setIsRobotDialogueOpen] = useState(false);
 
   // AI Teacher Speech State
   const [tutorSpeechText] = useState(
@@ -201,8 +203,8 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 Bugün İngilizce konuşma yolculuğunda<br className="hidden sm:inline" /> harika bir gün!
               </p>
 
-              {/* Beyaz Başlat Butonu */}
-              <div className="pt-1">
+              {/* Butonlar: Ders Başlat & Canlı Robot Sohbeti */}
+              <div className="pt-1 flex flex-wrap items-center gap-2.5">
                 <button
                   type="button"
                   onClick={() => onNavigateToLearn && onNavigateToLearn()}
@@ -211,6 +213,15 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                   <Play className="w-4 h-4 fill-[#6d28d9]" />
                   <span>Bugünün Dersini Başlat</span>
                   <ArrowRight className="w-4 h-4" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsRobotDialogueOpen(true)}
+                  className="px-5 py-3.5 rounded-2xl bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/40 text-white font-black text-sm sm:text-[15px] shadow-lg shadow-black/10 flex items-center space-x-2 transition-all cursor-pointer active:scale-95 hover:scale-[1.02]"
+                >
+                  <Sparkles className="w-4 h-4 text-amber-300" />
+                  <span>🤖 Chirmo ile Canlı Konuş</span>
                 </button>
               </div>
 
@@ -226,7 +237,11 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
 
             {/* Sağ İçerik: Orijinal Şeffaf 3D Chirmo Maskot Karakteri */}
             <div className="relative flex flex-col items-center justify-center self-center lg:self-auto shrink-0 mt-2 lg:mt-0">
-              <div className="relative w-48 h-48 sm:w-60 sm:h-60 lg:w-72 lg:h-72 flex items-center justify-center group">
+              <div
+                onClick={() => setIsRobotDialogueOpen(true)}
+                className="relative w-48 h-48 sm:w-60 sm:h-60 lg:w-72 lg:h-72 flex items-center justify-center group cursor-pointer"
+                title="Chirmo ile Canlı Konuşmak İçin Tıkla!"
+              >
                 {/* Karakter Üstü Şık Konuşma Rozeti */}
                 <div className="absolute -top-1 sm:-top-2 right-0 sm:right-2 z-20 flex items-center space-x-1.5 bg-white/95 text-[#6d28d9] px-3.5 py-1.5 rounded-2xl rounded-bl-xs shadow-lg shadow-black/10 border border-purple-100/50 hover:scale-105 transition-transform">
                   <span className="text-xs">💜</span>
@@ -703,6 +718,14 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
           </div>
         </div>
       )}
+
+      {/* Chirmo Sanal Robot Canlı Konuşma Modalı */}
+      <ChirmoInteractiveGraduationDialogueModal
+        isOpen={isRobotDialogueOpen}
+        onClose={() => setIsRobotDialogueOpen(false)}
+        dayNumber={30}
+        milestoneTitle="Chirmo ile Canlı Robot Konuşması"
+      />
     </div>
   );
 };
