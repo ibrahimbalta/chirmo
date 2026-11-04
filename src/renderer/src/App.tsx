@@ -95,8 +95,12 @@ export const App: React.FC = () => {
       setIsBrowserNavigating(false);
     } else if (itemId === 'games') {
       setActiveTab('games');
-    } else if (itemId === 'simulator') {
+    } else if (itemId === 'speaking' || itemId === 'simulator') {
       setActiveTab('speak');
+    } else if (itemId === 'kids') {
+      setActiveTab('kids');
+    } else if (itemId === 'report' || itemId === 'tasks') {
+      setActiveTab('tasks');
     } else {
       setActiveTab('learn');
     }
