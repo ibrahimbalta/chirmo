@@ -34,6 +34,8 @@ describe('Chirmo Talking Robot Avatar & Interactive Graduation Dialogue', () => 
     expect(content).toContain('ChirmoTalkingRobotAvatar');
     expect(content).toContain('GeminiAiTeacherService');
     expect(content).toContain('SpeechRecognition');
+    expect(content).toContain('Türkçe Açıklaması');
+    expect(content).toContain('translationTr');
   });
 
   it('integrates graduation dialogue modal into ThirtyDayCampView for day 30 milestone', () => {
