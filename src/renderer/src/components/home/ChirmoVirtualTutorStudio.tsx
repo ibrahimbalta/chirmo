@@ -193,19 +193,13 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
               </div>
             </div>
 
-            {/* Sağ İçerik: 2. Görseldeki Gerçek Chirmo Karakteri ve Konuşma Baloncuğu */}
+            {/* Sağ İçerik: Orijinal Şeffaf 3D Chirmo Maskot Karakteri */}
             <div className="relative flex items-center justify-center self-center lg:self-auto shrink-0 mt-2 lg:mt-0">
-              {/* Konuşma Baloncuğu */}
-              <div className="absolute -top-3 -left-8 sm:-left-16 z-20 px-3.5 py-1.5 rounded-2xl bg-white text-purple-900 font-black text-xs shadow-md shadow-purple-950/20 animate-bounce">
-                You can do it! 💜
-              </div>
-
-              {/* Gerçek 3D Chirmo Maskot Görseli (2. Görsel) */}
-              <div className="relative w-44 h-44 sm:w-56 sm:h-56 lg:w-64 lg:h-64 flex items-center justify-center">
+              <div className="relative w-48 h-48 sm:w-60 sm:h-60 lg:w-72 lg:h-72 flex items-center justify-center">
                 <img
                   src="./chirmo-character.png"
                   alt="Chirmo Maskot Karakteri"
-                  className="w-full h-full object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.25)] hover:scale-105 transition-transform"
+                  className="w-full h-full object-contain filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform"
                   onError={(e) => {
                     const img = e.currentTarget as HTMLImageElement;
                     if (!img.src.endsWith('/chirmo-avatar.png')) {
@@ -215,8 +209,8 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 />
 
                 {/* Altın Parıltı Yıldızları */}
-                <span className="absolute -top-1 right-2 text-amber-300 text-xl animate-ping">✨</span>
-                <span className="absolute bottom-6 -right-2 text-amber-300 text-base animate-pulse">⭐</span>
+                <span className="absolute top-2 right-4 text-amber-300 text-xl animate-ping pointer-events-none">✨</span>
+                <span className="absolute bottom-8 -right-1 text-amber-300 text-base animate-pulse pointer-events-none">⭐</span>
               </div>
             </div>
 
