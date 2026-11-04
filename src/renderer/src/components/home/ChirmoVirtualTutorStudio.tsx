@@ -5,14 +5,11 @@ import {
   Play,
   Mic,
   Volume2,
-  BookOpen,
-  MessageCircle,
-  Trophy,
-  Flame,
-  ArrowRight,
   Gamepad2,
   TrendingUp,
-  Sparkles
+  Sparkles,
+  ArrowRight,
+  ChevronRight
 } from 'lucide-react';
 import { LearningStorageService } from '../../services/learningStorage';
 import { ChirmoSubscriptionModal } from '../subscription/ChirmoSubscriptionModal';
@@ -81,12 +78,12 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   };
 
   return (
-    <div className="w-full h-full flex flex-col bg-[#f8faff] dark:bg-slate-950 overflow-y-auto p-4 sm:p-6 lg:p-7 space-y-5 select-none">
-      <div className="max-w-7xl mx-auto w-full space-y-5">
+    <div className="w-full h-full flex flex-col bg-[#f8faff] dark:bg-slate-950 overflow-y-auto p-3 sm:p-5 lg:p-7 space-y-4 sm:space-y-5 select-none">
+      <div className="max-w-7xl mx-auto w-full space-y-4 sm:space-y-5">
 
         {/* ==================== 1. ÜST ARAMA VE PROFİL BARI ==================== */}
-        <div className="flex items-center justify-between gap-4">
-          {/* Arama Kutusu */}
+        <div className="flex items-center justify-between gap-3 sm:gap-4">
+          {/* Oval Arama Kutusu */}
           <form onSubmit={handleSearchSubmit} className="flex-1 max-w-xl relative">
             <div className="relative flex items-center">
               <Search className="w-4 h-4 absolute left-4 text-slate-400" />
@@ -101,12 +98,12 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
           </form>
 
           {/* Sağ Bildirim ve Profil */}
-          <div className="flex items-center space-x-3 shrink-0">
+          <div className="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
             {/* Bildirim Çanı */}
             <button
               type="button"
               onClick={() => alert('Bugünkü konuşma göreviniz hazır: Restoran Diyaloğu!')}
-              className="relative p-2 rounded-full bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-xs cursor-pointer"
+              className="relative p-2.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-xs cursor-pointer"
               title="Bildirimler (2 Yeni)"
             >
               <Bell className="w-4 h-4" />
@@ -118,7 +115,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             {/* Kullanıcı Profil Resmi */}
             <div
               onClick={() => onNavigateToTasks && onNavigateToTasks()}
-              className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 border border-white dark:border-slate-700 shadow-xs flex items-center justify-center text-white font-black text-xs cursor-pointer hover:scale-105 transition-transform overflow-hidden"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 border-2 border-white dark:border-slate-700 shadow-xs flex items-center justify-center text-white font-black text-xs cursor-pointer hover:scale-105 transition-transform overflow-hidden"
               title="Profilim ve Gelişim Karnem"
             >
               <img
@@ -133,101 +130,116 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
           </div>
         </div>
 
-        {/* ==================== 2. KAHRAMAN AFİŞ (HERO BANNER) ==================== */}
-        <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-r from-[#e8edff] via-[#ede9fe] to-[#e4e7ff] dark:from-slate-900 dark:via-purple-950/40 dark:to-slate-900 border border-purple-200/60 dark:border-slate-800 p-6 sm:p-8 shadow-xs">
+        {/* ==================== 2. KAHRAMAN AFİŞ (HERO BANNER - 1. GÖRSELLE BİREBİR) ==================== */}
+        <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-r from-[#6366f1] via-[#7c3aed] to-[#8b5cf6] text-white p-6 sm:p-8 lg:p-9 shadow-lg shadow-indigo-500/15 border border-indigo-400/30">
 
           {/* Arka Plan: Londra / Big Ben Vektörel Şehir Silüeti */}
-          <div className="absolute right-40 sm:right-64 bottom-0 opacity-25 dark:opacity-10 pointer-events-none hidden md:block">
-            <svg width="260" height="170" viewBox="0 0 260 170" fill="currentColor" className="text-indigo-900 dark:text-indigo-300">
-              {/* Big Ben Kulesi ve Çan Kadranı */}
-              <rect x="90" y="55" width="30" height="115" rx="2" />
+          <div className="absolute right-48 sm:right-64 bottom-0 opacity-20 pointer-events-none hidden md:block">
+            <svg width="260" height="180" viewBox="0 0 260 180" fill="currentColor" className="text-white">
+              <rect x="90" y="55" width="30" height="125" rx="2" />
               <polygon points="90,55 105,25 120,55" />
               <polygon points="103,25 105,10 107,25" />
               <circle cx="105" cy="72" r="8" fill="none" stroke="#fff" strokeWidth="2" />
-              {/* Yan Westminster Sarayı Binaları */}
-              <rect x="40" y="105" width="50" height="65" rx="1" />
+              <rect x="40" y="105" width="50" height="75" rx="1" />
               <polygon points="40,105 50,85 60,105" />
               <polygon points="70,105 80,85 90,105" />
-              <rect x="120" y="115" width="60" height="55" rx="1" />
+              <rect x="120" y="115" width="60" height="65" rx="1" />
               <polygon points="135,115 145,95 155,115" />
               <polygon points="160,115 170,95 180,115" />
-              {/* Klasik Köprü Kemerleri */}
-              <path d="M10 170 Q30 145 50 170 Q70 145 90 170 Q130 145 170 170 Q210 145 250 170" fill="none" stroke="currentColor" strokeWidth="3" />
+              <path d="M10 180 Q30 155 50 180 Q70 155 90 180 Q130 155 170 180" fill="none" stroke="currentColor" strokeWidth="3" />
             </svg>
           </div>
 
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            {/* Sol Başlık ve İlerleme Kapsülü */}
-            <div className="space-y-3 max-w-xl">
-              <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight flex items-center space-x-2">
-                <span>Merhaba</span>
+            {/* Sol İçerik */}
+            <div className="space-y-3 sm:space-y-4 max-w-xl">
+              {/* Kamp Rozeti */}
+              <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-black shadow-xs">
+                <span>⭐</span>
+                <span>30 Günlük İngilizce Konuşma Kampı</span>
+              </div>
+
+              {/* Büyük Başlık */}
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight flex items-center space-x-2">
+                <span>Merhaba!</span>
                 <span className="inline-block animate-wiggle">👋</span>
               </h1>
-              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 font-medium leading-relaxed">
+
+              {/* Alt Karşılama Cümlesi */}
+              <p className="text-sm sm:text-base text-indigo-100 font-medium leading-relaxed">
                 Bugün İngilizce konuşma yolculuğunda<br className="hidden sm:inline" /> harika bir gün!
               </p>
 
-              {/* İlerleme Kapsülü */}
-              <div className="inline-flex items-center space-x-2.5 p-1.5 px-3 rounded-2xl bg-white/95 dark:bg-slate-800/95 backdrop-blur-xs border border-purple-100 dark:border-slate-700 shadow-2xs mt-2">
-                <span className="px-2.5 py-1 rounded-xl bg-blue-600 text-white text-[11px] font-black flex items-center space-x-1 shadow-2xs">
-                  <span>📅</span>
-                  <span>30 Günlük Kamp</span>
-                </span>
-                <span className="h-3 w-px bg-slate-300 dark:bg-slate-600" />
-                <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">
-                  Günün 1. Adımı
-                </span>
-                <div className="w-24 sm:w-32 h-2 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full"
-                    style={{ width: '25%' }}
-                  />
-                </div>
-                <span className="text-xs font-black text-purple-700 dark:text-purple-300">
-                  %7
-                </span>
+              {/* Beyaz Başlat Butonu */}
+              <div className="pt-1">
+                <button
+                  type="button"
+                  onClick={() => onNavigateToLearn && onNavigateToLearn()}
+                  className="px-6 py-3.5 rounded-2xl bg-white hover:bg-slate-100 text-[#6d28d9] font-black text-sm sm:text-[15px] shadow-lg shadow-black/15 flex items-center space-x-2.5 transition-all cursor-pointer active:scale-95 hover:scale-[1.02]"
+                >
+                  <Play className="w-4 h-4 fill-[#6d28d9]" />
+                  <span>Bugünün Dersini Başlat</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Carousel Noktaları */}
+              <div className="flex items-center space-x-1.5 pt-2">
+                <div className="w-5 h-1.5 rounded-full bg-white" />
+                <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
+                <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
+                <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
+                <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
               </div>
             </div>
 
-            {/* Sağ: 3D Sevimli Robot Maskot ve CTA Butonu */}
-            <div className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-5 self-start lg:self-auto">
-              {/* 3D Robot Görseli ve Işıltılı Yıldızlar */}
-              <div className="relative flex items-center justify-center">
-                {/* 3D Beyaz Robot Maskot İllüstrasyonu */}
-                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-b from-white via-indigo-50 to-purple-100 dark:from-slate-800 dark:to-slate-700 p-2 shadow-lg flex items-center justify-center text-6xl select-none group hover:scale-105 transition-transform border border-purple-100 dark:border-slate-700">
-                  <span className="drop-shadow-md">🤖</span>
-                </div>
-                {/* 4 Köşeli Altın Işıltı Yıldızları */}
-                <span className="absolute -top-1 -right-1 text-amber-400 text-lg animate-ping">✨</span>
-                <span className="absolute -top-2 left-3 text-purple-500 text-sm animate-pulse">✦</span>
-                <span className="absolute bottom-1 -left-2 text-amber-400 text-sm animate-bounce">⭐</span>
+            {/* Sağ İçerik: 2. Görseldeki Gerçek Chirmo Karakteri ve Konuşma Baloncuğu */}
+            <div className="relative flex items-center justify-center self-center lg:self-auto shrink-0 mt-2 lg:mt-0">
+              {/* Konuşma Baloncuğu */}
+              <div className="absolute -top-3 -left-8 sm:-left-16 z-20 px-3.5 py-1.5 rounded-2xl bg-white text-purple-900 font-black text-xs shadow-md shadow-purple-950/20 animate-bounce">
+                You can do it! 💜
               </div>
 
-              {/* Büyük Mor Ders Başlat Butonu */}
-              <button
-                type="button"
-                onClick={() => onNavigateToLearn && onNavigateToLearn()}
-                className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#5850ec] to-[#7c3aed] hover:from-[#4f46e5] hover:to-[#6d28d9] text-white font-extrabold text-sm sm:text-[15px] shadow-lg shadow-indigo-500/25 flex items-center space-x-2.5 transition-all cursor-pointer active:scale-95 hover:scale-[1.02]"
-              >
-                <Play className="w-4 h-4 fill-white" />
-                <span>Bugünün Dersini Başlat</span>
-              </button>
+              {/* Gerçek 3D Chirmo Maskot Görseli (2. Görsel) */}
+              <div className="relative w-44 h-44 sm:w-56 sm:h-56 lg:w-64 lg:h-64 flex items-center justify-center">
+                <img
+                  src="/chirmo-character.png"
+                  alt="Chirmo Maskot Karakteri"
+                  className="w-full h-full object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.25)] hover:scale-105 transition-transform"
+                  onError={(e) => {
+                    // Fallback to cute rendered avatar if path is loading
+                    (e.target as HTMLElement).style.display = 'none';
+                    const parent = (e.target as HTMLElement).parentElement;
+                    if (parent) {
+                      const fallback = document.createElement('div');
+                      fallback.className = 'w-40 h-40 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-7xl';
+                      fallback.innerText = '🤖';
+                      parent.appendChild(fallback);
+                    }
+                  }}
+                />
+
+                {/* Altın Parıltı Yıldızları */}
+                <span className="absolute -top-1 right-2 text-amber-300 text-xl animate-ping">✨</span>
+                <span className="absolute bottom-6 -right-2 text-amber-300 text-base animate-pulse">⭐</span>
+              </div>
             </div>
+
           </div>
         </div>
 
         {/* ==================== 3. 4 ADET KPI İSTATİSTİK KARTI ==================== */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {/* Kart 1: Öğrenilen Kelime */}
-          <div className="p-4 sm:p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 shadow-2xs flex items-center space-x-3.5 hover:shadow-xs transition-shadow">
-            <div className="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center text-2xl shrink-0">
+          <div className="p-3.5 sm:p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 shadow-2xs flex items-center space-x-3 sm:space-x-4 hover:shadow-xs transition-shadow">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#f3e8ff] dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl sm:text-2xl shrink-0">
               📖
             </div>
             <div>
-              <div className="text-xs font-bold text-slate-500 dark:text-slate-400">Öğrenilen Kelime</div>
-              <div className="flex items-baseline space-x-2 mt-0.5">
-                <span className="text-2xl font-black text-slate-900 dark:text-white">182</span>
-                <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 rounded-full">
+              <div className="text-[11px] sm:text-xs font-bold text-slate-500 dark:text-slate-400">Öğrenilen Kelime</div>
+              <div className="flex items-baseline space-x-1.5 sm:space-x-2 mt-0.5">
+                <span className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">182</span>
+                <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-1.5 py-0.5 rounded-full">
                   ↑ +12
                 </span>
               </div>
@@ -235,15 +247,15 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
           </div>
 
           {/* Kart 2: Konuşma Süresi */}
-          <div className="p-4 sm:p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 shadow-2xs flex items-center space-x-3.5 hover:shadow-xs transition-shadow">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl shrink-0">
+          <div className="p-3.5 sm:p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 shadow-2xs flex items-center space-x-3 sm:space-x-4 hover:shadow-xs transition-shadow">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#dcfce7] dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl sm:text-2xl shrink-0">
               💬
             </div>
             <div>
-              <div className="text-xs font-bold text-slate-500 dark:text-slate-400">Konuşma Süresi</div>
-              <div className="flex items-baseline space-x-2 mt-0.5">
-                <span className="text-2xl font-black text-slate-900 dark:text-white">28 dk</span>
-                <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 rounded-full">
+              <div className="text-[11px] sm:text-xs font-bold text-slate-500 dark:text-slate-400">Konuşma Süresi</div>
+              <div className="flex items-baseline space-x-1.5 sm:space-x-2 mt-0.5">
+                <span className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">28 dk</span>
+                <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-1.5 py-0.5 rounded-full">
                   ↑ +8 dk
                 </span>
               </div>
@@ -251,28 +263,28 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
           </div>
 
           {/* Kart 3: Başarı Rozeti */}
-          <div className="p-4 sm:p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 shadow-2xs flex items-center space-x-3.5 hover:shadow-xs transition-shadow">
-            <div className="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl shrink-0">
+          <div className="p-3.5 sm:p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 shadow-2xs flex items-center space-x-3 sm:space-x-4 hover:shadow-xs transition-shadow">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#fef3c7] dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl sm:text-2xl shrink-0">
               🏆
             </div>
             <div>
-              <div className="text-xs font-bold text-slate-500 dark:text-slate-400">Başarı Rozeti</div>
-              <div className="flex items-baseline space-x-2 mt-0.5">
-                <span className="text-2xl font-black text-slate-900 dark:text-white">7</span>
-                <span className="text-xs text-slate-400 font-bold">Toplam 24</span>
+              <div className="text-[11px] sm:text-xs font-bold text-slate-500 dark:text-slate-400">Başarı Rozeti</div>
+              <div className="flex items-baseline space-x-1.5 sm:space-x-2 mt-0.5">
+                <span className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">7</span>
+                <span className="text-[10px] sm:text-xs text-slate-400 font-bold">Toplam 24</span>
               </div>
             </div>
           </div>
 
           {/* Kart 4: Günlük Seri */}
-          <div className="p-4 sm:p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 shadow-2xs flex items-center space-x-3.5 hover:shadow-xs transition-shadow">
-            <div className="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center text-2xl shrink-0">
+          <div className="p-3.5 sm:p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 shadow-2xs flex items-center space-x-3 sm:space-x-4 hover:shadow-xs transition-shadow">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#e0f2fe] dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xl sm:text-2xl shrink-0">
               🔥
             </div>
             <div>
-              <div className="text-xs font-bold text-slate-500 dark:text-slate-400">Günlük Seri</div>
-              <div className="flex items-baseline space-x-2 mt-0.5">
-                <span className="text-2xl font-black text-slate-900 dark:text-white">12 Gün</span>
+              <div className="text-[11px] sm:text-xs font-bold text-slate-500 dark:text-slate-400">Günlük Seri</div>
+              <div className="flex items-baseline space-x-1.5 sm:space-x-2 mt-0.5">
+                <span className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">12 Gün</span>
               </div>
               <div className="text-[10px] text-amber-500 font-black">
                 🔥 Harika gidiyorsun!
@@ -282,18 +294,28 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
         </div>
 
         {/* ==================== 4. ORTA SÜTUN: DERS PLANI VE CHIRMO AI ÖĞRETMENİ ==================== */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
 
           {/* SOL: BUGÜNÜN DERS PLANI (7 Kolon) */}
-          <div className="lg:col-span-7 p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs space-y-4">
-            <div className="flex items-center space-x-2 pb-2 border-b border-slate-100 dark:border-slate-800">
-              <span className="text-amber-500 font-black text-lg">⚡</span>
-              <h2 className="text-base font-black text-slate-900 dark:text-white">
-                Bugünün Ders Planı
-              </h2>
+          <div className="lg:col-span-7 p-5 sm:p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center space-x-2">
+                <span className="text-amber-500 font-black text-lg">⚡</span>
+                <h2 className="text-base font-black text-slate-900 dark:text-white">
+                  Bugünün Ders Planı
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => onNavigateToLearn && onNavigateToLearn()}
+                className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center space-x-1 cursor-pointer"
+              >
+                <span>Tüm Planı Gör</span>
+                <span>→</span>
+              </button>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {/* Adım 1: Kelime Öğrenme */}
               <div className="flex items-center space-x-3.5 p-2 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                 <div className="w-7 h-7 rounded-full bg-purple-600 text-white flex items-center justify-center shrink-0 text-xs font-black shadow-xs">
@@ -319,10 +341,10 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
               </div>
 
               {/* Adım 3: Konuşma Pratiği (AKTİF VURGULANAN ADIM) */}
-              <div className="p-3.5 rounded-2xl bg-indigo-50/80 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+              <div className="p-3.5 rounded-2xl bg-[#ede9fe]/80 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
                 <div className="flex items-center space-x-3">
                   <div className="w-7 h-7 rounded-full bg-purple-600 text-white flex items-center justify-center shrink-0 text-xs font-black shadow-xs">
-                    3
+                    ✓
                   </div>
                   <div className="w-7 h-7 rounded-full bg-purple-200 dark:bg-purple-900 text-purple-700 dark:text-purple-300 flex items-center justify-center shrink-0">
                     <Mic className="w-4 h-4" />
@@ -363,7 +385,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
           </div>
 
           {/* SAĞ: CHIRMO AI ÖĞRETMENİ (5 Kolon) */}
-          <div className="lg:col-span-5 p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs flex flex-col justify-between space-y-4">
+          <div className="lg:col-span-5 p-5 sm:p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs flex flex-col justify-between space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center space-x-2">
                 <span className="text-xl">🤖</span>
@@ -379,10 +401,17 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
 
             {/* Konuşan Maskot ve Baloncuk */}
             <div className="flex items-start space-x-3 py-2">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-slate-800 dark:to-slate-700 p-2 flex items-center justify-center text-3xl shadow-xs border border-purple-200 dark:border-slate-700 shrink-0">
-                🤖
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-slate-800 dark:to-slate-700 p-1 flex items-center justify-center shadow-xs border border-purple-200 dark:border-slate-700 shrink-0 overflow-hidden">
+                <img
+                  src="/chirmo-character.png"
+                  alt="Chirmo Karakteri"
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    (e.target as HTMLElement).style.display = 'none';
+                  }}
+                />
               </div>
-              <div className="p-3.5 rounded-2xl bg-purple-50 dark:bg-slate-800/80 border border-purple-200/80 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 font-medium leading-relaxed">
+              <div className="p-3.5 rounded-2xl bg-[#f5f3ff] dark:bg-slate-800/80 border border-purple-100 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 font-medium leading-relaxed">
                 "{tutorSpeechText}"
               </div>
             </div>
@@ -391,7 +420,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             <button
               type="button"
               onClick={() => handleChirmoSpeak(tutorSpeechText)}
-              className="w-full py-3 rounded-2xl bg-purple-100 hover:bg-purple-200 dark:bg-purple-950/70 text-purple-900 dark:text-purple-200 font-black text-xs transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-2xs hover:scale-[1.01] active:scale-95"
+              className="w-full py-3 rounded-2xl bg-[#ede9fe] hover:bg-[#ddd6fe] dark:bg-purple-950/70 text-purple-900 dark:text-purple-200 font-black text-xs transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-2xs hover:scale-[1.01] active:scale-95"
             >
               <Volume2 className="w-4 h-4 text-purple-600" />
               <span>Sohbet Başlat →</span>
@@ -400,11 +429,11 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
 
         </div>
 
-        {/* ==================== 5. ALT SÜTUN: OYUN MERKEZİ VE HAFTALIK GELİŞİM ==================== */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        {/* ==================== 5. ALT SÜTUN: OYUN MERKEZİ VE HAFTALIK GELİŞİM (1. GÖRSELLE BİREBİR) ==================== */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
 
           {/* SOL: OYUN MERKEZİ (7 Kolon) */}
-          <div className="lg:col-span-7 p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs space-y-4">
+          <div className="lg:col-span-7 p-5 sm:p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center space-x-2">
                 <Gamepad2 className="w-5 h-5 text-purple-600" />
@@ -415,55 +444,55 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
               <button
                 type="button"
                 onClick={() => onNavigateToGames && onNavigateToGames()}
-                className="text-xs font-bold text-pink-600 hover:text-pink-700 flex items-center space-x-1 cursor-pointer"
+                className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center space-x-1 cursor-pointer"
               >
-                <span>Tüm oyunları keşfet</span>
+                <span>Tüm Oyunları Keşfet</span>
                 <span>→</span>
               </button>
             </div>
 
-            {/* 4 Renkli Oyun Kartı */}
+            {/* 4 Renkli Oyun Kartı (1. Görseldeki Tam Kartlar) */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {/* Oyun 1: Kelime Avı */}
               <div
                 onClick={() => onNavigateToGames && onNavigateToGames()}
-                className="p-3.5 rounded-2xl bg-gradient-to-b from-purple-200 to-indigo-300 dark:from-purple-950 dark:to-indigo-900 text-center space-y-2 cursor-pointer hover:scale-105 transition-all shadow-2xs flex flex-col items-center justify-center"
+                className="p-3.5 rounded-2xl bg-gradient-to-b from-purple-300 via-indigo-300 to-indigo-400 dark:from-purple-950 dark:to-indigo-900 text-center space-y-2 cursor-pointer hover:scale-105 transition-all shadow-xs flex flex-col items-center justify-center group"
               >
-                <div className="text-3xl">⭐</div>
+                <div className="text-3xl group-hover:scale-115 transition-transform">⭐</div>
                 <div className="text-xs font-black text-slate-900 dark:text-white">Kelime Avı</div>
               </div>
 
               {/* Oyun 2: Cümle Ustası */}
               <div
                 onClick={() => onNavigateToGames && onNavigateToGames()}
-                className="p-3.5 rounded-2xl bg-gradient-to-b from-amber-200 to-orange-300 dark:from-amber-950 dark:to-orange-900 text-center space-y-2 cursor-pointer hover:scale-105 transition-all shadow-2xs flex flex-col items-center justify-center"
+                className="p-3.5 rounded-2xl bg-gradient-to-b from-amber-300 via-orange-300 to-orange-400 dark:from-amber-950 dark:to-orange-900 text-center space-y-2 cursor-pointer hover:scale-105 transition-all shadow-xs flex flex-col items-center justify-center group"
               >
-                <div className="text-3xl">🧩</div>
+                <div className="text-3xl group-hover:scale-115 transition-transform">🧩</div>
                 <div className="text-xs font-black text-slate-900 dark:text-white">Cümle Ustası</div>
               </div>
 
-              {/* Oyun 3: Hızlı Cevap */}
+              {/* Oyun 3: Dinle & Bul */}
               <div
                 onClick={() => onNavigateToGames && onNavigateToGames()}
-                className="p-3.5 rounded-2xl bg-gradient-to-b from-cyan-200 to-blue-300 dark:from-cyan-950 dark:to-blue-900 text-center space-y-2 cursor-pointer hover:scale-105 transition-all shadow-2xs flex flex-col items-center justify-center"
+                className="p-3.5 rounded-2xl bg-gradient-to-b from-cyan-300 via-sky-300 to-blue-400 dark:from-cyan-950 dark:to-blue-900 text-center space-y-2 cursor-pointer hover:scale-105 transition-all shadow-xs flex flex-col items-center justify-center group"
               >
-                <div className="text-3xl">⏱️</div>
-                <div className="text-xs font-black text-slate-900 dark:text-white">Hızlı Cevap</div>
+                <div className="text-3xl group-hover:scale-115 transition-transform">🎧</div>
+                <div className="text-xs font-black text-slate-900 dark:text-white">Dinle & Bul</div>
               </div>
 
-              {/* Oyun 4: Hafıza Kartları */}
+              {/* Oyun 4: Hızlı Cevap */}
               <div
                 onClick={() => onNavigateToGames && onNavigateToGames()}
-                className="p-3.5 rounded-2xl bg-gradient-to-b from-orange-200 to-purple-300 dark:from-orange-950 dark:to-purple-900 text-center space-y-2 cursor-pointer hover:scale-105 transition-all shadow-2xs flex flex-col items-center justify-center"
+                className="p-3.5 rounded-2xl bg-gradient-to-b from-lime-300 via-emerald-300 to-green-400 dark:from-emerald-950 dark:to-green-900 text-center space-y-2 cursor-pointer hover:scale-105 transition-all shadow-xs flex flex-col items-center justify-center group"
               >
-                <div className="text-3xl">🎴</div>
-                <div className="text-xs font-black text-slate-900 dark:text-white">Hafıza Kartları</div>
+                <div className="text-3xl group-hover:scale-115 transition-transform">🚀</div>
+                <div className="text-xs font-black text-slate-900 dark:text-white">Hızlı Cevap</div>
               </div>
             </div>
           </div>
 
           {/* SAĞ: HAFTALIK GELİŞİM RAPORU (5 Kolon) */}
-          <div className="lg:col-span-5 p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs space-y-4">
+          <div className="lg:col-span-5 p-5 sm:p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center space-x-2">
                 <TrendingUp className="w-5 h-5 text-indigo-600" />
@@ -476,7 +505,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 onClick={() => onNavigateToTasks && onNavigateToTasks()}
                 className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center space-x-1 cursor-pointer"
               >
-                <span>Detayları Gör</span>
+                <span>Detayı Gör</span>
                 <span>→</span>
               </button>
             </div>
@@ -485,7 +514,6 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             <div className="flex items-center justify-between gap-4 pt-1">
               <div className="space-y-1">
                 <div className="flex items-center space-x-1 text-purple-600 font-black text-3xl">
-                  <span className="text-xl">↗</span>
                   <span>%85</span>
                 </div>
                 <div className="text-xs font-bold text-slate-500">
@@ -493,11 +521,11 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 </div>
               </div>
 
-              {/* Dalgalı Çizgi Grafik (SVG) */}
-              <div className="flex-1 max-w-[180px] h-16 flex items-center">
+              {/* Dalgalı Çizgi Grafik (1. Görseldeki Eğri) */}
+              <div className="flex-1 max-w-[190px] h-16 flex items-center">
                 <svg viewBox="0 0 100 40" className="w-full h-full overflow-visible">
                   <defs>
-                    <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient id="homeChartGrad" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.4" />
                       <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0" />
                     </linearGradient>
@@ -506,17 +534,17 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                     d="M0,35 Q15,30 30,22 T60,15 T85,8 T100,5"
                     fill="none"
                     stroke="#8b5cf6"
-                    strokeWidth="3"
+                    strokeWidth="3.5"
                     strokeLinecap="round"
                   />
                   <path
                     d="M0,35 Q15,30 30,22 T60,15 T85,8 T100,5 L100,40 L0,40 Z"
-                    fill="url(#chartGradient)"
+                    fill="url(#homeChartGrad)"
                   />
-                  <circle cx="30" cy="22" r="2.5" fill="#8b5cf6" />
-                  <circle cx="60" cy="15" r="2.5" fill="#8b5cf6" />
-                  <circle cx="85" cy="8" r="2.5" fill="#8b5cf6" />
-                  <circle cx="100" cy="5" r="3.5" fill="#7c3aed" />
+                  <circle cx="30" cy="22" r="3" fill="#8b5cf6" />
+                  <circle cx="60" cy="15" r="3" fill="#8b5cf6" />
+                  <circle cx="85" cy="8" r="3" fill="#8b5cf6" />
+                  <circle cx="100" cy="5" r="4" fill="#7c3aed" />
                 </svg>
               </div>
             </div>

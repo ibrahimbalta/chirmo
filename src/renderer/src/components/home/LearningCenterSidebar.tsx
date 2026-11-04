@@ -7,19 +7,10 @@ import {
   BookOpen,
   BarChart2,
   Settings,
-  Crown,
   ArrowRight,
-  Sparkles,
-  ChevronDown,
-  ChevronUp,
   ChevronLeft,
-  GraduationCap,
   Target,
-  Trophy,
-  Edit2,
-  Headphones,
-  PenTool,
-  Brain
+  Award
 } from 'lucide-react';
 import { UserProfileService, UserProfile } from '../../services/userProfileService';
 import { ProfileEditModal } from '../common/ProfileEditModal';
@@ -58,7 +49,7 @@ export const LearningCenterSidebar: React.FC<LearningCenterSidebarProps> = ({
 
   return (
     <aside className="w-64 shrink-0 h-full bg-white dark:bg-slate-900 border-r border-slate-200/90 dark:border-slate-800 flex flex-col justify-between overflow-y-auto select-none p-4 z-20 transition-all">
-      <div className="space-y-5">
+      <div className="space-y-4">
         {/* ==================== 1. LOGO & BAŞLIK ==================== */}
         <div className="flex items-center justify-between pb-1">
           <div className="flex items-center space-x-2.5">
@@ -100,7 +91,7 @@ export const LearningCenterSidebar: React.FC<LearningCenterSidebarProps> = ({
           <span>Chirmo Pro'ya Geç</span>
         </div>
 
-        {/* ==================== 2. MENÜ LİSTESİ (GÖRSELDEKİ TAM TASARIM) ==================== */}
+        {/* ==================== 2. MENÜ LİSTESİ ==================== */}
         <nav className="space-y-1.5 text-xs font-bold">
           {/* 1. Ana Sayfa (Aktif Buton) */}
           <button
@@ -191,10 +182,10 @@ export const LearningCenterSidebar: React.FC<LearningCenterSidebarProps> = ({
         </nav>
       </div>
 
-      {/* ==================== 3. ALT BÖLÜM: CHIRMO PREMIUM VE SEVİMLİ MASKOT ==================== */}
-      <div className="space-y-4 pt-3">
+      {/* ==================== 3. ALT BÖLÜM: CHIRMO PREMIUM VE GÜNLÜK HEDEFİM ==================== */}
+      <div className="space-y-3 pt-2">
         {/* Chirmo Premium (200 TL / Ay) Kartı */}
-        <div className="p-4 rounded-3xl bg-gradient-to-br from-indigo-500 via-purple-600 to-purple-700 text-white shadow-lg shadow-purple-500/25 relative overflow-hidden group">
+        <div className="p-4 rounded-3xl bg-gradient-to-br from-indigo-500 via-purple-600 to-purple-700 text-white shadow-lg shadow-purple-500/20 relative overflow-hidden group">
           <div className="flex items-center space-x-2">
             <span className="text-xl">👑</span>
             <div>
@@ -213,13 +204,30 @@ export const LearningCenterSidebar: React.FC<LearningCenterSidebarProps> = ({
           </button>
         </div>
 
-        {/* 3D Sevimli Robot Maskot & Konuşma Baloncuğu */}
-        <div className="relative pt-2 flex items-center space-x-3">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-100 to-indigo-100 dark:from-slate-800 dark:to-slate-700 p-1 flex items-center justify-center text-3xl shadow-sm border border-purple-200 dark:border-slate-700 shrink-0">
-            🤖
+        {/* Günlük Hedefim Kartı (1. Görseldeki Tam Tasarım) */}
+        <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60 space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-1.5 text-xs font-black text-slate-800 dark:text-slate-100">
+              <span className="text-sm">🎯</span>
+              <span>Günlük Hedefim</span>
+            </div>
+            <div className="text-xs font-black text-slate-800 dark:text-slate-200">
+              <span>12 </span>
+              <span className="text-emerald-500">/ 20 dk</span>
+            </div>
           </div>
-          <div className="p-2.5 rounded-2xl bg-purple-50 dark:bg-slate-800 border border-purple-200/80 dark:border-slate-700 text-[11px] font-black text-purple-900 dark:text-purple-300 shadow-2xs leading-tight">
-            Let's learn English! 💜
+
+          {/* İlerleme Çubuğu */}
+          <div className="h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+            <div className="h-full bg-emerald-500 rounded-full" style={{ width: '60%' }} />
+          </div>
+
+          {/* Bugünün Rozeti */}
+          <div className="flex items-center justify-between pt-1">
+            <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
+              Bugünün Rozeti
+            </span>
+            <span className="text-base">🏅</span>
           </div>
         </div>
       </div>
