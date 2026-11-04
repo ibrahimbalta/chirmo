@@ -250,6 +250,158 @@ export const GAME_VOICE_CHALLENGES: VoiceChallengeItem[] = [
   }
 ];
 
+// 🎧 DİNLEME OYUNU SORULARI (Duyduğunu Anlama ve Doğru Resmi/Kelimeyi Seçme)
+export interface ListeningChallengeItem {
+  id: string;
+  spokenText: string;
+  correctAnswer: string;
+  options: Array<{ text: string; emoji: string; isCorrect: boolean }>;
+  explanationTr: string;
+  audience: 'kids' | 'adults';
+}
+
+export const GAME_LISTENING_CHALLENGES: ListeningChallengeItem[] = [
+  // Çocuklar
+  {
+    id: 'lc_k1',
+    spokenText: 'Elephant',
+    correctAnswer: 'Fil',
+    options: [
+      { text: 'Fil', emoji: '🐘', isCorrect: true },
+      { text: 'Maymun', emoji: '🐵', isCorrect: false },
+      { text: 'Kedi', emoji: '🐱', isCorrect: false },
+      { text: 'Tavşan', emoji: '🐰', isCorrect: false }
+    ],
+    explanationTr: '"Elephant" İngilizce devasa hortumlu sevimli fil demektir.',
+    audience: 'kids'
+  },
+  {
+    id: 'lc_k2',
+    spokenText: 'Yellow banana',
+    correctAnswer: 'Sarı muz',
+    options: [
+      { text: 'Sarı muz', emoji: '🍌', isCorrect: true },
+      { text: 'Kırmızı elma', emoji: '🍎', isCorrect: false },
+      { text: 'Mavi top', emoji: '⚽', isCorrect: false },
+      { text: 'Dondurma', emoji: '🍦', isCorrect: false }
+    ],
+    explanationTr: '"Yellow" sarı, "banana" muz demektir.',
+    audience: 'kids'
+  },
+  {
+    id: 'lc_k3',
+    spokenText: 'The bird is singing',
+    correctAnswer: 'Kuş şarkı söylüyor',
+    options: [
+      { text: 'Kuş şarkı söylüyor', emoji: '🐦', isCorrect: true },
+      { text: 'Köpek koşuyor', emoji: '🐶', isCorrect: false },
+      { text: 'Kedi uyuyor', emoji: '🐱', isCorrect: false },
+      { text: 'Balık yüzüyor', emoji: '🐟', isCorrect: false }
+    ],
+    explanationTr: '"Bird" kuş, "singing" şarkı söylemek/ötüşmektir.',
+    audience: 'kids'
+  },
+
+  // Yetişkinler
+  {
+    id: 'lc_a1',
+    spokenText: 'Could we have the bill, please?',
+    correctAnswer: 'Hesabı alabilir miyiz lütfen?',
+    options: [
+      { text: 'Hesabı alabilir miyiz lütfen?', emoji: '🧾', isCorrect: true },
+      { text: 'Menüyü görebilir miyim?', emoji: '📖', isCorrect: false },
+      { text: 'Rezervasyonum var', emoji: '🏨', isCorrect: false },
+      { text: 'Saat kaç?', emoji: '⏰', isCorrect: false }
+    ],
+    explanationTr: '"Could we have the bill, please?" restoranda hesap isterken en kibar kalıptır.',
+    audience: 'adults'
+  },
+  {
+    id: 'lc_a2',
+    spokenText: 'What do you recommend for dinner?',
+    correctAnswer: 'Akşam yemeği için ne önerirsiniz?',
+    options: [
+      { text: 'Akşam yemeği için ne önerirsiniz?', emoji: '🍽️', isCorrect: true },
+      { text: 'Kahvaltı dahil mi?', emoji: '🥐', isCorrect: false },
+      { text: 'Masa ayırtmak istiyorum', emoji: '🪑', isCorrect: false },
+      { text: 'Paket olsun lütfen', emoji: '🛍️', isCorrect: false }
+    ],
+    explanationTr: '"Recommend" tavsiye etmek, önermek fiilidir.',
+    audience: 'adults'
+  },
+  {
+    id: 'lc_a3',
+    spokenText: 'Can I get an iced latte to go?',
+    correctAnswer: 'Paket buzlu latte alabilir miyim?',
+    options: [
+      { text: 'Paket buzlu latte alabilir miyim?', emoji: '🥤', isCorrect: true },
+      { text: 'Sıcak çay rica ediyorum', emoji: '☕', isCorrect: false },
+      { text: 'Üstü kalsın teşekkürler', emoji: '💵', isCorrect: false },
+      { text: 'Burada içeceğim', emoji: '🛋️', isCorrect: false }
+    ],
+    explanationTr: '"To go" paket servistir.',
+    audience: 'adults'
+  }
+];
+
+// ⏱️ 30 SANİYELİK KONUŞMA VE TARİF MEYDAN OKUMALARI
+export interface SpeakingPromptItem {
+  id: string;
+  title: string;
+  promptEn: string;
+  promptTr: string;
+  helperHints: string[];
+  sampleAnswerEn: string;
+  sampleAnswerTr: string;
+  audience: 'kids' | 'adults';
+}
+
+export const GAME_SPEAKING_PROMPTS: SpeakingPromptItem[] = [
+  // Çocuklar
+  {
+    id: 'spk_k1',
+    title: 'Kendini ve En Sevdiğin Hayvanı Anlat',
+    promptEn: 'Introduce yourself and tell your favorite animal.',
+    promptTr: 'İsmini, yaşını ve en sevdiğin hayvanı sesli söyle!',
+    helperHints: ['My name is...', 'I am ... years old', 'My favorite animal is the cat/dog'],
+    sampleAnswerEn: 'Hello! My name is Can. I am eight years old. My favorite animal is a cute dog.',
+    sampleAnswerTr: 'Merhaba! Benim adım Can. Sekiz yaşındayım. En sevdiğim hayvan sevimli bir köpek.',
+    audience: 'kids'
+  },
+  {
+    id: 'spk_k2',
+    title: 'Odanı veya En Sevdiğin Oyuncağını Tarif Et',
+    promptEn: 'Describe your room or favorite toy.',
+    promptTr: 'Odanı veya en çok oynadığın oyuncağı anlat.',
+    helperHints: ['I have a big red ball...', 'My room is clean and bright', 'I love playing with...'],
+    sampleAnswerEn: 'I have a fast bicycle and a red ball. My favorite toy is a robot.',
+    sampleAnswerTr: 'Hızlı bir bisikletim ve kırmızı bir topum var. En sevdiğim oyuncak bir robot.',
+    audience: 'kids'
+  },
+
+  // Yetişkinler
+  {
+    id: 'spk_a1',
+    title: '30 Saniyede Kendini ve Mesleğini Tanıt',
+    promptEn: 'Introduce yourself, your job, and what you do.',
+    promptTr: 'Kimsin, ne iş yapıyorsun ve boş zamanlarında neler seversin?',
+    helperHints: ['I am an engineer / student / teacher', 'I live in Istanbul', 'In my free time, I like...'],
+    sampleAnswerEn: 'Hi, I am Ali. I work as a software designer in Izmir. In my free time, I enjoy reading and travelling.',
+    sampleAnswerTr: 'Selam, ben Ali. İzmir\'de yazılım tasarımcısı olarak çalışıyorum. Boş zamanlarımda kitap okumaktan ve seyahat etmekten hoşlanırım.',
+    audience: 'adults'
+  },
+  {
+    id: 'spk_a2',
+    title: 'Kafede Bir Şey Sipariş Et ve Yerini Sor',
+    promptEn: 'Order a coffee and ask where the restroom is.',
+    promptTr: 'Bir kahve iste ve ardından tuvaletin nerede olduğunu sor.',
+    helperHints: ['Can I get a cappuccino, please?', 'Also, where is the restroom?', 'Thank you very much!'],
+    sampleAnswerEn: 'Can I get a hot cappuccino to go, please? And excuse me, where is the restroom?',
+    sampleAnswerTr: 'Paket sıcak bir kapuçino alabilir miyim lütfen? Ve afedersiniz, tuvalet nerede acaba?',
+    audience: 'adults'
+  }
+];
+
 // ==================== WEB AUDIO API SENTETİZÖRÜ ====================
 // Harici mp3 indirmeye gerek kalmadan tertemiz nostaljik oyun sesleri üretir!
 class GameSoundEngine {

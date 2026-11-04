@@ -16,7 +16,9 @@ import {
   Download,
   Gamepad2,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Mic,
+  Compass
 } from 'lucide-react';
 import { ChirmoLogo } from './components/common/ChirmoLogo';
 import { BrowserContainer, PageSentenceItem } from './components/browser/BrowserContainer';
@@ -29,14 +31,17 @@ import { ChirmoAiTeacherSidebar } from './components/home/ChirmoAiTeacherSidebar
 import { SmartReaderModal } from './components/learning/SmartReaderModal';
 import { InstallAppModal } from './components/common/InstallAppModal';
 import { ProfileEditModal } from './components/common/ProfileEditModal';
+import { ChirmoOnboardingModal } from './components/learning/ChirmoOnboardingModal';
+import { RealLifeSimulatorStudio } from './components/learning/RealLifeSimulatorStudio';
+import { EnglishGameArcade } from './components/learning/EnglishGameArcade';
 import { LearningStorageService } from './services/learningStorage';
 import { UserProfileService, UserProfile } from './services/userProfileService';
 import { Tab, CEFRLevel, DailyGoalProgress } from './types';
 import { CampStorageService, StudentCampProgress } from './services/curriculumData';
 
 export const App: React.FC = () => {
-  // 3 Temel Bölüm: 'search' (Arama & Tarayıcı) | 'learn' (İngilizce Öğren) | 'tasks' (İş Takibi)
-  const [activeTab, setActiveTab] = useState<'search' | 'learn' | 'tasks'>('search');
+  // 5 Temel Bölüm: 'search' (Chirmo Stüdyo & Tarayıcı) | 'learn' (Kamp) | 'games' (Oyunlar) | 'speak' (Simülatör) | 'tasks' (Hedefler & Rapor)
+  const [activeTab, setActiveTab] = useState<'search' | 'learn' | 'games' | 'speak' | 'tasks'>('search');
 
   // Tarayıcı Durumu
   const [isBrowserNavigating, setIsBrowserNavigating] = useState(false);
@@ -77,10 +82,17 @@ export const App: React.FC = () => {
   // Sol Öğrenme Merkezi Paneli
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true);
 
+  // Seviye ve İhtiyaç Analizi Modalı (Diagnostic Onboarding)
+  const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
+
   const handleLeftSidebarSelect = (itemId: string) => {
     if (itemId === 'home') {
       setActiveTab('search');
       setIsBrowserNavigating(false);
+    } else if (itemId === 'games') {
+      setActiveTab('games');
+    } else if (itemId === 'simulator') {
+      setActiveTab('speak');
     } else {
       setActiveTab('learn');
     }
@@ -184,25 +196,23 @@ export const App: React.FC = () => {
           </span>
         </div>
 
-        {/* Orta: 3 Temel Ana Bölüm (Oval & Minimal Segmented Control) */}
+        {/* Orta: 5 Temel Ana Bölüm (Oval & Minimal Segmented Control) */}
         <div className="hidden sm:flex items-center p-0.5 bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/70 dark:border-slate-700/70 rounded-full shadow-2xs">
           <button
-            onClick={() => {
-              setActiveTab('search');
-            }}
-            className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer ${
+            onClick={() => setActiveTab('search')}
+            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer ${
               activeTab === 'search'
                 ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-semibold shadow-xs'
                 : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-white/50 font-medium'
             }`}
           >
             <Sparkles className={`w-3.5 h-3.5 ${activeTab === 'search' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'}`} />
-            <span>Chirmo Stüdyo</span>
+            <span>Stüdyo</span>
           </button>
 
           <button
             onClick={() => setActiveTab('learn')}
-            className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer ${
+            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer ${
               activeTab === 'learn'
                 ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-semibold shadow-xs'
                 : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-white/50 font-medium'
@@ -213,8 +223,32 @@ export const App: React.FC = () => {
           </button>
 
           <button
+            onClick={() => setActiveTab('games')}
+            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer ${
+              activeTab === 'games'
+                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-semibold shadow-xs'
+                : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-white/50 font-medium'
+            }`}
+          >
+            <Gamepad2 className={`w-3.5 h-3.5 ${activeTab === 'games' ? 'text-amber-500' : 'text-slate-400'}`} />
+            <span>Oyunlar</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('speak')}
+            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer ${
+              activeTab === 'speak'
+                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-semibold shadow-xs'
+                : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-white/50 font-medium'
+            }`}
+          >
+            <Mic className={`w-3.5 h-3.5 ${activeTab === 'speak' ? 'text-rose-500' : 'text-slate-400'}`} />
+            <span>Simülatör</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('tasks')}
-            className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer ${
+            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer ${
               activeTab === 'tasks'
                 ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-semibold shadow-xs'
                 : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-white/50 font-medium'
@@ -488,7 +522,21 @@ export const App: React.FC = () => {
           </div>
         )}
 
-        {/* BÖLÜM 3: İŞ & GÖREV TAKİBİ */}
+        {/* BÖLÜM 3: OYUN ALANI (ARCADE) */}
+        {activeTab === 'games' && (
+          <div className="flex-1 flex flex-col h-full overflow-hidden">
+            <EnglishGameArcade />
+          </div>
+        )}
+
+        {/* BÖLÜM 4: GERÇEK YAŞAM SİMÜLATÖRÜ */}
+        {activeTab === 'speak' && (
+          <div className="flex-1 flex flex-col h-full overflow-hidden">
+            <RealLifeSimulatorStudio />
+          </div>
+        )}
+
+        {/* BÖLÜM 5: İŞ, HEDEFLER & GELİŞİM KARNESİ */}
         {activeTab === 'tasks' && (
           <div className="flex-1 flex flex-col h-full overflow-hidden">
             <SimpleTaskWorkspace />
@@ -506,6 +554,15 @@ export const App: React.FC = () => {
         onWordAdded={() => setLearningProgress({ ...LearningStorageService.getProgress() })}
       />
 
+      {/* Seviye & İhtiyaç Analizi Onboarding Modalı */}
+      <ChirmoOnboardingModal
+        isOpen={isOnboardingOpen}
+        onClose={() => setIsOnboardingOpen(false)}
+        onComplete={(lvl) => {
+          handleLevelChange(lvl);
+        }}
+      />
+
       {/* Mobil Uygulama & APK İndirme Modalı */}
       <InstallAppModal
         isOpen={isInstallModalOpen}
@@ -519,11 +576,11 @@ export const App: React.FC = () => {
         onProfileUpdated={(updated) => setUserProfile(updated)}
       />
 
-      {/* ==================== MOBİL ALT MENÜ (SMARTPHONE BOTTOM NAV) ==================== */}
-      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/90 dark:border-slate-800 shadow-xl px-2 py-1.5 flex items-center justify-around">
+      {/* ==================== MOBİL ALT MENÜ (SMARTPHONE BOTTOM NAV - 5 TEMEL BÖLÜM) ==================== */}
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/90 dark:border-slate-800 shadow-xl px-1.5 py-1.5 flex items-center justify-around">
         <button
           onClick={() => setActiveTab('search')}
-          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer ${
+          className={`flex flex-col items-center justify-center p-1.5 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
             activeTab === 'search'
               ? 'text-indigo-600 dark:text-indigo-400 font-black'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
@@ -535,7 +592,7 @@ export const App: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('learn')}
-          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer ${
+          className={`flex flex-col items-center justify-center p-1.5 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
             activeTab === 'learn'
               ? 'text-indigo-600 dark:text-indigo-400 font-black'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
@@ -546,23 +603,39 @@ export const App: React.FC = () => {
         </button>
 
         <button
+          onClick={() => setActiveTab('games')}
+          className={`flex flex-col items-center justify-center p-1.5 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
+            activeTab === 'games'
+              ? 'text-indigo-600 dark:text-indigo-400 font-black'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
+          }`}
+        >
+          <Gamepad2 className="w-5 h-5 mb-0.5" />
+          <span className="text-[10px]">Oyunlar</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('speak')}
+          className={`flex flex-col items-center justify-center p-1.5 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
+            activeTab === 'speak'
+              ? 'text-indigo-600 dark:text-indigo-400 font-black'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
+          }`}
+        >
+          <Mic className="w-5 h-5 mb-0.5" />
+          <span className="text-[10px]">Konuş</span>
+        </button>
+
+        <button
           onClick={() => setActiveTab('tasks')}
-          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer ${
+          className={`flex flex-col items-center justify-center p-1.5 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
             activeTab === 'tasks'
               ? 'text-indigo-600 dark:text-indigo-400 font-black'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
           }`}
         >
           <CheckSquare className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px]">Hedefler</span>
-        </button>
-
-        <button
-          onClick={() => setIsInstallModalOpen(true)}
-          className="flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center text-amber-600 dark:text-amber-400 font-bold hover:text-amber-700 cursor-pointer"
-        >
-          <Smartphone className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px]">İndir</span>
+          <span className="text-[10px]">Profil</span>
         </button>
       </nav>
     </div>

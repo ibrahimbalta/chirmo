@@ -14,7 +14,11 @@ import {
   Zap,
   Compass,
   HeartHandshake,
-  Gamepad2
+  Gamepad2,
+  Smile,
+  ShieldCheck,
+  BrainCircuit,
+  MessageSquare
 } from 'lucide-react';
 import { CEFRLevel, VocabularyWord } from '../../types';
 import { LearningStorageService } from '../../services/learningStorage';
@@ -22,13 +26,27 @@ import { ThirtyDayCampView } from '../kids/ThirtyDayCampView';
 import { GradeVocabularyView } from '../kids/GradeVocabularyView';
 import { DailyEnglishStudio } from './DailyEnglishStudio';
 import { EnglishGameArcade } from './EnglishGameArcade';
+import { RealLifeSimulatorStudio } from './RealLifeSimulatorStudio';
+import { ChirmoKidsDedicatedHub } from '../kids/ChirmoKidsDedicatedHub';
 import { CampStorageService } from '../../services/curriculumData';
+import { SpacedRepetitionService, SrsWordData } from '../../services/spacedRepetitionService';
+
+export type LearningHubTab =
+  | 'camp'
+  | 'simulations'
+  | 'kids'
+  | 'games'
+  | 'studio'
+  | 'grade'
+  | 'vault'
+  | 'flashcards'
+  | 'quiz';
 
 interface SimpleLearningHubProps {
   userLevel: CEFRLevel;
   onLevelChange: (level: CEFRLevel) => void;
   onOpenInBrowser: (url: string) => void;
-  initialTab?: 'camp' | 'games' | 'studio' | 'grade' | 'vault' | 'flashcards' | 'quiz';
+  initialTab?: LearningHubTab;
 }
 
 export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
@@ -37,7 +55,8 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
   onOpenInBrowser,
   initialTab = 'camp'
 }) => {
-  const [activeTab, setActiveTab] = useState<'camp' | 'games' | 'studio' | 'grade' | 'vault' | 'flashcards' | 'quiz'>(initialTab);
+  const [activeTab, setActiveTab] = useState<LearningHubTab>(initialTab);
+  const [srsWords, setSrsWords] = useState<SrsWordData[]>(() => SpacedRepetitionService.getAllWords());
   const [words, setWords] = useState<VocabularyWord[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [campProgress, setCampProgress] = useState(() => CampStorageService.getProgress());
@@ -146,6 +165,30 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
           </button>
 
           <button
+            onClick={() => setActiveTab('simulations')}
+            className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'simulations'
+                ? 'bg-emerald-600 text-white shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
+            }`}
+          >
+            <Compass className="w-3.5 h-3.5 text-emerald-300" />
+            <span>Gerçek Yaşam Simülatörü 🎭</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('kids')}
+            className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'kids'
+                ? 'bg-pink-600 text-white shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
+            }`}
+          >
+            <Smile className="w-3.5 h-3.5 text-amber-300" />
+            <span>Chirmo Kids (5-17 Yaş) 🎈</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('games')}
             className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
               activeTab === 'games'
@@ -154,7 +197,7 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
             }`}
           >
             <Gamepad2 className="w-3.5 h-3.5 text-amber-300" />
-            <span>🎮 Oyun Alanı (Çocuk & Yetişkin) ⭐</span>
+            <span>🎮 Oyun Alanı (6 Oyun) ⭐</span>
           </button>
 
           <button
@@ -230,6 +273,16 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
           <ThirtyDayCampView
             onDayCompleted={(updated) => setCampProgress(updated)}
           />
+        )}
+
+        {/* 2. GERÇEK YAŞAM SİMÜLASYONLARI (KAFE, OTEL, HAVAALANI, DOKTOR) */}
+        {activeTab === 'simulations' && (
+          <RealLifeSimulatorStudio />
+        )}
+
+        {/* 3. CHIRMO KIDS (5-17 YAŞ ÇOCUK MODU) */}
+        {activeTab === 'kids' && (
+          <ChirmoKidsDedicatedHub />
         )}
 
         {/* 2. ÇOCUK & YETİŞKİN İNGİLİZCE OYUN ALANI (ARCADE) */}

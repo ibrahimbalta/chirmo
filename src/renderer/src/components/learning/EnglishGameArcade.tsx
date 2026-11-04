@@ -15,16 +15,22 @@ import {
   Smile,
   GraduationCap,
   Layers,
-  Rocket
+  Rocket,
+  Headphones,
+  Timer
 } from 'lucide-react';
 import {
   KIDS_GAME_VOCAB,
   ADULT_GAME_VOCAB,
   GAME_SENTENCE_PUZZLES,
   GAME_VOICE_CHALLENGES,
+  GAME_LISTENING_CHALLENGES,
+  GAME_SPEAKING_PROMPTS,
   GameWordItem,
   GameSentenceItem,
   VoiceChallengeItem,
+  ListeningChallengeItem,
+  SpeakingPromptItem,
   soundEngine,
   GameStatsService,
   ArcadeStats
@@ -32,7 +38,7 @@ import {
 import { LearningStorageService } from '../../services/learningStorage';
 
 type AudienceMode = 'kids' | 'adults';
-type GameTab = 'memory' | 'blitz' | 'rocket' | 'voice';
+type GameTab = 'memory' | 'blitz' | 'rocket' | 'voice' | 'listening' | 'speaking30';
 
 interface MemoryCard {
   uid: string;
@@ -79,6 +85,20 @@ export const EnglishGameArcade: React.FC = () => {
   const [isListening, setIsListening] = useState(false);
   const [voiceFeedback, setVoiceFeedback] = useState<string | null>(null);
   const [voiceStars, setVoiceStars] = useState<number>(0);
+
+  // ==================== 5. DİNLEME OYUNU STATE ====================
+  const [listeningChallenges, setListeningChallenges] = useState<ListeningChallengeItem[]>([]);
+  const [listeningIndex, setListeningIndex] = useState(0);
+  const [selectedListeningOption, setSelectedListeningOption] = useState<number | null>(null);
+  const [listeningFeedback, setListeningFeedback] = useState<string | null>(null);
+
+  // ==================== 6. 30 SANİYE KONUŞMA STATE ====================
+  const [speakingPrompts, setSpeakingPrompts] = useState<SpeakingPromptItem[]>([]);
+  const [speakingIndex, setSpeakingIndex] = useState(0);
+  const [speakingTimer, setSpeakingTimer] = useState(30);
+  const [isSpeakingRunning, setIsSpeakingRunning] = useState(false);
+  const [speakingFeedback, setSpeakingFeedback] = useState<string | null>(null);
+  const speakingTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Aktif kelime havuzu
   const currentVocab = audience === 'kids' ? KIDS_GAME_VOCAB : ADULT_GAME_VOCAB;
@@ -384,18 +404,93 @@ export const EnglishGameArcade: React.FC = () => {
     awardPoints(30);
   };
 
+  // ==================== 5. DİNLEME OYUNU MANTIĞI ====================
+  const initListeningGame = () => {
+    const list = GAME_LISTENING_CHALLENGES.filter((c) => c.audience === audience);
+    setListeningChallenges(list);
+    setListeningIndex(0);
+    setSelectedListeningOption(null);
+    setListeningFeedback(null);
+  };
+
+  const handlePlayListeningAudio = () => {
+    const cur = listeningChallenges[listeningIndex];
+    if (cur) {
+      soundEngine.playCardFlip();
+      playSpeak(cur.spokenText);
+    }
+  };
+
+  const handleSelectListeningOption = (idx: number) => {
+    const cur = listeningChallenges[listeningIndex];
+    if (!cur || selectedListeningOption !== null) return;
+    setSelectedListeningOption(idx);
+    const chosen = cur.options[idx];
+    if (chosen.isCorrect) {
+      soundEngine.playMatchSuccess();
+      setListeningFeedback(`🎉 Harika! ${cur.explanationTr}`);
+      awardPoints(25);
+    } else {
+      soundEngine.playWrong();
+      setListeningFeedback(`❌ Tekrar dene! Doğru anlam: ${cur.correctAnswer}. ${cur.explanationTr}`);
+    }
+  };
+
+  const handleNextListening = () => {
+    setSelectedListeningOption(null);
+    setListeningFeedback(null);
+    setListeningIndex((prev) => (prev + 1) % listeningChallenges.length);
+  };
+
+  // ==================== 6. 30 SANİYE KONUŞMA MANTIĞI ====================
+  const initSpeaking30Game = () => {
+    const list = GAME_SPEAKING_PROMPTS.filter((p) => p.audience === audience);
+    setSpeakingPrompts(list);
+    setSpeakingIndex(0);
+    setSpeakingTimer(30);
+    setIsSpeakingRunning(false);
+    setSpeakingFeedback(null);
+    if (speakingTimerRef.current) clearInterval(speakingTimerRef.current);
+  };
+
+  const startSpeaking30 = () => {
+    if (speakingTimerRef.current) clearInterval(speakingTimerRef.current);
+    setSpeakingTimer(30);
+    setIsSpeakingRunning(true);
+    setSpeakingFeedback('Süre başladı! İngilizce konuşmaya başla, hata yapmaktan korkma! 🎙️');
+    soundEngine.playMatchSuccess();
+
+    speakingTimerRef.current = setInterval(() => {
+      setSpeakingTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(speakingTimerRef.current!);
+          setIsSpeakingRunning(false);
+          soundEngine.playCorrect();
+          awardPoints(50);
+          setSpeakingFeedback('⏱️ 30 saniye doldu! Harika bir konuşma denemesi yaptın. +50 XP kazandın!');
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
   // Kitle veya Sekme Değiştiğinde Oyunları Yeniden Kur
   useEffect(() => {
     initMemoryGame();
     initRocketGame();
     initVoiceGame();
+    initListeningGame();
+    initSpeaking30Game();
     if (blitzTimerRef.current) clearInterval(blitzTimerRef.current);
+    if (speakingTimerRef.current) clearInterval(speakingTimerRef.current);
     setIsBlitzRunning(false);
   }, [audience]);
 
   useEffect(() => {
     return () => {
       if (blitzTimerRef.current) clearInterval(blitzTimerRef.current);
+      if (speakingTimerRef.current) clearInterval(speakingTimerRef.current);
     };
   }, []);
 
@@ -543,6 +638,30 @@ export const EnglishGameArcade: React.FC = () => {
           >
             <Mic className="w-4 h-4 text-emerald-400" />
             <span>🎙️ 4. Konuş & Kazan</span>
+          </button>
+
+          <button
+            onClick={() => setActiveGame('listening')}
+            className={`flex items-center space-x-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
+              activeGame === 'listening'
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100'
+            }`}
+          >
+            <Headphones className="w-4 h-4 text-indigo-400" />
+            <span>🎧 5. Duyduğunu Anla</span>
+          </button>
+
+          <button
+            onClick={() => setActiveGame('speaking30')}
+            className={`flex items-center space-x-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
+              activeGame === 'speaking30'
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100'
+            }`}
+          >
+            <Timer className="w-4 h-4 text-rose-400" />
+            <span>⏱️ 6. 30 Saniye Tarif</span>
           </button>
         </div>
 
@@ -841,6 +960,215 @@ export const EnglishGameArcade: React.FC = () => {
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* ==================== 5. OYUN: DİNLEME OYUNU ==================== */}
+        {activeGame === 'listening' && (
+          <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
+              <div>
+                <h2 className="text-lg font-black text-slate-800 dark:text-slate-100 flex items-center space-x-2">
+                  <span>🎧 Duyduğunu Anla: Dinle ve Doğru Anlamı Seç</span>
+                  <span className="text-xs px-2.5 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-bold">
+                    {audience === 'kids' ? '🎈 Çocuk Seviyesi' : '🎯 Yetişkin Seviyesi'}
+                  </span>
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Kulaklığını tak veya hoparlörünü aç, Chirmo seslendirecek, sen doğru anlamı seçeceksin!
+                </p>
+              </div>
+
+              <div className="text-xs font-black text-indigo-600 dark:text-indigo-400">
+                Soru {listeningIndex + 1} / {listeningChallenges.length}
+              </div>
+            </div>
+
+            {listeningChallenges[listeningIndex] ? (
+              <div className="max-w-xl mx-auto space-y-6 text-center py-4">
+                {/* Ses Oynatıcı Butonu */}
+                <div className="flex flex-col items-center justify-center space-y-3">
+                  <button
+                    onClick={handlePlayListeningAudio}
+                    className="w-20 h-20 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-xl shadow-indigo-500/30 flex items-center justify-center text-2xl transition-transform hover:scale-110 active:scale-95 cursor-pointer"
+                    title="İngilizce İfadeyi Dinle"
+                  >
+                    <Volume2 className="w-8 h-8 animate-pulse" />
+                  </button>
+                  <span className="text-xs font-bold text-slate-500">
+                    Sesi tekrar dinlemek için butona tıkla
+                  </span>
+                </div>
+
+                {/* 4 Seçenek */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+                  {listeningChallenges[listeningIndex].options.map((opt, i) => (
+                    <button
+                      key={i}
+                      disabled={selectedListeningOption !== null}
+                      onClick={() => handleSelectListeningOption(i)}
+                      className={`p-4 rounded-2xl border text-sm font-bold flex items-center space-x-3 transition-all cursor-pointer ${
+                        selectedListeningOption === null
+                          ? 'border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-600 bg-white dark:bg-slate-800/50 hover:bg-indigo-50/50'
+                          : selectedListeningOption === i
+                          ? opt.isCorrect
+                            ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-900 dark:text-emerald-100 shadow-sm'
+                            : 'border-rose-500 bg-rose-50 dark:bg-rose-950/60 text-rose-900 dark:text-rose-100'
+                          : opt.isCorrect
+                          ? 'border-emerald-500 bg-emerald-50/40 text-emerald-800'
+                          : 'opacity-40 border-slate-200'
+                      }`}
+                    >
+                      <span className="text-2xl">{opt.emoji}</span>
+                      <span className="flex-1">{opt.text}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Geri Bildirim */}
+                {listeningFeedback && (
+                  <div className="p-4 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800 text-xs sm:text-sm font-bold text-indigo-900 dark:text-indigo-200 animate-fadeIn">
+                    {listeningFeedback}
+                  </div>
+                )}
+
+                {/* Sonraki Soru */}
+                {selectedListeningOption !== null && (
+                  <div>
+                    <button
+                      onClick={handleNextListening}
+                      className="px-6 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-md transition-all cursor-pointer"
+                    >
+                      Sonraki Soruya Geç ➡️
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-xs text-slate-400">
+                Bu kategori için dinleme sorusu yükleniyor...
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ==================== 6. OYUN: 30 SANİYE TARİF ==================== */}
+        {activeGame === 'speaking30' && (
+          <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
+              <div>
+                <h2 className="text-lg font-black text-slate-800 dark:text-slate-100 flex items-center space-x-2">
+                  <span>⏱️ 30 Saniyede Kendini & Nesneyi Anlat</span>
+                  <span className="text-xs px-2.5 py-0.5 rounded-full bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 font-bold">
+                    Konuşma Refleksi
+                  </span>
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Zamanlayıcıyı başlat, ekrandaki konuyu 30 saniye boyunca hiç durmadan İngilizce anlatmaya çalış!
+                </p>
+              </div>
+
+              <div className="text-xs font-black text-rose-600 dark:text-rose-400">
+                Görev {speakingIndex + 1} / {speakingPrompts.length}
+              </div>
+            </div>
+
+            {speakingPrompts[speakingIndex] ? (
+              <div className="max-w-xl mx-auto space-y-5 text-center py-2">
+                {/* Geri Sayım Rozeti */}
+                <div className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-full bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 font-black text-base shadow-xs">
+                  <Timer className={`w-5 h-5 ${isSpeakingRunning ? 'animate-spin' : ''}`} />
+                  <span>Kalan Süre: {speakingTimer} Saniye</span>
+                </div>
+
+                {/* Konu Kartı */}
+                <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-left space-y-3">
+                  <div className="text-sm font-black text-slate-900 dark:text-white">
+                    🎯 Konu: {speakingPrompts[speakingIndex].title}
+                  </div>
+                  <div className="text-xs text-indigo-600 dark:text-indigo-400 font-bold">
+                    "{speakingPrompts[speakingIndex].promptEn}"
+                  </div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400">
+                    {speakingPrompts[speakingIndex].promptTr}
+                  </div>
+
+                  <div className="pt-2 border-t border-slate-200 dark:border-slate-700">
+                    <span className="text-[11px] font-bold text-slate-400 uppercase">
+                      💡 Yardımcı Kalıplar:
+                    </span>
+                    <div className="flex flex-wrap gap-1.5 mt-1">
+                      {speakingPrompts[speakingIndex].helperHints.map((hint, hIdx) => (
+                        <span
+                          key={hIdx}
+                          className="px-2 py-0.5 rounded-md bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-[11px] font-semibold text-slate-700 dark:text-slate-300"
+                        >
+                          {hint}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Başlat Butonu */}
+                <div>
+                  <button
+                    onClick={startSpeaking30}
+                    disabled={isSpeakingRunning}
+                    className={`px-8 py-3.5 rounded-2xl font-black text-xs shadow-lg transition-all cursor-pointer ${
+                      isSpeakingRunning
+                        ? 'bg-rose-600 text-white animate-pulse'
+                        : 'bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white hover:scale-105'
+                    }`}
+                  >
+                    {isSpeakingRunning ? 'Süre İşliyor... Konuşmaya Devam Et! 🎙️' : '⏱️ 30 Saniyelik Meydan Okumayı Başlat'}
+                  </button>
+                </div>
+
+                {/* Geri Bildirim */}
+                {speakingFeedback && (
+                  <div className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-xs font-bold text-emerald-900 dark:text-emerald-200 animate-fadeIn">
+                    {speakingFeedback}
+                  </div>
+                )}
+
+                {/* Örnek Cevabı Göster */}
+                <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-left text-xs space-y-1">
+                  <div className="font-bold text-amber-800 dark:text-amber-300 flex items-center justify-between">
+                    <span>🌟 Örnek Doğal Cevap:</span>
+                    <button
+                      onClick={() => playSpeak(speakingPrompts[speakingIndex].sampleAnswerEn)}
+                      className="text-[11px] text-indigo-600 hover:underline flex items-center space-x-1 cursor-pointer"
+                    >
+                      <Volume2 className="w-3.5 h-3.5" />
+                      <span>Sesli Dinle</span>
+                    </button>
+                  </div>
+                  <div className="text-slate-700 dark:text-slate-300 font-medium">
+                    "{speakingPrompts[speakingIndex].sampleAnswerEn}"
+                  </div>
+                  <div className="text-[11px] text-slate-500">
+                    {speakingPrompts[speakingIndex].sampleAnswerTr}
+                  </div>
+                </div>
+
+                {/* Sonraki Konu */}
+                <div>
+                  <button
+                    onClick={() => {
+                      setSpeakingIndex((prev) => (prev + 1) % speakingPrompts.length);
+                      setSpeakingFeedback(null);
+                      setSpeakingTimer(30);
+                      setIsSpeakingRunning(false);
+                      if (speakingTimerRef.current) clearInterval(speakingTimerRef.current);
+                    }}
+                    className="px-5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 text-xs font-black cursor-pointer"
+                  >
+                    Sonraki Konuya Geç ➡️
+                  </button>
+                </div>
+              </div>
+            ) : null}
           </div>
         )}
 
