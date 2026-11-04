@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import { LearningStorageService } from '../../services/learningStorage';
 import { UserProfileService, UserProfile } from '../../services/userProfileService';
+import { ChirmoSubscriptionModal } from '../subscription/ChirmoSubscriptionModal';
 import {
   CampStorageService,
   THIRTY_DAY_MISSIONS,
@@ -78,6 +79,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
 
   // Chirmo Karakter Durumu ('idle' | 'speaking' | 'listening' | 'cheering')
   const [chirmoState, setChirmoState] = useState<'idle' | 'speaking' | 'listening' | 'cheering'>('idle');
+  const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
 
   // Günün Görevi (30 günlük kamptan)
   const currentMission: DayMission =
@@ -325,6 +327,16 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                   <Trophy className="w-3.5 h-3.5" />
                   <span>{campProgress.totalXp} XP</span>
                 </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsSubscriptionModalOpen(true)}
+                  className="px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs transition-all flex items-center space-x-1.5 cursor-pointer shadow-md shadow-amber-500/20 hover:scale-105"
+                  title="200 TL / Ay Chirmo Premium Üyelik"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-indigo-950" />
+                  <span>Premium (200 TL) 💎</span>
+                </button>
               </div>
             </div>
           </div>
@@ -585,6 +597,30 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
           )}
         </div>
 
+        {/* ==================== CÜMLE ÜRETİM LABORATUVARI BANNERI ==================== */}
+        <div className="w-full p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-purple-950 via-indigo-950 to-slate-900 text-white shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-purple-500/30 relative overflow-hidden">
+          <div className="space-y-1 relative z-10">
+            <div className="inline-flex items-center space-x-1.5 px-3 py-0.5 rounded-full bg-purple-500/30 text-purple-200 text-[11px] font-black uppercase">
+              <span>🧱 Chirmo Cümle Üretim Laboratuvarı</span>
+            </div>
+            <h3 className="text-lg sm:text-xl font-black">
+              Kalıptan Cümle Üretme Sistemi (I want, I need, I like...)
+            </h3>
+            <p className="text-xs text-purple-200 max-w-xl">
+              Cümleleri ezberleme! 8 temel konuşma kalıbı ile tek bir kelimeden 6 farklı cümle üretmeyi öğren.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => onNavigateToLearn && onNavigateToLearn()}
+            className="px-5 py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-black text-xs shadow-md shrink-0 flex items-center justify-center space-x-2 cursor-pointer transition-all hover:scale-[1.02] relative z-10"
+          >
+            <span>Laboratuvara Gir</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+
         {/* ==================== 4. HIZLI ERİŞİM KISAYOL BARI (4 RENKLİ BUTON) ==================== */}
         <div className="w-full grid grid-cols-2 sm:grid-cols-4 gap-3">
           <button
@@ -695,6 +731,12 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             </div>
           </div>
         </div>
+
+        {/* 200 TL / Ay Abonelik ve Premium Modalı */}
+        <ChirmoSubscriptionModal
+          isOpen={isSubscriptionModalOpen}
+          onClose={() => setIsSubscriptionModalOpen(false)}
+        />
 
       </div>
     </div>

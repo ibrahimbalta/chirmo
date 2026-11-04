@@ -28,11 +28,13 @@ import { DailyEnglishStudio } from './DailyEnglishStudio';
 import { EnglishGameArcade } from './EnglishGameArcade';
 import { RealLifeSimulatorStudio } from './RealLifeSimulatorStudio';
 import { ChirmoKidsDedicatedHub } from '../kids/ChirmoKidsDedicatedHub';
+import { SentenceBuilderStudio } from './SentenceBuilderStudio';
 import { CampStorageService } from '../../services/curriculumData';
 import { SpacedRepetitionService, SrsWordData } from '../../services/spacedRepetitionService';
 
 export type LearningHubTab =
   | 'camp'
+  | 'builder'
   | 'simulations'
   | 'kids'
   | 'games'
@@ -171,6 +173,18 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
           </button>
 
           <button
+            onClick={() => setActiveTab('builder')}
+            className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'builder'
+                ? 'bg-indigo-600 text-white shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
+            }`}
+          >
+            <span>🧱</span>
+            <span>Cümle Üretim Laboratuvarı ⭐</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('simulations')}
             className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
               activeTab === 'simulations'
@@ -279,6 +293,11 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
           <ThirtyDayCampView
             onDayCompleted={(updated) => setCampProgress(updated)}
           />
+        )}
+
+        {/* CÜMLE ÜRETİM LABORATUVARI (KALIP MOTORU) */}
+        {activeTab === 'builder' && (
+          <SentenceBuilderStudio />
         )}
 
         {/* 2. GERÇEK YAŞAM SİMÜLASYONLARI (KAFE, OTEL, HAVAALANI, DOKTOR) */}
