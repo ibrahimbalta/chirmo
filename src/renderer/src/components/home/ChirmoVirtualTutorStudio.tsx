@@ -180,7 +180,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
     });
 
     // İlerlemeyi güncelle
-    const updated = CampStorageService.completeDayMission(currentMission.day, 96, earned);
+    const updated = CampStorageService.completeDayMission(currentMission.day, earned);
     setCampProgress({ ...updated });
 
     // Chirmo sesli tebrik eder
@@ -318,7 +318,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 <span className="text-white/40">•</span>
                 <div className="flex items-center space-x-1 font-bold text-emerald-300">
                   <ShieldCheck className="w-4 h-4" />
-                  <span>{campProgress.completedMissions.length}/30 Görev</span>
+                  <span>{(campProgress?.completedDays || []).length}/30 Görev</span>
                 </div>
               </div>
             </div>
@@ -690,7 +690,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
               {THIRTY_DAY_MISSIONS.slice(0, 15).map((m) => {
-                const isCompleted = campProgress.completedMissions.includes(m.day);
+                const isCompleted = (campProgress?.completedDays || []).includes(m.day);
                 const isCurrent = campProgress.currentDay === m.day;
 
                 return (

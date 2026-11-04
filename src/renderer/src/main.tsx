@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 import { setupWebMock } from './services/webMock';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
 
 // Initialize web mock if running in a standard web browser (e.g. GitHub Pages)
 setupWebMock();
@@ -23,6 +24,8 @@ if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <App />
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
   </React.StrictMode>
 );
