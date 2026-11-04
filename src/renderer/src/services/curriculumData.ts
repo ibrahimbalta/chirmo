@@ -446,7 +446,7 @@ export const THIRTY_DAY_MISSIONS: DayMission[] = [
     suggestedAnswerTr: 'Sütlü bir fincan kahve alabilir miyim lütfen?',
     xpReward: 60,
     keyVocabulary: ['can I have', 'please', 'coffee', 'milk'],
-    nativeCoachTip: 'Türkler genelde "I want" der; bu İngilizcede emreder gibi duyulabilir. Hep "Can I have...?" kalıbını kullan.'
+    nativeCoachTip: 'Günlük konuşmada sipariş verirken doğrudan "I want" yerine daha kibar olan "Can I have...?" kalıbını tercih edin.'
   },
   {
     day: 5,

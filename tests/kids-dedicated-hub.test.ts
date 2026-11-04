@@ -18,7 +18,7 @@ describe('Chirmo Kids Dedicated Hub Component & Curriculum Structure', () => {
     expect(content).toContain('11-13');
     expect(content).toContain('14-17');
     expect(content).toContain('Okul Öncesi & 1. Sınıf');
-    expect(content).toContain('MEB 2, 3, 4. Sınıf');
+    expect(content).toContain('İlkokul Kademesi');
     expect(content).toContain('Ortaokul / LGS Temeli');
     expect(content).toContain('Gençler & Lise');
   });
@@ -31,6 +31,6 @@ describe('Chirmo Kids Dedicated Hub Component & Curriculum Structure', () => {
     expect(content).toContain('Lego Gibi Cümle Kurma Atölyesi (Kids Pattern Builder)');
     expect(content).toContain('ABC Phonics Song');
     expect(content).toContain('Ebeveyn Doğrulama Kapısı');
-    expect(content).toContain('MEB 2-8. Sınıf Uyumlu');
+    expect(content).toContain('Uluslararası Müfredat Uyumlu');
   });
 });

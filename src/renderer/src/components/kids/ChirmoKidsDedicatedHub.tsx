@@ -155,7 +155,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
       { id: 'v9', en: 'Teddy Bear', tr: 'Oyuncak Ayıcık', emoji: '🧸', category: 'Oyun', soundText: 'My cute teddy bear is very soft.', exampleTr: 'Sevimli oyuncak ayım çok yumuşak.', funFact: 'Çocuklar uyurken ayıcıklarına sarılmayı çok sever.' }
     ],
     '8-10': [
-      { id: 'v10', en: 'Backpack', tr: 'Okul Çantası', emoji: '🎒', category: 'Okul', soundText: 'My heavy backpack is full of colorful books.', exampleTr: 'Ağır okul çantam renkli kitaplarla dolu.', funFact: 'MEB 3. Sınıf ünitesinde çanta içi eşyalar öğretilir.' },
+      { id: 'v10', en: 'Backpack', tr: 'Okul Çantası', emoji: '🎒', category: 'Okul', soundText: 'My heavy backpack is full of colorful books.', exampleTr: 'Ağır okul çantam renkli kitaplarla dolu.', funFact: 'Okul eşyalarımızı düzenli tutmak derslerimizde bize büyük kolaylık sağlar.' },
       { id: 'v11', en: 'Bicycle', tr: 'Bisiklet', emoji: '🚲', category: 'Spor', soundText: 'I can ride my blue bicycle in the park.', exampleTr: 'Parkta mavi bisikletimi sürebiliyorum.', funFact: 'Bisiklet sürmek hem bacak kaslarını hem dengeyi geliştirir.' },
       { id: 'v12', en: 'Space Rocket', tr: 'Uzay Roketi', emoji: '🚀', category: 'Bilim', soundText: 'Three, two, one! The space rocket blasts off!', exampleTr: 'Üç, iki, bir! Uzay roketi fırlatıldı!', funFact: 'Roketler saniyede 11 kilometre hızla uzaya çıkar.' },
       { id: 'v13', en: 'Pencil', tr: 'Kurşun Kalem', emoji: '✏️', category: 'Okul', soundText: 'Can I borrow your sharp pencil, please?', exampleTr: 'Açılmış kurşun kalemini ödünç alabilir miyim lütfen?', funFact: 'Bir kurşun kalemle yaklaşık 50.000 kelime yazılabilir.' },
@@ -473,7 +473,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
               <div className="space-y-1">
                 <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-xs text-[11px] font-black uppercase tracking-wider">
                   <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                  <span>Türkiye'nin Yeni Nesil Çocuk İngilizce Dünyası</span>
+                  <span>Çocuklar İçin Yeni Nesil İngilizce Dünyası</span>
                 </div>
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight drop-shadow-xs">
                   Eğlen, Oyna ve İngilizce Konuş! 🌟
@@ -528,7 +528,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
         <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md p-2 rounded-3xl border-2 border-pink-100 dark:border-slate-800 shadow-sm">
           <div className="text-[11px] font-black text-slate-500 uppercase px-3 py-1 flex items-center justify-between">
             <span>🎯 Çocuğunuzun Yaş Kademesini Seçin:</span>
-            <span className="text-pink-600 font-bold">MEB 2-8. Sınıf ve CEFR Pre-A1 / B1 Uyumlu</span>
+            <span className="text-pink-600 font-bold">Uluslararası CEFR Standartları (Pre-A1 / B1) ile Uyumlu</span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-1">
@@ -543,7 +543,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
               {
                 id: '8-10' as AgeGroup,
                 title: '8 - 10 Yaş',
-                sub: 'MEB 2, 3, 4. Sınıf',
+                sub: 'İlkokul Kademesi',
                 emoji: '🎨',
                 tag: 'Kalıp Birleştirme & Nezaket'
               },
@@ -598,7 +598,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
             { id: 'cards', label: '🃏 Görsel Kelimeler (30+)', icon: Smile, color: 'text-pink-500' },
             { id: 'patterns', label: '🧩 Cümle Legosu Atölyesi', icon: Puzzle, color: 'text-purple-500' },
             { id: 'songs', label: '🎵 Şarkılar & Karaoke', icon: Music, color: 'text-rose-500' },
-            { id: 'parent', label: '🛡️ Veli Güven & MEB Paneli', icon: ShieldCheck, color: 'text-indigo-500' }
+            { id: 'parent', label: '🛡️ Veli Güven & Gelişim Paneli', icon: ShieldCheck, color: 'text-indigo-500' }
           ].map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -1114,7 +1114,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
           </div>
         )}
 
-        {/* ==================== TAB 5: 🛡️ VELİ GÜVEN & MEB GELİŞİM PANELİ ==================== */}
+        {/* ==================== TAB 5: 🛡️ VELİ GÜVEN & GELİŞİM PANELİ ==================== */}
         {activeTab === 'parent' && (
           <div className="space-y-6">
             {/* Ebeveyn Kilit Doğrulaması (Çocukların yanlışlıkla ayarları değiştirmesini önler) */}
@@ -1176,10 +1176,10 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                   <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-1">
                     <div className="flex items-center space-x-2 text-indigo-600 font-black text-xs">
                       <GraduationCap className="w-4 h-4" />
-                      <span>MEB 2-8. Sınıf Uyumlu</span>
+                      <span>Uluslararası Müfredat Uyumlu</span>
                     </div>
                     <div className="text-xs text-slate-500">
-                      Milli Eğitim Bakanlığı müfredatındaki kelime listeleri ve LGS soru mantığıyla tam uyumludur.
+                      Uluslararası eğitim müfredatındaki yaşa uygun kelime listeleri ve pratik konuşma kalıplarıyla tam uyumludur.
                     </div>
                   </div>
 

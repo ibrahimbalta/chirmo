@@ -156,7 +156,7 @@ export const ChirmoOnboardingModal: React.FC<ChirmoOnboardingModalProps> = ({
                   İngilizce konuşurken seni en çok ne engelliyor?
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Türkiye'deki en büyük problem konuşma kaygısıdır. Chirmo seni asla yargılamaz.
+                  En yaygın engel konuşma kaygısı ve hata yapma endişesidir. Chirmo seni asla yargılamaz.
                 </p>
               </div>
 

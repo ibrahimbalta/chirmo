@@ -180,7 +180,7 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
                 Gramer Ezberini Unut! Günde 5 Dakika Konuşarak Dili Sök 🚀
               </h1>
               <p className="text-xs sm:text-sm text-blue-100 max-w-xl mt-1.5 leading-relaxed">
-                Türklerin yıllarca İngilizce öğrenememesinin tek sebebi kitaplara bakıp ağzını açmamasıdır. Chirmo ile her gün sesli bir görev yap, 30. günün sonunda dünyayla korkusuzca sohbet et!
+                İngilizce konuşmanın en etkili yolu her gün düzenli olarak sesli pratik yapmaktır. Chirmo ile her gün sesli bir görev yap, 30. günün sonunda dünyayla özgüvenle sohbet et!
               </p>
             </div>
 

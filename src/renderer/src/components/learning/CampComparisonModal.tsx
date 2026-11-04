@@ -142,7 +142,7 @@ export const CampComparisonModal: React.FC<CampComparisonModalProps> = ({
               <span>Chirmo AI Pedagoji Garantisi:</span>
             </div>
             <div>
-              Chirmo kullanıcıya *"30 günde anadilin gibi olacaksın"* şeklinde gerçekçi olmayan vaatler vermez. Kazandırdığı şey, <strong>Türk insanının yıllarca aşamadığı konuşma bariyerini ve utanma duygusunu kırmak</strong>, günlük yaşamda kendini ifade edebilecek reflekse ulaştırmaktır.
+              Chirmo kullanıcıya *"30 günde anadilin gibi olacaksın"* şeklinde gerçekçi olmayan vaatler vermez. Kazandırdığı şey, <strong>konuşma bariyerini ve çekingenliği kırmak</strong>, günlük yaşamda kendini rahatça ifade edebilecek reflekse ulaştırmaktır.
             </div>
           </div>
         </div>

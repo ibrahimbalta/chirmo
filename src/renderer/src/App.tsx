@@ -237,7 +237,7 @@ export const App: React.FC = () => {
                 ? 'bg-pink-600 text-white font-extrabold shadow-sm ring-2 ring-pink-200 dark:ring-pink-800'
                 : 'bg-pink-50/90 dark:bg-pink-950/50 text-pink-700 dark:text-pink-300 border border-pink-200/80 dark:border-pink-800/70 hover:bg-pink-100 font-bold'
             }`}
-            title="5-17 Yaş Çocuklar İçin MEB Uyumlu Chirmo Kids"
+            title="5-17 Yaş Çocuklar İçin Chirmo Kids Dünyası"
           >
             <Smile className="w-3.5 h-3.5 shrink-0" />
             <span><span className="hidden 2xl:inline">Chirmo </span>Kids</span>
@@ -548,7 +548,7 @@ export const App: React.FC = () => {
           </div>
         )}
 
-        {/* BÖLÜM: CHIRMO KIDS (5-17 YAŞ ÇOCUKLAR İÇİN MEB UYUMLU EĞLENCELİ ALAN) */}
+        {/* BÖLÜM: CHIRMO KIDS (5-17 YAŞ ÇOCUKLAR İÇİN EĞLENCELİ ÖĞRENME ALANI) */}
         {activeTab === 'kids' && (
           <div className="flex-1 flex flex-col h-full overflow-hidden">
             <ChirmoKidsDedicatedHub onBackToMain={() => setActiveTab('search')} />
