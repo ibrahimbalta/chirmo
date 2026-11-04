@@ -23,6 +23,8 @@ import {
   StudentCampProgress
 } from '../../services/curriculumData';
 import { LearningStorageService } from '../../services/learningStorage';
+import { UserProfileService, UserProfile } from '../../services/userProfileService';
+import { CampComparisonModal } from '../learning/CampComparisonModal';
 
 interface ThirtyDayCampViewProps {
   onDayCompleted?: (newProgress: StudentCampProgress) => void;
@@ -36,6 +38,8 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
     const saved = CampStorageService.getProgress();
     return saved.currentDay || 1;
   });
+  const [isReportOpen, setIsReportOpen] = useState(false);
+  const [userProfile, setUserProfile] = useState<UserProfile>(() => UserProfileService.getProfile());
 
   // Voice recording & feedback state
   const [isListening, setIsListening] = useState(false);
@@ -180,21 +184,31 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
               </p>
             </div>
 
-            {/* İstatistik Rozetleri */}
-            <div className="flex items-center space-x-3 shrink-0">
-              <div className="bg-white/15 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/20 flex items-center space-x-2.5">
-                <Flame className="w-6 h-6 text-amber-400" />
-                <div>
-                  <div className="text-[10px] text-blue-200 font-bold uppercase tracking-wider">Kesintisiz Seri</div>
-                  <div className="text-xl font-black">{progress.streakDays} Gün 🔥</div>
-                </div>
-              </div>
+            {/* İstatistik Rozetleri & Karne Butonu */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0">
+              <button
+                type="button"
+                onClick={() => setIsReportOpen(true)}
+                className="px-4 py-2.5 rounded-2xl bg-white/20 hover:bg-white/30 border border-white/30 text-white font-black text-xs transition-all shadow-md flex items-center space-x-1.5 cursor-pointer backdrop-blur-md"
+              >
+                <span>📊 Gelişim Karnemi Gör</span>
+              </button>
 
-              <div className="bg-white/15 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/20 flex items-center space-x-2.5">
-                <Award className="w-6 h-6 text-yellow-300" />
-                <div>
-                  <div className="text-[10px] text-blue-200 font-bold uppercase tracking-wider">Konuşma Puanı</div>
-                  <div className="text-xl font-black">{progress.totalXp} XP ⭐</div>
+              <div className="flex items-center space-x-2">
+                <div className="bg-white/15 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-white/20 flex items-center space-x-2">
+                  <Flame className="w-5 h-5 text-amber-400" />
+                  <div>
+                    <div className="text-[10px] text-blue-200 font-bold uppercase">Seri</div>
+                    <div className="text-base font-black">{progress.streakDays} Gün 🔥</div>
+                  </div>
+                </div>
+
+                <div className="bg-white/15 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-white/20 flex items-center space-x-2">
+                  <Award className="w-5 h-5 text-yellow-300" />
+                  <div>
+                    <div className="text-[10px] text-blue-200 font-bold uppercase">Puan</div>
+                    <div className="text-base font-black">{progress.totalXp} XP ⭐</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -276,42 +290,12 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
             </div>
           </div>
 
-          {/* 1. ADIM: YAPAY ZEKA DOSTUNUN SORUSU */}
-          <div className="bg-blue-50/70 dark:bg-blue-950/30 rounded-2xl p-5 border border-blue-100 dark:border-blue-900/40 space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-black text-sm shadow-xs">
-                  🎙️
-                </div>
-                <span className="text-xs font-bold text-blue-800 dark:text-blue-300 uppercase tracking-wide">
-                  Chirmo Sana Soruyor:
-                </span>
-              </div>
-
-              <button
-                onClick={() => handleSpeak(selectedMission.aiPrompt)}
-                className="px-3 py-1 rounded-xl bg-white dark:bg-slate-800 hover:bg-blue-100 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-slate-700 text-xs font-bold flex items-center space-x-1.5 shadow-xs cursor-pointer transition-colors"
-                title="Soruyu Sesli Dinle"
-              >
-                <Volume2 className="w-3.5 h-3.5 text-blue-600" />
-                <span>Soruyu Dinle</span>
-              </button>
-            </div>
-
-            <p className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white pl-10">
-              "{selectedMission.aiPrompt}"
-            </p>
-            <p className="text-xs text-blue-900/70 dark:text-blue-200/70 pl-10 italic">
-              Türkçesi: {selectedMission.aiPromptTr}
-            </p>
-          </div>
-
-          {/* 2. ADIM: SENİN SÖYLEYECEĞİN CEVAP VE BLOK KALIPLAR */}
+          {/* 1. ADIM: 5 DAKİKALIK KELİME & BLOK KALIPLAR */}
           <div className="bg-emerald-50/60 dark:bg-emerald-950/20 rounded-2xl p-5 border border-emerald-100 dark:border-emerald-900/40 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wide flex items-center space-x-1.5">
+              <span className="text-xs font-black text-emerald-800 dark:text-emerald-300 uppercase tracking-wide flex items-center space-x-1.5">
                 <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>Senin Vereceğin Doğal Cevap:</span>
+                <span>1. Adım (5 Dk Kelime): Günün Blok Kalıpları & Anlamı</span>
               </span>
 
               <button
@@ -345,7 +329,37 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
             </div>
           </div>
 
-          {/* 3. 20 YILLIK ÖĞRETMENİN TÜYOSU */}
+          {/* 2. ADIM: 5 DAKİKALIK DİNLEME (CHIRMO SANA SORUYOR) */}
+          <div className="bg-blue-50/70 dark:bg-blue-950/30 rounded-2xl p-5 border border-blue-100 dark:border-blue-900/40 space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-black text-sm shadow-xs">
+                  🎙️
+                </div>
+                <span className="text-xs font-black text-blue-800 dark:text-blue-300 uppercase tracking-wide">
+                  2. Adım (5 Dk Dinleme): Chirmo'nun Sorusu
+                </span>
+              </div>
+
+              <button
+                onClick={() => handleSpeak(selectedMission.aiPrompt)}
+                className="px-3 py-1 rounded-xl bg-white dark:bg-slate-800 hover:bg-blue-100 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-slate-700 text-xs font-bold flex items-center space-x-1.5 shadow-xs cursor-pointer transition-colors"
+                title="Soruyu Sesli Dinle"
+              >
+                <Volume2 className="w-3.5 h-3.5 text-blue-600" />
+                <span>Soruyu Dinle</span>
+              </button>
+            </div>
+
+            <p className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white pl-10">
+              "{selectedMission.aiPrompt}"
+            </p>
+            <p className="text-xs text-blue-900/70 dark:text-blue-200/70 pl-10 italic">
+              Türkçesi: {selectedMission.aiPromptTr}
+            </p>
+          </div>
+
+          {/* 20 YILLIK ÖĞRETMENİN TÜYOSU */}
           <div className="bg-amber-50/70 dark:bg-amber-950/30 rounded-2xl p-4 border border-amber-200 dark:border-amber-900/40 flex items-start space-x-3 text-xs text-amber-900 dark:text-amber-200">
             <Lightbulb className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
             <div>
@@ -354,7 +368,7 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
             </div>
           </div>
 
-          {/* 4. ADIM: İNTERAKTİF MİKROFON İLE KONUŞMA */}
+          {/* 3. ADIM: 5 DAKİKALIK SESLİ KONUŞMA */}
           <div className="flex flex-col items-center justify-center p-6 bg-slate-50 dark:bg-slate-800/40 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
             <button
               onClick={handleStartSpeaking}
@@ -436,6 +450,14 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
           </div>
         </div>
       </div>
+
+      {/* 30 Günlük Başlangıç & Bitiş Karşılaştırma Karnesi Modalı */}
+      <CampComparisonModal
+        isOpen={isReportOpen}
+        onClose={() => setIsReportOpen(false)}
+        progress={progress}
+        userProfile={userProfile}
+      />
     </div>
   );
 };

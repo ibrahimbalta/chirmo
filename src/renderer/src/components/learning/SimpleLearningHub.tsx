@@ -57,9 +57,15 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<LearningHubTab>(initialTab);
   const [srsWords, setSrsWords] = useState<SrsWordData[]>(() => SpacedRepetitionService.getAllWords());
+  const [srsFilter, setSrsFilter] = useState<'all' | 'due' | 'mastered'>('all');
   const [words, setWords] = useState<VocabularyWord[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [campProgress, setCampProgress] = useState(() => CampStorageService.getProgress());
+
+  const handleSrsReview = (id: string, isCorrect: boolean) => {
+    SpacedRepetitionService.recordReview(id, isCorrect, isCorrect ? 5 : 1);
+    setSrsWords([...SpacedRepetitionService.getAllWords()]);
+  };
 
   // Flashcard state
   const [cardIndex, setCardIndex] = useState(0);
@@ -302,10 +308,50 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
           />
         )}
 
-        {/* 3. KELİME VE KALIP DEFTERİM */}
+        {/* 3. KELİME VE KALIP DEFTERİM (SM-2 SPACED REPETITION) */}
         {activeTab === 'vault' && (
-          <div className="max-w-5xl mx-auto w-full p-6 space-y-4">
-            <div className="flex items-center justify-between gap-3">
+          <div className="max-w-5xl mx-auto w-full p-6 space-y-5">
+            {/* SM-2 Aralıklı Tekrar İstatistik Paneli */}
+            {(() => {
+              const srsStats = SpacedRepetitionService.getStats();
+              return (
+                <div className="p-5 rounded-3xl bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 text-white shadow-xl space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
+                    <div className="flex items-center space-x-2">
+                      <BrainCircuit className="w-5 h-5 text-purple-400" />
+                      <span className="text-xs font-black uppercase tracking-wider text-purple-200">
+                        SM-2 Akıllı Aralıklı Tekrar & Hafıza Durumu
+                      </span>
+                    </div>
+                    <span className="text-[10px] bg-purple-500/20 text-purple-300 px-3 py-0.5 rounded-full border border-purple-500/30 font-bold">
+                      Ebbinghaus Unutma Eğrisi Koruması
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                    <div className="p-3 rounded-2xl bg-white/5 border border-white/10">
+                      <div className="text-[10px] text-slate-400 font-bold uppercase">Toplam Kelime</div>
+                      <div className="text-xl font-black text-white mt-0.5">{srsStats.totalWords}</div>
+                    </div>
+                    <div className="p-3 rounded-2xl bg-white/5 border border-white/10">
+                      <div className="text-[10px] text-amber-300 font-bold uppercase">Tekrar Zamanı Gelen</div>
+                      <div className="text-xl font-black text-amber-300 mt-0.5">{srsStats.dueCount} Kelime</div>
+                    </div>
+                    <div className="p-3 rounded-2xl bg-white/5 border border-white/10">
+                      <div className="text-[10px] text-emerald-300 font-bold uppercase">Kalıcılık Oranı</div>
+                      <div className="text-xl font-black text-emerald-300 mt-0.5">%{srsStats.retentionRate}</div>
+                    </div>
+                    <div className="p-3 rounded-2xl bg-white/5 border border-white/10">
+                      <div className="text-[10px] text-indigo-300 font-bold uppercase">Usta Olunanlar</div>
+                      <div className="text-xl font-black text-indigo-300 mt-0.5">{srsStats.masteredCount}</div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* Arama ve Filtreleme */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
               <div className="relative w-full max-w-sm">
                 <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                 <input
@@ -317,95 +363,170 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
                 />
               </div>
 
-              <div className="text-xs text-slate-500 font-semibold">
-                Toplam {filteredWords.length} Kalıp Kayıtlı
+              <div className="flex items-center space-x-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs self-start sm:self-auto">
+                <button
+                  type="button"
+                  onClick={() => setSrsFilter('all')}
+                  className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
+                    srsFilter === 'all'
+                      ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-xs'
+                      : 'text-slate-500 hover:text-slate-800'
+                  }`}
+                >
+                  Tümü ({srsWords.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSrsFilter('due')}
+                  className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
+                    srsFilter === 'due'
+                      ? 'bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-xs'
+                      : 'text-slate-500 hover:text-slate-800'
+                  }`}
+                >
+                  Tekrar Vakti 🔔
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSrsFilter('mastered')}
+                  className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
+                    srsFilter === 'mastered'
+                      ? 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs'
+                      : 'text-slate-500 hover:text-slate-800'
+                  }`}
+                >
+                  Usta Olunanlar ⭐
+                </button>
               </div>
             </div>
 
-            {filteredWords.length === 0 ? (
-              <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800 p-8 space-y-3">
-                <Bookmark className="w-10 h-10 text-slate-300 mx-auto" />
-                <h3 className="text-base font-bold text-slate-700 dark:text-slate-300">
-                  Henüz kayıtlı kalıbın yok
-                </h3>
-                <p className="text-xs text-slate-400 max-w-xs mx-auto">
-                  Hayat kurtaran durumlardan veya web sayfalarından beğendiğin kalıpları defterine ekleyebilirsin.
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {filteredWords.map((item) => (
-                  <div
-                    key={item.id}
-                    className="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 hover:shadow-md transition-all flex flex-col justify-between space-y-2 group"
-                  >
-                    <div>
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <div className="flex items-baseline space-x-1.5">
-                            <h4 className="text-base font-black text-slate-900 dark:text-white capitalize">
-                              {item.word}
-                            </h4>
-                            {item.phonetic && (
-                              <span className="text-[11px] text-slate-400 font-mono">
-                                {item.phonetic}
-                              </span>
-                            )}
+            {/* SRS Kelime Kartları */}
+            {(() => {
+              const dueWords = SpacedRepetitionService.getDueWords();
+              const filteredSrs = srsWords
+                .filter((w) => {
+                  if (srsFilter === 'due') return dueWords.some((d) => d.id === w.id);
+                  if (srsFilter === 'mastered') return w.masteryLevel === 'mastered';
+                  return true;
+                })
+                .filter(
+                  (w) =>
+                    w.word.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    w.translation.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+
+              if (filteredSrs.length === 0) {
+                return (
+                  <div className="text-center py-12 bg-white dark:bg-slate-900 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800 p-8 space-y-2">
+                    <Bookmark className="w-8 h-8 text-slate-300 mx-auto" />
+                    <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                      Bu filtrede görüntülenecek kelime bulunamadı
+                    </h3>
+                  </div>
+                );
+              }
+
+              return (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {filteredSrs.map((item) => (
+                    <div
+                      key={item.id}
+                      className="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 hover:shadow-md transition-all flex flex-col justify-between space-y-3 group"
+                    >
+                      <div>
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <div className="flex items-baseline space-x-1.5">
+                              <h4 className="text-base font-black text-slate-900 dark:text-white capitalize">
+                                {item.word}
+                              </h4>
+                              {item.phonetic && (
+                                <span className="text-[11px] text-slate-400 font-mono">
+                                  {item.phonetic}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs font-bold text-indigo-600 dark:text-indigo-400 mt-0.5">
+                              {item.translation}
+                            </p>
                           </div>
-                          <p className="text-xs font-bold text-blue-600 dark:text-blue-400 mt-0.5">
-                            {item.translation}
-                          </p>
+
+                          <div className="flex items-center space-x-1">
+                            <button
+                              type="button"
+                              onClick={() => handleSpeak(item.word)}
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors cursor-pointer"
+                              title="Telaffuzu Dinle"
+                            >
+                              <Volume2 className="w-4 h-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                SpacedRepetitionService.deleteWord(item.id);
+                                setSrsWords(SpacedRepetitionService.getAllWords());
+                              }}
+                              className="p-1.5 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50 transition-colors opacity-0 group-hover:opacity-100 cursor-pointer"
+                              title="Defterden Sil"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
                         </div>
 
-                        <div className="flex items-center space-x-1">
+                        {item.exampleSentence && (
+                          <div className="mt-2 text-xs bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl text-slate-700 dark:text-slate-300">
+                            <p className="font-medium italic">"{item.exampleSentence}"</p>
+                            {item.exampleTranslation && (
+                              <p className="text-[11px] text-slate-500 mt-0.5">
+                                {item.exampleTranslation}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* SM-2 Tekrar Oylaması ve Durum */}
+                      <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                        <div className="flex items-center justify-between text-[11px]">
+                          <span className="font-semibold text-slate-400">
+                            {item.masteryLevel === 'mastered' ? (
+                              <span className="text-emerald-600 font-bold flex items-center space-x-1">
+                                <CheckCircle2 className="w-3 h-3" />
+                                <span>Refleks Oldu ({item.repetitionCount}x)</span>
+                              </span>
+                            ) : (
+                              <span>Tekrar: {item.repetitionCount} • Aralık: {item.intervalDays} Gün</span>
+                            )}
+                          </span>
+                          <span className="font-bold text-indigo-500 uppercase">
+                            {item.level || 'A1'}
+                          </span>
+                        </div>
+
+                        {/* Hızlı Hatırlama Oylaması */}
+                        <div className="flex items-center space-x-1.5 pt-1">
                           <button
-                            onClick={() => handleSpeak(item.word)}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer"
-                            title="Telaffuzu Dinle"
+                            type="button"
+                            onClick={() => handleSrsReview(item.id, false)}
+                            className="flex-1 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 text-[10px] font-bold transition-colors cursor-pointer"
                           >
-                            <Volume2 className="w-4 h-4" />
+                            ✕ Unuttum (Yarın)
                           </button>
                           <button
-                            onClick={() => handleDeleteWord(item.id)}
-                            className="p-1.5 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50 transition-colors opacity-0 group-hover:opacity-100 cursor-pointer"
-                            title="Defterden Sil"
+                            type="button"
+                            onClick={() => handleSrsReview(item.id, true)}
+                            className="flex-1 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 text-[10px] font-bold transition-colors cursor-pointer"
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
+                            ✓ Hatırladım ({item.intervalDays * 2} Gün)
                           </button>
                         </div>
                       </div>
-
-                      {item.exampleSentence && (
-                        <div className="mt-2 text-xs bg-slate-50 dark:bg-slate-800/60 p-2 rounded-xl text-slate-700 dark:text-slate-300">
-                          <p className="font-medium italic">"{item.exampleSentence}"</p>
-                          {item.exampleTranslation && (
-                            <p className="text-[11px] text-slate-500 mt-0.5">
-                              {item.exampleTranslation}
-                            </p>
-                          )}
-                        </div>
-                      )}
                     </div>
-
-                    <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
-                      <span className="text-slate-400">
-                        {item.masteryLevel >= 4 ? (
-                          <span className="text-emerald-600 font-bold flex items-center space-x-1">
-                            <CheckCircle2 className="w-3 h-3" />
-                            <span>Refleks Oldu</span>
-                          </span>
-                        ) : (
-                          <span>Pratik Ediliyor</span>
-                        )}
-                      </span>
-                      <span className="font-semibold text-slate-400">
-                        {item.level || 'A1'}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              );
+            })()}
           </div>
         )}
 
