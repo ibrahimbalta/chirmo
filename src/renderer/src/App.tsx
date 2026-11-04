@@ -179,8 +179,8 @@ export const App: React.FC = () => {
           title="Chirmo Ana Sayfa"
         >
           <ChirmoLogo size="sm" variant="header" />
-          <span className="hidden md:inline-block text-[11px] font-medium text-slate-400 border-l border-slate-200/80 dark:border-slate-700 pl-2">
-            Gezin • Öğren • Yönet
+          <span className="hidden md:inline-block text-[11px] font-bold text-indigo-600 dark:text-indigo-400 border-l border-slate-200/80 dark:border-slate-700 pl-2">
+            30 Günde Konuşma Garantili Sanal Öğretmen
           </span>
         </div>
 
@@ -196,8 +196,8 @@ export const App: React.FC = () => {
                 : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-white/50 font-medium'
             }`}
           >
-            <Search className={`w-3.5 h-3.5 ${activeTab === 'search' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'}`} />
-            <span>Arama & Web</span>
+            <Sparkles className={`w-3.5 h-3.5 ${activeTab === 'search' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'}`} />
+            <span>Chirmo Stüdyo</span>
           </button>
 
           <button
@@ -209,7 +209,7 @@ export const App: React.FC = () => {
             }`}
           >
             <BookOpen className={`w-3.5 h-3.5 ${activeTab === 'learn' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`} />
-            <span>30 Gün Konuşma</span>
+            <span>30 Günlük Kamp</span>
           </button>
 
           <button
@@ -221,7 +221,7 @@ export const App: React.FC = () => {
             }`}
           >
             <CheckSquare className={`w-3.5 h-3.5 ${activeTab === 'tasks' ? 'text-purple-600 dark:text-purple-400' : 'text-slate-400'}`} />
-            <span>İş & Hedefler</span>
+            <span>Hedeflerim</span>
           </button>
         </div>
 
@@ -525,44 +525,44 @@ export const App: React.FC = () => {
           onClick={() => setActiveTab('search')}
           className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer ${
             activeTab === 'search'
-              ? 'text-blue-600 dark:text-blue-400 font-black'
+              ? 'text-indigo-600 dark:text-indigo-400 font-black'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
           }`}
         >
-          <Search className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px]">Arama</span>
+          <Sparkles className="w-5 h-5 mb-0.5" />
+          <span className="text-[10px]">Chirmo</span>
         </button>
 
         <button
           onClick={() => setActiveTab('learn')}
           className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer ${
             activeTab === 'learn'
-              ? 'text-blue-600 dark:text-blue-400 font-black'
+              ? 'text-indigo-600 dark:text-indigo-400 font-black'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
           }`}
         >
           <BookOpen className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px]">İngilizce</span>
+          <span className="text-[10px]">Kamp</span>
         </button>
 
         <button
           onClick={() => setActiveTab('tasks')}
           className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer ${
             activeTab === 'tasks'
-              ? 'text-blue-600 dark:text-blue-400 font-black'
+              ? 'text-indigo-600 dark:text-indigo-400 font-black'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
           }`}
         >
           <CheckSquare className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px]">İş Takibi</span>
+          <span className="text-[10px]">Hedefler</span>
         </button>
 
         <button
           onClick={() => setIsInstallModalOpen(true)}
           className="flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center text-amber-600 dark:text-amber-400 font-bold hover:text-amber-700 cursor-pointer"
         >
-          <Smartphone className="w-5 h-5 mb-0.5 animate-bounce" />
-          <span className="text-[10px]">APK / PWA</span>
+          <Smartphone className="w-5 h-5 mb-0.5" />
+          <span className="text-[10px]">İndir</span>
         </button>
       </nav>
     </div>
