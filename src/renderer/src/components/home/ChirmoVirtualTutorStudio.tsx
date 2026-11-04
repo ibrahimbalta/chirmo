@@ -141,6 +141,23 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
         {/* ==================== 2. KAHRAMAN AFİŞ (HERO BANNER - 1. GÖRSELLE BİREBİR) ==================== */}
         <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-r from-[#6366f1] via-[#7c3aed] to-[#8b5cf6] text-white p-6 sm:p-8 lg:p-9 shadow-lg shadow-indigo-500/15 border border-indigo-400/30">
 
+          {/* Sağ Üst Köşe: Chirmo Zarif Marka İmzası */}
+          <div className="absolute top-4 right-4 sm:top-5 sm:right-6 z-20 hidden sm:flex items-center space-x-2 px-3.5 py-1.5 rounded-2xl bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/20 shadow-sm transition-all select-none">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+            </span>
+            <span
+              style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
+              className="text-sm sm:text-base font-black tracking-widest uppercase text-transparent bg-clip-text bg-gradient-to-r from-white via-indigo-100 to-amber-200 drop-shadow-xs"
+            >
+              CHIRMO
+            </span>
+            <span className="text-[9px] font-black uppercase tracking-widest bg-white/20 text-indigo-100 px-1.5 py-0.5 rounded">
+              STUDIO
+            </span>
+          </div>
+
           {/* Arka Plan: Londra / Big Ben Vektörel Şehir Silüeti */}
           <div className="absolute right-48 sm:right-64 bottom-0 opacity-20 pointer-events-none hidden md:block">
             <svg width="260" height="180" viewBox="0 0 260 180" fill="currentColor" className="text-white">
@@ -161,10 +178,16 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             {/* Sol İçerik */}
             <div className="space-y-3 sm:space-y-4 max-w-xl">
-              {/* Kamp Rozeti */}
-              <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-black shadow-xs">
-                <span>⭐</span>
-                <span>30 Günlük İngilizce Konuşma Kampı</span>
+              {/* Kamp Rozeti & Chirmo Etiketi */}
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-black shadow-xs">
+                  <span>⭐</span>
+                  <span>30 Günlük İngilizce Konuşma Kampı</span>
+                </div>
+                <div className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full bg-amber-300/90 text-purple-950 text-xs font-black shadow-xs">
+                  <Sparkles className="w-3 h-3 text-purple-900" />
+                  <span style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}>Chirmo</span>
+                </div>
               </div>
 
               {/* Büyük Başlık */}
@@ -202,8 +225,19 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             </div>
 
             {/* Sağ İçerik: Orijinal Şeffaf 3D Chirmo Maskot Karakteri */}
-            <div className="relative flex items-center justify-center self-center lg:self-auto shrink-0 mt-2 lg:mt-0">
-              <div className="relative w-48 h-48 sm:w-60 sm:h-60 lg:w-72 lg:h-72 flex items-center justify-center">
+            <div className="relative flex flex-col items-center justify-center self-center lg:self-auto shrink-0 mt-2 lg:mt-0">
+              <div className="relative w-48 h-48 sm:w-60 sm:h-60 lg:w-72 lg:h-72 flex items-center justify-center group">
+                {/* Karakter Üstü Şık Konuşma Rozeti */}
+                <div className="absolute -top-1 sm:-top-2 right-0 sm:right-2 z-20 flex items-center space-x-1.5 bg-white/95 text-[#6d28d9] px-3.5 py-1.5 rounded-2xl rounded-bl-xs shadow-lg shadow-black/10 border border-purple-100/50 hover:scale-105 transition-transform">
+                  <span className="text-xs">💜</span>
+                  <span
+                    style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
+                    className="font-black text-xs sm:text-sm tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#6d28d9] to-[#7c3aed]"
+                  >
+                    Chirmo
+                  </span>
+                </div>
+
                 <img
                   src="./chirmo-character.png"
                   alt="Chirmo Maskot Karakteri"
@@ -219,6 +253,20 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 {/* Altın Parıltı Yıldızları */}
                 <span className="absolute top-2 right-4 text-amber-300 text-xl animate-ping pointer-events-none">✨</span>
                 <span className="absolute bottom-8 -right-1 text-amber-300 text-base animate-pulse pointer-events-none">⭐</span>
+
+                {/* Karakter İsim Plaketi / Glowing Brand Badge */}
+                <div className="absolute -bottom-2 sm:-bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center space-x-1.5 px-4 py-1 sm:py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/40 shadow-xl shadow-purple-950/20 hover:scale-105 transition-transform select-none">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+                  <span
+                    style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
+                    className="text-base sm:text-lg font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white via-indigo-100 to-amber-200 drop-shadow-[0_2px_8px_rgba(255,255,255,0.4)]"
+                  >
+                    Chirmo
+                  </span>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-purple-950 bg-amber-300 px-1.5 py-0.5 rounded-md shadow-xs">
+                    AI
+                  </span>
+                </div>
               </div>
             </div>
 
