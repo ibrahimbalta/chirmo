@@ -25,7 +25,9 @@ import {
   Gamepad2,
   Lock,
   Compass,
-  FileText
+  FileText,
+  Music,
+  Play
 } from 'lucide-react';
 import { LearningStorageService } from '../../services/learningStorage';
 import { UserProfileService, UserProfile } from '../../services/userProfileService';
@@ -49,6 +51,66 @@ export interface ChirmoVirtualTutorStudioProps {
   userLevel?: CEFRLevel;
   pendingTaskCount?: number;
 }
+
+export const KIDS_AGE_DETAILS: Record<
+  '5-7' | '8-10' | '11-13' | '14-17',
+  {
+    title: string;
+    sub: string;
+    badge: string;
+    sampleEn: string;
+    sampleTr: string;
+    focus: string;
+    pedagogicalFix: string;
+    icon: string;
+    song: string;
+  }
+> = {
+  '5-7': {
+    title: '5-7 Yaş',
+    sub: 'Okul Öncesi',
+    badge: 'Saf Edinim • Sıfır Gramer',
+    sampleEn: 'Look! The happy puppy says woof woof! 🐶',
+    sampleTr: 'Bak! Mutlu yavru köpek hav hav diyor!',
+    focus: 'Görsel kartlar, hayvan sesleri, renkler ve neşeli çocuk şarkıları.',
+    pedagogicalFix: 'Bebekler ana dilini nasıl öğreniyorsa öyle: Gramer kuralları yerine dinleyerek ve görerek doğal refleks kazanır.',
+    icon: '🧸',
+    song: 'Happy Animal Friends 🎵'
+  },
+  '8-10': {
+    title: '8-10 Yaş',
+    sub: 'İlkokul (2-4. Sınıf)',
+    badge: 'MEB Müfredatı ile %100 Uyumlu',
+    sampleEn: 'Can I have a red apple and cold milk, please? 🍎',
+    sampleTr: 'Lütfen kırmızı bir elma ve soğuk süt alabilir miyim?',
+    focus: 'MEB üniteleri (Ailem, Vücudum, Meyveler, Renkler), nezaket kalıpları.',
+    pedagogicalFix: 'Okulda sınav için ezberletilen kelimeleri, sevimli 3D Chirmo robotuyla gerçek konuşmaya ve yüksek okul notlarına dönüştürür.',
+    icon: '🎨',
+    song: 'Colors & Magic Words 🎵'
+  },
+  '11-13': {
+    title: '11-13 Yaş',
+    sub: 'Ortaokul (5-7. Sınıf)',
+    badge: 'Diyalog & Soru Sorma Refleksi',
+    sampleEn: 'Excuse me, where is the science laboratory? 🔬',
+    sampleTr: 'Affedersiniz, fen laboratuvarı nerede?',
+    focus: 'Soru sorma cesareti ("Where is...", "How much..."), okul ve arkadaş diyalogları.',
+    pedagogicalFix: 'Türk çocuklarının en büyük sorunu olan "konuşma çekingenliğini" kırmak için yargılamayan yapay zekâ arkadaş Chirmo ile sınırsız pratik.',
+    icon: '📚',
+    song: 'School Adventures & Questions 🎵'
+  },
+  '14-17': {
+    title: '14-17 Yaş',
+    sub: 'Gençler & Lise',
+    badge: 'Sosyal İngilizce & Global Özgüven',
+    sampleEn: 'I love discovering new music and playing games with my friends. 🎮',
+    sampleTr: 'Arkadaşlarımla yeni müzikler keşfetmeyi ve oyun oynamayı çok seviyorum.',
+    focus: 'Müzik, teknoloji, seyahat, oyunlar ve arkadaş ortamında doğal kendini ifade etme.',
+    pedagogicalFix: 'Lise sınavları (LGS/YKS) ve günlük hayat için akıcı B1 konuşma düzeyi ve global özgüven kazandırır.',
+    icon: '🎧',
+    song: 'Global Vibes & Dreams 🎵'
+  }
+};
 
 /**
  * ChirmoVirtualTutorStudio
@@ -80,6 +142,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   // Chirmo Karakter Durumu ('idle' | 'speaking' | 'listening' | 'cheering')
   const [chirmoState, setChirmoState] = useState<'idle' | 'speaking' | 'listening' | 'cheering'>('idle');
   const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
+  const [kidsPreviewAge, setKidsPreviewAge] = useState<'5-7' | '8-10' | '11-13' | '14-17'>('8-10');
 
   // Günün Görevi (30 günlük kamptan)
   const currentMission: DayMission =
@@ -344,30 +407,90 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
 
         {/* ==================== 2. AİLELER & YETİŞKİNLER İÇİN İKİLİ ÖĞRENME GEÇİDİ (DUAL GATEWAY) ==================== */}
         <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* GEÇİT 1: 🎈 CHIRMO KIDS (AİLELER VE ÇOCUKLAR İÇİN) */}
-          <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-pink-50 via-white to-amber-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 border-2 border-pink-200/80 dark:border-pink-900/60 shadow-sm flex flex-col justify-between space-y-4 hover:shadow-md transition-shadow relative overflow-hidden group">
+          {/* GEÇİT 1: 🎈 CHIRMO KIDS (TÜRKİYE'NİN ÇOCUK EĞİTİMİNİ ÇÖZEN ZENGİN ALAN) */}
+          <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-pink-50/90 via-white to-amber-50/70 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 border-2 border-pink-300 dark:border-pink-900/60 shadow-sm flex flex-col justify-between space-y-4 hover:shadow-md transition-shadow relative overflow-hidden group">
             <div className="absolute top-0 right-0 px-3 py-1 bg-gradient-to-r from-pink-500 to-rose-500 text-white text-[10px] font-black uppercase tracking-wider rounded-bl-2xl shadow-xs">
               Ailelerin 1 Numaralı Tercihi
             </div>
 
-            <div className="space-y-3">
-              <div className="flex items-center space-x-2 text-pink-600 dark:text-pink-400">
-                <span className="text-2xl">🎈</span>
+            <div className="space-y-3.5">
+              {/* Başlık ve Rozet */}
+              <div className="flex items-center space-x-2.5 text-pink-600 dark:text-pink-400">
+                <span className="text-3xl animate-bounce">🎈</span>
                 <div>
-                  <h3 className="text-lg font-black text-slate-900 dark:text-white">
+                  <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white leading-tight">
                     Chirmo Kids (5 - 17 Yaş)
                   </h3>
                   <p className="text-[11px] font-bold text-pink-600 dark:text-pink-400">
-                    Çocuklar & Gençler İçin Eğlenceli İngilizce
+                    Türkiye'de Çocukların İngilizce Konuşma Sorununu Çözen Alan
                   </p>
                 </div>
               </div>
 
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                Çocuğunuz İngilizceyi bir sınav dersi olarak değil, sevimli 3D Chirmo robotuyla oyun oynayarak, şarkı söyleyerek ve konuşarak sevsin.
+              {/* Pedagojik Açıklama */}
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+                Okullarda yıllarca kural ezberletildiği için çocuklar konuşmaktan korkuyor. Chirmo Kids, her yaş grubuna özel pedagojik oyunlar, şarkılar ve sevimli 3D robot arkadaşı ile dili bir ders değil, hayat boyu sürecek bir refleks haline getirir.
               </p>
 
-              {/* Aileler İçin 4 Temel Değer Maddesi */}
+              {/* 4 Yaş Kademesi Seçim Sekmesi */}
+              <div className="space-y-1.5">
+                <div className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                  Çocuğunuzun Yaşını Seçin (Özel Pedagoji & Müfredat):
+                </div>
+                <div className="grid grid-cols-4 gap-1 p-1 bg-pink-100/60 dark:bg-slate-800 rounded-2xl">
+                  {(['5-7', '8-10', '11-13', '14-17'] as const).map((ageKey) => {
+                    const item = KIDS_AGE_DETAILS[ageKey];
+                    const isActive = kidsPreviewAge === ageKey;
+                    return (
+                      <button
+                        key={ageKey}
+                        type="button"
+                        onClick={() => setKidsPreviewAge(ageKey)}
+                        className={`py-1.5 px-1 rounded-xl text-center transition-all cursor-pointer ${
+                          isActive
+                            ? 'bg-white dark:bg-slate-900 text-pink-600 dark:text-pink-400 font-black shadow-xs scale-[1.02]'
+                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 text-[11px] font-bold'
+                        }`}
+                      >
+                        <div className="text-sm">{item.icon}</div>
+                        <div className="text-[10px] font-bold">{item.title}</div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Seçili Yaş Kademesinin Canlı Önizleme Kartı */}
+              <div className="p-3.5 rounded-2xl bg-white dark:bg-slate-800/80 border border-pink-200/80 dark:border-pink-900/40 space-y-2 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <span className="px-2 py-0.5 rounded-md bg-pink-100 dark:bg-pink-950/70 text-pink-700 dark:text-pink-300 text-[10px] font-black uppercase">
+                    {KIDS_AGE_DETAILS[kidsPreviewAge].badge}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleChirmoSpeak(KIDS_AGE_DETAILS[kidsPreviewAge].sampleEn)}
+                    className="px-2 py-1 rounded-lg bg-pink-50 hover:bg-pink-100 text-pink-700 text-[10px] font-bold flex items-center space-x-1 cursor-pointer transition-colors"
+                  >
+                    <Volume2 className="w-3 h-3" />
+                    <span>Chirmo ile Dinle</span>
+                  </button>
+                </div>
+
+                <div className="space-y-0.5">
+                  <div className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">
+                    "{KIDS_AGE_DETAILS[kidsPreviewAge].sampleEn}"
+                  </div>
+                  <div className="text-[11px] text-slate-500 italic">
+                    Anlamı: {KIDS_AGE_DETAILS[kidsPreviewAge].sampleTr}
+                  </div>
+                </div>
+
+                <div className="pt-1 border-t border-pink-50 dark:border-slate-700/60 text-[11px] text-pink-950 dark:text-pink-200 leading-snug">
+                  💡 <strong>Nasıl Öğretiyor?</strong> {KIDS_AGE_DETAILS[kidsPreviewAge].pedagogicalFix}
+                </div>
+              </div>
+
+              {/* 4 Temel Aile Güvencesi */}
               <div className="grid grid-cols-2 gap-2 text-[11px] font-semibold text-slate-700 dark:text-slate-300 pt-1">
                 <div className="flex items-center space-x-1.5 p-1.5 rounded-xl bg-white/80 dark:bg-slate-800 border border-pink-100 dark:border-pink-900/30">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
@@ -388,14 +511,17 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={() => onNavigateToKids && onNavigateToKids()}
-              className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-black text-xs shadow-md shadow-pink-500/20 flex items-center justify-center space-x-2 transition-all cursor-pointer group-hover:scale-[1.01]"
-            >
-              <span>Chirmo Kids Dünyasını Aç</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </button>
+            {/* Butonlar */}
+            <div className="pt-2 flex flex-col sm:flex-row items-center gap-2">
+              <button
+                type="button"
+                onClick={() => onNavigateToKids && onNavigateToKids()}
+                className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-black text-xs shadow-md shadow-pink-500/20 flex items-center justify-center space-x-2 transition-all cursor-pointer hover:scale-[1.01]"
+              >
+                <span>Chirmo Kids Dünyasını Aç</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
           {/* GEÇİT 2: 🎯 CHIRMO YETİŞKİN (30 GÜNDE KONUŞMA KAMPI) */}
