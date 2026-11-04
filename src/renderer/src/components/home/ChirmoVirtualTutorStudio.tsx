@@ -9,11 +9,14 @@ import {
   TrendingUp,
   Sparkles,
   ArrowRight,
-  ChevronRight
+  ChevronRight,
+  Zap,
+  X
 } from 'lucide-react';
 import { LearningStorageService } from '../../services/learningStorage';
 import { ChirmoSubscriptionModal } from '../subscription/ChirmoSubscriptionModal';
 import { ChirmoAiChatModal } from './ChirmoAiChatModal';
+import { ChirmoFluencyBooster } from '../learning/ChirmoFluencyBooster';
 import { CEFRLevel } from '../../types';
 
 export interface ChirmoVirtualTutorStudioProps {
@@ -39,6 +42,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   const [searchQuery, setSearchQuery] = useState('');
   const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
+  const [isBoosterModalOpen, setIsBoosterModalOpen] = useState(false);
 
   // AI Teacher Speech State
   const [tutorSpeechText] = useState(
@@ -282,6 +286,35 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
               </div>
             </div>
           </div>
+        </div>
+
+        {/* ==================== 3.5. 3X HIZLI KONUŞMA HIZLANDIRICISI (FLUENCY BOOSTER BANNER) ==================== */}
+        <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-indigo-900 via-purple-900 to-pink-900 text-white shadow-lg border border-purple-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center space-x-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-2xl shrink-0">
+              ⚡
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <span className="text-xs font-black uppercase text-amber-300">Yeni Bilimsel Metot</span>
+                <span className="px-2 py-0.5 rounded-full bg-pink-500/40 text-[10px] font-black">Sıfır Çeviri</span>
+              </div>
+              <h3 className="text-base sm:text-lg font-black text-white">
+                3x Hızlı Konuşma Hızlandırıcısı
+              </h3>
+              <p className="text-xs text-purple-200">
+                Gölgeleme (Shadowing), Görsel Hızlı Refleks, Yürüyüş Modu ve Türklerin 20 Temel Hatası
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setIsBoosterModalOpen(true)}
+            className="px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-rose-400 hover:from-amber-300 hover:to-rose-300 text-slate-950 font-black text-xs sm:text-sm shadow-md transition-all cursor-pointer flex items-center justify-center space-x-2 shrink-0 active:scale-95"
+          >
+            <span>Hızlandırıcıyı Aç 🚀</span>
+          </button>
         </div>
 
         {/* ==================== 4. ORTA SÜTUN: DERS PLANI VE CHIRMO AI ÖĞRETMENİ ==================== */}
@@ -576,6 +609,23 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
         onClose={() => setIsChatModalOpen(false)}
         initialMessage={tutorSpeechText}
       />
+
+      {/* 3x Hızlı Konuşma Hızlandırıcısı Tam Ekran Modalı */}
+      {isBoosterModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-5xl h-[92vh] rounded-3xl overflow-hidden shadow-2xl flex flex-col relative bg-white dark:bg-slate-950 border border-purple-200 dark:border-slate-800">
+            <button
+              type="button"
+              onClick={() => setIsBoosterModalOpen(false)}
+              className="absolute top-4 right-4 z-50 p-2.5 rounded-full bg-black/40 hover:bg-black/60 text-white backdrop-blur-md transition-all cursor-pointer shadow-md"
+              title="Kapat"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <ChirmoFluencyBooster onBackToHome={() => setIsBoosterModalOpen(false)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

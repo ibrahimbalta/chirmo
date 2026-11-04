@@ -83,8 +83,20 @@ export interface ChirmoKidsDedicatedHubProps {
 export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ onBackToMain }) => {
   // Navigation & Age State
   const [selectedAge, setSelectedAge] = useState<AgeGroup>('5-7');
-  const [activeTab, setActiveTab] = useState<'games' | 'cards' | 'patterns' | 'songs' | 'parent'>('games');
+  const [activeTab, setActiveTab] = useState<
+    'games' | 'cards' | 'patterns' | 'animals' | 'colors' | 'chat' | 'stickers' | 'songs' | 'parent'
+  >('games');
   const [categoryFilter, setCategoryFilter] = useState<string>('Tümü');
+
+  // Kids Safari Animals State
+  const [selectedAnimalId, setSelectedAnimalId] = useState<string | null>(null);
+
+  // Kids Magic Colors State
+  const [activeColorId, setActiveColorId] = useState<string>('c-red');
+
+  // Kids Cartoon Chat State
+  const [chatStepIndex, setChatStepIndex] = useState<number>(0);
+  const [childAnswerText, setChildAnswerText] = useState<string | null>(null);
 
   // Gamification State
   const [stars, setStars] = useState<number>(() => {
@@ -374,6 +386,187 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
     }
   ];
 
+  // ==================== CHIRMO ANIMAL SAFARI (SESLİ HAYVANAT BAHÇESİ) ====================
+  const SAFARI_ANIMALS = [
+    {
+      id: 'an-lion',
+      nameEn: 'Lion',
+      nameTr: 'Cesur Aslan',
+      emoji: '🦁',
+      soundText: 'Roar! I am the brave lion, the king of the jungle!',
+      funTr: 'Aslanlar safaride kükrer ve çok güçlüdür.'
+    },
+    {
+      id: 'an-elephant',
+      nameEn: 'Elephant',
+      nameTr: 'Sevimli Fil',
+      emoji: '🐘',
+      soundText: 'Trumpet! I am a big gentle elephant with large ears!',
+      funTr: 'Filler hortumlarıyla su püskürtmeyi çok sever.'
+    },
+    {
+      id: 'an-monkey',
+      nameEn: 'Monkey',
+      nameTr: 'Neşeli Maymun',
+      emoji: '🐒',
+      soundText: 'Ooh ooh aah aah! I love bananas and jumping on trees!',
+      funTr: 'Maymunlar ağaçtan ağaca zıplar ve muz yer.'
+    },
+    {
+      id: 'an-dolphin',
+      nameEn: 'Dolphin',
+      nameTr: 'Akıllı Yunus',
+      emoji: '🐬',
+      soundText: 'Splash! I swim fast and do backflips in the blue ocean!',
+      funTr: 'Yunuslar denizde taklalar atan çok zeki dostlardır.'
+    },
+    {
+      id: 'an-owl',
+      nameEn: 'Owl',
+      nameTr: 'Bilge Baykuş',
+      emoji: '🦉',
+      soundText: 'Hoot hoot! I read storybooks under the starry night sky!',
+      funTr: 'Baykuşlar gece uyanır ve kocaman gözleriyle her şeyi görür.'
+    },
+    {
+      id: 'an-frog',
+      nameEn: 'Frog',
+      nameTr: 'Zıpzıp Kurbağa',
+      emoji: '🐸',
+      soundText: 'Ribbit ribbit! I can jump high over the green water lily!',
+      funTr: 'Kurbağalar nilüfer yapraklarının üzerinden yükseğe zıplar.'
+    },
+    {
+      id: 'an-dog',
+      nameEn: 'Dog',
+      nameTr: 'Sadık Köpekçik',
+      emoji: '🐶',
+      soundText: 'Woof woof! I love playing fetch with a bouncy ball!',
+      funTr: 'Köpekler topla oynamayı ve kuyruk sallamayı sever.'
+    },
+    {
+      id: 'an-cat',
+      nameEn: 'Cat',
+      nameTr: 'Yumuşak Kedicik',
+      emoji: '🐱',
+      soundText: 'Meow meow! Purr... Let us drink warm milk and cuddle!',
+      funTr: 'Kediler mırıldanarak süt içmeye bayılır.'
+    }
+  ];
+
+  // ==================== MAGIC COLOR & SPEAK LABORATUVARI ====================
+  const MAGIC_COLORS = [
+    {
+      id: 'c-red',
+      nameEn: 'Red',
+      nameTr: 'Kırmızı',
+      bgClass: 'from-rose-500 to-red-600',
+      textClass: 'text-rose-600',
+      objectEn: 'Red Apple',
+      objectTr: 'Kırmızı Elma',
+      emoji: '🍎',
+      sample: 'I like red sweet apples!'
+    },
+    {
+      id: 'c-blue',
+      nameEn: 'Blue',
+      nameTr: 'Mavi',
+      bgClass: 'from-blue-500 to-indigo-600',
+      textClass: 'text-blue-600',
+      objectEn: 'Blue Rocket',
+      objectTr: 'Mavi Roket',
+      emoji: '🚀',
+      sample: 'The blue rocket flies into space!'
+    },
+    {
+      id: 'c-yellow',
+      nameEn: 'Yellow',
+      nameTr: 'Sarı',
+      bgClass: 'from-amber-400 to-yellow-500',
+      textClass: 'text-amber-600',
+      objectEn: 'Yellow Sun',
+      objectTr: 'Sarı Güneş',
+      emoji: '☀️',
+      sample: 'The yellow sun shines bright!'
+    },
+    {
+      id: 'c-green',
+      nameEn: 'Green',
+      nameTr: 'Yeşil',
+      bgClass: 'from-emerald-500 to-green-600',
+      textClass: 'text-emerald-600',
+      objectEn: 'Green Frog',
+      objectTr: 'Yeşil Kurbağa',
+      emoji: '🐸',
+      sample: 'The green frog jumps high!'
+    },
+    {
+      id: 'c-purple',
+      nameEn: 'Purple',
+      nameTr: 'Mor',
+      bgClass: 'from-purple-500 to-indigo-600',
+      textClass: 'text-purple-600',
+      objectEn: 'Purple Grapes',
+      objectTr: 'Mor Üzümler',
+      emoji: '🍇',
+      sample: 'Sweet purple grapes are yummy!'
+    },
+    {
+      id: 'c-orange',
+      nameEn: 'Orange',
+      nameTr: 'Turuncu',
+      bgClass: 'from-orange-400 to-amber-500',
+      textClass: 'text-orange-600',
+      objectEn: 'Orange Tiger',
+      objectTr: 'Turuncu Kaplan',
+      emoji: '🐯',
+      sample: 'The orange tiger runs fast!'
+    }
+  ];
+
+  // ==================== KIDS CARTOON DIALOGUES ====================
+  const KIDS_CHAT_STEPS = [
+    {
+      id: 'kc-1',
+      chirmoEn: 'Hello little superstar! 🌟 What is your favorite animal?',
+      chirmoTr: 'Merhaba minik süperstar! En sevdiğin hayvan hangisi?',
+      options: [
+        { textEn: 'I love cats!', textTr: 'Kedileri severim! 🐱', emoji: '🐱', replyEn: 'Meow! Cats are so fluffy and cute!' },
+        { textEn: 'I love dogs!', textTr: 'Köpekleri severim! 🐶', emoji: '🐶', replyEn: 'Woof woof! Dogs are the best friends ever!' },
+        { textEn: 'I love lions!', textTr: 'Aslanları severim! 🦁', emoji: '🦁', replyEn: 'Roar! You are as brave as a mighty lion!' }
+      ]
+    },
+    {
+      id: 'kc-2',
+      chirmoEn: 'Yummy! What do you want to eat right now? 🍦',
+      chirmoTr: 'Nefis! Canın şu an ne yemek istiyor?',
+      options: [
+        { textEn: 'I want chocolate ice cream!', textTr: 'Çikolatalı dondurma istiyorum! 🍦', emoji: '🍦', replyEn: 'Ice cream is delicious on sunny days!' },
+        { textEn: 'I want warm pizza!', textTr: 'Sıcak pizza istiyorum! 🍕', emoji: '🍕', replyEn: 'Mmm! Warm cheese pizza is awesome!' },
+        { textEn: 'I want a sweet red apple!', textTr: 'Tatlı kırmızı elma istiyorum! 🍎', emoji: '🍎', replyEn: 'Super healthy choice! Apples give you energy!' }
+      ]
+    },
+    {
+      id: 'kc-3',
+      chirmoEn: 'High five! 🖐️ Can you sing and dance with me?',
+      chirmoTr: 'Çak bir beşlik! Benimle şarkı söyleyip dans eder misin?',
+      options: [
+        { textEn: 'Yes! I can sing!', textTr: 'Evet! Şarkı söyleyebilirim! 🎶', emoji: '🎤', replyEn: 'Hooray! Let us sing ABC and have fun!' },
+        { textEn: 'Yes! I can dance!', textTr: 'Evet! Dans edebilirim! 💃', emoji: '🕺', replyEn: 'Dance party time! Shake your hands!' }
+      ]
+    }
+  ];
+
+  // ==================== KIDS STICKER ALBUM ====================
+  const STICKER_COLLECTION = [
+    { id: 'stk-1', title: 'Uzay Roketi', emoji: '🚀', reqStars: 10 },
+    { id: 'stk-2', title: 'Mutlu Dinozor', emoji: '🦖', reqStars: 20 },
+    { id: 'stk-3', title: 'Sihirli Unicorn', emoji: '🦄', reqStars: 30 },
+    { id: 'stk-4', title: 'Süper Kahraman', emoji: '🦸', reqStars: 45 },
+    { id: 'stk-5', title: 'Gökkuşağı Tacı', emoji: '👑', reqStars: 60 },
+    { id: 'stk-6', title: 'Şampiyon Kupası', emoji: '🏆', reqStars: 80 }
+  ];
+
   // ==================== KELİME KATEGORİ LİSTESİ ====================
   const allCurrentVocab = AGE_VOCABULARY[selectedAge] || [];
   const uniqueCategories = ['Tümü', ...Array.from(new Set(allCurrentVocab.map((v) => v.category)))];
@@ -597,6 +790,10 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
             { id: 'games', label: '🎮 Oyunlar & Quizz', icon: Gamepad2, color: 'text-amber-500' },
             { id: 'cards', label: '🃏 Görsel Kelimeler (30+)', icon: Smile, color: 'text-pink-500' },
             { id: 'patterns', label: '🧩 Cümle Legosu Atölyesi', icon: Puzzle, color: 'text-purple-500' },
+            { id: 'animals', label: '🦁 Konuşan Hayvanlar', icon: Sparkles, color: 'text-emerald-500' },
+            { id: 'colors', label: '🎨 Sihirli Boya & Konuş', icon: Zap, color: 'text-rose-500' },
+            { id: 'chat', label: '💬 Çizgi Karakter Sohbeti', icon: MessageCircle, color: 'text-blue-500' },
+            { id: 'stickers', label: '⭐ Çıkartma Albümü', icon: Award, color: 'text-amber-500' },
             { id: 'songs', label: '🎵 Şarkılar & Karaoke', icon: Music, color: 'text-rose-500' },
             { id: 'parent', label: '🛡️ Veli Güven & Gelişim Paneli', icon: ShieldCheck, color: 'text-indigo-500' }
           ].map((tab) => {
@@ -1054,6 +1251,270 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                   <span>🔊 Chirmo ile Dinle & Tekrar Et (+5 Yıldız)</span>
                 </button>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* ==================== TAB: 🦁 KONUŞAN HAYVANAT BAHÇESİ ==================== */}
+        {activeTab === 'animals' && (
+          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border-2 border-emerald-200 dark:border-slate-800 shadow-xl space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
+              <div>
+                <span className="text-[11px] font-black uppercase text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-2.5 py-1 rounded-full">
+                  🦁 İnteraktif Safarimiz
+                </span>
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
+                  Chirmo'nun Konuşan Hayvanat Bahçesi
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500">
+                  Bir hayvana tıkla! Hem neşeli sesini duy hem de İngilizce kendini nasıl tanıttığını dinle.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {SAFARI_ANIMALS.map((animal) => {
+                const isSelected = selectedAnimalId === animal.id;
+                return (
+                  <button
+                    key={animal.id}
+                    type="button"
+                    onClick={() => {
+                      setSelectedAnimalId(animal.id);
+                      handleSpeak(animal.soundText);
+                      handleAwardStars(5, `${animal.nameEn} sesini dinledin!`);
+                    }}
+                    className={`p-5 rounded-3xl border-2 transition-all cursor-pointer flex flex-col items-center justify-center space-y-2 text-center group hover:scale-105 active:scale-95 ${
+                      isSelected
+                        ? 'bg-emerald-50 dark:bg-emerald-950/50 border-emerald-500 ring-4 ring-emerald-300'
+                        : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 hover:border-emerald-400'
+                    }`}
+                  >
+                    <span className="text-5xl group-hover:scale-120 transition-transform">
+                      {animal.emoji}
+                    </span>
+                    <span className="text-base font-black text-slate-900 dark:text-white">
+                      {animal.nameEn}
+                    </span>
+                    <span className="text-xs font-bold text-emerald-600">
+                      {animal.nameTr}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {selectedAnimalId && (
+              <div className="p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 flex items-start space-x-3 text-xs sm:text-sm text-emerald-950 dark:text-emerald-200 animate-fade-in">
+                <span className="text-3xl">🗣️</span>
+                <div>
+                  <div className="font-black text-base">
+                    "{SAFARI_ANIMALS.find((a) => a.id === selectedAnimalId)?.soundText}"
+                  </div>
+                  <div className="text-xs font-medium text-emerald-800 dark:text-emerald-300 mt-1">
+                    {SAFARI_ANIMALS.find((a) => a.id === selectedAnimalId)?.funTr}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ==================== TAB: 🎨 SİHİRLİ BOYA & KONUŞ ==================== */}
+        {activeTab === 'colors' && (
+          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border-2 border-rose-200 dark:border-slate-800 shadow-xl space-y-6">
+            <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
+              <span className="text-[11px] font-black uppercase text-rose-600 bg-rose-50 dark:bg-rose-950 px-2.5 py-1 rounded-full">
+                🎨 Renkler & Nesneler
+              </span>
+              <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
+                Sihirli Boya & Konuş Laboratuvarı
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-500">
+                Rengi seç, sihirli fırçayla boya ve nesnenin İngilizce cümlesini tekrar et!
+              </p>
+            </div>
+
+            {/* Renk Seçim Paleti */}
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+              {MAGIC_COLORS.map((col) => {
+                const isActive = activeColorId === col.id;
+                return (
+                  <button
+                    key={col.id}
+                    type="button"
+                    onClick={() => {
+                      setActiveColorId(col.id);
+                      handleSpeak(col.sample);
+                      handleAwardStars(5, `${col.nameEn} rengini boyadın!`);
+                    }}
+                    className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex flex-col items-center justify-center space-y-1 ${
+                      isActive ? 'border-slate-900 scale-105 shadow-md ring-2 ring-rose-400' : 'border-transparent'
+                    } bg-gradient-to-tr ${col.bgClass} text-white font-black`}
+                  >
+                    <span className="text-2xl">{col.emoji}</span>
+                    <span className="text-xs">{col.nameEn}</span>
+                    <span className="text-[10px] opacity-80">{col.nameTr}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Renk Vitrini */}
+            {(() => {
+              const activeColor = MAGIC_COLORS.find((c) => c.id === activeColorId) || MAGIC_COLORS[0];
+              return (
+                <div className={`p-6 rounded-3xl bg-gradient-to-tr ${activeColor.bgClass} text-white shadow-lg text-center space-y-3 animate-fade-in`}>
+                  <div className="text-6xl animate-bounce">{activeColor.emoji}</div>
+                  <div className="text-2xl sm:text-3xl font-black">
+                    "{activeColor.sample}"
+                  </div>
+                  <div className="text-sm font-bold text-white/90">
+                    {activeColor.objectTr} • {activeColor.nameTr}
+                  </div>
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => handleSpeak(activeColor.sample)}
+                      className="px-5 py-2.5 rounded-xl bg-white text-slate-900 font-black text-xs shadow-md cursor-pointer hover:bg-slate-100"
+                    >
+                      🔊 Chirmo ile Dinle & Tekrar Et
+                    </button>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        )}
+
+        {/* ==================== TAB: 💬 ÇİZGİ KARAKTER CHIRMO SOHBETİ ==================== */}
+        {activeTab === 'chat' && (
+          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border-2 border-blue-200 dark:border-slate-800 shadow-xl space-y-6">
+            <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
+              <span className="text-[11px] font-black uppercase text-blue-600 bg-blue-50 dark:bg-blue-950 px-2.5 py-1 rounded-full">
+                💬 Canlı Çizgi Karakter Diyaloğu
+              </span>
+              <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
+                Chirmo ile Eğlenceli Sohbet
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-500">
+                Chirmo sana basit bir soru soruyor! Aşağıdaki renkli butonlardan dilediğini seç ve seslendir.
+              </p>
+            </div>
+
+            {(() => {
+              const currentStep = KIDS_CHAT_STEPS[chatStepIndex % KIDS_CHAT_STEPS.length];
+              return (
+                <div className="space-y-6">
+                  {/* Chirmo Soru Balonu */}
+                  <div className="flex items-start space-x-3 p-5 rounded-3xl bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-800/80 border border-blue-200 dark:border-slate-700">
+                    <div className="w-14 h-14 rounded-2xl bg-blue-500 text-white flex items-center justify-center text-3xl shadow-sm shrink-0">
+                      🤖
+                    </div>
+                    <div className="space-y-1">
+                      <div className="text-xs font-black text-blue-600 uppercase">Chirmo Soruyor:</div>
+                      <div className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
+                        "{currentStep.chirmoEn}"
+                      </div>
+                      <div className="text-xs text-slate-500 font-medium">
+                        {currentStep.chirmoTr}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleSpeak(currentStep.chirmoEn)}
+                        className="text-xs font-bold text-blue-600 flex items-center space-x-1 pt-1 cursor-pointer"
+                      >
+                        <Volume2 className="w-3.5 h-3.5" />
+                        <span>Soruyu Dinle</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Çocuk Seçenek Butonları */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {currentStep.options.map((opt, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => {
+                          setChildAnswerText(opt.textEn);
+                          handleSpeak(opt.replyEn);
+                          handleAwardStars(10, 'Chirmo ile konuştun!');
+                          setTimeout(() => {
+                            setChatStepIndex((prev) => (prev + 1) % KIDS_CHAT_STEPS.length);
+                            setChildAnswerText(null);
+                          }, 3000);
+                        }}
+                        className="p-4 rounded-2xl bg-white dark:bg-slate-800 border-2 border-blue-200 dark:border-slate-700 hover:border-blue-500 hover:bg-blue-50/50 transition-all cursor-pointer flex flex-col items-center justify-center text-center space-y-1 shadow-sm hover:scale-102"
+                      >
+                        <span className="text-3xl">{opt.emoji}</span>
+                        <span className="text-sm font-black text-slate-900 dark:text-white">
+                          {opt.textEn}
+                        </span>
+                        <span className="text-[11px] text-slate-500 font-medium">
+                          {opt.textTr}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {childAnswerText && (
+                    <div className="p-3 rounded-2xl bg-blue-100 text-blue-900 text-xs font-black text-center animate-bounce">
+                      🎉 Chirmo: "Harika konuştun! Sıradaki soruya geçiyoruz..."
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+          </div>
+        )}
+
+        {/* ==================== TAB: ⭐ SÜPER ÇIKARTMA ALBÜMÜ ==================== */}
+        {activeTab === 'stickers' && (
+          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border-2 border-amber-200 dark:border-slate-800 shadow-xl space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
+              <div>
+                <span className="text-[11px] font-black uppercase text-amber-600 bg-amber-50 dark:bg-amber-950 px-2.5 py-1 rounded-full">
+                  ⭐ Başarı & Koleksiyon
+                </span>
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
+                  Süper Çıkartma Albümüm
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500">
+                  Her pratik yaptığında yıldız kazanırsın! Yıldızların arttıkça yeni sevimli çıkartmaların kilidi açılır.
+                </p>
+              </div>
+
+              <div className="bg-amber-400 text-slate-950 px-4 py-2 rounded-2xl font-black text-sm flex items-center space-x-2 shadow-sm self-start sm:self-auto">
+                <Star className="w-4 h-4 fill-slate-950" />
+                <span>Toplam Yıldızım: {stars} ⭐</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+              {STICKER_COLLECTION.map((stk) => {
+                const isUnlocked = stars >= stk.reqStars;
+                return (
+                  <div
+                    key={stk.id}
+                    className={`p-4 rounded-3xl border-2 flex flex-col items-center justify-center space-y-2 text-center transition-all ${
+                      isUnlocked
+                        ? 'bg-amber-50 dark:bg-amber-950/40 border-amber-400 shadow-md scale-102'
+                        : 'bg-slate-100 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700 opacity-60'
+                    }`}
+                  >
+                    <span className="text-4xl">{isUnlocked ? stk.emoji : '🔒'}</span>
+                    <span className="text-xs font-black text-slate-900 dark:text-white">
+                      {stk.title}
+                    </span>
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                      isUnlocked ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'
+                    }`}>
+                      {isUnlocked ? 'Açıldı! ✨' : `${stk.reqStars} ⭐ Gerekli`}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

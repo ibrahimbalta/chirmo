@@ -236,6 +236,39 @@ export const ChirmoAiChatModal: React.FC<ChirmoAiChatModalProps> = ({
           <div ref={chatEndRef} />
         </div>
 
+        {/* Akıllı Takılmayan İpucu Kolları (3 Seviyeli Konuşma Önerileri) */}
+        <div className="p-2 sm:px-4 bg-[#fbfaff] dark:bg-slate-900 border-t border-purple-100 dark:border-slate-800 space-y-1.5">
+          <div className="flex items-center justify-between text-[10px] font-black uppercase text-purple-700 dark:text-purple-300">
+            <span className="flex items-center space-x-1">
+              <Sparkles className="w-3 h-3 text-purple-600" />
+              <span>Ne Diyeceğini Bilemeyenler İçin Hazır Cevap İpuçları:</span>
+            </span>
+            <span className="text-slate-400 font-bold lowercase">seç & anında seslendir</span>
+          </div>
+
+          <div className="flex items-center space-x-2 overflow-x-auto pb-1">
+            {[
+              { level: '🟢 Kolay', text: 'Water, please.', tr: 'Su lütfen.' },
+              { level: '🟡 Doğal', text: 'Can I have the menu, please?', tr: 'Menüyü alabilir miyim?' },
+              { level: '🔵 İleri', text: 'What do you recommend today?', tr: 'Bugün ne tavsiye edersiniz?' }
+            ].map((tip) => (
+              <button
+                key={tip.text}
+                type="button"
+                onClick={() => {
+                  setInputText(tip.text);
+                  handleSpeak(tip.text);
+                }}
+                className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-purple-200 dark:border-slate-700 hover:border-purple-500 hover:bg-purple-50/70 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center space-x-1.5 shadow-2xs"
+                title={`${tip.tr} (Tıkla ve dinle)`}
+              >
+                <span className="text-[10px]">{tip.level}:</span>
+                <span className="font-black text-purple-900 dark:text-purple-200">"{tip.text}"</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Hızlı Başlangıç Butonları */}
         <div className="p-2 sm:px-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex items-center space-x-2 overflow-x-auto">
           {[

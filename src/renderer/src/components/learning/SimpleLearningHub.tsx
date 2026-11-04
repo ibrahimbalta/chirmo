@@ -29,11 +29,13 @@ import { EnglishGameArcade } from './EnglishGameArcade';
 import { RealLifeSimulatorStudio } from './RealLifeSimulatorStudio';
 import { ChirmoKidsDedicatedHub } from '../kids/ChirmoKidsDedicatedHub';
 import { SentenceBuilderStudio } from './SentenceBuilderStudio';
+import { ChirmoFluencyBooster } from './ChirmoFluencyBooster';
 import { CampStorageService } from '../../services/curriculumData';
 import { SpacedRepetitionService, SrsWordData } from '../../services/spacedRepetitionService';
 
 export type LearningHubTab =
   | 'camp'
+  | 'booster'
   | 'builder'
   | 'simulations'
   | 'kids'
@@ -173,6 +175,18 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
           </button>
 
           <button
+            onClick={() => setActiveTab('booster')}
+            className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'booster'
+                ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
+            }`}
+          >
+            <Zap className="w-3.5 h-3.5 text-amber-300" />
+            <span>⚡ 3x Hızlı Akıcılık (Shadowing & Refleks)</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('builder')}
             className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
               activeTab === 'builder'
@@ -293,6 +307,11 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
           <ThirtyDayCampView
             onDayCompleted={(updated) => setCampProgress(updated)}
           />
+        )}
+
+        {/* 3X HIZLI AKICILIK LABORATUVARI (SHADOWING, REFLEKS, YÜRÜYÜŞ DÖNGÜSÜ, HATA DOKTORU) */}
+        {activeTab === 'booster' && (
+          <ChirmoFluencyBooster />
         )}
 
         {/* CÜMLE ÜRETİM LABORATUVARI (KALIP MOTORU) */}
