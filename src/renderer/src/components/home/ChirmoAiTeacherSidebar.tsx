@@ -51,8 +51,18 @@ export const ChirmoAiTeacherSidebar: React.FC<ChirmoAiTeacherSidebarProps> = ({
         {/* ==================== BAŞLIK & DURUM (ÇEVRİMİÇİ) ==================== */}
         <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-xl bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 flex items-center justify-center font-black">
-              <Bot className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-xl bg-purple-100 dark:bg-purple-950/70 border border-purple-200 dark:border-purple-800 p-0.5 flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
+              <img
+                src="./chirmo-avatar.png"
+                alt="Chirmo AI"
+                className="w-full h-full object-contain"
+                onError={(e) => {
+                  const img = e.currentTarget as HTMLImageElement;
+                  if (!img.src.endsWith('/chirmo-avatar.png')) {
+                    img.src = './chirmo-avatar.png';
+                  }
+                }}
+              />
             </div>
             <div>
               <div className="text-xs font-black text-slate-800 dark:text-slate-100">

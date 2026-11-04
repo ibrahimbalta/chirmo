@@ -234,32 +234,54 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                     `Hello ${profile.hasCustomName ? profile.name : 'friend'}! I am Chirmo, your personal English speaking coach.`
                   )
                 }
-                className={`w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-white/10 backdrop-blur-md border-2 p-1.5 flex items-center justify-center cursor-pointer transition-all duration-300 shadow-lg group ${
+                className={`relative w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-white/10 backdrop-blur-md border-2 p-2 flex flex-col items-center justify-center cursor-pointer transition-all duration-300 shadow-xl group hover:scale-105 ${
                   chirmoState === 'listening'
-                    ? 'border-emerald-400 scale-105 shadow-emerald-500/30'
+                    ? 'border-emerald-400 shadow-emerald-500/40 ring-4 ring-emerald-400/20'
                     : chirmoState === 'speaking'
-                    ? 'border-amber-400 scale-105 shadow-amber-500/30'
+                    ? 'border-amber-400 shadow-amber-500/40 ring-4 ring-amber-400/20'
                     : chirmoState === 'cheering'
-                    ? 'border-pink-400 scale-110 shadow-pink-500/30'
-                    : 'border-white/40 hover:border-white'
+                    ? 'border-pink-400 shadow-pink-500/40 ring-4 ring-pink-400/20'
+                    : 'border-white/30 hover:border-white/70'
                 }`}
                 title="Chirmo ile konuşmak için tıkla"
               >
-                {/* Chirmo İkon & Yüz İfadesi */}
-                <div className="w-full h-full rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-600 flex flex-col items-center justify-center text-center relative overflow-hidden">
-                  <span className="text-4xl sm:text-5xl transform group-hover:scale-110 transition-transform">
-                    {chirmoState === 'cheering'
-                      ? '🎉'
-                      : chirmoState === 'listening'
-                      ? '👂'
+                {/* Parlayan Arka Plan Halesi */}
+                <div
+                  className={`absolute inset-0 rounded-3xl transition-opacity duration-300 blur-md pointer-events-none ${
+                    chirmoState === 'listening'
+                      ? 'bg-emerald-500/30 opacity-100'
                       : chirmoState === 'speaking'
-                      ? '🗣️'
-                      : '🤖'}
-                  </span>
-                  <span className="text-[10px] font-black tracking-wider uppercase mt-1 text-indigo-100">
-                    Chirmo AI
-                  </span>
-                </div>
+                      ? 'bg-amber-500/30 opacity-100'
+                      : chirmoState === 'cheering'
+                      ? 'bg-pink-500/30 opacity-100'
+                      : 'bg-purple-500/10 opacity-0 group-hover:opacity-100'
+                  }`}
+                />
+
+                {/* 3D Chirmo Robot Karakter Görseli (Görsel 2) */}
+                <img
+                  src="./chirmo-avatar.png"
+                  alt="Chirmo AI"
+                  className="w-full h-full object-contain relative z-10 drop-shadow-xl transition-transform duration-300 group-hover:scale-110"
+                  onError={(e) => {
+                    const img = e.currentTarget as HTMLImageElement;
+                    if (!img.src.endsWith('/chirmo-avatar.png')) {
+                      img.src = './chirmo-avatar.png';
+                    }
+                  }}
+                />
+
+                {/* Durum Balonu (Chirmo konuşurken/dinlerken/kutlarken) */}
+                {chirmoState !== 'idle' && (
+                  <div className="absolute -top-1.5 -right-1.5 z-20 w-7 h-7 rounded-full bg-white dark:bg-slate-900 text-slate-800 dark:text-white shadow-lg flex items-center justify-center text-sm border border-purple-200 animate-bounce">
+                    {chirmoState === 'cheering' ? '🎉' : chirmoState === 'listening' ? '👂' : '🗣️'}
+                  </div>
+                )}
+              </div>
+
+              {/* CHIRMO AI Rozeti (Görsel 2) */}
+              <div className="relative z-10 -mt-2.5 px-3 py-0.5 rounded-full bg-gradient-to-r from-purple-950 to-indigo-950 border border-purple-400/50 text-[10px] font-black tracking-widest text-purple-100 shadow-md uppercase">
+                CHIRMO AI
               </div>
 
               {/* Canlı Ses Dalgası (Speaking/Listening Animasyonu) */}
