@@ -137,6 +137,23 @@ export const LearningCenterSidebar: React.FC<LearningCenterSidebarProps> = ({
               </button>
 
               <button
+                onClick={() => handleItemClick('kids')}
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all cursor-pointer ${
+                  selected === 'kids'
+                    ? 'bg-pink-100/80 dark:bg-pink-950/70 text-pink-700 dark:text-pink-300 font-black shadow-2xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900'
+                }`}
+              >
+                <div className="flex items-center space-x-2.5">
+                  <span className="text-sm">🎈</span>
+                  <span>Chirmo Kids</span>
+                </div>
+                <span className="px-1.5 py-0.5 rounded-full bg-pink-500 text-white text-[9px] font-black">
+                  MEB
+                </span>
+              </button>
+
+              <button
                 onClick={() => handleItemClick('vault')}
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all cursor-pointer ${
                   selected === 'vault'

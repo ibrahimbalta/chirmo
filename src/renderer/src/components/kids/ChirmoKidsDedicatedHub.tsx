@@ -28,7 +28,11 @@ interface KidCard {
   funFact: string;
 }
 
-export const ChirmoKidsDedicatedHub: React.FC = () => {
+export interface ChirmoKidsDedicatedHubProps {
+  onBackToMain?: () => void;
+}
+
+export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ onBackToMain }) => {
   const [selectedAge, setSelectedAge] = useState<AgeGroup>('5-7');
   const [activeTab, setActiveTab] = useState<'cards' | 'songs' | 'parent'>('cards');
   const [stars, setStars] = useState(12);
@@ -88,12 +92,23 @@ export const ChirmoKidsDedicatedHub: React.FC = () => {
             </p>
           </div>
 
-          {/* Kazanılan Yıldızlar */}
-          <div className="flex items-center space-x-2 bg-black/20 p-2.5 px-4 rounded-2xl backdrop-blur-xs self-start sm:self-auto border border-white/20">
-            <Star className="w-6 h-6 text-amber-300 fill-amber-300 animate-bounce" />
-            <div>
-              <div className="text-[10px] font-black uppercase tracking-wider text-amber-200">Yıldızlarım</div>
-              <div className="text-lg font-black text-white">{stars} Yıldız</div>
+          {/* Kazanılan Yıldızlar & Geri Dönüş */}
+          <div className="flex items-center space-x-2 self-start sm:self-auto">
+            {onBackToMain && (
+              <button
+                onClick={onBackToMain}
+                className="px-3.5 py-2 rounded-2xl bg-white/20 hover:bg-white/30 text-white text-xs font-black transition-all flex items-center space-x-1 cursor-pointer border border-white/20 shadow-xs"
+                title="Ana Ekrana Dön"
+              >
+                <span>← Ana Stüdyo</span>
+              </button>
+            )}
+            <div className="flex items-center space-x-2 bg-black/20 p-2.5 px-4 rounded-2xl backdrop-blur-xs border border-white/20">
+              <Star className="w-6 h-6 text-amber-300 fill-amber-300 animate-bounce" />
+              <div>
+                <div className="text-[10px] font-black uppercase tracking-wider text-amber-200">Yıldızlarım</div>
+                <div className="text-lg font-black text-white">{stars} Yıldız</div>
+              </div>
             </div>
           </div>
         </div>

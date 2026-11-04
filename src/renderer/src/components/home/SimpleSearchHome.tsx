@@ -5,6 +5,9 @@ import { CEFRLevel } from '../../types';
 export interface SimpleSearchHomeProps {
   onSearch?: (queryOrUrl: string) => void;
   onNavigateToLearn?: () => void;
+  onNavigateToKids?: () => void;
+  onNavigateToGames?: () => void;
+  onNavigateToSpeak?: () => void;
   onNavigateToTasks?: () => void;
   onOpenInstallModal?: () => void;
   userLevel?: CEFRLevel;

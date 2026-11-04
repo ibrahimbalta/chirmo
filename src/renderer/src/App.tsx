@@ -18,7 +18,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Mic,
-  Compass
+  Compass,
+  Smile
 } from 'lucide-react';
 import { ChirmoLogo } from './components/common/ChirmoLogo';
 import { BrowserContainer, PageSentenceItem } from './components/browser/BrowserContainer';
@@ -34,14 +35,17 @@ import { ProfileEditModal } from './components/common/ProfileEditModal';
 import { ChirmoOnboardingModal } from './components/learning/ChirmoOnboardingModal';
 import { RealLifeSimulatorStudio } from './components/learning/RealLifeSimulatorStudio';
 import { EnglishGameArcade } from './components/learning/EnglishGameArcade';
+import { ChirmoKidsDedicatedHub } from './components/kids/ChirmoKidsDedicatedHub';
 import { LearningStorageService } from './services/learningStorage';
 import { UserProfileService, UserProfile } from './services/userProfileService';
 import { Tab, CEFRLevel, DailyGoalProgress } from './types';
 import { CampStorageService, StudentCampProgress } from './services/curriculumData';
 
+export type AppNavTab = 'search' | 'learn' | 'kids' | 'games' | 'speak' | 'tasks';
+
 export const App: React.FC = () => {
-  // 5 Temel Bölüm: 'search' (Chirmo Stüdyo & Tarayıcı) | 'learn' (Kamp) | 'games' (Oyunlar) | 'speak' (Simülatör) | 'tasks' (Hedefler & Rapor)
-  const [activeTab, setActiveTab] = useState<'search' | 'learn' | 'games' | 'speak' | 'tasks'>('search');
+  // 6 Temel Bölüm: 'search' (Stüdyo) | 'learn' (Kamp) | 'kids' (Chirmo Kids) | 'games' (Oyunlar) | 'speak' (Simülatör) | 'tasks' (Hedefler)
+  const [activeTab, setActiveTab] = useState<AppNavTab>('search');
 
   // Tarayıcı Durumu
   const [isBrowserNavigating, setIsBrowserNavigating] = useState(false);
@@ -196,41 +200,55 @@ export const App: React.FC = () => {
           </span>
         </div>
 
-        {/* Orta: 5 Temel Ana Bölüm (Oval & Minimal Segmented Control) */}
-        <div className="hidden sm:flex items-center p-0.5 bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/70 dark:border-slate-700/70 rounded-full shadow-2xs">
+        {/* Orta: Renkli Minimal Hap Butonlar (Modern, Ferah & Şık Menü) */}
+        <div className="hidden sm:flex items-center gap-1.5 flex-wrap justify-center py-1">
           <button
             onClick={() => setActiveTab('search')}
             className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer ${
               activeTab === 'search'
-                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-semibold shadow-xs'
-                : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-white/50 font-medium'
+                ? 'bg-indigo-600 text-white font-bold shadow-xs ring-2 ring-indigo-200 dark:ring-indigo-800 scale-[1.02]'
+                : 'bg-indigo-50/80 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200/70 dark:border-indigo-800/60 hover:bg-indigo-100/80 font-medium'
             }`}
+            title="Chirmo Stüdyo"
           >
-            <Sparkles className={`w-3.5 h-3.5 ${activeTab === 'search' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'}`} />
-            <span>Stüdyo</span>
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Chirmo Stüdyo</span>
           </button>
 
           <button
             onClick={() => setActiveTab('learn')}
             className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer ${
               activeTab === 'learn'
-                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-semibold shadow-xs'
-                : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-white/50 font-medium'
+                ? 'bg-emerald-600 text-white font-bold shadow-xs ring-2 ring-emerald-200 dark:ring-emerald-800 scale-[1.02]'
+                : 'bg-emerald-50/80 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200/70 dark:border-emerald-800/60 hover:bg-emerald-100/80 font-medium'
             }`}
           >
-            <BookOpen className={`w-3.5 h-3.5 ${activeTab === 'learn' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`} />
+            <BookOpen className="w-3.5 h-3.5" />
             <span>30 Günlük Kamp</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('kids')}
+            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer ${
+              activeTab === 'kids'
+                ? 'bg-pink-600 text-white font-bold shadow-xs ring-2 ring-pink-200 dark:ring-pink-800 scale-[1.02]'
+                : 'bg-pink-50/80 dark:bg-pink-950/40 text-pink-700 dark:text-pink-300 border border-pink-200/70 dark:border-pink-800/60 hover:bg-pink-100/80 font-medium'
+            }`}
+            title="5-17 Yaş Çocuklar İçin MEB Uyumlu Eğlenceli Alan"
+          >
+            <Smile className="w-3.5 h-3.5" />
+            <span>Chirmo Kids</span>
           </button>
 
           <button
             onClick={() => setActiveTab('games')}
             className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer ${
               activeTab === 'games'
-                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-semibold shadow-xs'
-                : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-white/50 font-medium'
+                ? 'bg-amber-500 text-white font-bold shadow-xs ring-2 ring-amber-200 dark:ring-amber-800 scale-[1.02]'
+                : 'bg-amber-50/80 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200/70 dark:border-amber-800/60 hover:bg-amber-100/80 font-medium'
             }`}
           >
-            <Gamepad2 className={`w-3.5 h-3.5 ${activeTab === 'games' ? 'text-amber-500' : 'text-slate-400'}`} />
+            <Gamepad2 className="w-3.5 h-3.5" />
             <span>Oyunlar</span>
           </button>
 
@@ -238,11 +256,11 @@ export const App: React.FC = () => {
             onClick={() => setActiveTab('speak')}
             className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer ${
               activeTab === 'speak'
-                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-semibold shadow-xs'
-                : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-white/50 font-medium'
+                ? 'bg-rose-600 text-white font-bold shadow-xs ring-2 ring-rose-200 dark:ring-rose-800 scale-[1.02]'
+                : 'bg-rose-50/80 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border border-rose-200/70 dark:border-rose-800/60 hover:bg-rose-100/80 font-medium'
             }`}
           >
-            <Mic className={`w-3.5 h-3.5 ${activeTab === 'speak' ? 'text-rose-500' : 'text-slate-400'}`} />
+            <Mic className="w-3.5 h-3.5" />
             <span>Simülatör</span>
           </button>
 
@@ -250,11 +268,11 @@ export const App: React.FC = () => {
             onClick={() => setActiveTab('tasks')}
             className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer ${
               activeTab === 'tasks'
-                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-semibold shadow-xs'
-                : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-white/50 font-medium'
+                ? 'bg-purple-600 text-white font-bold shadow-xs ring-2 ring-purple-200 dark:ring-purple-800 scale-[1.02]'
+                : 'bg-purple-50/80 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200/70 dark:border-purple-800/60 hover:bg-purple-100/80 font-medium'
             }`}
           >
-            <CheckSquare className={`w-3.5 h-3.5 ${activeTab === 'tasks' ? 'text-purple-600 dark:text-purple-400' : 'text-slate-400'}`} />
+            <CheckSquare className="w-3.5 h-3.5" />
             <span>Hedeflerim</span>
           </button>
         </div>
@@ -370,6 +388,9 @@ export const App: React.FC = () => {
                   <SimpleSearchHome
                     onSearch={handleNavigate}
                     onNavigateToLearn={() => setActiveTab('learn')}
+                    onNavigateToKids={() => setActiveTab('kids')}
+                    onNavigateToGames={() => setActiveTab('games')}
+                    onNavigateToSpeak={() => setActiveTab('speak')}
                     onNavigateToTasks={() => setActiveTab('tasks')}
                     onOpenInstallModal={() => setIsInstallModalOpen(true)}
                     userLevel={learningProgress.currentLevel}
@@ -522,6 +543,13 @@ export const App: React.FC = () => {
           </div>
         )}
 
+        {/* BÖLÜM: CHIRMO KIDS (5-17 YAŞ ÇOCUKLAR İÇİN MEB UYUMLU EĞLENCELİ ALAN) */}
+        {activeTab === 'kids' && (
+          <div className="flex-1 flex flex-col h-full overflow-hidden">
+            <ChirmoKidsDedicatedHub onBackToMain={() => setActiveTab('search')} />
+          </div>
+        )}
+
         {/* BÖLÜM 3: OYUN ALANI (ARCADE) */}
         {activeTab === 'games' && (
           <div className="flex-1 flex flex-col h-full overflow-hidden">
@@ -576,66 +604,78 @@ export const App: React.FC = () => {
         onProfileUpdated={(updated) => setUserProfile(updated)}
       />
 
-      {/* ==================== MOBİL ALT MENÜ (SMARTPHONE BOTTOM NAV - 5 TEMEL BÖLÜM) ==================== */}
-      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/90 dark:border-slate-800 shadow-xl px-1.5 py-1.5 flex items-center justify-around">
+      {/* ==================== MOBİL ALT MENÜ (SMARTPHONE BOTTOM NAV - 6 TEMEL BÖLÜM) ==================== */}
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/90 dark:border-slate-800 shadow-xl px-1 py-1 flex items-center justify-around">
         <button
           onClick={() => setActiveTab('search')}
-          className={`flex flex-col items-center justify-center p-1.5 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
+          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
             activeTab === 'search'
               ? 'text-indigo-600 dark:text-indigo-400 font-black'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
           }`}
         >
-          <Sparkles className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px]">Chirmo</span>
+          <Sparkles className="w-4 h-4 mb-0.5" />
+          <span className="text-[10px]">Stüdyo</span>
         </button>
 
         <button
           onClick={() => setActiveTab('learn')}
-          className={`flex flex-col items-center justify-center p-1.5 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
+          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
             activeTab === 'learn'
-              ? 'text-indigo-600 dark:text-indigo-400 font-black'
+              ? 'text-emerald-600 dark:text-emerald-400 font-black'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
           }`}
         >
-          <BookOpen className="w-5 h-5 mb-0.5" />
+          <BookOpen className="w-4 h-4 mb-0.5" />
           <span className="text-[10px]">Kamp</span>
         </button>
 
         <button
-          onClick={() => setActiveTab('games')}
-          className={`flex flex-col items-center justify-center p-1.5 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
-            activeTab === 'games'
-              ? 'text-indigo-600 dark:text-indigo-400 font-black'
+          onClick={() => setActiveTab('kids')}
+          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
+            activeTab === 'kids'
+              ? 'text-pink-600 dark:text-pink-400 font-black'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
           }`}
         >
-          <Gamepad2 className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px]">Oyunlar</span>
+          <Smile className="w-4 h-4 mb-0.5" />
+          <span className="text-[10px]">Kids</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('games')}
+          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
+            activeTab === 'games'
+              ? 'text-amber-500 dark:text-amber-400 font-black'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
+          }`}
+        >
+          <Gamepad2 className="w-4 h-4 mb-0.5" />
+          <span className="text-[10px]">Oyun</span>
         </button>
 
         <button
           onClick={() => setActiveTab('speak')}
-          className={`flex flex-col items-center justify-center p-1.5 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
+          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
             activeTab === 'speak'
-              ? 'text-indigo-600 dark:text-indigo-400 font-black'
+              ? 'text-rose-600 dark:text-rose-400 font-black'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
           }`}
         >
-          <Mic className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px]">Konuş</span>
+          <Mic className="w-4 h-4 mb-0.5" />
+          <span className="text-[10px]">Simülatör</span>
         </button>
 
         <button
           onClick={() => setActiveTab('tasks')}
-          className={`flex flex-col items-center justify-center p-1.5 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
+          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
             activeTab === 'tasks'
-              ? 'text-indigo-600 dark:text-indigo-400 font-black'
+              ? 'text-purple-600 dark:text-purple-400 font-black'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
           }`}
         >
-          <CheckSquare className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px]">Profil</span>
+          <CheckSquare className="w-4 h-4 mb-0.5" />
+          <span className="text-[10px]">Hedefler</span>
         </button>
       </nav>
     </div>
