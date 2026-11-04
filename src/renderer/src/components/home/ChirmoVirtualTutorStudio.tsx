@@ -17,6 +17,7 @@ import { LearningStorageService } from '../../services/learningStorage';
 import { ChirmoSubscriptionModal } from '../subscription/ChirmoSubscriptionModal';
 import { ChirmoAiChatModal } from './ChirmoAiChatModal';
 import { ChirmoFluencyBooster } from '../learning/ChirmoFluencyBooster';
+import { ChirmoStoryDialogueStudio } from '../learning/ChirmoStoryDialogueStudio';
 import { CEFRLevel } from '../../types';
 
 export interface ChirmoVirtualTutorStudioProps {
@@ -43,6 +44,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [isBoosterModalOpen, setIsBoosterModalOpen] = useState(false);
+  const [isStoryModalOpen, setIsStoryModalOpen] = useState(false);
 
   // AI Teacher Speech State
   const [tutorSpeechText] = useState(
@@ -308,13 +310,23 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={() => setIsBoosterModalOpen(true)}
-            className="px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-rose-400 hover:from-amber-300 hover:to-rose-300 text-slate-950 font-black text-xs sm:text-sm shadow-md transition-all cursor-pointer flex items-center justify-center space-x-2 shrink-0 active:scale-95"
-          >
-            <span>Hızlandırıcıyı Aç 🚀</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+            <button
+              type="button"
+              onClick={() => setIsStoryModalOpen(true)}
+              className="px-4 py-3 rounded-2xl bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-400 hover:to-rose-400 text-white font-black text-xs sm:text-sm shadow-md transition-all cursor-pointer flex items-center justify-center space-x-1.5 active:scale-95"
+            >
+              <span>📖 Hikaye Diyaloğu 🎭</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsBoosterModalOpen(true)}
+              className="px-4 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-md transition-all cursor-pointer flex items-center justify-center space-x-1.5 active:scale-95"
+            >
+              <span>Hızlandırıcıyı Aç 🚀</span>
+            </button>
+          </div>
         </div>
 
         {/* ==================== 4. ORTA SÜTUN: DERS PLANI VE CHIRMO AI ÖĞRETMENİ ==================== */}
@@ -623,6 +635,23 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
               <X className="w-5 h-5" />
             </button>
             <ChirmoFluencyBooster onBackToHome={() => setIsBoosterModalOpen(false)} />
+          </div>
+        </div>
+      )}
+
+      {/* İnteraktif Hikaye ve Rol Yapma Diyaloğu Tam Ekran Modalı */}
+      {isStoryModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-5xl h-[92vh] rounded-3xl overflow-hidden shadow-2xl flex flex-col relative bg-white dark:bg-slate-950 border border-orange-200 dark:border-slate-800">
+            <button
+              type="button"
+              onClick={() => setIsStoryModalOpen(false)}
+              className="absolute top-4 right-4 z-50 p-2.5 rounded-full bg-black/40 hover:bg-black/60 text-white backdrop-blur-md transition-all cursor-pointer shadow-md"
+              title="Kapat"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <ChirmoStoryDialogueStudio onBackToHome={() => setIsStoryModalOpen(false)} />
           </div>
         </div>
       )}

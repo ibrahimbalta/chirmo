@@ -30,11 +30,13 @@ import { RealLifeSimulatorStudio } from './RealLifeSimulatorStudio';
 import { ChirmoKidsDedicatedHub } from '../kids/ChirmoKidsDedicatedHub';
 import { SentenceBuilderStudio } from './SentenceBuilderStudio';
 import { ChirmoFluencyBooster } from './ChirmoFluencyBooster';
+import { ChirmoStoryDialogueStudio } from './ChirmoStoryDialogueStudio';
 import { CampStorageService } from '../../services/curriculumData';
 import { SpacedRepetitionService, SrsWordData } from '../../services/spacedRepetitionService';
 
 export type LearningHubTab =
   | 'camp'
+  | 'stories'
   | 'booster'
   | 'builder'
   | 'simulations'
@@ -175,6 +177,18 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
           </button>
 
           <button
+            onClick={() => setActiveTab('stories')}
+            className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'stories'
+                ? 'bg-gradient-to-r from-orange-500 to-rose-600 text-white shadow-md'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
+            }`}
+          >
+            <BookOpen className="w-3.5 h-3.5 text-amber-300" />
+            <span>📖 İnteraktif Diyalog Hikayeleri 🎭</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('booster')}
             className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
               activeTab === 'booster'
@@ -307,6 +321,11 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
           <ThirtyDayCampView
             onDayCompleted={(updated) => setCampProgress(updated)}
           />
+        )}
+
+        {/* İNTERAKTİF DİYALOG HİKAYELERİ (ROL YAPMA & BOŞLUK DOLDURMA) */}
+        {activeTab === 'stories' && (
+          <ChirmoStoryDialogueStudio />
         )}
 
         {/* 3X HIZLI AKICILIK LABORATUVARI (SHADOWING, REFLEKS, YÜRÜYÜŞ DÖNGÜSÜ, HATA DOKTORU) */}
