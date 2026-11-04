@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { LearningStorageService } from '../../services/learningStorage';
 import { ChirmoSubscriptionModal } from '../subscription/ChirmoSubscriptionModal';
+import { ChirmoAiChatModal } from './ChirmoAiChatModal';
 import { CEFRLevel } from '../../types';
 
 export interface ChirmoVirtualTutorStudioProps {
@@ -37,6 +38,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
 
   // AI Teacher Speech State
   const [tutorSpeechText] = useState(
@@ -411,7 +413,10 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             {/* Sohbet Başlat Düğmesi */}
             <button
               type="button"
-              onClick={() => handleChirmoSpeak(tutorSpeechText)}
+              onClick={() => {
+                handleChirmoSpeak(tutorSpeechText);
+                setIsChatModalOpen(true);
+              }}
               className="w-full py-3 rounded-2xl bg-[#ede9fe] hover:bg-[#ddd6fe] dark:bg-purple-950/70 text-purple-900 dark:text-purple-200 font-black text-xs transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-2xs hover:scale-[1.01] active:scale-95"
             >
               <Volume2 className="w-4 h-4 text-purple-600" />
@@ -563,6 +568,13 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
       <ChirmoSubscriptionModal
         isOpen={isSubscriptionModalOpen}
         onClose={() => setIsSubscriptionModalOpen(false)}
+      />
+
+      {/* Chirmo AI Canlı Sohbet Modalı (Gemini API Entegrasyonu) */}
+      <ChirmoAiChatModal
+        isOpen={isChatModalOpen}
+        onClose={() => setIsChatModalOpen(false)}
+        initialMessage={tutorSpeechText}
       />
     </div>
   );
