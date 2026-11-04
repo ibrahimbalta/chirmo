@@ -296,6 +296,72 @@ export const INTERACTIVE_BUILDER_EXERCISES: PracticeExercise[] = [
     tokens: ['How much', 'is', 'this', 'coffee', 'Where', 'are'],
     explanation: 'Fiyat sorarken sayılamayan ürünler için "How much is...?" kullanılır.',
     whyExplanation: '"How much" (ne kadar) soru öbeği nesnenin fiyatını doğrudan sormanın en doğal ve yaygın yoludur.'
+  },
+  {
+    id: 'ex-7',
+    patternId: 'pattern-like',
+    type: 'builder',
+    questionPrompt: '"Ben bu mekanı seviyorum." cümlesini kurun.',
+    questionPromptTr: 'Bir yeri beğendiğinizi ifade ederken "I like" kalıbı kullanılır.',
+    correctSentence: 'I like this place.',
+    tokens: ['I', 'like', 'this', 'place', 'want', 'am'],
+    explanation: '"I like" kalıbı doğrudan beğenilen yer ile birleşir.',
+    whyExplanation: 'İngilizcede beğeni bildirmek için en doğal ve dolaysız fiil "like"tır.'
+  },
+  {
+    id: 'ex-8',
+    patternId: 'pattern-have',
+    type: 'builder',
+    questionPrompt: '"Benim bir sorum var." cümlesini kurun.',
+    questionPromptTr: 'Derste veya toplantıda söz alırken kullanılır.',
+    correctSentence: 'I have a question.',
+    tokens: ['I', 'have', 'a', 'question', 'has', 'do'],
+    explanation: 'Sahip olma durumunda "I have" kalıbı kullanılır.',
+    whyExplanation: 'Türkçedeki "Sorum var" ifadesi İngilizcede özneyle başlar: "I have a question".'
+  },
+  {
+    id: 'ex-9',
+    patternId: 'pattern-survival',
+    type: 'scramble',
+    questionPrompt: 'Kelimeleri sıraya dizin: "Lütfen tekrar edin."',
+    questionPromptTr: 'Karşı tarafı anlamadığınızda kullanılan kurtarıcı kalıp.',
+    correctSentence: 'Please repeat.',
+    tokens: ['repeat', 'Please'],
+    explanation: 'Nezaketle rica ederken "Please" ile başlanır veya bitirilir.',
+    whyExplanation: '"Please repeat" kısa, net ve evrensel bir rica ifadesidir.'
+  },
+  {
+    id: 'ex-10',
+    patternId: 'pattern-can',
+    type: 'fill_blank',
+    questionPrompt: 'İçeri girebilir miyim diye soracaksınız: "______ I come in?"',
+    questionPromptTr: 'İzin istemek için hangi yardımcı fiil başa gelir?',
+    correctSentence: 'Can I come in?',
+    tokens: ['Can', 'Do', 'Am', 'Have'],
+    explanation: 'İzin isterken cümle "Can I..." ile başlar.',
+    whyExplanation: '"Can I" izin ve yetki sormada en pratik başlangıçtır.'
+  },
+  {
+    id: 'ex-11',
+    patternId: 'pattern-need',
+    type: 'builder',
+    questionPrompt: '"Benim bir taksiye ihtiyacım var." cümlesini kurun.',
+    questionPromptTr: 'Acil ulaşım ihtiyacınızı bildirin.',
+    correctSentence: 'I need a taxi.',
+    tokens: ['I', 'need', 'a', 'taxi', 'want', 'car'],
+    explanation: 'Zorunlu ihtiyaçlarda "need" kullanılır.',
+    whyExplanation: '"a taxi" tekil bir araç olduğu için "a" artikeliyle kullanılır.'
+  },
+  {
+    id: 'ex-12',
+    patternId: 'pattern-tense',
+    type: 'builder',
+    questionPrompt: '"Ben çalışacağım." gelecek zaman cümlesini kurun.',
+    questionPromptTr: 'Gelecek zaman için hangi yardımcı kelime kullanılır?',
+    correctSentence: 'I will work.',
+    tokens: ['I', 'will', 'work', 'am', 'worked'],
+    explanation: 'Gelecek planları ve niyetler için "will" kullanılır.',
+    whyExplanation: '"will" fiilin önüne gelerek ona -ecek/-acak anlamı katar.'
   }
 ];
 

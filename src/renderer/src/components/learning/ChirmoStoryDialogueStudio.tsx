@@ -259,6 +259,119 @@ export const ChirmoStoryDialogueStudio: React.FC<ChirmoStoryDialogueStudioProps>
           explanationTr: '"We can..." (Yapabiliriz) yapabilirlik ve eğlence kalıbıdır.'
         }
       ]
+    },
+    {
+      id: 'story-hotel',
+      titleEn: 'Midnight Check-in at Royal Hotel',
+      titleTr: 'Gece Yarısı Otel Girişi & Anahtar',
+      tag: 'Otel & Konaklama',
+      level: 'A1 - A2 Başlangıç',
+      emoji: '🏨 🗝️',
+      bgGradient: 'from-purple-700 via-indigo-800 to-slate-900',
+      synopsisTr: 'Gece geç saatte Londra\'da otele vardın. Resepsiyonistle görüşüp odana yerleşmeli ve wifi şifresini almalısın.',
+      exchanges: [
+        {
+          id: 'ht-1',
+          speaker: 'npc',
+          speakerName: 'Receptionist Arthur',
+          avatar: '🛎️',
+          fullEn: 'Good evening, sir! Welcome to Royal Park Hotel. Do you have a reservation?',
+          fullTr: 'İyi akşamlar efendim! Royal Park Otel\'e hoş geldiniz. Rezervasyonunuz var mı?',
+          explanationTr: 'Otel girişlerinde ilk soru her zaman "Do you have a reservation?" kalıbıdır.'
+        },
+        {
+          id: 'ht-2',
+          speaker: 'user',
+          speakerName: 'Sen (Misafir)',
+          avatar: '🧑',
+          fullEn: 'Good evening! Yes, I have a reservation under the name Ali.',
+          fullTr: 'İyi akşamlar! Evet, Ali ismi adına bir rezervasyonum var.',
+          blankTemplateEn: 'Good evening! Yes, I [BLANK1] a reservation under the name Ali.',
+          blanks: [
+            { id: 'b1', correctWord: 'have', options: ['have', 'am', 'want'] }
+          ],
+          explanationTr: '"I have a reservation" (Rezervasyonum var) kalıbı otellerde anahtar ifadedir.'
+        },
+        {
+          id: 'ht-3',
+          speaker: 'npc',
+          speakerName: 'Receptionist Arthur',
+          avatar: '🛎️',
+          fullEn: 'Perfect! Room 304 on the third floor. Here is your key card. Breakfast is at seven.',
+          fullTr: 'Harika! Üçüncü katta 304 numaralı oda. İşte anahtar kartınız. Kahvaltı saat yedide.',
+          explanationTr: 'Resepsiyonist kat ve oda numarasını söylerken "Here is your key" der.'
+        },
+        {
+          id: 'ht-4',
+          speaker: 'user',
+          speakerName: 'Sen (Misafir)',
+          avatar: '🧑',
+          fullEn: 'Thank you! What is the wifi password, please?',
+          fullTr: 'Teşekkür ederim! Wifi şifresi nedir lütfen?',
+          blankTemplateEn: 'Thank you! [BLANK1] is the wifi password, please?',
+          blanks: [
+            { id: 'b1', correctWord: 'What', options: ['What', 'Where', 'Who'] }
+          ],
+          explanationTr: 'Bilgi veya şifre sorarken "What is...?" kalıbı kullanılır.'
+        }
+      ]
+    },
+    {
+      id: 'story-pharmacy',
+      titleEn: 'Emergency at the Local Pharmacy',
+      titleTr: 'Eczanede Baş Ağrısı & İlaç Arayışı',
+      tag: 'Sağlık & Eczane',
+      level: 'A2 Günlük Yaşam',
+      emoji: '💊 🏥',
+      bgGradient: 'from-teal-600 via-emerald-700 to-cyan-800',
+      synopsisTr: 'Yolculuk sırasında şiddetli bir baş ağrısı başladı. Yerel bir eczaneye girip derdini anlatmalı ve uygun ilacı istemelisin.',
+      exchanges: [
+        {
+          id: 'ph-1',
+          speaker: 'npc',
+          speakerName: 'Pharmacist Emma',
+          avatar: '👩‍⚕️',
+          fullEn: 'Hello! How can I help you today? Are you feeling unwell?',
+          fullTr: 'Merhaba! Bugün size nasıl yardımcı olabilirim? Kendinizi iyi hissetmiyor musunuz?',
+          explanationTr: 'Eczacılar şikayeti öğrenmek için "Are you feeling unwell?" diye sorabilir.'
+        },
+        {
+          id: 'ph-2',
+          speaker: 'user',
+          speakerName: 'Sen (Hasta)',
+          avatar: '🧑',
+          fullEn: 'I have a terrible headache. Do you have medicine for pain?',
+          fullTr: 'Korkunç bir baş ağrım var. Ağrı için ilacınız var mı?',
+          blankTemplateEn: 'I [BLANK1] a terrible headache. Do you [BLANK2] medicine for pain?',
+          blanks: [
+            { id: 'b1', correctWord: 'have', options: ['have', 'am', 'is'] },
+            { id: 'b2', correctWord: 'have', options: ['have', 'need', 'like'] }
+          ],
+          explanationTr: 'Ağrı veya hastalık bildiriminde "I have a headache / stomachache" kalıbı kullanılır.'
+        },
+        {
+          id: 'ph-3',
+          speaker: 'npc',
+          speakerName: 'Pharmacist Emma',
+          avatar: '👩‍⚕️',
+          fullEn: 'Yes, take this painkiller with a glass of water. It will help within twenty minutes.',
+          fullTr: 'Evet, bu ağrı kesiciyi bir bardak suyla için. Yirmi dakika içinde fayda edecektir.',
+          explanationTr: '"Take this painkiller" (bu ağrı kesiciyi alın) tıbbi tavsiye kalıbıdır.'
+        },
+        {
+          id: 'ph-4',
+          speaker: 'user',
+          speakerName: 'Sen (Hasta)',
+          avatar: '🧑',
+          fullEn: 'Thank you very much! How much is it?',
+          fullTr: 'Çok teşekkür ederim! Fiyatı ne kadar?',
+          blankTemplateEn: 'Thank you very much! [BLANK1] is it?',
+          blanks: [
+            { id: 'b1', correctWord: 'How much', options: ['How much', 'How many', 'Where'] }
+          ],
+          explanationTr: 'Fiyat sorarken daima "How much is it?" kalıbı kullanılır.'
+        }
+      ]
     }
   ];
 

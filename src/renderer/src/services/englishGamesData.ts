@@ -68,7 +68,17 @@ export const KIDS_GAME_VOCAB: GameWordItem[] = [
   { id: 'k27', en: 'Run', tr: 'Koşmak', emoji: '🏃', category: 'Eylemler' },
   { id: 'k28', en: 'Jump', tr: 'Zıplamak', emoji: '🦘', category: 'Eylemler' },
   { id: 'k29', en: 'Sleep', tr: 'Uyumak', emoji: '😴', category: 'Eylemler' },
-  { id: 'k30', en: 'Dance', tr: 'Dans etmek', emoji: '💃', category: 'Eylemler' }
+  { id: 'k30', en: 'Dance', tr: 'Dans etmek', emoji: '💃', category: 'Eylemler' },
+  { id: 'k31', en: 'Sing', tr: 'Şarkı söylemek', emoji: '🎤', category: 'Eylemler' },
+  { id: 'k32', en: 'Swim', tr: 'Yüzmek', emoji: '🏊', category: 'Eylemler' },
+  { id: 'k33', en: 'Laugh', tr: 'Gülmek', emoji: '😄', category: 'Eylemler' },
+
+  // Çevre ve Araçlar
+  { id: 'k34', en: 'Sun', tr: 'Güneş', emoji: '☀️', category: 'Doğa & Ev' },
+  { id: 'k35', en: 'Moon', tr: 'Ay', emoji: '🌙', category: 'Doğa & Ev' },
+  { id: 'k36', en: 'Train', tr: 'Tren', emoji: '🚂', category: 'Araçlar' },
+  { id: 'k37', en: 'Airplane', tr: 'Uçak', emoji: '✈️', category: 'Araçlar' },
+  { id: 'k38', en: 'Boat', tr: 'Gemi / Tekne', emoji: '⛵', category: 'Araçlar' }
 ];
 
 // 🎯 YETİŞKİNLER İÇİN KELİME HAVUZU (Pratik Yaşam, Seyahat, İş, Kafe)
@@ -105,7 +115,14 @@ export const ADULT_GAME_VOCAB: GameWordItem[] = [
   { id: 'a23', en: 'Actually', tr: 'Aslında / Gerçekte', emoji: '💡', category: 'Günlük Refleks' },
   { id: 'a24', en: 'Look for', tr: 'Aramak (bir şeyi)', emoji: '🔍', category: 'Kalıplar' },
   { id: 'a25', en: 'Give up', tr: 'Pes etmek / Vazgeçmek', emoji: '🚫', category: 'Kalıplar' },
-  { id: 'a26', en: 'Find out', tr: 'Öğrenmek / Keşfetmek', emoji: '🔎', category: 'Kalıplar' }
+  { id: 'a26', en: 'Find out', tr: 'Öğrenmek / Keşfetmek', emoji: '🔎', category: 'Kalıplar' },
+  { id: 'a27', en: 'Schedule', tr: 'Program / Takvim', emoji: '📅', category: 'İş & Kariyer' },
+  { id: 'a28', en: 'Project', tr: 'Proje', emoji: '📊', category: 'İş & Kariyer' },
+  { id: 'a29', en: 'Customer', tr: 'Müşteri', emoji: '👥', category: 'İş & Kariyer' },
+  { id: 'a30', en: 'Discount', tr: 'İndirim', emoji: '🏷️', category: 'Alışveriş' },
+  { id: 'a31', en: 'Credit card', tr: 'Kredi kartı', emoji: '💳', category: 'Alışveriş' },
+  { id: 'a32', en: 'Pharmacy', tr: 'Eczane', emoji: '💊', category: 'Sağlık' },
+  { id: 'a33', en: 'Emergency', tr: 'Acil durum', emoji: '🚨', category: 'Sağlık' }
 ];
 
 // 🚀 CÜMLE ROKETİ BULMACALARI

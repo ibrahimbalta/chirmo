@@ -145,6 +145,42 @@ export const ChirmoFluencyBooster: React.FC<ChirmoFluencyBoosterProps> = ({
       mouthGymTip: '"How much does" kalıbını tek bir kelime gibi birleştir: [hav-mıç-dız].',
       focusSound: 'Hızlı Soru Vurgusu',
       audioPace: 'Hızlı Günlük'
+    },
+    {
+      id: 'sh-6',
+      en: 'Excuse me, is this seat taken?',
+      tr: 'Affedersiniz, bu koltuk dolu mu?',
+      category: 'Toplu Taşıma & Kafe',
+      mouthGymTip: '"Excuse me" derken [ɪk-skjuːz miː] sesini yumuşak ve kibar çıkar.',
+      focusSound: 'Nezaket & Vurgu',
+      audioPace: 'Doğal & Kibar'
+    },
+    {
+      id: 'sh-7',
+      en: 'Can you recommend a good local restaurant?',
+      tr: 'İyi bir yerel restoran önerebilir misiniz?',
+      category: 'Turizm & Keşif',
+      mouthGymTip: '"recommend" kelimesinde vurgu son hecededir: [re-kə-MEND].',
+      focusSound: 'Kelime Vurgusu',
+      audioPace: 'Akıcı'
+    },
+    {
+      id: 'sh-8',
+      en: 'I would like to check in, please.',
+      tr: 'Otele giriş yapmak istiyorum lütfen.',
+      category: 'Otel & Giriş',
+      mouthGymTip: '"check in" iki kelimesini birbirine ula: [çe-kɪn].',
+      focusSound: 'Ulama (Linking)',
+      audioPace: 'Net & Resmi'
+    },
+    {
+      id: 'sh-9',
+      en: 'It was a pleasure meeting you today.',
+      tr: 'Bugün sizinle tanışmak bir zevkti.',
+      category: 'Sosyal & Veda',
+      mouthGymTip: '"pleasure" [ple-jır] şeklinde "j" sesiyle çıkarılır.',
+      focusSound: '/ʒ/ Sesi',
+      audioPace: 'Sıcak & Samimi'
     }
   ];
 
@@ -200,6 +236,30 @@ export const ChirmoFluencyBooster: React.FC<ChirmoFluencyBoosterProps> = ({
       targetEn: 'Where is the metro station?',
       keywords: ['Where is', 'the metro station?'],
       hint: 'Yer ve yön sorarken: "Where is...?" kalıbı kurtarıcındır.'
+    },
+    {
+      id: 'ref-5',
+      situationEmoji: '🧾 💳',
+      contextTr: 'Yemek bitti, garsona hesabı getirmesini söylemelisin!',
+      targetEn: 'Could we have the bill, please?',
+      keywords: ['Could we have', 'the bill, please?'],
+      hint: 'Hesap isterken "Could we have the bill?" en kibar formüldür.'
+    },
+    {
+      id: 'ref-6',
+      situationEmoji: '📶 📱',
+      contextTr: 'Otele vardın ve wifi şifresini sorman gerekiyor!',
+      targetEn: 'What is the wifi password?',
+      keywords: ['What is', 'the wifi password?'],
+      hint: 'Şifre ve bilgi sorarken: "What is...?"'
+    },
+    {
+      id: 'ref-7',
+      situationEmoji: '⏰ 🏃',
+      contextTr: 'Arkadaşına saatin kaç olduğunu sormalısın!',
+      targetEn: 'What time is it?',
+      keywords: ['What time', 'is it?'],
+      hint: 'Saat sorarken: "What time is it?"'
     }
   ];
 

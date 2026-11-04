@@ -179,7 +179,42 @@ export const DAILY_WORDS: WordItem[] = [
   { category: 'Alışveriş', en: 'size', tr: 'beden' },
   { category: 'Alışveriş', en: 'change', tr: 'para üstü' },
   { category: 'Alışveriş', en: 'bag', tr: 'çanta / poşet' },
-  { category: 'Alışveriş', en: 'sale', tr: 'kampanya / indirim' }
+  { category: 'Alışveriş', en: 'sale', tr: 'kampanya / indirim' },
+
+  { category: 'Teknoloji', en: 'wifi password', tr: 'wifi şifresi' },
+  { category: 'Teknoloji', en: 'charger', tr: 'şarj aleti' },
+  { category: 'Teknoloji', en: 'battery', tr: 'batarya / pil' },
+  { category: 'Teknoloji', en: 'screen', tr: 'ekran' },
+  { category: 'Teknoloji', en: 'connection', tr: 'bağlantı' },
+  { category: 'Teknoloji', en: 'download', tr: 'indirmek' },
+
+  { category: 'Hava', en: 'sunny', tr: 'güneşli' },
+  { category: 'Hava', en: 'rainy', tr: 'yağmurlu' },
+  { category: 'Hava', en: 'cold', tr: 'soğuk' },
+  { category: 'Hava', en: 'warm', tr: 'ılık / sıcak' },
+  { category: 'Hava', en: 'windy', tr: 'rüzgarlı' },
+  { category: 'Hava', en: 'weather', tr: 'hava durumu' },
+
+  { category: 'Zaman', en: 'today', tr: 'bugün' },
+  { category: 'Zaman', en: 'tomorrow', tr: 'yarın' },
+  { category: 'Zaman', en: 'yesterday', tr: 'dün' },
+  { category: 'Zaman', en: 'morning', tr: 'sabah' },
+  { category: 'Zaman', en: 'evening', tr: 'akşam' },
+  { category: 'Zaman', en: 'weekend', tr: 'hafta sonu' },
+  { category: 'Zaman', en: 'minute', tr: 'dakika' },
+  { category: 'Zaman', en: 'hour', tr: 'saat' },
+
+  { category: 'Duygular', en: 'happy', tr: 'mutlu' },
+  { category: 'Duygular', en: 'tired', tr: 'yorgun' },
+  { category: 'Duygular', en: 'excited', tr: 'heyecanlı' },
+  { category: 'Duygular', en: 'busy', tr: 'meşgul' },
+  { category: 'Duygular', en: 'ready', tr: 'hazır' },
+
+  { category: 'Acil', en: 'emergency', tr: 'acil durum' },
+  { category: 'Acil', en: 'police', tr: 'polis' },
+  { category: 'Acil', en: 'ambulance', tr: 'ambulans' },
+  { category: 'Acil', en: 'hospital', tr: 'hastane' },
+  { category: 'Acil', en: 'safe', tr: 'güvenli' }
 ];
 
 // ==================== 2. GÜNLÜK EN ÇOK KULLANILAN 38 CÜMLE ====================
@@ -221,7 +256,22 @@ export const EVERYDAY_SENTENCES: SentenceItem[] = [
   { en: 'Thank you for your help.', tr: 'Yardımın için teşekkürler.' },
   { en: 'Don’t worry about it.', tr: 'Boş ver, dert etme.' },
   { en: 'Sorry I’m late.', tr: 'Geciktiğim için özür dilerim.' },
-  { en: 'Can I borrow a pen?', tr: 'Bir kalem ödünç alabilir miyim?' }
+  { en: 'Can I borrow a pen?', tr: 'Bir kalem ödünç alabilir miyim?' },
+  { en: 'What is the wifi password here?', tr: 'Buradaki wifi şifresi nedir?' },
+  { en: 'Could I have a glass of tap water?', tr: 'Bir bardak su alabilir miyim?' },
+  { en: 'Where is the nearest subway station?', tr: 'En yakın metro istasyonu nerede?' },
+  { en: 'How long does it take to get there?', tr: 'Oraya gitmek ne kadar sürer?' },
+  { en: 'I’d like to try this on, please.', tr: 'Bunu üzerimde denemek istiyorum lütfen.' },
+  { en: 'Do you have this in a larger size?', tr: 'Bunun bir beden büyüğü var mı?' },
+  { en: 'Keep the change, thank you!', tr: 'Üstü kalsın, teşekkürler!' },
+  { en: 'Could you take a photo of us, please?', tr: 'Fotoğrafımızı çekebilir misiniz lütfen?' },
+  { en: 'I’m looking for my boarding gate.', tr: 'Uçağa biniş kapımı arıyorum.' },
+  { en: 'What time does the store close?', tr: 'Mağaza saat kaçta kapanıyor?' },
+  { en: 'Let’s keep in touch!', tr: 'İletişimde kalalım!' },
+  { en: 'I will let you know tomorrow.', tr: 'Sana yarın haber vereceğim.' },
+  { en: 'Could you write that down for me?', tr: 'Bunu benim için yazabilir misiniz?' },
+  { en: 'Is service included in the bill?', tr: 'Servis ücrete dahil mi?' },
+  { en: 'Have a safe flight!', tr: 'İyi uçuşlar!' }
 ];
 
 // ==================== 3. 22 GERÇEK HAYAT DİYALOĞU & ROL YAPMA ====================
