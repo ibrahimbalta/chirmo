@@ -315,20 +315,6 @@ export const App: React.FC = () => {
             <span>{campProgress.totalXp} XP</span>
           </div>
 
-          {/* Türkçe Yardımcı Paneli */}
-          <button
-            onClick={() => setIsTutorOpen(!isTutorOpen)}
-            className={`h-9 px-3 rounded-full text-xs font-bold transition-all inline-flex items-center space-x-1.5 cursor-pointer whitespace-nowrap hover:scale-[1.01] ${
-              isTutorOpen
-                ? 'bg-indigo-600 text-white shadow-xs'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-200'
-            }`}
-            title="Sayfadaki kelime ve cümleleri Türkçe açıklayan yardımcı"
-          >
-            <Sparkles className="w-3.5 h-3.5 shrink-0" />
-            <span><span className="hidden xl:inline">Türkçe </span>Yardımcı</span>
-          </button>
-
           {/* Kişiye Özel Profil Çipi */}
           <div
             onClick={() => setIsProfileModalOpen(true)}
