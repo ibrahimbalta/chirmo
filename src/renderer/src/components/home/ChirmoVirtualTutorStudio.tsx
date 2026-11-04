@@ -203,18 +203,13 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
               {/* Gerçek 3D Chirmo Maskot Görseli (2. Görsel) */}
               <div className="relative w-44 h-44 sm:w-56 sm:h-56 lg:w-64 lg:h-64 flex items-center justify-center">
                 <img
-                  src="/chirmo-character.png"
+                  src="./chirmo-character.png"
                   alt="Chirmo Maskot Karakteri"
                   className="w-full h-full object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.25)] hover:scale-105 transition-transform"
                   onError={(e) => {
-                    // Fallback to cute rendered avatar if path is loading
-                    (e.target as HTMLElement).style.display = 'none';
-                    const parent = (e.target as HTMLElement).parentElement;
-                    if (parent) {
-                      const fallback = document.createElement('div');
-                      fallback.className = 'w-40 h-40 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-7xl';
-                      fallback.innerText = '🤖';
-                      parent.appendChild(fallback);
+                    const img = e.currentTarget as HTMLImageElement;
+                    if (!img.src.endsWith('/chirmo-avatar.png')) {
+                      img.src = './chirmo-avatar.png';
                     }
                   }}
                 />
@@ -403,11 +398,14 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             <div className="flex items-start space-x-3 py-2">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-slate-800 dark:to-slate-700 p-1 flex items-center justify-center shadow-xs border border-purple-200 dark:border-slate-700 shrink-0 overflow-hidden">
                 <img
-                  src="/chirmo-character.png"
+                  src="./chirmo-character.png"
                   alt="Chirmo Karakteri"
                   className="w-full h-full object-contain"
                   onError={(e) => {
-                    (e.target as HTMLElement).style.display = 'none';
+                    const img = e.currentTarget as HTMLImageElement;
+                    if (!img.src.endsWith('/chirmo-avatar.png')) {
+                      img.src = './chirmo-avatar.png';
+                    }
                   }}
                 />
               </div>
