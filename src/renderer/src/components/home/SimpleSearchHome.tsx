@@ -9,7 +9,6 @@ export interface SimpleSearchHomeProps {
   onNavigateToGames?: () => void;
   onNavigateToSpeak?: () => void;
   onNavigateToTasks?: () => void;
-  onNavigateToAdmin?: () => void;
   onOpenInstallModal?: () => void;
   userLevel?: CEFRLevel;
   pendingTaskCount?: number;

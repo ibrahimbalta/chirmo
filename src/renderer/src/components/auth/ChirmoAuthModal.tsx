@@ -9,14 +9,12 @@ interface ChirmoAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: (user: SafeUserSession) => void;
-  onOpenAdmin?: () => void;
 }
 
 export const ChirmoAuthModal: React.FC<ChirmoAuthModalProps> = ({
   isOpen,
   onClose,
-  onSuccess,
-  onOpenAdmin
+  onSuccess
 }) => {
   const [tab, setTab] = useState<'login' | 'register' | 'forgot'>('login');
 
@@ -485,24 +483,6 @@ export const ChirmoAuthModal: React.FC<ChirmoAuthModalProps> = ({
             </div>
           )}
         </div>
-
-        {/* Alt Bilgi & Admin Girişi Linki */}
-        {onOpenAdmin && (
-          <div className="px-6 py-2.5 bg-gray-950 border-t border-gray-800/80 flex items-center justify-between text-[11px] text-gray-500">
-            <span>Chirmo Güvenli Sistem</span>
-            <button
-              type="button"
-              onClick={() => {
-                onClose();
-                onOpenAdmin();
-              }}
-              className="text-amber-500 hover:text-amber-400 hover:underline font-bold inline-flex items-center space-x-1 cursor-pointer transition-colors"
-            >
-              <span>🔒</span>
-              <span>Admin Girişi</span>
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

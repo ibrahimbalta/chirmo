@@ -483,7 +483,6 @@ export const App: React.FC = () => {
                     onNavigateToGames={() => setActiveTab('games')}
                     onNavigateToSpeak={() => setActiveTab('speak')}
                     onNavigateToTasks={() => setActiveTab('tasks')}
-                    onNavigateToAdmin={() => setActiveTab('admin')}
                     onOpenInstallModal={() => setIsInstallModalOpen(true)}
                     userLevel={learningProgress.currentLevel}
                     pendingTaskCount={pendingTaskCount}
@@ -718,7 +717,6 @@ export const App: React.FC = () => {
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
         onProfileUpdated={(updated) => setUserProfile(updated)}
-        onOpenAdmin={() => setActiveTab('admin')}
       />
 
       {/* Sıfır Kişisel Veri SaaS Kimlik & Hesap Modalı */}
@@ -726,7 +724,6 @@ export const App: React.FC = () => {
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
         onSuccess={(u) => setCurrentUser(u)}
-        onOpenAdmin={() => setActiveTab('admin')}
       />
 
       {/* ==================== MOBİL ALT MENÜ (SMARTPHONE BOTTOM NAV - 6 TEMEL BÖLÜM) ==================== */}

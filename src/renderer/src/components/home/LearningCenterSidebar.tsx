@@ -230,19 +230,6 @@ export const LearningCenterSidebar: React.FC<LearningCenterSidebarProps> = ({
             <span className="text-base">🏅</span>
           </div>
         </div>
-
-        {/* Yönetim / Admin Girişi Linki */}
-        <div className="pt-1 text-center">
-          <button
-            type="button"
-            onClick={() => handleItemClick('admin')}
-            className="text-[11px] text-slate-400 dark:text-slate-500 hover:text-amber-500 dark:hover:text-amber-400 hover:underline transition cursor-pointer inline-flex items-center space-x-1"
-            title="Yönetici Paneli Girişi"
-          >
-            <span>🔒</span>
-            <span>Admin Girişi</span>
-          </button>
-        </div>
       </div>
 
       {/* Profil Düzenleme Modalı */}

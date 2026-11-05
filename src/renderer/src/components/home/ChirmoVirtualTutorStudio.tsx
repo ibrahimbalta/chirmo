@@ -35,7 +35,6 @@ export interface ChirmoVirtualTutorStudioProps {
   onNavigateToGames?: () => void;
   onNavigateToSpeak?: () => void;
   onNavigateToTasks?: () => void;
-  onNavigateToAdmin?: () => void;
   onOpenInstallModal?: () => void;
   userLevel?: CEFRLevel;
   pendingTaskCount?: number;
@@ -48,7 +47,6 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   onNavigateToGames,
   onNavigateToSpeak,
   onNavigateToTasks,
-  onNavigateToAdmin,
   onOpenInstallModal
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -764,22 +762,6 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
               className="hover:text-slate-600 dark:hover:text-slate-200 transition cursor-pointer"
             >
               Mobil Uygulama (APK)
-            </button>
-            <span>•</span>
-            <button
-              type="button"
-              onClick={() => {
-                if (onNavigateToAdmin) {
-                  onNavigateToAdmin();
-                } else if (typeof window !== 'undefined') {
-                  window.location.hash = 'admin';
-                }
-              }}
-              className="text-slate-400 hover:text-amber-500 dark:hover:text-amber-400 hover:underline transition cursor-pointer inline-flex items-center space-x-1"
-              title="Yönetici ve Sistem Girişi"
-            >
-              <span>🔒</span>
-              <span>Admin Girişi</span>
             </button>
           </div>
         </footer>
