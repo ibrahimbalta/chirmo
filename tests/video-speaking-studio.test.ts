@@ -19,6 +19,17 @@ describe('Video & Film English Speaking & Shadowing Studio', () => {
     __dirname,
     '../src/renderer/src/components/home/HomeSearchHub.tsx'
   );
+  const indexPath = path.resolve(
+    __dirname,
+    '../index.html'
+  );
+
+  it('index.html CSP permits YouTube iframes and media sources without black screens', () => {
+    const content = fs.readFileSync(indexPath, 'utf-8');
+    expect(content).toContain('frame-src');
+    expect(content).toContain('https://www.youtube.com');
+    expect(content).toContain('https://www.youtube-nocookie.com');
+  });
 
   it('WatchingView implements interactive YouTube/video link import and curated film/speech lessons', () => {
     expect(fs.existsSync(watchingViewPath)).toBe(true);
@@ -30,6 +41,13 @@ describe('Video & Film English Speaking & Shadowing Studio', () => {
     // Categories including films, TED talks, news
     expect(content).toContain('Film');
     expect(content).toContain('TED');
+  });
+
+  it('WatchingView implements extractYouTubeVideoId supporting youtu.be, shorts, and query params', () => {
+    const content = fs.readFileSync(watchingViewPath, 'utf-8');
+    expect(content).toContain('extractYouTubeVideoId');
+    expect(content).toContain('referrerPolicy');
+    expect(content).toContain('youtube-nocookie.com');
   });
 
   it('WatchingView provides active speaking training with Shadowing Mode & microphone evaluation', () => {

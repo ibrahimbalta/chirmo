@@ -42,6 +42,24 @@ export interface SubtitleLine {
   quizOptions?: string[];
 }
 
+
+export const extractYouTubeVideoId = (input: string): string | null => {
+  if (!input) return null;
+  const trimmed = input.trim();
+  // Direct 11 char ID
+  if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) return trimmed;
+  const regexes = [
+    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/|live\/))([a-zA-Z0-9_-]{11})/,
+    /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/,
+    /youtu\.be\/([a-zA-Z0-9_-]{11})/
+  ];
+  for (const r of regexes) {
+    const m = trimmed.match(r);
+    if (m && m[1]) return m[1];
+  }
+  return null;
+};
+
 export interface VideoLesson {
   id: string;
   title: string;
@@ -730,15 +748,41 @@ export const WatchingView: React.FC<WatchingViewProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Column: Video Player & Active Speaking Trainer (8 cols) */}
           <div className="lg:col-span-8 space-y-5">
-            {/* YouTube IFrame Embed Container */}
-            <div className="relative aspect-video rounded-3xl overflow-hidden bg-black shadow-2xl border-2 border-slate-800">
-              <iframe
-                src={`https://www.youtube.com/embed/${selectedVideo.youtubeId}?autoplay=0&enablejsapi=1`}
-                title={selectedVideo.title}
-                className="w-full h-full border-0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+                        {/* YouTube IFrame Embed Container with Player Header Bar */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between px-1">
+                <div className="flex items-center space-x-2 truncate min-w-0">
+                  <span className="text-xs font-black text-slate-800 dark:text-slate-100 truncate">
+                    🎬 {selectedVideo.title}
+                  </span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold shrink-0">
+                    {selectedVideo.channel}
+                  </span>
+                </div>
+
+                <a
+                  href={`https://www.youtube.com/watch?v=${selectedVideo.youtubeId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg text-[11px] font-bold text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-950/60 dark:hover:bg-red-900 border border-red-200 dark:border-red-800 transition-colors shrink-0"
+                  title="YouTube'da Yeni Sekmede Aç"
+                >
+                  <ExternalLink className="w-3 h-3" />
+                  <span>YouTube'da Aç</span>
+                </a>
+              </div>
+
+              <div className="relative aspect-video rounded-3xl overflow-hidden bg-black shadow-2xl border-2 border-slate-800">
+                <iframe
+                  key={selectedVideo.youtubeId}
+                  src={`https://www.youtube-nocookie.com/embed/${selectedVideo.youtubeId}?rel=0&modestbranding=1&enablejsapi=1`}
+                  title={selectedVideo.title}
+                  className="w-full h-full border-0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                />
+              </div>
             </div>
 
             {/* Mode Switcher Tabs */}
