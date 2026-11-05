@@ -24,6 +24,7 @@ import { ChirmoPronunciationDoctor } from '../learning/ChirmoPronunciationDoctor
 import { ChirmoAccentVoiceSelectorModal } from '../learning/ChirmoAccentVoiceSelectorModal';
 import { ChirmoVisionExplorerModal } from '../learning/ChirmoVisionExplorerModal';
 import { ChirmoCareerTrackModal } from '../learning/ChirmoCareerTrackModal';
+import { ChirmoSpeakingDuelModal } from '../learning/ChirmoSpeakingDuelModal';
 import { ChirmoTalkingRobotAvatar } from '../avatar/ChirmoTalkingRobotAvatar';
 import { CEFRLevel } from '../../types';
 
@@ -58,6 +59,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   const [isAccentModalOpen, setIsAccentModalOpen] = useState(false);
   const [isVisionExplorerOpen, setIsVisionExplorerOpen] = useState(false);
   const [isCareerModalOpen, setIsCareerModalOpen] = useState(false);
+  const [isDuelModalOpen, setIsDuelModalOpen] = useState(false);
   const [currentAccent, setCurrentAccent] = useState(LearningStorageService.getSelectedAccent());
 
   // AI Teacher Speech State
@@ -285,6 +287,14 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 >
                   <span>💼</span>
                   <span>Mesleki Paketler</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsDuelModalOpen(true)}
+                  className="px-3.5 py-1 rounded-full bg-amber-400 hover:bg-amber-300 text-purple-950 font-black transition-all cursor-pointer flex items-center space-x-1 shadow-xs"
+                >
+                  <span>🏆</span>
+                  <span>1v1 Düello & Ligler</span>
                 </button>
                 <button
                   type="button"
@@ -836,6 +846,13 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
       <ChirmoCareerTrackModal
         isOpen={isCareerModalOpen}
         onClose={() => setIsCareerModalOpen(false)}
+        onRewardXP={(xp) => LearningStorageService.addXP(xp)}
+      />
+
+      {/* Chirmo Sosyal Ligler & 1v1 Konuşma Düelloları */}
+      <ChirmoSpeakingDuelModal
+        isOpen={isDuelModalOpen}
+        onClose={() => setIsDuelModalOpen(false)}
         onRewardXP={(xp) => LearningStorageService.addXP(xp)}
       />
     </div>
