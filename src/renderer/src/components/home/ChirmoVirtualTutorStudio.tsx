@@ -23,6 +23,7 @@ import { ChirmoVoiceCallSimulatorModal } from '../learning/ChirmoVoiceCallSimula
 import { ChirmoPronunciationDoctor } from '../learning/ChirmoPronunciationDoctor';
 import { ChirmoAccentVoiceSelectorModal } from '../learning/ChirmoAccentVoiceSelectorModal';
 import { ChirmoVisionExplorerModal } from '../learning/ChirmoVisionExplorerModal';
+import { ChirmoCareerTrackModal } from '../learning/ChirmoCareerTrackModal';
 import { ChirmoTalkingRobotAvatar } from '../avatar/ChirmoTalkingRobotAvatar';
 import { CEFRLevel } from '../../types';
 
@@ -56,6 +57,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   const [isPronunciationDoctorOpen, setIsPronunciationDoctorOpen] = useState(false);
   const [isAccentModalOpen, setIsAccentModalOpen] = useState(false);
   const [isVisionExplorerOpen, setIsVisionExplorerOpen] = useState(false);
+  const [isCareerModalOpen, setIsCareerModalOpen] = useState(false);
   const [currentAccent, setCurrentAccent] = useState(LearningStorageService.getSelectedAccent());
 
   // AI Teacher Speech State
@@ -275,6 +277,14 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 >
                   <span>📸</span>
                   <span>Etrafını Göster (Kamera)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsCareerModalOpen(true)}
+                  className="px-3.5 py-1 rounded-full bg-blue-400 hover:bg-blue-300 text-purple-950 font-black transition-all cursor-pointer flex items-center space-x-1 shadow-xs"
+                >
+                  <span>💼</span>
+                  <span>Mesleki Paketler</span>
                 </button>
                 <button
                   type="button"
@@ -819,6 +829,13 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
       <ChirmoVisionExplorerModal
         isOpen={isVisionExplorerOpen}
         onClose={() => setIsVisionExplorerOpen(false)}
+        onRewardXP={(xp) => LearningStorageService.addXP(xp)}
+      />
+
+      {/* Chirmo Mesleki & Sektörel Konuşma Paketleri */}
+      <ChirmoCareerTrackModal
+        isOpen={isCareerModalOpen}
+        onClose={() => setIsCareerModalOpen(false)}
         onRewardXP={(xp) => LearningStorageService.addXP(xp)}
       />
     </div>
