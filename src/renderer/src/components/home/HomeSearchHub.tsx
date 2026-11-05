@@ -43,8 +43,8 @@ import {
   CloudSun,
   Code2,
   CheckSquare,
-  Sparkle,
-  Copy
+  Sparkle,,
+  Film
 } from 'lucide-react'
 import {
   SearchEngineService,
@@ -81,6 +81,7 @@ type WidgetId =
   | 'codeplayground'
   | 'dailytasks'
   | 'historyfeed'
+  | 'videostudio'
 type ResultTabId = 'all' | 'ai' | 'temporal' | 'xray'
 
 interface KanbanCard {
@@ -949,6 +950,12 @@ export const HomeSearchHub: React.FC<HomeSearchHubProps> = ({
       label: 'Akıllı Arama & Keşif Geçmişi',
       desc: 'Kaydedilen aramalar ve favori kaynak kütüphanesi',
       icon: <History className="w-4 h-4 text-purple-600" />
+    },
+    {
+      id: 'videostudio',
+      label: 'YouTube & Film ile Konuşma Stüdyosu',
+      desc: 'Video linki yapıştırarak çift altyazı ve mikrofonla shadowing pratik alanı',
+      icon: <Film className="w-4 h-4 text-rose-500" />
     }
   ]
 

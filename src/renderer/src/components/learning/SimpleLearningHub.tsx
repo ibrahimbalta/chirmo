@@ -31,11 +31,13 @@ import { ChirmoKidsDedicatedHub } from '../kids/ChirmoKidsDedicatedHub';
 import { SentenceBuilderStudio } from './SentenceBuilderStudio';
 import { ChirmoFluencyBooster } from './ChirmoFluencyBooster';
 import { ChirmoStoryDialogueStudio } from './ChirmoStoryDialogueStudio';
+import { WatchingView } from './WatchingView';
 import { CampStorageService } from '../../services/curriculumData';
 import { SpacedRepetitionService, SrsWordData } from '../../services/spacedRepetitionService';
 
 export type LearningHubTab =
   | 'camp'
+  | 'video'
   | 'stories'
   | 'booster'
   | 'builder'
@@ -174,6 +176,18 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
           >
             <Zap className="w-3.5 h-3.5 text-amber-400" />
             <span>30 Günlük Konuşma Kampı 🚀</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('video')}
+            className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'video'
+                ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-md'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
+            }`}
+          >
+            <span>🎬</span>
+            <span>YouTube & Film ile Konuş (Shadowing) ⭐</span>
           </button>
 
           <button
@@ -321,6 +335,11 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
           <ThirtyDayCampView
             onDayCompleted={(updated) => setCampProgress(updated)}
           />
+        )}
+
+        {/* YOUTUBE & FİLM İLE KONUŞMA & SHADOWING STÜDYOSU */}
+        {activeTab === 'video' && (
+          <WatchingView />
         )}
 
         {/* İNTERAKTİF DİYALOG HİKAYELERİ (ROL YAPMA & BOŞLUK DOLDURMA) */}

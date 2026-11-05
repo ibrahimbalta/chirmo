@@ -19,7 +19,8 @@ import {
   ChevronRight,
   Mic,
   Compass,
-  Smile
+  Smile,
+  Film
 } from 'lucide-react';
 import { ChirmoLogo } from './components/common/ChirmoLogo';
 import { BrowserContainer, PageSentenceItem } from './components/browser/BrowserContainer';
@@ -36,6 +37,7 @@ import { ChirmoOnboardingModal } from './components/learning/ChirmoOnboardingMod
 import { RealLifeSimulatorStudio } from './components/learning/RealLifeSimulatorStudio';
 import { EnglishGameArcade } from './components/learning/EnglishGameArcade';
 import { ChirmoKidsDedicatedHub } from './components/kids/ChirmoKidsDedicatedHub';
+import { WatchingView } from './components/learning/WatchingView';
 import { LearningStorageService } from './services/learningStorage';
 import { UserProfileService, UserProfile } from './services/userProfileService';
 import { PrivacyAuthService, SafeUserSession } from './services/privacyAuthService';
@@ -43,7 +45,7 @@ import { ChirmoAuthModal } from './components/auth/ChirmoAuthModal';
 import { Tab, CEFRLevel, DailyGoalProgress } from './types';
 import { CampStorageService, StudentCampProgress } from './services/curriculumData';
 
-export type AppNavTab = 'search' | 'learn' | 'kids' | 'games' | 'speak' | 'tasks';
+export type AppNavTab = 'search' | 'learn' | 'kids' | 'games' | 'speak' | 'tasks' | 'video';
 
 export const App: React.FC = () => {
   // 6 Temel Bölüm: 'search' (Stüdyo) | 'learn' (Kamp) | 'kids' (Chirmo Kids) | 'games' (Oyunlar) | 'speak' (Simülatör) | 'tasks' (Hedefler)
@@ -220,7 +222,20 @@ export const App: React.FC = () => {
 
         {/* Orta: 6 Renkli Minimal Hap Buton (Hafif Kompakt, Ekrana Tam Sığan, Kusursuz Simetrik) */}
         <nav className="hidden md:flex items-center justify-center gap-1.5 shrink-0">
-          <button
+                    <button
+            onClick={() => setActiveTab('video')}
+            className={`h-9 px-3 rounded-full text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
+              activeTab === 'video'
+                ? 'bg-rose-600 text-white font-extrabold shadow-sm ring-2 ring-rose-200 dark:ring-rose-800'
+                : 'bg-red-50/90 dark:bg-red-950/50 text-red-700 dark:text-red-300 border border-red-200/80 dark:border-red-800/70 hover:bg-red-100 font-bold'
+            }`}
+            title="YouTube, Film ve Dizi ile Konuşma Stüdyosu"
+          >
+            <Film className="w-3.5 h-3.5 shrink-0" />
+            <span><span className="hidden 2xl:inline">YouTube & </span>Film</span>
+          </button>
+
+<button
             onClick={() => setActiveTab('search')}
             className={`h-9 px-3 rounded-full text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
               activeTab === 'search'
@@ -304,21 +319,22 @@ export const App: React.FC = () => {
           {/* APK İndir (Kullanıcı Talebiyle "Uygulamayı İndir" yerine "APK İndir" yapıldı) */}
           <button
             onClick={() => setIsInstallModalOpen(true)}
-            className="h-9 px-3 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold shadow-xs cursor-pointer transition-all inline-flex items-center space-x-1.5 whitespace-nowrap hover:scale-[1.02]"
+            className="h-9 px-2 sm:px-3 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold shadow-xs cursor-pointer transition-all inline-flex items-center space-x-1 sm:space-x-1.5 whitespace-nowrap hover:scale-[1.02] shrink-0"
             title="Chirmo Android APK ve PWA İndir"
           >
             <Download className="w-3.5 h-3.5 shrink-0" />
-            <span>APK İndir</span>
+            <span className="hidden sm:inline">APK İndir</span>
           </button>
 
           {/* Gün Serisi */}
           <div
             onClick={() => setActiveTab('learn')}
-            className="h-9 px-2.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-700 dark:text-amber-300 text-xs font-bold cursor-pointer hover:bg-amber-500/20 transition-colors inline-flex items-center space-x-1 whitespace-nowrap"
+            className="h-9 px-2 sm:px-2.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-700 dark:text-amber-300 text-xs font-bold cursor-pointer hover:bg-amber-500/20 transition-colors inline-flex items-center space-x-1 whitespace-nowrap shrink-0"
             title="30 Günlük Kamp Kesintisiz Serisi"
           >
             <span className="text-xs">🔥</span>
-            <span>{campProgress.streakDays} Gün</span>
+            <span>{campProgress.streakDays}</span>
+            <span className="hidden sm:inline"> Gün</span>
           </div>
 
           {/* Toplam XP */}
@@ -334,7 +350,7 @@ export const App: React.FC = () => {
           {/* Kişiye Özel Profil Çipi */}
           <div
             onClick={() => setIsProfileModalOpen(true)}
-            className="h-9 pl-1 pr-2.5 rounded-full bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-500 cursor-pointer transition-all shrink-0 inline-flex items-center space-x-1.5 group"
+            className="h-9 p-1 sm:pl-1 sm:pr-2.5 rounded-full bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-500 cursor-pointer transition-all shrink-0 inline-flex items-center space-x-1.5 group"
             title={`${userProfile.hasCustomName ? userProfile.name : 'Profilini Düzenle'} (${userProfile.level})`}
           >
             <div className="w-6.5 h-6.5 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-xs shadow-2xs group-hover:scale-105 transition-transform">
@@ -349,11 +365,11 @@ export const App: React.FC = () => {
           {!currentUser ? (
             <button
               onClick={() => setIsAuthModalOpen(true)}
-              className="h-9 px-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-xs font-black shadow-xs cursor-pointer transition-all inline-flex items-center space-x-1.5 whitespace-nowrap hover:scale-[1.02]"
+              className="h-9 px-2.5 sm:px-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-xs font-black shadow-xs cursor-pointer transition-all inline-flex items-center space-x-1 sm:space-x-1.5 shrink-0 whitespace-nowrap hover:scale-[1.02]"
               title="Sıfır Kişisel Veri ile Giriş Yap veya Kayıt Ol"
             >
               <span>🛡️</span>
-              <span>Giriş / Kayıt</span>
+              <span>Giriş<span className="hidden xs:inline sm:inline"> / Kayıt</span></span>
             </button>
           ) : (
             <div className="flex items-center space-x-1.5">
@@ -363,7 +379,7 @@ export const App: React.FC = () => {
                 title={`Oturum Açık: @${currentUser.username} (${currentUser.plan.toUpperCase()})`}
               >
                 <span>👤</span>
-                <span className="font-extrabold">@{currentUser.username}</span>
+                <span className="font-extrabold max-w-[65px] sm:max-w-none truncate">@{currentUser.username}</span>
                 <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-cyan-500/20 text-cyan-400 font-mono">
                   {currentUser.plan === 'pro' ? '👑 PRO' : 'ÜCRETSİZ'}
                 </span>
@@ -604,7 +620,17 @@ export const App: React.FC = () => {
           </div>
         )}
 
-        {/* BÖLÜM 5: İŞ, HEDEFLER & GELİŞİM KARNESİ */}
+        
+        {/* BÖLÜM 7: VİDEO, YOUTUBE & FİLM İLE KONUŞMA STÜDYOSU */}
+        {activeTab === 'video' && (
+          <div className="flex-1 flex flex-col h-full overflow-hidden">
+            <WatchingView
+              onWordAdded={() => setLearningProgress({ ...LearningStorageService.getProgress() })}
+              onOpenInTutor={() => setIsAiTeacherOpen(true)}
+            />
+          </div>
+        )}
+{/* BÖLÜM 5: İŞ, HEDEFLER & GELİŞİM KARNESİ */}
         {activeTab === 'tasks' && (
           <div className="flex-1 flex flex-col h-full overflow-hidden">
             <SimpleTaskWorkspace />
