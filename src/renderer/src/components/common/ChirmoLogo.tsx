@@ -32,8 +32,8 @@ export const ChirmoLogo: React.FC<ChirmoLogoProps> = ({
   // Sizes for image rendering
   const heightClasses = {
     xs: 'h-6 max-h-6 w-auto',
-    sm: 'h-7 sm:h-8 max-h-8 w-auto',
-    md: 'h-8 sm:h-9 md:h-11 lg:h-12 max-h-8 sm:max-h-9 md:max-h-11 lg:max-h-12 w-auto',
+    sm: 'h-8 max-h-8 w-auto',
+    md: 'h-10 sm:h-11 md:h-12 max-h-12 w-auto',
     lg: 'h-12 sm:h-14 max-h-14 w-auto',
     xl: 'h-20 sm:h-24 md:h-28 max-h-28 w-auto max-w-full'
   }[size];
@@ -42,7 +42,7 @@ export const ChirmoLogo: React.FC<ChirmoLogoProps> = ({
   const iconSizes = {
     xs: 'w-6 h-6',
     sm: 'w-8 h-8',
-    md: 'w-8 h-8 sm:w-9 sm:h-9 md:w-11 md:h-11',
+    md: 'w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12',
     lg: 'w-12 h-12',
     xl: 'w-20 h-20'
   }[size];

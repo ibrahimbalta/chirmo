@@ -17,6 +17,7 @@ import {
   Gamepad2,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Mic,
   Compass,
   Smile,
@@ -82,6 +83,8 @@ export const App: React.FC = () => {
   // Kişiye Özel Kullanıcı Profili (Her tarayıcıda bağımsız ve özel)
   const [userProfile, setUserProfile] = useState<UserProfile>(() => UserProfileService.getProfile());
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  // Mobilde tüm modülleri gösteren açılır menü durumu
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   // Sıfır Kişisel Veri SaaS Kimlik Durumu
   const [currentUser, setCurrentUser] = useState<SafeUserSession | null>(() =>
@@ -223,30 +226,225 @@ export const App: React.FC = () => {
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#FAF9FE] text-slate-800 select-none font-sans">
       {/* ==================== ÜST KUSURSUZ SİMETRİK & TAM SIĞAN MODERN ANA BAŞLIK ==================== */}
       <header className="h-14 px-2.5 sm:px-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-1.5 sm:gap-3 z-30 shrink-0 select-none">
-        {/* Sol: Sadece Temiz Logo + Mobilde Hızlı Film Butonu */}
+        {/* Sol: Temiz Logo + Mobilde Modül Açılır Menüsü */}
         <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
           <div
             onClick={handleGoHome}
-            className="cursor-pointer flex items-center hover:opacity-90 transition-opacity shrink-0 max-h-12 overflow-hidden"
+            className="cursor-pointer flex items-center hover:opacity-90 transition-opacity shrink-0"
             title="Chirmo Ana Sayfa - 30 Günde Konuşma Garantili Sanal Öğretmen"
             aria-label="30 Günde Konuşma Garantili Sanal Öğretmen"
           >
             <ChirmoLogo size="md" variant="header" />
           </div>
 
-          {/* Mobilde Görünen Hızlı Film Butonu */}
-          <button
-            onClick={() => setActiveTab('video')}
-            className={`md:hidden h-8 px-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer inline-flex items-center space-x-1 shrink-0 whitespace-nowrap shadow-2xs ${
-              activeTab === 'video'
-                ? 'bg-rose-600 text-white font-black shadow-xs ring-1 ring-rose-400'
-                : 'bg-rose-50/90 text-rose-700 dark:bg-rose-950/50 dark:text-rose-300 border border-rose-200/80 hover:bg-rose-100'
-            }`}
-            title="YouTube & Film ile Konuş"
-          >
-            <Film className="w-3.5 h-3.5 shrink-0" />
-            <span className="hidden xs:inline">Film</span>
-          </button>
+          {/* Mobilde 2. Görseldeki Tüm Modülleri Gösteren Açılır Menü Butonu */}
+          <div className="relative md:hidden shrink-0">
+            <button
+              onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
+              className="h-8 px-2.5 rounded-xl bg-slate-100/90 hover:bg-slate-200/80 dark:bg-slate-800/90 dark:hover:bg-slate-700/80 text-slate-800 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700 text-xs font-bold inline-flex items-center space-x-1.5 transition-all shadow-2xs shrink-0 cursor-pointer active:scale-95"
+              title="Modüller Menüsü"
+              aria-label="Tüm Modülleri Göster"
+              aria-expanded={isMobileNavOpen}
+            >
+              <Compass className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+              <span className="font-extrabold max-w-[65px] truncate">
+                {activeTab === 'video'
+                  ? 'Film'
+                  : activeTab === 'search'
+                  ? 'Stüdyo'
+                  : activeTab === 'learn'
+                  ? 'Kamp'
+                  : activeTab === 'kids'
+                  ? 'Kids'
+                  : activeTab === 'games'
+                  ? 'Oyunlar'
+                  : activeTab === 'speak'
+                  ? 'Simülatör'
+                  : activeTab === 'tasks'
+                  ? 'Hedef'
+                  : 'Modüller'}
+              </span>
+              <ChevronDown
+                className={`w-3 h-3 text-slate-400 transition-transform duration-200 shrink-0 ${
+                  isMobileNavOpen ? 'rotate-180 text-indigo-500' : ''
+                }`}
+              />
+            </button>
+
+            {/* Arka Plan Tıklama Kapatıcı */}
+            {isMobileNavOpen && (
+              <div
+                className="fixed inset-0 z-40 bg-slate-900/20 backdrop-blur-xs"
+                onClick={() => setIsMobileNavOpen(false)}
+              />
+            )}
+
+            {/* Açılan Menü (2. Görseldeki 7 Modülün Tümü) */}
+            {isMobileNavOpen && (
+              <div className="absolute left-0 top-9.5 z-50 w-56 p-1.5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl shadow-xl border border-slate-200/90 dark:border-slate-800 space-y-1 animate-in fade-in zoom-in-95 duration-150">
+                {/* 1. Film */}
+                <button
+                  onClick={() => {
+                    setActiveTab('video');
+                    setIsMobileNavOpen(false);
+                  }}
+                  className={`w-full flex items-center space-x-2.5 px-2.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    activeTab === 'video'
+                      ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 shadow-2xs ring-1 ring-rose-200 dark:ring-rose-800'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                  title="YouTube, Film ve Dizi ile Konuşma Stüdyosu"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-rose-100 dark:bg-rose-900/50 flex items-center justify-center shrink-0">
+                    <Film className="w-4 h-4 text-rose-500 shrink-0" />
+                  </div>
+                  <div className="text-left flex-1 min-w-0">
+                    <div className="font-extrabold truncate">Film</div>
+                    <div className="text-[10px] text-slate-400 font-normal truncate">YouTube & Dizi ile Konuş</div>
+                  </div>
+                  {activeTab === 'video' && <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />}
+                </button>
+
+                {/* 2. Stüdyo */}
+                <button
+                  onClick={() => {
+                    setActiveTab('search');
+                    setIsMobileNavOpen(false);
+                  }}
+                  className={`w-full flex items-center space-x-2.5 px-2.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    activeTab === 'search'
+                      ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 shadow-2xs ring-1 ring-indigo-200 dark:ring-indigo-800'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                  title="Chirmo Stüdyo & AI Öğretmen"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center shrink-0">
+                    <Sparkles className="w-4 h-4 text-indigo-500 shrink-0" />
+                  </div>
+                  <div className="text-left flex-1 min-w-0">
+                    <div className="font-extrabold truncate">Stüdyo</div>
+                    <div className="text-[10px] text-slate-400 font-normal truncate">Chirmo AI Öğretmen</div>
+                  </div>
+                  {activeTab === 'search' && <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />}
+                </button>
+
+                {/* 3. Kamp */}
+                <button
+                  onClick={() => {
+                    setActiveTab('learn');
+                    setIsMobileNavOpen(false);
+                  }}
+                  className={`w-full flex items-center space-x-2.5 px-2.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    activeTab === 'learn'
+                      ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 shadow-2xs ring-1 ring-emerald-200 dark:ring-emerald-800'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                  title="30 Günlük Kamp"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center shrink-0">
+                    <BookOpen className="w-4 h-4 text-emerald-500 shrink-0" />
+                  </div>
+                  <div className="text-left flex-1 min-w-0">
+                    <div className="font-extrabold truncate">Kamp</div>
+                    <div className="text-[10px] text-slate-400 font-normal truncate">30 Günde Konuşma Kampı</div>
+                  </div>
+                  {activeTab === 'learn' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />}
+                </button>
+
+                {/* 4. Kids */}
+                <button
+                  onClick={() => {
+                    setActiveTab('kids');
+                    setIsMobileNavOpen(false);
+                  }}
+                  className={`w-full flex items-center space-x-2.5 px-2.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    activeTab === 'kids'
+                      ? 'bg-pink-50 dark:bg-pink-950/60 text-pink-600 dark:text-pink-400 shadow-2xs ring-1 ring-pink-200 dark:ring-pink-800'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                  title="Chirmo Kids (5-17 Yaş)"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-pink-100 dark:bg-pink-900/50 flex items-center justify-center shrink-0">
+                    <Smile className="w-4 h-4 text-pink-500 shrink-0" />
+                  </div>
+                  <div className="text-left flex-1 min-w-0">
+                    <div className="font-extrabold truncate">Kids</div>
+                    <div className="text-[10px] text-slate-400 font-normal truncate">5-17 Yaş Çocuk Alanı</div>
+                  </div>
+                  {activeTab === 'kids' && <span className="w-1.5 h-1.5 rounded-full bg-pink-500 shrink-0" />}
+                </button>
+
+                {/* 5. Oyunlar */}
+                <button
+                  onClick={() => {
+                    setActiveTab('games');
+                    setIsMobileNavOpen(false);
+                  }}
+                  className={`w-full flex items-center space-x-2.5 px-2.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    activeTab === 'games'
+                      ? 'bg-violet-50 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 shadow-2xs ring-1 ring-violet-200 dark:ring-violet-800'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                  title="Eğitici Oyunlar"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-violet-100 dark:bg-violet-900/50 flex items-center justify-center shrink-0">
+                    <Gamepad2 className="w-4 h-4 text-violet-500 shrink-0" />
+                  </div>
+                  <div className="text-left flex-1 min-w-0">
+                    <div className="font-extrabold truncate">Oyunlar</div>
+                    <div className="text-[10px] text-slate-400 font-normal truncate">Eğitici Mini Oyunlar</div>
+                  </div>
+                  {activeTab === 'games' && <span className="w-1.5 h-1.5 rounded-full bg-violet-500 shrink-0" />}
+                </button>
+
+                {/* 6. Simülatör */}
+                <button
+                  onClick={() => {
+                    setActiveTab('speak');
+                    setIsMobileNavOpen(false);
+                  }}
+                  className={`w-full flex items-center space-x-2.5 px-2.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    activeTab === 'speak'
+                      ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 shadow-2xs ring-1 ring-amber-200 dark:ring-amber-800'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                  title="Gerçek Yaşam Simülatörü"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center shrink-0">
+                    <Mic className="w-4 h-4 text-amber-500 shrink-0" />
+                  </div>
+                  <div className="text-left flex-1 min-w-0">
+                    <div className="font-extrabold truncate">Simülatör</div>
+                    <div className="text-[10px] text-slate-400 font-normal truncate">Gerçek Yaşam Konuşmaları</div>
+                  </div>
+                  {activeTab === 'speak' && <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />}
+                </button>
+
+                {/* 7. Hedeflerim */}
+                <button
+                  onClick={() => {
+                    setActiveTab('tasks');
+                    setIsMobileNavOpen(false);
+                  }}
+                  className={`w-full flex items-center space-x-2.5 px-2.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    activeTab === 'tasks'
+                      ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 shadow-2xs ring-1 ring-blue-200 dark:ring-blue-800'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                  title="İş & Günlük Hedefler"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center shrink-0">
+                    <CheckSquare className="w-4 h-4 text-blue-500 shrink-0" />
+                  </div>
+                  <div className="text-left flex-1 min-w-0">
+                    <div className="font-extrabold truncate">Hedeflerim</div>
+                    <div className="text-[10px] text-slate-400 font-normal truncate">İş & Günlük Planlar</div>
+                  </div>
+                  {activeTab === 'tasks' && <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Orta: PREMİUM SİMETRİK NAVİGASYON KAPSÜLÜ (TEK FİLM BUTONU, MODERN & KARİZMATİK) */}
