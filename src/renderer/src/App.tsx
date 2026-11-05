@@ -222,9 +222,9 @@ export const App: React.FC = () => {
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#FAF9FE] text-slate-800 select-none font-sans">
       {/* ==================== ÜST KUSURSUZ SİMETRİK & TAM SIĞAN MODERN ANA BAŞLIK ==================== */}
-      <header className="h-14 px-3 sm:px-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3 z-30 shrink-0 select-none">
-        {/* Sol: Sadece Temiz Logo + Mobilde Her Zaman Görünen Kırmızı Film Butonu */}
-        <div className="flex items-center space-x-2 shrink-0">
+      <header className="h-14 px-2.5 sm:px-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-1.5 sm:gap-3 z-30 shrink-0 select-none">
+        {/* Sol: Sadece Temiz Logo + Mobilde Hızlı Film Butonu */}
+        <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
           <div
             onClick={handleGoHome}
             className="cursor-pointer flex items-center hover:opacity-90 transition-opacity shrink-0"
@@ -234,18 +234,18 @@ export const App: React.FC = () => {
             <ChirmoLogo size="md" variant="header" />
           </div>
 
-          {/* Mobilde Görünen Kırmızı Film Butonu */}
+          {/* Mobilde Görünen Hızlı Film Butonu */}
           <button
             onClick={() => setActiveTab('video')}
-            className={`md:hidden h-8 px-2.5 rounded-xl text-xs font-black transition-all duration-200 cursor-pointer inline-flex items-center space-x-1 shrink-0 whitespace-nowrap shadow-xs ${
+            className={`md:hidden h-8 px-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer inline-flex items-center space-x-1 shrink-0 whitespace-nowrap shadow-2xs ${
               activeTab === 'video'
-                ? 'bg-rose-600 text-white shadow-sm ring-2 ring-rose-200 dark:ring-rose-800'
-                : 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 hover:bg-rose-100'
+                ? 'bg-rose-600 text-white font-black shadow-xs ring-1 ring-rose-400'
+                : 'bg-rose-50/90 text-rose-700 dark:bg-rose-950/50 dark:text-rose-300 border border-rose-200/80 hover:bg-rose-100'
             }`}
             title="YouTube & Film ile Konuş"
           >
             <Film className="w-3.5 h-3.5 shrink-0" />
-            <span>Film</span>
+            <span className="hidden xs:inline">Film</span>
           </button>
         </div>
 
@@ -351,12 +351,12 @@ export const App: React.FC = () => {
           </button>
         </nav>
 
-        {/* Sağ: İlerleme & Modern Aksiyon Butonları (Simetrik, Karizmatik & Dengeli) */}
-        <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
+        {/* Sağ: İlerleme & Modern Aksiyon Butonları (1. Görseldeki Butonlarla Kusursuz Aynı h-8 Boyut & Hizada) */}
+        <div className="flex items-center space-x-1 sm:space-x-1.5 md:space-x-2 shrink-0">
           {/* APK İndir */}
           <button
             onClick={() => setIsInstallModalOpen(true)}
-            className="h-8.5 px-2.5 sm:px-3 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold shadow-xs cursor-pointer transition-all inline-flex items-center space-x-1.5 whitespace-nowrap hover:scale-[1.02] shrink-0"
+            className="h-8 px-2 sm:px-3 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold shadow-xs cursor-pointer transition-all inline-flex items-center space-x-1 sm:space-x-1.5 whitespace-nowrap hover:scale-[1.02] shrink-0"
             title="Chirmo Android APK ve PWA İndir"
           >
             <Download className="w-3.5 h-3.5 shrink-0" />
@@ -366,16 +366,16 @@ export const App: React.FC = () => {
           {/* Gün Serisi & XP Ortak Kapsülü */}
           <div
             onClick={() => setActiveTab('learn')}
-            className="h-8.5 px-2.5 sm:px-3 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 flex items-center space-x-2 text-xs font-bold cursor-pointer hover:bg-slate-200/70 dark:hover:bg-slate-700/70 transition-all shrink-0"
+            className="h-8 px-2 sm:px-2.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 flex items-center space-x-1 sm:space-x-1.5 text-xs font-bold cursor-pointer hover:bg-slate-200/70 dark:hover:bg-slate-700/70 transition-all shrink-0"
             title="30 Günlük Kamp Kesintisiz Serisi ve Toplam XP"
           >
-            <div className="flex items-center space-x-1 text-amber-600 dark:text-amber-400 font-black">
+            <div className="flex items-center space-x-0.5 sm:space-x-1 text-amber-600 dark:text-amber-400 font-black">
               <span>🔥</span>
               <span>{campProgress.streakDays}</span>
               <span className="hidden xl:inline text-[10px] font-semibold text-slate-500 dark:text-slate-400">Gün</span>
             </div>
             <span className="text-slate-300 dark:text-slate-600 font-light">|</span>
-            <div className="flex items-center space-x-1 text-purple-600 dark:text-purple-400 font-black">
+            <div className="flex items-center space-x-0.5 sm:space-x-1 text-purple-600 dark:text-purple-400 font-black">
               <span>⭐</span>
               <span>{campProgress.totalXp}</span>
               <span className="hidden xl:inline text-[10px] font-semibold text-slate-500 dark:text-slate-400">XP</span>
@@ -385,10 +385,10 @@ export const App: React.FC = () => {
           {/* Kişiye Özel Profil Çipi */}
           <div
             onClick={() => setIsProfileModalOpen(true)}
-            className="h-8.5 p-1 sm:pl-1.5 sm:pr-2.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-500 cursor-pointer transition-all shrink-0 inline-flex items-center space-x-1.5 group"
+            className="h-8 p-1 sm:pl-1.5 sm:pr-2.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-500 cursor-pointer transition-all shrink-0 inline-flex items-center space-x-1 sm:space-x-1.5 group"
             title={`${userProfile.hasCustomName ? userProfile.name : 'Profilini Düzenle'} (${userProfile.level})`}
           >
-            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-xs shadow-2xs group-hover:scale-105 transition-transform">
+            <div className="w-5 h-5 rounded-md bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-[11px] shadow-2xs group-hover:scale-105 transition-transform">
               {userProfile.avatarEmoji || '🎓'}
             </div>
             <span className="hidden xl:inline text-xs font-bold text-slate-700 dark:text-slate-300">
@@ -400,28 +400,28 @@ export const App: React.FC = () => {
           {!currentUser ? (
             <button
               onClick={() => setIsAuthModalOpen(true)}
-              className="h-8.5 px-3 sm:px-3.5 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-black shadow-sm cursor-pointer transition-all inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap hover:scale-[1.02]"
+              className="h-8 px-2.5 sm:px-3.5 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-black shadow-xs cursor-pointer transition-all inline-flex items-center space-x-1 shrink-0 whitespace-nowrap hover:scale-[1.02]"
               title="Sıfır Kişisel Veri ile Giriş Yap veya Kayıt Ol"
             >
               <span>🛡️</span>
               <span>Giriş<span className="hidden xs:inline sm:inline"> / Kayıt</span></span>
             </button>
           ) : (
-            <div className="flex items-center space-x-1.5">
+            <div className="flex items-center space-x-1 sm:space-x-1.5">
               <div
                 onClick={() => setIsAuthModalOpen(true)}
-                className="h-8.5 px-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300 text-xs font-bold cursor-pointer hover:bg-indigo-500/20 transition-colors inline-flex items-center space-x-1.5 whitespace-nowrap"
+                className="h-8 px-2 sm:px-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300 text-xs font-bold cursor-pointer hover:bg-indigo-500/20 transition-colors inline-flex items-center space-x-1 sm:space-x-1.5 whitespace-nowrap"
                 title={`Oturum Açık: @${currentUser.username} (${currentUser.plan.toUpperCase()})`}
               >
                 <span>👤</span>
-                <span className="font-extrabold max-w-[65px] sm:max-w-none truncate">@${currentUser.username}</span>
+                <span className="font-extrabold max-w-[55px] xs:max-w-[75px] sm:max-w-none truncate">@{currentUser.username}</span>
                 <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-indigo-500/20 text-indigo-500 font-mono">
                   {currentUser.plan === 'pro' ? '👑 PRO' : 'ÜCRETSİZ'}
                 </span>
               </div>
               <button
                 onClick={() => PrivacyAuthService.logout()}
-                className="h-8.5 px-2 rounded-xl bg-slate-100 hover:bg-rose-100 dark:bg-slate-800 dark:hover:bg-rose-950/50 text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 text-xs font-bold transition-colors cursor-pointer"
+                className="h-8 px-2 rounded-xl bg-slate-100 hover:bg-rose-100 dark:bg-slate-800 dark:hover:bg-rose-950/50 text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 text-xs font-bold transition-colors cursor-pointer"
                 title="Güvenli Çıkış Yap"
               >
                 ✕ Çıkış

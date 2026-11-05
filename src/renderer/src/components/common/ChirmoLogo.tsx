@@ -32,9 +32,9 @@ export const ChirmoLogo: React.FC<ChirmoLogoProps> = ({
   // Sizes for image rendering
   const heightClasses = {
     xs: 'h-6 w-auto',
-    sm: 'h-8 sm:h-9 w-auto',
-    md: 'h-10 sm:h-11 w-auto',
-    lg: 'h-13 sm:h-14 w-auto',
+    sm: 'h-8 w-auto',
+    md: 'h-8.5 sm:h-9 w-auto',
+    lg: 'h-12 w-auto',
     xl: 'h-20 sm:h-24 md:h-28 w-auto max-w-full'
   }[size];
 
