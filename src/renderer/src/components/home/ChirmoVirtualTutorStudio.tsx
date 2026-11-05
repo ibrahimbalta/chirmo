@@ -22,6 +22,7 @@ import { ChirmoInteractiveGraduationDialogueModal } from '../learning/ChirmoInte
 import { ChirmoVoiceCallSimulatorModal } from '../learning/ChirmoVoiceCallSimulatorModal';
 import { ChirmoPronunciationDoctor } from '../learning/ChirmoPronunciationDoctor';
 import { ChirmoAccentVoiceSelectorModal } from '../learning/ChirmoAccentVoiceSelectorModal';
+import { ChirmoVisionExplorerModal } from '../learning/ChirmoVisionExplorerModal';
 import { ChirmoTalkingRobotAvatar } from '../avatar/ChirmoTalkingRobotAvatar';
 import { CEFRLevel } from '../../types';
 
@@ -54,6 +55,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   const [isVoiceCallModalOpen, setIsVoiceCallModalOpen] = useState(false);
   const [isPronunciationDoctorOpen, setIsPronunciationDoctorOpen] = useState(false);
   const [isAccentModalOpen, setIsAccentModalOpen] = useState(false);
+  const [isVisionExplorerOpen, setIsVisionExplorerOpen] = useState(false);
   const [currentAccent, setCurrentAccent] = useState(LearningStorageService.getSelectedAccent());
 
   // AI Teacher Speech State
@@ -265,6 +267,14 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 >
                   <span>🎙️</span>
                   <span>Aksan: {currentAccent === 'uk' ? '🇬🇧 UK' : currentAccent === 'au' ? '🇦🇺 AU' : currentAccent === 'robot' ? '🤖 Bot' : '🇺🇸 US'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsVisionExplorerOpen(true)}
+                  className="px-3.5 py-1 rounded-full bg-pink-400 hover:bg-pink-300 text-purple-950 font-black transition-all cursor-pointer flex items-center space-x-1 shadow-xs"
+                >
+                  <span>📸</span>
+                  <span>Etrafını Göster (Kamera)</span>
                 </button>
                 <button
                   type="button"
@@ -803,6 +813,13 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
         isOpen={isAccentModalOpen}
         onClose={() => setIsAccentModalOpen(false)}
         onAccentChange={(acc) => setCurrentAccent(acc)}
+      />
+
+      {/* Chirmo Etrafını Göster, İngilizce Konuş (Vision Explorer) */}
+      <ChirmoVisionExplorerModal
+        isOpen={isVisionExplorerOpen}
+        onClose={() => setIsVisionExplorerOpen(false)}
+        onRewardXP={(xp) => LearningStorageService.addXP(xp)}
       />
     </div>
   );
