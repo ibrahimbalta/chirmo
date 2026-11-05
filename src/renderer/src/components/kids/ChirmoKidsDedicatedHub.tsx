@@ -84,9 +84,23 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
   // Navigation & Age State
   const [selectedAge, setSelectedAge] = useState<AgeGroup>('5-7');
   const [activeTab, setActiveTab] = useState<
-    'games' | 'cards' | 'patterns' | 'animals' | 'colors' | 'chat' | 'stickers' | 'songs' | 'parent'
+    'games' | 'cards' | 'simon' | 'stories' | 'patterns' | 'animals' | 'colors' | 'chat' | 'stickers' | 'songs' | 'parent'
   >('games');
   const [categoryFilter, setCategoryFilter] = useState<string>('Tümü');
+
+  // TPR Simon Says (Chirmo Diyor ki!) State
+  const [simonIndex, setSimonIndex] = useState<number>(0);
+  const [simonCompletedActions, setSimonCompletedActions] = useState<string[]>([]);
+
+  // Interactive Storybooks State
+  const [activeStorySceneId, setActiveStorySceneId] = useState<string>('forest');
+  const [selectedStoryItemId, setSelectedStoryItemId] = useState<string | null>(null);
+
+  // 4-Block Sentence Factory 2.0 State
+  const [factorySubject, setFactorySubject] = useState<string>('My friendly dog');
+  const [factoryAction, setFactoryAction] = useState<string>('is playing with');
+  const [factoryObject, setFactoryObject] = useState<string>('a colorful ball');
+  const [factoryContext, setFactoryContext] = useState<string>('in the sunny park');
 
   // Kids Safari Animals State
   const [selectedAnimalId, setSelectedAnimalId] = useState<string | null>(null);
@@ -167,7 +181,19 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
       { id: 'v9', en: 'Teddy Bear', tr: 'Oyuncak Ayıcık', emoji: '🧸', category: 'Oyun', soundText: 'My cute teddy bear is very soft.', exampleTr: 'Sevimli oyuncak ayım çok yumuşak.', funFact: 'Çocuklar uyurken ayıcıklarına sarılmayı çok sever.' },
       { id: 'v9b', en: 'Star', tr: 'Yıldız', emoji: '⭐', category: 'Doğa', soundText: 'Twinkle twinkle little star, how I wonder what you are!', exampleTr: 'Pırıl pırıl parıldayan küçük yıldız!', funFact: 'Geceleri gökyüzünde parlayan milyarlarca yıldız vardır.' },
       { id: 'v9c', en: 'Cookie', tr: 'Kurabiye', emoji: '🍪', category: 'Yiyecekler', soundText: 'Can I have a sweet chocolate cookie, please?', exampleTr: 'Çikolatalı tatlı bir kurabiye alabilir miyim lütfen?', funFact: 'Sıcak kurabiyeler sütle harika gider!' },
-      { id: 'v9d', en: 'Train', tr: 'Tren', emoji: '🚂', category: 'Oyun', soundText: 'Choo choo! The little train rides on the track.', exampleTr: 'Çuf çuf! Küçük tren raylarda ilerliyor.', funFact: 'Hızlı trenler saatte 300 kilometre hızla gidebilir.' }
+      { id: 'v9d', en: 'Train', tr: 'Tren', emoji: '🚂', category: 'Oyun', soundText: 'Choo choo! The little train rides on the track.', exampleTr: 'Çuf çuf! Küçük tren raylarda ilerliyor.', funFact: 'Hızlı trenler saatte 300 kilometre hızla gidebilir.' },
+      { id: 'v9e', en: 'Banana', tr: 'Muz', emoji: '🍌', category: 'Yiyecekler', soundText: 'Monkeys love sweet yellow bananas.', exampleTr: 'Maymunlar tatlı sarı muzları çok sever.', funFact: 'Muz spor yaparken bize bol enerji verir!' },
+      { id: 'v9f', en: 'Water', tr: 'Su', emoji: '💧', category: 'Yiyecekler', soundText: 'Can I have a glass of fresh water, please?', exampleTr: 'Bir bardak taze su alabilir miyim lütfen?', funFact: 'Vücudumuzun büyük bir kısmı sudan oluşur.' },
+      { id: 'v9g', en: 'Big Tree', tr: 'Büyük Ağaç', emoji: '🌳', category: 'Doğa', soundText: 'Birds build cozy nests in the green big tree.', exampleTr: 'Kuşlar büyük yeşil ağaçta yuvalar yapar.', funFact: 'Ağaçlar havayı temizleyip bize oksijen üretir.' },
+      { id: 'v9h', en: 'Red Flower', tr: 'Kırmızı Çiçek', emoji: '🌸', category: 'Doğa', soundText: 'Smell the lovely sweet red flower in the garden.', exampleTr: 'Bahçedeki güzel kokulu kırmızı çiçeği kokla.', funFact: 'Arılar çiçeklerden nektar toplayarak tatlı bal yapar.' },
+      { id: 'v9i', en: 'Fast Car', tr: 'Hızlı Araba', emoji: '🚗', category: 'Oyun', soundText: 'Beep beep! The shiny fast car zooms by.', exampleTr: 'Düt düt! Parlak hızlı araba yanımdan geçti.', funFact: 'Elektrikli arabalar sessizce ve doğayı kirletmeden çalışır.' },
+      { id: 'v9j', en: 'Airplane', tr: 'Uçak', emoji: '✈️', category: 'Oyun', soundText: 'The airplane flies high above the white clouds.', exampleTr: 'Uçak beyaz bulutların çok üzerinde uçar.', funFact: 'Uçaklar dünyayı sadece saatler içinde dolaşmamızı sağlar.' },
+      { id: 'v9k', en: 'Yellow Duck', tr: 'Sarı Ördek', emoji: '🦆', category: 'Hayvanlar', soundText: 'Quack quack! The yellow duck swims happily.', exampleTr: 'Vak vak! Sarı ördek neşeyle yüzüyor.', funFact: 'Ördeklerin tüyleri suya girseler bile ıslanmaz!' },
+      { id: 'v9l', en: 'Rabbit', tr: 'Tavşan', emoji: '🐰', category: 'Hayvanlar', soundText: 'The fluffy white rabbit hops across the grass.', exampleTr: 'Tüylü beyaz tavşan çimenlerde zıplıyor.', funFact: 'Tavşanların kulakları tehlikeleri çok uzaklardan bile duyar.' },
+      { id: 'v9m', en: 'Happy Smile', tr: 'Mutlu Gülümseme', emoji: '😊', category: 'Duygular', soundText: 'Wear a bright happy smile every single day!', exampleTr: 'Her gün neşeli ve aydınlık bir tebessüm takın!', funFact: 'Gülümsemek beynimize mutluluk ve neşe sinyalleri gönderir.' },
+      { id: 'v9n', en: 'Clapping Hands', tr: 'Alkışlayan Eller', emoji: '👏', category: 'Vücudumuz', soundText: 'Clap your hands if you are feeling cheerful!', exampleTr: 'Kendini neşeli hissediyorsan ellerini çırp!', funFact: 'Alkışlamak kalbimizin ritmini ve neşemizi canlandırır.' },
+      { id: 'v9o', en: 'Cozy Bed', tr: 'Rahat Yatak', emoji: '🛏️', category: 'Evimiz', soundText: 'Time to rest in my warm cozy bed. Good night!', exampleTr: 'Sıcak ve rahat yatağımda dinlenme zamanı. İyi geceler!', funFact: 'İyi bir gece uykusu boyumuzun uzamasını sağlar.' },
+      { id: 'v9p', en: 'Story Book', tr: 'Hikaye Kitabı', emoji: '📖', category: 'Okul', soundText: 'Let us open the magical colorful story book.', exampleTr: 'Büyülü renkli hikaye kitabını açalım.', funFact: 'Kitap okumak hayal dünyamızı ve zekamızı sınırsız büyütür.' }
     ],
     '8-10': [
       { id: 'v10', en: 'Backpack', tr: 'Okul Çantası', emoji: '🎒', category: 'Okul', soundText: 'My heavy backpack is full of colorful books.', exampleTr: 'Ağır okul çantam renkli kitaplarla dolu.', funFact: 'Okul eşyalarımızı düzenli tutmak derslerimizde bize büyük kolaylık sağlar.' },
@@ -178,7 +204,15 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
       { id: 'v15', en: 'Ice Cream', tr: 'Dondurma', emoji: '🍦', category: 'Yiyecekler', soundText: 'I want a big strawberry ice cream, please.', exampleTr: 'Büyük bir çilekli dondurma istiyorum lütfen.', funFact: 'Dondurma mutluluk hormonu salgılanmasına katkı sağlar.' },
       { id: 'v16', en: 'Dinosaur', tr: 'Dinozor', emoji: '🦖', category: 'Doğa', soundText: 'The giant dinosaur walked on earth long ago.', exampleTr: 'Dev dinozor çok uzun zaman önce dünyada yürüdü.', funFact: 'T-Rex dinozorunun bir dişi 30 santimetreye kadar uzardı!' },
       { id: 'v16b', en: 'Skateboard', tr: 'Kaykay', emoji: '🛹', category: 'Spor', soundText: 'I like doing cool tricks on my skateboard in the park.', exampleTr: 'Parkta kaykayımla havalı hareketler yapmayı severim.', funFact: 'Kaykay olimpiyatlarda bir spor dalı haline gelmiştir.' },
-      { id: 'v16c', en: 'Telescope', tr: 'Teleskop', emoji: '🔭', category: 'Bilim', soundText: 'Look through the telescope to see the craters on the moon!', exampleTr: 'Aydaki kraterleri görmek için teleskoptan bak!', funFact: 'Galileo 400 yıl önce ilk kez teleskopla gezegenleri incelemiştir.' }
+      { id: 'v16c', en: 'Telescope', tr: 'Teleskop', emoji: '🔭', category: 'Bilim', soundText: 'Look through the telescope to see the craters on the moon!', exampleTr: 'Aydaki kraterleri görmek için teleskoptan bak!', funFact: 'Galileo 400 yıl önce ilk kez teleskopla gezegenleri incelemiştir.' },
+      { id: 'v16d', en: 'Football & Goal', tr: 'Futbol & Gol', emoji: '⚽', category: 'Spor', soundText: 'Pass the ball and shoot! What a magnificent goal!', exampleTr: 'Topu pas ver ve şut çek! Ne muhteşem bir gol!', funFact: 'Takım sporları paylaşmayı ve liderliği öğretir.' },
+      { id: 'v16e', en: 'Swimming Pool', tr: 'Yüzme Havuzu', emoji: '🏊', category: 'Spor', soundText: 'I love swimming in the cool blue pool on sunny weekends.', exampleTr: 'Güneşli hafta sonlarında serin mavi havuzda yüzmeyi severim.', funFact: 'Yüzme tüm vücut kaslarını aynı anda çalıştıran en iyi spordur.' },
+      { id: 'v16f', en: 'Kind Doctor', tr: 'Şefkatli Doktor', emoji: '🩺', category: 'Meslekler', soundText: 'The kind doctor helps everyone stay strong and healthy.', exampleTr: 'Şefkatli doktor herkesin güçlü ve sağlıklı kalmasına yardım eder.', funFact: 'Steteskop kalbin atış sesini 10 kat netleştirerek duyar.' },
+      { id: 'v16g', en: 'Smart Robot', tr: 'Akıllı Robot', emoji: '🤖', category: 'Bilim', soundText: 'Chirmo is an intelligent robot that teaches you English!', exampleTr: 'Chirmo sana İngilizce öğreten akıllı bir robottur!', funFact: 'Robotlar insanların karmaşık görevleri hızla yapmasına yardımcı olur.' },
+      { id: 'v16h', en: 'Wall Clock', tr: 'Duvar Saati', emoji: '⏰', category: 'Zaman', soundText: 'Tick tock! The clock says it is time for school.', exampleTr: 'Tik tak! Saat okula gitme zamanı olduğunu söylüyor.', funFact: 'Günde 24 saat ve her saatte 60 dakika vardır.' },
+      { id: 'v16i', en: 'Sunny & Rain', tr: 'Güneş ve Yağmur', emoji: '⛅', category: 'Doğa', soundText: 'The weather is partly sunny with a gentle refreshing rain.', exampleTr: 'Hava parçalı güneşli ve ferahlatıcı hafif bir yağmur var.', funFact: 'Havadaki su damlacıkları güneşle birleşince gökkuşağı yaratır.' },
+      { id: 'v16j', en: 'Tasty Sandwich', tr: 'Lezzetli Sandviç', emoji: '🥪', category: 'Yiyecekler', soundText: 'I packed a tasty cheese and tomato sandwich for lunch.', exampleTr: 'Öğle yemeği için lezzetli peynirli ve domatesli sandviç hazırladım.', funFact: 'Sandviç adını 18. yüzyılda İngiltere Kontu Sandwich’ten almıştır.' },
+      { id: 'v16k', en: 'Paintbrush', tr: 'Boya Fırçası', emoji: '🎨', category: 'Sanat', soundText: 'Dip the paintbrush in blue and paint the vast sky.', exampleTr: 'Boya fırçasını maviye batır ve uçsuz bucaksız gökyüzünü boya.', funFact: 'Resim yapmak çocukların yaratıcı zekasını ve odaklanmasını geliştirir.' }
     ],
     '11-13': [
       { id: 'v17', en: 'Laboratory', tr: 'Fen Laboratuvarı', emoji: '🔬', category: 'Okul', soundText: 'Excuse me, where is the science laboratory?', exampleTr: 'Affedersiniz, fen laboratuvarı nerede acaba?', funFact: 'LGS sınavında yön ve okul terimleri sıkça sorulur.' },
@@ -187,14 +221,21 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
       { id: 'v20', en: 'Library', tr: 'Kütüphane', emoji: '📚', category: 'Okul', soundText: 'Please keep quiet while studying in the library.', exampleTr: 'Lütfen kütüphanede ders çalışırken sessiz olun.', funFact: 'Dünyanın en büyük kütüphanesinde 170 milyondan fazla eser vardır.' },
       { id: 'v21', en: 'Ticket', tr: 'Bilet', emoji: '🎟️', category: 'Günlük Yaşam', soundText: 'How much is one student ticket for the museum?', exampleTr: 'Müze için bir öğrenci bileti ne kadar?', funFact: 'Yurt dışı seyahatlerinde bilet sormak en temel gereksinimdir.' },
       { id: 'v21b', en: 'Planet', tr: 'Gezegen', emoji: '🪐', category: 'Bilim', soundText: 'Saturn is famous for its beautiful shiny rings.', exampleTr: 'Satürn güzel parlak halkalarıyla ünlüdür.', funFact: 'Güneş sistemimizde sekiz büyük gezegen bulunmaktadır.' },
-      { id: 'v21c', en: 'Champion', tr: 'Şampiyon', emoji: '🥇', category: 'Sosyal', soundText: 'With hard work and daily practice, you become a champion!', exampleTr: 'Sıkı çalışma ve günlük pratikle bir şampiyon olursun!', funFact: 'Her gün 15 dakika İngilizce çalışan öğrenciler hızla dereceye girer.' }
+      { id: 'v21c', en: 'Champion', tr: 'Şampiyon', emoji: '🥇', category: 'Sosyal', soundText: 'With hard work and daily practice, you become a champion!', exampleTr: 'Sıkı çalışma ve günlük pratikle bir şampiyon olursun!', funFact: 'Her gün 15 dakika İngilizce çalışan öğrenciler hızla dereceye girer.' },
+      { id: 'v21d', en: 'Mobile Technology', tr: 'Mobil Teknoloji', emoji: '📱', category: 'Teknoloji', soundText: 'We use mobile technology to connect with global learning friends.', exampleTr: 'Küresel öğrenme arkadaşlarıyla bağlantı kurmak için mobil teknolojiyi kullanırız.', funFact: 'Bugünkü akıllı telefonlar Ay’a giden ilk roketten binlerce kat daha güçlüdür.' },
+      { id: 'v21e', en: 'Milky Way Galaxy', tr: 'Samanyolu Galaksisi', emoji: '🌌', category: 'Bilim', soundText: 'Our home is located inside the magnificent Milky Way galaxy.', exampleTr: 'Evimiz muhteşem Samanyolu galaksisinin içinde yer almaktadır.', funFact: 'Samanyolu galaksisinde 100 milyardan fazla yıldız bulunur.' },
+      { id: 'v21f', en: 'Navigation Compass', tr: 'Yön Pusulası', emoji: '🧭', category: 'Keşif', soundText: 'The magnetic needle of the compass always points north.', exampleTr: 'Pusulanın manyetik iğnesi her zaman kuzeyi gösterir.', funFact: 'Pusula denizcilerin açık denizlerde kaybolmasını önleyen en eski icattır.' },
+      { id: 'v21g', en: 'Renewable Energy', tr: 'Yenilenebilir Temiz Enerji', emoji: '⚡', category: 'Doğa', soundText: 'Solar panels and wind turbines generate clean renewable energy.', exampleTr: 'Güneş panelleri ve rüzgar türbinleri temiz yenilenebilir enerji üretir.', funFact: 'Temiz enerji gezegenimizin iklim dengesini korumada en kritik güçtür.' }
     ],
     '14-17': [
       { id: 'v22', en: 'Algorithm', tr: 'Algoritma & Kodlama', emoji: '💻', category: 'Teknoloji', soundText: 'I enjoy writing clean code and solving logic puzzles.', exampleTr: 'Temiz kod yazmaktan ve mantık bulmacaları çözmekten keyif alırım.', funFact: 'Yazılım dünyasının evrensel dili İngilizcedir.' },
       { id: 'v23', en: 'Perspective', tr: 'Bakış Açısı', emoji: '💡', category: 'Düşünce', soundText: 'In my opinion, we need a creative new perspective.', exampleTr: 'Bana göre, yaratıcı yeni bir bakış açısına ihtiyacımız var.', funFact: 'B1 ve B2 seviye konuşmalarda fikir belirtmek zorunludur.' },
       { id: 'v24', en: 'Soundtrack', tr: 'Müzik Listesi / Çalma Listesi', emoji: '🎧', category: 'Müzik', soundText: 'This indie track is the soundtrack of my summer.', exampleTr: 'Bu parça benim yaz tatilimin müzik temasıdır.', funFact: 'Şarkı sözlerini çevirmek dinleme sınavlarında başarıyı %40 artırır.' },
       { id: 'v25', en: 'Teamwork', tr: 'Takım Çalışması', emoji: '🏆', category: 'Gelecek', soundText: 'Effective teamwork leads to international success.', exampleTr: 'Etkili takım çalışması uluslararası başarıya götürür.', funFact: 'Küresel üniversite ve burs mülakatlarının 1 numaralı sorusudur.' },
-      { id: 'v25b', en: 'Innovation', tr: 'İnovasyon & Yenilik', emoji: '🚀', category: 'Teknoloji', soundText: 'True innovation solves real problems for human beings.', exampleTr: 'Gerçek inovasyon insanoğlunun gerçek sorunlarını çözer.', funFact: 'Yapay zeka çağında en çok aranan beceri yaratıcı problem çözmedir.' }
+      { id: 'v25b', en: 'Innovation', tr: 'İnovasyon & Yenilik', emoji: '🚀', category: 'Teknoloji', soundText: 'True innovation solves real problems for human beings.', exampleTr: 'Gerçek inovasyon insanoğlunun gerçek sorunlarını çözer.', funFact: 'Yapay zeka çağında en çok aranan beceri yaratıcı problem çözmedir.' },
+      { id: 'v25c', en: 'Artificial Intelligence', tr: 'Yapay Zekâ', emoji: '🧠', category: 'Teknoloji', soundText: 'Artificial intelligence transforms how we learn languages and communicate.', exampleTr: 'Yapay zekâ dilleri nasıl öğrendiğimizi ve iletişim kurduğumuzu dönüştürüyor.', funFact: 'Yapay zeka sistemleri milyonlarca veriyi saniyeler içinde analiz eder.' },
+      { id: 'v25d', en: 'Inspiring Leadership', tr: 'İlham Veren Liderlik', emoji: '🌟', category: 'Gelecek', soundText: 'Empathetic leaders listen actively and inspire positive change.', exampleTr: 'Empatik liderler aktif şekilde dinler ve olumlu değişime ilham verir.', funFact: 'Küresel liderlerin en belirgin özelliği açık fikirli iletişim becerisidir.' },
+      { id: 'v25e', en: 'Eco Sustainability', tr: 'Ekolojik Sürdürülebilirlik', emoji: '🌿', category: 'Doğa', soundText: 'Sustainable practices protect natural habitats for future generations.', exampleTr: 'Sürdürülebilir uygulamalar gelecek nesiller için doğal yaşam alanlarını korur.', funFact: 'Geri dönüşüm yapmak okyanuslardaki plastik atıkları dramatik biçimde azaltır.' }
     ]
   };
 
@@ -653,6 +694,280 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
   // Pattern Builder Live Sentence Construction
   const constructedKidsSentence = `${builderPrefix} ${builderObject} ${builderSuffix}`.trim();
 
+  // ==================== TPR ACTION LAB (CHIRMO DİYOR Kİ! / SIMON SAYS) ====================
+  const TPR_SIMON_ACTIONS = [
+    {
+      id: 'simon-1',
+      title: 'Touch your nose! 👃',
+      commandTr: 'Burnuna dokun!',
+      listenAudio: 'Simon says: Touch your nose!',
+      replyEn: 'I am touching my nose!',
+      replyTr: 'Burnuma dokunuyorum!',
+      emoji: '👃',
+      badge: 'Beden Farkındalığı',
+      hint: 'İşaret parmağını burnuna değdir ve yüksek sesle söyle!'
+    },
+    {
+      id: 'simon-2',
+      title: 'Jump high like a bunny! 🐰',
+      commandTr: 'Tavşan gibi yükseğe zıpla!',
+      listenAudio: 'Simon says: Jump high like a bunny!',
+      replyEn: 'I am jumping high like a little bunny!',
+      replyTr: 'Küçük bir tavşan gibi yükseğe zıplıyorum!',
+      emoji: '🐰',
+      badge: 'Enerji & Hareket',
+      hint: 'Ayağa fırla, iki kez havaya zıpla ve neşeyle tekrar et!'
+    },
+    {
+      id: 'simon-3',
+      title: 'Clap your hands three times! 👏',
+      commandTr: 'Ellerini üç kez çırp!',
+      listenAudio: 'Simon says: Clap your hands three times!',
+      replyEn: 'One, two, three! Clap your hands!',
+      replyTr: 'Bir, iki, üç! Ellerini çırp!',
+      emoji: '👏',
+      badge: 'Ritim & Koordinasyon',
+      hint: 'Ellerini 1-2-3 diye neşeyle alkışla ve ritme katıl!'
+    },
+    {
+      id: 'simon-4',
+      title: 'Spin around and smile! 🌀',
+      commandTr: 'Kendi etrafında dön ve gülümse!',
+      listenAudio: 'Simon says: Spin around and smile!',
+      replyEn: 'I am spinning around and wearing a big smile!',
+      replyTr: 'Kendi etrafımda dönüyorum ve kocaman gülümsüyorum!',
+      emoji: '😊',
+      badge: 'Denge & Neşe',
+      hint: 'Kendi etrafında yavaşça bir tur dön ve Chirmo\'ya gülümse!'
+    },
+    {
+      id: 'simon-5',
+      title: 'Fly like a superhero! 🦸‍♂️',
+      commandTr: 'Süper kahraman gibi uç!',
+      listenAudio: 'Simon says: Fly like a superhero in the sky!',
+      replyEn: 'Whoosh! I am flying high like a superhero!',
+      replyTr: 'Vuuuuş! Süper kahraman gibi gökyüzünde uçuyorum!',
+      emoji: '🦸‍♂️',
+      badge: 'Hayal Gücü',
+      hint: 'Kollarını gökyüzüne doğru aç ve rüzgar gibi süzül!'
+    },
+    {
+      id: 'simon-6',
+      title: 'Roar like a baby lion! 🦁',
+      commandTr: 'Yavru aslan gibi kükre!',
+      listenAudio: 'Simon says: Roar like a brave baby lion!',
+      replyEn: 'Roar! I am a brave little lion!',
+      replyTr: 'Kükre! Ben cesur küçük bir aslanım!',
+      emoji: '🦁',
+      badge: 'Ses & Cesaret',
+      hint: 'Patilerini göster ve neşeyle "Roar" diye ses ver!'
+    }
+  ];
+
+  // ==================== İNTERAKTİF SESLİ HİKAYE SAHNELERİ ====================
+  const STORYBOOK_SCENES = [
+    {
+      id: 'forest',
+      name: 'Piknik Ormanı',
+      nameEn: 'The Magical Picnic Forest',
+      emoji: '🌳',
+      bgGradient: 'from-emerald-500 via-green-600 to-teal-700',
+      description: 'Güneşli ormanda sevimli hayvan dostlarımızla neşeli bir piknik günü!',
+      hotspots: [
+        {
+          id: 'h1',
+          nameEn: 'Cute Squirrel',
+          nameTr: 'Sevimli Sincap',
+          phraseEn: 'The cute squirrel is eating crunchy nuts under the tree.',
+          phraseTr: 'Sevimli sincap ağacın altında çıtır fındıklar yiyor.',
+          emoji: '🐿️'
+        },
+        {
+          id: 'h2',
+          nameEn: 'Picnic Basket',
+          nameTr: 'Piknik Sepeti',
+          phraseEn: 'Look at the picnic basket filled with sweet red apples and sandwiches!',
+          phraseTr: 'Tatlı kırmızı elmalar ve sandviçlerle dolu piknik sepetine bak!',
+          emoji: '🧺'
+        },
+        {
+          id: 'h3',
+          nameEn: 'Singing Bird',
+          nameTr: 'Öten Kuş',
+          phraseEn: 'The little blue bird sings a sweet morning melody.',
+          phraseTr: 'Minik mavi kuş tatlı bir sabah melodisi söylüyor.',
+          emoji: '🐦'
+        },
+        {
+          id: 'h4',
+          nameEn: 'Golden Butterfly',
+          nameTr: 'Altın Kelebek',
+          phraseEn: 'A magical golden butterfly dances over fragrant flowers.',
+          phraseTr: 'Büyülü altın bir kelebek mis kokulu çiçeklerin üzerinde dans ediyor.',
+          emoji: '🦋'
+        }
+      ]
+    },
+    {
+      id: 'space',
+      name: 'Uzay İstasyonu',
+      nameEn: 'The Space Station Quest',
+      emoji: '🚀',
+      bgGradient: 'from-indigo-900 via-purple-900 to-slate-900',
+      description: 'Yıldızlar ve gezegenler arasında unutulmaz bir uzay görevi!',
+      hotspots: [
+        {
+          id: 'h5',
+          nameEn: 'Brave Astronaut',
+          nameTr: 'Cesur Astronot',
+          phraseEn: 'The brave astronaut floats weightlessly in the space station.',
+          phraseTr: 'Cesur astronot uzay istasyonunda yerçekimsiz süzülüyor.',
+          emoji: '👨‍🚀'
+        },
+        {
+          id: 'h6',
+          nameEn: 'Space Rocket',
+          nameTr: 'Uzay Roketi',
+          phraseEn: 'The shiny rocket blasts through the sparkling Milky Way!',
+          phraseTr: 'Parlak roket ışıldayan Samanyolu galaksisinde hızla ilerliyor!',
+          emoji: '🚀'
+        },
+        {
+          id: 'h7',
+          nameEn: 'Ringed Planet Saturn',
+          nameTr: 'Halkalı Gezegen Satürn',
+          phraseEn: 'Saturn has bright glowing rings made of ice and cosmic dust.',
+          phraseTr: 'Satürn buz ve kozmik tozdan oluşan parlak ışıltılı halkalara sahiptir.',
+          emoji: '🪐'
+        },
+        {
+          id: 'h8',
+          nameEn: 'Friendly Alien',
+          nameTr: 'Dost Uzaylı',
+          phraseEn: 'The friendly green alien waves and says "Welcome to our galaxy!"',
+          phraseTr: 'Dost canlısı yeşil uzaylı el sallıyor ve "Galaksimize hoş geldin!" diyor.',
+          emoji: '👽'
+        }
+      ]
+    },
+    {
+      id: 'ocean',
+      name: 'Mavi Okyanus Krallığı',
+      nameEn: 'The Blue Ocean Kingdom',
+      emoji: '🐬',
+      bgGradient: 'from-cyan-600 via-blue-700 to-indigo-800',
+      description: 'Derin mavi sularda mercan kayalıkları ve sevimli deniz canlıları!',
+      hotspots: [
+        {
+          id: 'h9',
+          nameEn: 'Playful Dolphin',
+          nameTr: 'Oyuncu Yunus',
+          phraseEn: 'The joyful dolphin leaps gracefully above the turquoise waves!',
+          phraseTr: 'Neşeli yunus turkuaz dalgaların üzerinde zarifçe sıçrıyor!',
+          emoji: '🐬'
+        },
+        {
+          id: 'h10',
+          nameEn: 'Wise Sea Turtle',
+          nameTr: 'Bilge Deniz Kaplumbağası',
+          phraseEn: 'The wise sea turtle glides gently through the colorful coral reef.',
+          phraseTr: 'Bilge deniz kaplumbağası renkli mercan kayalıklarının arasında sakince süzülüyor.',
+          emoji: '🐢'
+        },
+        {
+          id: 'h11',
+          nameEn: 'Coral Reef',
+          nameTr: 'Renkli Mercan Resifi',
+          phraseEn: 'Vibrant coral formations provide cozy homes for tiny tropical fish.',
+          phraseTr: 'Canlı mercan oluşumları minik tropik balıklar için sıcak yuvalar sunar.',
+          emoji: '🪸'
+        },
+        {
+          id: 'h12',
+          nameEn: 'Shiny Pearl Shell',
+          nameTr: 'Parlak İnci İstiridyesi',
+          phraseEn: 'Inside the pearl shell lies a rare shimmering treasure of the sea.',
+          phraseTr: 'İstiridyenin içinde denizin nadide, parıldayan bir hazinesi yatıyor.',
+          emoji: '🦪'
+        }
+      ]
+    },
+    {
+      id: 'dino',
+      name: 'Dinozor Safari Parkı',
+      nameEn: 'Dinosaur Safari Adventure',
+      emoji: '🦖',
+      bgGradient: 'from-amber-600 via-orange-600 to-rose-700',
+      description: 'Milyonlarca yıl öncesine zamanda yolculuk ve dev dostlarımız!',
+      hotspots: [
+        {
+          id: 'h13',
+          nameEn: 'Gentle Brachiosaurus',
+          nameTr: 'Sevimli Brakiyozor',
+          phraseEn: 'The gentle long-necked dinosaur reaches green leaves on tall branches.',
+          phraseTr: 'Sevimli uzun boyunlu dinozor yüksek dallardaki yeşil yapraklara uzanıyor.',
+          emoji: '🦕'
+        },
+        {
+          id: 'h14',
+          nameEn: 'Mighty T-Rex',
+          nameTr: 'Güçlü T-Rex',
+          phraseEn: 'The mighty T-Rex lets out an energetic roar across the prehistoric jungle!',
+          phraseTr: 'Güçlü T-Rex tarih öncesi ormanda enerjik bir kükreme bırakıyor!',
+          emoji: '🦖'
+        },
+        {
+          id: 'h15',
+          nameEn: 'Flying Pterodactyl',
+          nameTr: 'Uçan Terodaktil',
+          phraseEn: 'The pterodactyl glides smoothly over misty volcanic peaks.',
+          phraseTr: 'Terodaktil sisli volkanik tepelerin üzerinde pürüzsüzce süzülüyor.',
+          emoji: '🦅'
+        },
+        {
+          id: 'h16',
+          nameEn: 'Dinosaur Egg',
+          nameTr: 'Bebek Dinozor Yumurtası',
+          phraseEn: 'Crack crack! Look, a cute baby dinosaur is hatching from the egg!',
+          phraseTr: 'Çat çat! Bak, yumurtadan sevimli bir yavru dinozor çıkıyor!',
+          emoji: '🥚'
+        }
+      ]
+    }
+  ];
+
+  // 4-Block Sentence Factory Turkish Translation Lookup
+  const FACTORY_TR_LOOKUP: Record<string, string> = {
+    'My friendly dog': 'Benim sevimli köpeğim',
+    'The smart robot': 'Akıllı robot',
+    'The little rabbit': 'Küçük tavşan',
+    'My best friend': 'Benim en iyi arkadaşım',
+    'A brave astronaut': 'Cesur bir astronot',
+    'is playing with': 'ile oynuyor',
+    'likes to eat': 'yemeyi çok sever',
+    'wants to explore': 'keşfetmek istiyor',
+    'can see': 'görebiliyor',
+    'is dancing with': 'ile dans ediyor',
+    'a colorful ball': 'renkli bir top',
+    'a sweet apple': 'tatlı bir elma',
+    'a big rainbow': 'büyük bir gökkuşağı',
+    'the space rocket': 'uzay roketi',
+    'a delicious cookie': 'lezzetli bir kurabiye',
+    'in the sunny park': 'güneşli parkta',
+    'every single morning': 'her sabah',
+    'under the big tree': 'büyük ağacın altında',
+    'in the cozy room': 'rahat odasında',
+    'with a happy smile': 'mutlu bir tebessümle'
+  };
+
+  const getFactoryFullTr = () => {
+    const s = FACTORY_TR_LOOKUP[factorySubject] || factorySubject;
+    const a = FACTORY_TR_LOOKUP[factoryAction] || factoryAction;
+    const o = FACTORY_TR_LOOKUP[factoryObject] || factoryObject;
+    const c = FACTORY_TR_LOOKUP[factoryContext] || factoryContext;
+    return `${s}, ${c} ${o} ${a}`;
+  };
+
   return (
     <div className="w-full h-full flex flex-col bg-gradient-to-b from-amber-50/70 via-pink-50/40 to-purple-50/70 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 overflow-y-auto p-3 sm:p-6 pb-28 select-none">
       <div className="max-w-6xl mx-auto w-full space-y-6">
@@ -797,7 +1112,9 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
           {[
             { id: 'games', label: '🎮 Oyunlar & Quizz', icon: Gamepad2, color: 'text-amber-500' },
             { id: 'cards', label: '🃏 Görsel Kelimeler (30+)', icon: Smile, color: 'text-pink-500' },
-            { id: 'patterns', label: '🧩 Cümle Legosu Atölyesi', icon: Puzzle, color: 'text-purple-500' },
+            { id: 'simon', label: '🏃‍♂️ Chirmo Diyor ki! (TPR)', icon: Zap, color: 'text-amber-500' },
+            { id: 'stories', label: '📖 Sihirli Konuşan Hikayeler', icon: BookOpen, color: 'text-purple-500' },
+            { id: 'patterns', label: '🧩 Cümle Legosu & Fabrikası', icon: Puzzle, color: 'text-purple-500' },
             { id: 'animals', label: '🦁 Konuşan Hayvanlar', icon: Sparkles, color: 'text-emerald-500' },
             { id: 'colors', label: '🎨 Sihirli Boya & Konuş', icon: Zap, color: 'text-rose-500' },
             { id: 'chat', label: '💬 Çizgi Karakter Sohbeti', icon: MessageCircle, color: 'text-blue-500' },
@@ -1156,9 +1473,259 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
           </div>
         )}
 
+        {/* ==================== TAB: 🏃‍♂️ CHIRMO DİYOR Kİ! (TPR ACTION LAB) ==================== */}
+        {activeTab === 'simon' && (
+          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border-2 border-amber-300 dark:border-slate-800 shadow-xl space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
+              <div>
+                <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 text-[11px] font-black uppercase">
+                  <Zap className="w-3.5 h-3.5 text-amber-500" />
+                  <span>TPR (Total Physical Response) Eylem & Hareket Laboratuvarı</span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
+                  Chirmo Diyor ki! (Simon Says) 🏃‍♂️
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                  Duyduğun eylemi tüm bedeninle uygula ve Chirmo ile birlikte yüksek sesle tekrar et!
+                </p>
+              </div>
+              <div className="text-right">
+                <span className="text-xs font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-3 py-1.5 rounded-xl border border-amber-200 dark:border-amber-800/40">
+                  Tamamlanan: {simonCompletedActions.length} / {TPR_SIMON_ACTIONS.length} Görev ⭐
+                </span>
+              </div>
+            </div>
+
+            {/* Görev Seçim Butonları */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-2">
+              {TPR_SIMON_ACTIONS.map((action, idx) => {
+                const isSelected = simonIndex === idx;
+                const isDone = simonCompletedActions.includes(action.id);
+                return (
+                  <button
+                    key={action.id}
+                    type="button"
+                    onClick={() => setSimonIndex(idx)}
+                    className={`px-3.5 py-2 rounded-2xl text-xs font-black whitespace-nowrap transition-all cursor-pointer flex items-center space-x-1.5 ${
+                      isSelected
+                        ? 'bg-amber-500 text-slate-950 shadow-md scale-102 font-black'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-amber-100'
+                    }`}
+                  >
+                    <span>{action.emoji}</span>
+                    <span>{idx + 1}. Görev</span>
+                    {isDone && <CheckCircle className="w-3.5 h-3.5 text-emerald-600 ml-1" />}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Aktif Simon Says Kartı */}
+            {(() => {
+              const currentAction = TPR_SIMON_ACTIONS[simonIndex % TPR_SIMON_ACTIONS.length];
+              const isCompleted = simonCompletedActions.includes(currentAction.id);
+              return (
+                <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-amber-500 via-orange-500 to-pink-500 text-white shadow-xl relative overflow-hidden space-y-6">
+                  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="space-y-3">
+                      <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-black uppercase tracking-wider text-amber-200">
+                        <span>{currentAction.badge}</span>
+                      </div>
+                      <div className="flex items-center space-x-4">
+                        <span className="text-5xl sm:text-6xl drop-shadow-md">{currentAction.emoji}</span>
+                        <div>
+                          <div className="text-2xl sm:text-3xl font-black text-white drop-shadow-sm">
+                            {currentAction.title}
+                          </div>
+                          <div className="text-sm sm:text-base font-bold text-amber-100">
+                            Türkçesi: {currentAction.commandTr}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="p-3.5 rounded-2xl bg-black/20 backdrop-blur-sm text-xs sm:text-sm text-amber-50 border border-white/20">
+                        👉 <strong>Nasıl Yapılır:</strong> {currentAction.hint}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-2.5 shrink-0 w-full md:w-64">
+                      <button
+                        type="button"
+                        onClick={() => handleSpeak(currentAction.listenAudio)}
+                        className="w-full py-3 px-4 rounded-2xl bg-white text-slate-900 hover:bg-amber-100 font-black text-xs sm:text-sm transition-all shadow-md flex items-center justify-center space-x-2 cursor-pointer active:scale-95"
+                      >
+                        <Volume2 className="w-4 h-4 text-amber-600" />
+                        <span>Chirmo'nun Sesini Dinle 🔊</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleSpeak(currentAction.replyEn)}
+                        className="w-full py-3 px-4 rounded-2xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs sm:text-sm transition-all shadow-md flex items-center justify-center space-x-2 cursor-pointer active:scale-95"
+                      >
+                        <Smile className="w-4 h-4 text-slate-950" />
+                        <span>Sen Söyle: "{currentAction.replyEn}"</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!isCompleted) {
+                            setSimonCompletedActions((prev) => [...prev, currentAction.id]);
+                            handleAwardStars(10, 'Chirmo Diyor ki Görevini Yaptın!');
+                            handleSpeak(`Well done! You did it! ${currentAction.replyEn}`);
+                          }
+                          setSimonIndex((prev) => (prev + 1) % TPR_SIMON_ACTIONS.length);
+                        }}
+                        className={`w-full py-3 px-4 rounded-2xl font-black text-xs sm:text-sm transition-all shadow-lg flex items-center justify-center space-x-2 cursor-pointer active:scale-95 ${
+                          isCompleted
+                            ? 'bg-emerald-500 hover:bg-emerald-400 text-white'
+                            : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white'
+                        }`}
+                      >
+                        <CheckCircle2 className="w-4 h-4 text-white" />
+                        <span>{isCompleted ? 'Tekrar Tamamla & Sıradakine Geç (+10 Yıldız ⭐)' : 'Görevi Yaptım! (+10 Yıldız ⭐)'}</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        )}
+
+        {/* ==================== TAB: 📖 SİHİRLİ KONUŞAN HİKAYELER ==================== */}
+        {activeTab === 'stories' && (
+          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border-2 border-purple-300 dark:border-slate-800 shadow-xl space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
+              <div>
+                <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 text-[11px] font-black uppercase">
+                  <BookOpen className="w-3.5 h-3.5 text-purple-500" />
+                  <span>Görsel Bağlam Temelli Hikaye Dünyası</span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
+                  Sihirli Konuşan Hikayeler (Interactive Storybooks) 📖
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                  Bir sahne seç, nesnelerin ve karakterlerin üzerine tıkla; canlı İngilizce hikayeyi dinle!
+                </p>
+              </div>
+            </div>
+
+            {/* Sahne Seçim Butonları */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {STORYBOOK_SCENES.map((scene) => {
+                const isSelected = activeStorySceneId === scene.id;
+                return (
+                  <button
+                    key={scene.id}
+                    type="button"
+                    onClick={() => {
+                      setActiveStorySceneId(scene.id);
+                      setSelectedStoryItemId(null);
+                    }}
+                    className={`p-3.5 rounded-2xl text-left transition-all cursor-pointer border ${
+                      isSelected
+                        ? 'bg-gradient-to-br from-purple-600 to-indigo-600 text-white font-black shadow-lg border-purple-400 scale-102'
+                        : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700'
+                    }`}
+                  >
+                    <div className="text-2xl mb-1">{scene.emoji}</div>
+                    <div className="text-xs font-black truncate">{scene.name}</div>
+                    <div className="text-[10px] opacity-80 truncate">{scene.nameEn}</div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Seçili Sahne ve Sıcak Noktalar */}
+            {(() => {
+              const currentScene = STORYBOOK_SCENES.find((s) => s.id === activeStorySceneId) || STORYBOOK_SCENES[0];
+              const activeItem = currentScene.hotspots.find((h) => h.id === selectedStoryItemId) || currentScene.hotspots[0];
+
+              return (
+                <div className="space-y-4">
+                  <div className={`p-6 sm:p-7 rounded-3xl bg-gradient-to-r ${currentScene.bgGradient} text-white shadow-xl relative overflow-hidden`}>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/20 pb-3 mb-4">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-3xl">{currentScene.emoji}</span>
+                        <div>
+                          <h3 className="text-lg sm:text-xl font-black text-white">{currentScene.name}</h3>
+                          <div className="text-xs text-purple-100">{currentScene.nameEn} - {currentScene.description}</div>
+                        </div>
+                      </div>
+                      <span className="text-[11px] font-black bg-white/20 px-3 py-1 rounded-full self-start">
+                        Tıkla & Konuştur
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      {currentScene.hotspots.map((item) => {
+                        const isHotspotActive = activeItem.id === item.id;
+                        return (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => {
+                              setSelectedStoryItemId(item.id);
+                              handleSpeak(`${item.nameEn}! ${item.phraseEn}`);
+                              handleAwardStars(5, `Hikaye Keşfi: ${item.nameEn}`);
+                            }}
+                            className={`p-4 rounded-2xl transition-all cursor-pointer flex flex-col items-center text-center space-y-2 backdrop-blur-md border ${
+                              isHotspotActive
+                                ? 'bg-white text-slate-900 shadow-xl ring-4 ring-amber-300 scale-105'
+                                : 'bg-black/25 hover:bg-black/40 text-white border-white/20'
+                            }`}
+                          >
+                            <span className="text-4xl drop-shadow-md">{item.emoji}</span>
+                            <div>
+                              <div className={`text-xs font-black ${isHotspotActive ? 'text-purple-900' : 'text-white'}`}>
+                                {item.nameEn}
+                              </div>
+                              <div className={`text-[10px] ${isHotspotActive ? 'text-slate-600' : 'text-white/80'}`}>
+                                {item.nameTr}
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Seçili Nesnenin Konuşan Hikaye Kartı */}
+                  <div className="p-5 rounded-2xl bg-purple-50 dark:bg-slate-800/80 border-2 border-purple-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center space-x-4">
+                      <span className="text-4xl">{activeItem.emoji}</span>
+                      <div>
+                        <div className="text-xs font-black uppercase text-purple-600 dark:text-purple-400">
+                          {activeItem.nameEn} ({activeItem.nameTr})
+                        </div>
+                        <div className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
+                          "{activeItem.phraseEn}"
+                        </div>
+                        <div className="text-xs font-bold text-slate-500 dark:text-slate-400">
+                          Türkçesi: {activeItem.phraseTr}
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleSpeak(activeItem.phraseEn)}
+                      className="px-5 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-black text-xs transition-all shadow-md flex items-center justify-center space-x-2 shrink-0 cursor-pointer active:scale-95"
+                    >
+                      <Volume2 className="w-4 h-4 text-white" />
+                      <span>Hikaye Cümlesini Dinle 🔊</span>
+                    </button>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        )}
+
         {/* ==================== TAB 3: 🧩 KALIP BİRLEŞTİRME ATÖLYESİ (KIDS PATTERN LEGO) ==================== */}
         {activeTab === 'patterns' && (
-          <div className="p-5 sm:p-7 rounded-3xl bg-white dark:bg-slate-900 border-2 border-purple-200 dark:border-slate-800 shadow-lg space-y-6">
+          <div className="p-5 sm:p-7 rounded-3xl bg-white dark:bg-slate-900 border-2 border-purple-200 dark:border-slate-800 shadow-lg space-y-8">
             <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
               <h2 className="text-lg font-black text-slate-900 dark:text-white flex items-center space-x-2">
                 <span>🧩 Lego Gibi Cümle Kurma Atölyesi (Kids Pattern Builder)</span>
@@ -1259,6 +1826,189 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                   <span>🔊 Chirmo ile Dinle & Tekrar Et (+5 Yıldız)</span>
                 </button>
               </div>
+            </div>
+
+            {/* ==================== 4 BLOKLU CÜMLE FABRİKASI 2.0 ==================== */}
+            <div className="pt-6 border-t-2 border-purple-200/60 dark:border-slate-800 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center space-x-2">
+                    <span>🏭 Cümle Fabrikası 2.0 (Sentence Factory)</span>
+                    <span className="text-[10px] bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 px-2 py-0.5 rounded-full font-black">
+                      4 Bloklu Doğal Konuşma
+                    </span>
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Özne, Eylem, Nesne ve Zaman/Yer bloklarını seçerek sınırsız sayıda İngilizce cümle üret!
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const subjects = ['My friendly dog', 'The smart robot', 'The little rabbit', 'My best friend', 'A brave astronaut'];
+                    const actions = ['is playing with', 'likes to eat', 'wants to explore', 'can see', 'is dancing with'];
+                    const objects = ['a colorful ball', 'a sweet apple', 'a big rainbow', 'the space rocket', 'a delicious cookie'];
+                    const contexts = ['in the sunny park', 'every single morning', 'under the big tree', 'in the cozy room', 'with a happy smile'];
+
+                    setFactorySubject(subjects[Math.floor(Math.random() * subjects.length)]);
+                    setFactoryAction(actions[Math.floor(Math.random() * actions.length)]);
+                    setFactoryObject(objects[Math.floor(Math.random() * objects.length)]);
+                    setFactoryContext(contexts[Math.floor(Math.random() * contexts.length)]);
+                    handleAwardStars(5, 'Rastgele Cümle Keşfettin!');
+                  }}
+                  className="px-3.5 py-2 rounded-xl bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 hover:bg-purple-200 font-black text-xs transition-all cursor-pointer flex items-center space-x-1.5 self-start sm:self-auto"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>🎲 Rastgele Cümle Üret</span>
+                </button>
+              </div>
+
+              {/* 4 Kolon */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {/* Kolon 1: Özne */}
+                <div className="p-3.5 rounded-2xl bg-blue-50/80 dark:bg-slate-800/80 border border-blue-200 dark:border-blue-900/50 space-y-2">
+                  <span className="text-[11px] font-black text-blue-700 dark:text-blue-300 uppercase flex items-center space-x-1">
+                    <span>1. Özne (Kim?)</span>
+                  </span>
+                  <div className="space-y-1.5">
+                    {['My friendly dog', 'The smart robot', 'The little rabbit', 'My best friend', 'A brave astronaut'].map((item) => (
+                      <button
+                        key={item}
+                        type="button"
+                        onClick={() => setFactorySubject(item)}
+                        className={`w-full p-2 rounded-xl text-xs font-black text-left transition-all cursor-pointer ${
+                          factorySubject === item
+                            ? 'bg-blue-600 text-white shadow-xs'
+                            : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-blue-100'
+                        }`}
+                      >
+                        <div>{item}</div>
+                        <div className={`text-[10px] font-medium ${factorySubject === item ? 'text-blue-100' : 'text-slate-400'}`}>
+                          {FACTORY_TR_LOOKUP[item] || ''}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Kolon 2: Eylem */}
+                <div className="p-3.5 rounded-2xl bg-emerald-50/80 dark:bg-slate-800/80 border border-emerald-200 dark:border-emerald-900/50 space-y-2">
+                  <span className="text-[11px] font-black text-emerald-700 dark:text-emerald-300 uppercase flex items-center space-x-1">
+                    <span>2. Eylem (Ne Yapıyor?)</span>
+                  </span>
+                  <div className="space-y-1.5">
+                    {['is playing with', 'likes to eat', 'wants to explore', 'can see', 'is dancing with'].map((item) => (
+                      <button
+                        key={item}
+                        type="button"
+                        onClick={() => setFactoryAction(item)}
+                        className={`w-full p-2 rounded-xl text-xs font-black text-left transition-all cursor-pointer ${
+                          factoryAction === item
+                            ? 'bg-emerald-600 text-white shadow-xs'
+                            : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-emerald-100'
+                        }`}
+                      >
+                        <div>{item}</div>
+                        <div className={`text-[10px] font-medium ${factoryAction === item ? 'text-emerald-100' : 'text-slate-400'}`}>
+                          {FACTORY_TR_LOOKUP[item] || ''}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Kolon 3: Nesne */}
+                <div className="p-3.5 rounded-2xl bg-amber-50/80 dark:bg-slate-800/80 border border-amber-200 dark:border-amber-900/50 space-y-2">
+                  <span className="text-[11px] font-black text-amber-700 dark:text-amber-300 uppercase flex items-center space-x-1">
+                    <span>3. Nesne (Neyi?)</span>
+                  </span>
+                  <div className="space-y-1.5">
+                    {['a colorful ball', 'a sweet apple', 'a big rainbow', 'the space rocket', 'a delicious cookie'].map((item) => (
+                      <button
+                        key={item}
+                        type="button"
+                        onClick={() => setFactoryObject(item)}
+                        className={`w-full p-2 rounded-xl text-xs font-black text-left transition-all cursor-pointer ${
+                          factoryObject === item
+                            ? 'bg-amber-500 text-slate-950 shadow-xs'
+                            : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-amber-100'
+                        }`}
+                      >
+                        <div>{item}</div>
+                        <div className={`text-[10px] font-medium ${factoryObject === item ? 'text-slate-900' : 'text-slate-400'}`}>
+                          {FACTORY_TR_LOOKUP[item] || ''}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Kolon 4: Zaman & Yer */}
+                <div className="p-3.5 rounded-2xl bg-rose-50/80 dark:bg-slate-800/80 border border-rose-200 dark:border-rose-900/50 space-y-2">
+                  <span className="text-[11px] font-black text-rose-700 dark:text-rose-300 uppercase flex items-center space-x-1">
+                    <span>4. Zaman & Yer</span>
+                  </span>
+                  <div className="space-y-1.5">
+                    {['in the sunny park', 'every single morning', 'under the big tree', 'in the cozy room', 'with a happy smile'].map((item) => (
+                      <button
+                        key={item}
+                        type="button"
+                        onClick={() => setFactoryContext(item)}
+                        className={`w-full p-2 rounded-xl text-xs font-black text-left transition-all cursor-pointer ${
+                          factoryContext === item
+                            ? 'bg-rose-600 text-white shadow-xs'
+                            : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-rose-100'
+                        }`}
+                      >
+                        <div>{item}</div>
+                        <div className={`text-[10px] font-medium ${factoryContext === item ? 'text-rose-100' : 'text-slate-400'}`}>
+                          {FACTORY_TR_LOOKUP[item] || ''}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Fabrika Çıktısı */}
+              {(() => {
+                const fullSentenceEn = `${factorySubject} ${factoryAction} ${factoryObject} ${factoryContext}`;
+                const fullSentenceTr = getFactoryFullTr();
+                return (
+                  <div className="p-5 rounded-2xl bg-gradient-to-r from-emerald-900 via-teal-900 to-cyan-950 text-white shadow-xl space-y-3 border border-emerald-700/40">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-emerald-300">
+                        🏭 Cümle Fabrikası Çıktısı:
+                      </span>
+                      <span className="text-[11px] font-black text-emerald-200 bg-emerald-800/50 px-2.5 py-0.5 rounded-full">
+                        Gramatikal Olarak Kusursuz
+                      </span>
+                    </div>
+
+                    <div className="text-xl sm:text-2xl font-black text-white">
+                      "{fullSentenceEn}."
+                    </div>
+                    <div className="text-xs sm:text-sm font-semibold text-emerald-200">
+                      Türkçesi: {fullSentenceTr}.
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-3 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleSpeak(fullSentenceEn);
+                          handleAwardStars(10, 'Cümle Fabrikasından Yeni Cümle Ürettin!');
+                        }}
+                        className="px-5 py-2.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-xs transition-all shadow-md flex items-center space-x-2 cursor-pointer active:scale-95"
+                      >
+                        <Volume2 className="w-4 h-4 text-slate-950" />
+                        <span>🔊 Chirmo ile Dinle & Telaffuz Et (+10 Yıldız ⭐)</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           </div>
         )}
