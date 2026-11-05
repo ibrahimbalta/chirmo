@@ -38,6 +38,8 @@ import { EnglishGameArcade } from './components/learning/EnglishGameArcade';
 import { ChirmoKidsDedicatedHub } from './components/kids/ChirmoKidsDedicatedHub';
 import { LearningStorageService } from './services/learningStorage';
 import { UserProfileService, UserProfile } from './services/userProfileService';
+import { PrivacyAuthService, SafeUserSession } from './services/privacyAuthService';
+import { ChirmoAuthModal } from './components/auth/ChirmoAuthModal';
 import { Tab, CEFRLevel, DailyGoalProgress } from './types';
 import { CampStorageService, StudentCampProgress } from './services/curriculumData';
 
@@ -78,10 +80,23 @@ export const App: React.FC = () => {
   const [userProfile, setUserProfile] = useState<UserProfile>(() => UserProfileService.getProfile());
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
+  // Sıfır Kişisel Veri SaaS Kimlik Durumu
+  const [currentUser, setCurrentUser] = useState<SafeUserSession | null>(() =>
+    PrivacyAuthService.getCurrentUser()
+  );
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
   useEffect(() => {
-    return UserProfileService.subscribe((updated) => {
+    const unsubAuth = PrivacyAuthService.onAuthStateChanged((u) => {
+      setCurrentUser(u);
+    });
+    const unsubProfile = UserProfileService.subscribe((updated) => {
       setUserProfile(updated);
     });
+    return () => {
+      unsubAuth();
+      unsubProfile();
+    };
   }, []);
 
   // Sol Öğrenme Merkezi Paneli
@@ -329,6 +344,39 @@ export const App: React.FC = () => {
               {userProfile.hasCustomName ? userProfile.name : 'Profilim'}
             </span>
           </div>
+
+          {/* Sıfır Kişisel Veri SaaS Giriş / Kayıt Butonu & Oturum Rozeti */}
+          {!currentUser ? (
+            <button
+              onClick={() => setIsAuthModalOpen(true)}
+              className="h-9 px-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-xs font-black shadow-xs cursor-pointer transition-all inline-flex items-center space-x-1.5 whitespace-nowrap hover:scale-[1.02]"
+              title="Sıfır Kişisel Veri ile Giriş Yap veya Kayıt Ol"
+            >
+              <span>🛡️</span>
+              <span>Giriş / Kayıt</span>
+            </button>
+          ) : (
+            <div className="flex items-center space-x-1.5">
+              <div
+                onClick={() => setIsAuthModalOpen(true)}
+                className="h-9 px-2.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-700 dark:text-cyan-300 text-xs font-bold cursor-pointer hover:bg-cyan-500/20 transition-colors inline-flex items-center space-x-1.5 whitespace-nowrap"
+                title={`Oturum Açık: @${currentUser.username} (${currentUser.plan.toUpperCase()})`}
+              >
+                <span>👤</span>
+                <span className="font-extrabold">@{currentUser.username}</span>
+                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-cyan-500/20 text-cyan-400 font-mono">
+                  {currentUser.plan === 'pro' ? '👑 PRO' : 'ÜCRETSİZ'}
+                </span>
+              </div>
+              <button
+                onClick={() => PrivacyAuthService.logout()}
+                className="h-9 px-2 rounded-full bg-slate-100 hover:bg-rose-100 dark:bg-slate-800 dark:hover:bg-rose-950/50 text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 text-xs font-bold transition-colors cursor-pointer"
+                title="Güvenli Çıkış Yap"
+              >
+                ✕ Çıkış
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
@@ -594,6 +642,13 @@ export const App: React.FC = () => {
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
         onProfileUpdated={(updated) => setUserProfile(updated)}
+      />
+
+      {/* Sıfır Kişisel Veri SaaS Kimlik & Hesap Modalı */}
+      <ChirmoAuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onSuccess={(u) => setCurrentUser(u)}
       />
 
       {/* ==================== MOBİL ALT MENÜ (SMARTPHONE BOTTOM NAV - 6 TEMEL BÖLÜM) ==================== */}
