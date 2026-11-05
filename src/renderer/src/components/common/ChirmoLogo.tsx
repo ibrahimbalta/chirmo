@@ -50,9 +50,9 @@ export const ChirmoLogo: React.FC<ChirmoLogoProps> = ({
   return (
     <div
       role="img"
-      aria-label="Chirmo - AI Browser & Workspace"
+      aria-label="Chirmo - AI Language Studio"
       className={`relative inline-flex items-center justify-center select-none overflow-visible ${
-        animated ? 'transition-transform duration-300 hover:scale-[1.01]' : ''
+        animated ? 'transition-transform duration-300 hover:scale-[1.02]' : ''
       } ${className}`}
     >
       {isIconOnly ? (
@@ -62,16 +62,9 @@ export const ChirmoLogo: React.FC<ChirmoLogoProps> = ({
           className={`${iconSizes} object-contain shrink-0`}
           draggable={false}
         />
-      ) : displayTagline ? (
-        <img
-          src="./chirmo-logo.png"
-          alt="Chirmo — AI Browser & Workspace"
-          className={`${heightClasses} object-contain`}
-          draggable={false}
-        />
       ) : (
         <img
-          src="./chirmo-wordmark.png"
+          src="./chirmo-logo.png"
           alt="Chirmo"
           className={`${heightClasses} object-contain`}
           draggable={false}

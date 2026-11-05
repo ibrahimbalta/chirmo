@@ -53,9 +53,9 @@ export const LearningCenterSidebar: React.FC<LearningCenterSidebarProps> = ({
         {/* ==================== 1. LOGO & BAŞLIK ==================== */}
         <div className="flex items-center justify-between pb-1">
           <div className="flex items-center space-x-2.5">
-            {/* Chirmo Modern Gradient Swirl Logo */}
-            <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-md shadow-purple-500/20 text-white font-black text-lg">
-              <span className="leading-none">C</span>
+            {/* Chirmo Robot Mascot Icon */}
+            <div className="w-9 h-9 rounded-2xl bg-indigo-50/80 dark:bg-slate-800 flex items-center justify-center shadow-xs overflow-hidden">
+              <img src="./chirmo-icon.png" alt="Chirmo Robot" className="w-8 h-8 object-contain" />
             </div>
             <div>
               <div className="font-black text-slate-900 dark:text-white text-base leading-tight tracking-tight">
