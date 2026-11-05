@@ -21,6 +21,7 @@ import { ChirmoStoryDialogueStudio } from '../learning/ChirmoStoryDialogueStudio
 import { ChirmoInteractiveGraduationDialogueModal } from '../learning/ChirmoInteractiveGraduationDialogueModal';
 import { ChirmoVoiceCallSimulatorModal } from '../learning/ChirmoVoiceCallSimulatorModal';
 import { ChirmoPronunciationDoctor } from '../learning/ChirmoPronunciationDoctor';
+import { ChirmoAccentVoiceSelectorModal } from '../learning/ChirmoAccentVoiceSelectorModal';
 import { ChirmoTalkingRobotAvatar } from '../avatar/ChirmoTalkingRobotAvatar';
 import { CEFRLevel } from '../../types';
 
@@ -52,6 +53,8 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   const [isRobotDialogueOpen, setIsRobotDialogueOpen] = useState(false);
   const [isVoiceCallModalOpen, setIsVoiceCallModalOpen] = useState(false);
   const [isPronunciationDoctorOpen, setIsPronunciationDoctorOpen] = useState(false);
+  const [isAccentModalOpen, setIsAccentModalOpen] = useState(false);
+  const [currentAccent, setCurrentAccent] = useState(LearningStorageService.getSelectedAccent());
 
   // AI Teacher Speech State
   const [tutorSpeechText] = useState(
@@ -254,6 +257,14 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 >
                   <span>🎯</span>
                   <span>Telaffuz Doktoru</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsAccentModalOpen(true)}
+                  className="px-3.5 py-1 rounded-full bg-cyan-400 hover:bg-cyan-300 text-purple-950 font-black transition-all cursor-pointer flex items-center space-x-1 shadow-xs"
+                >
+                  <span>🎙️</span>
+                  <span>Aksan: {currentAccent === 'uk' ? '🇬🇧 UK' : currentAccent === 'au' ? '🇦🇺 AU' : currentAccent === 'robot' ? '🤖 Bot' : '🇺🇸 US'}</span>
                 </button>
                 <button
                   type="button"
@@ -785,6 +796,13 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
       <ChirmoPronunciationDoctor
         isOpen={isPronunciationDoctorOpen}
         onClose={() => setIsPronunciationDoctorOpen(false)}
+      />
+
+      {/* Chirmo Doğal İnsan Sesleri & Aksan Seçici Modalı */}
+      <ChirmoAccentVoiceSelectorModal
+        isOpen={isAccentModalOpen}
+        onClose={() => setIsAccentModalOpen(false)}
+        onAccentChange={(acc) => setCurrentAccent(acc)}
       />
     </div>
   );

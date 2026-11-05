@@ -12,8 +12,76 @@ const STORAGE_KEYS = {
   VOCABULARY: 'chirmo_vocabulary_v1',
   PROGRESS: 'chirmo_learning_progress_v1',
   MODE: 'chirmo_active_learning_mode_v1',
-  RECENT_SELECTIONS: 'chirmo_recent_selections_v1'
+  RECENT_SELECTIONS: 'chirmo_recent_selections_v1',
+  VOICE_ACCENT: 'chirmo_voice_accent',
+  VOICE_RATE: 'chirmo_voice_rate'
 };
+
+export type VoiceAccentId = 'us' | 'uk' | 'au' | 'robot';
+
+export interface VoiceAccentConfig {
+  id: VoiceAccentId;
+  label: string;
+  country: string;
+  flag: string;
+  personaName: string;
+  lang: string;
+  pitch: number;
+  rate: number;
+  description: string;
+  sampleText: string;
+}
+
+export const BUILTIN_VOICE_ACCENTS: VoiceAccentConfig[] = [
+  {
+    id: 'us',
+    label: 'Amerikan İngilizcesi',
+    country: 'United States',
+    flag: '🇺🇸',
+    personaName: 'Alex (US)',
+    lang: 'en-US',
+    pitch: 1.0,
+    rate: 0.95,
+    description: 'Modern, akıcı ve uluslararası en yaygın kullanılan Amerikan aksanı.',
+    sampleText: 'Hi there! I am Chirmo. I am here to help you practice English naturally.'
+  },
+  {
+    id: 'uk',
+    label: 'İngiliz İngilizcesi (BBC)',
+    country: 'United Kingdom',
+    flag: '🇬🇧',
+    personaName: 'Oliver (UK)',
+    lang: 'en-GB',
+    pitch: 1.05,
+    rate: 0.9,
+    description: 'Net, prestijli ve akademik ortamlarda tercih edilen Received Pronunciation.',
+    sampleText: 'Good day! Splendid to meet you. Shall we polish your English pronunciation?'
+  },
+  {
+    id: 'au',
+    label: 'Avustralya İngilizcesi',
+    country: 'Australia',
+    flag: '🇦🇺',
+    personaName: 'Liam (AU)',
+    lang: 'en-AU',
+    pitch: 0.95,
+    rate: 0.95,
+    description: 'Samimi, sıcak ve dinamik Okyanusya aksanı.',
+    sampleText: "G'day mate! Awesome to have you here. Let us practice English together today!"
+  },
+  {
+    id: 'robot',
+    label: 'Chirmo Robot Klasik',
+    country: 'Chirmo AI',
+    flag: '🤖',
+    personaName: 'Chirmo Bot',
+    lang: 'en-US',
+    pitch: 1.25,
+    rate: 0.85,
+    description: 'Net, heceleri ayrıştırılmış ve robotik sevimli öğrenme tonu.',
+    sampleText: 'Beep boop! Chirmo online. Let us build your confidence step by step!'
+  }
+];
 
 // Built-in foundational CEFR dictionary with Turkish definitions and contextual sentences
 export const BUILTIN_DICTIONARY: Record<string, {
@@ -424,14 +492,71 @@ export class LearningStorageService {
     };
   }
 
+  // --- Accent & Voice Persona Preferences ---
+  public static getAvailableAccents(): VoiceAccentConfig[] {
+    return BUILTIN_VOICE_ACCENTS;
+  }
+
+  public static getSelectedAccent(): VoiceAccentId {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEYS.VOICE_ACCENT);
+      if (stored === 'us' || stored === 'uk' || stored === 'au' || stored === 'robot') {
+        return stored;
+      }
+    } catch {}
+    return 'us';
+  }
+
+  public static setSelectedAccent(accent: VoiceAccentId): void {
+    try {
+      localStorage.setItem(STORAGE_KEYS.VOICE_ACCENT, accent);
+    } catch {}
+  }
+
+  public static getSpeechRate(): number {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEYS.VOICE_RATE);
+      if (stored) {
+        const val = parseFloat(stored);
+        if (!isNaN(val) && val >= 0.6 && val <= 1.5) return val;
+      }
+    } catch {}
+    return 0.9;
+  }
+
+  public static setSpeechRate(rate: number): void {
+    const clamped = Math.min(1.5, Math.max(0.6, Math.round(rate * 100) / 100));
+    try {
+      localStorage.setItem(STORAGE_KEYS.VOICE_RATE, clamped.toString());
+    } catch {}
+  }
+
   // --- Audio Pronunciation (Web Speech API) ---
-  public static speak(text: string): void {
-    if (!('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.9; // Slightly slower for clear pedagogical comprehension
-    window.speechSynthesis.speak(utterance);
+  public static speak(text: string, customAccentId?: VoiceAccentId, customRate?: number): void {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      const accentId = customAccentId || LearningStorageService.getSelectedAccent();
+      const config = BUILTIN_VOICE_ACCENTS.find(a => a.id === accentId) || BUILTIN_VOICE_ACCENTS[0];
+
+      utterance.lang = config.lang;
+      utterance.pitch = config.pitch;
+      utterance.rate = customRate ?? LearningStorageService.getSpeechRate();
+
+      // Find best available browser voice matching the target lang
+      if ('getVoices' in window.speechSynthesis) {
+        const voices = window.speechSynthesis.getVoices();
+        const matchingVoice = voices.find(v => v.lang === config.lang || v.lang.startsWith(config.lang.split('-')[0]));
+        if (matchingVoice) {
+          utterance.voice = matchingVoice;
+        }
+      }
+
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {
+      console.warn('Speech synthesis error:', e);
+    }
   }
 
   // --- Writing Assistant & Proofreader ---
