@@ -14,6 +14,7 @@
     "pack:win": "npm run build && electron-builder --win --x64 --dir",
     "dist:win": "npm run build && electron-builder --win nsis",
     "dist:portable": "npm run build && electron-builder --win portable",
+    "deploy": "npm run build:renderer && firebase deploy --only hosting",
     "test": "vitest run"
   },
   "dependencies": {
