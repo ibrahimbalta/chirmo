@@ -19,6 +19,7 @@ import { ChirmoAiChatModal } from './ChirmoAiChatModal';
 import { ChirmoFluencyBooster } from '../learning/ChirmoFluencyBooster';
 import { ChirmoStoryDialogueStudio } from '../learning/ChirmoStoryDialogueStudio';
 import { ChirmoInteractiveGraduationDialogueModal } from '../learning/ChirmoInteractiveGraduationDialogueModal';
+import { ChirmoVoiceCallSimulatorModal } from '../learning/ChirmoVoiceCallSimulatorModal';
 import { ChirmoTalkingRobotAvatar } from '../avatar/ChirmoTalkingRobotAvatar';
 import { CEFRLevel } from '../../types';
 
@@ -48,6 +49,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   const [isBoosterModalOpen, setIsBoosterModalOpen] = useState(false);
   const [isStoryModalOpen, setIsStoryModalOpen] = useState(false);
   const [isRobotDialogueOpen, setIsRobotDialogueOpen] = useState(false);
+  const [isVoiceCallModalOpen, setIsVoiceCallModalOpen] = useState(false);
 
   // AI Teacher Speech State
   const [tutorSpeechText] = useState(
@@ -232,9 +234,17 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 </button>
               </div>
 
-              {/* 3 Hızlı Alternatif Kısayol Hapı */}
+              {/* Hızlı Alternatif Kısayol Hapları */}
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 pt-1 text-xs font-bold text-indigo-100">
                 <span className="text-[11px] text-white/70">Hızlı Kısayollar:</span>
+                <button
+                  type="button"
+                  onClick={() => setIsVoiceCallModalOpen(true)}
+                  className="px-3.5 py-1 rounded-full bg-amber-400 hover:bg-amber-300 text-purple-950 font-black transition-all cursor-pointer flex items-center space-x-1 shadow-xs"
+                >
+                  <span>📞</span>
+                  <span>2 Dk Sesli Arama</span>
+                </button>
                 <button
                   type="button"
                   onClick={() => setIsStoryModalOpen(true)}
@@ -753,6 +763,12 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
         onClose={() => setIsRobotDialogueOpen(false)}
         dayNumber={30}
         milestoneTitle="Chirmo ile Canlı Robot Konuşması"
+      />
+
+      {/* 2 Dakikalık Chirmo Seni Arıyor Sesli Simülatörü */}
+      <ChirmoVoiceCallSimulatorModal
+        isOpen={isVoiceCallModalOpen}
+        onClose={() => setIsVoiceCallModalOpen(false)}
       />
     </div>
   );
