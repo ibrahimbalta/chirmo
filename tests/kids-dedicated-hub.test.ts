@@ -23,14 +23,14 @@ describe('Chirmo Kids Dedicated Hub Component & Curriculum Structure', () => {
     expect(content).toContain('Gençler & Lise');
   });
 
-  it('provides gamified interactive modes: Games, Cards, Pattern Builder, Songs, and Parent Dashboard', () => {
+  it('provides gamified interactive modes: Games, Cards, Pattern Builder, and Songs', () => {
     const content = fs.readFileSync(componentPath, 'utf-8');
     expect(content).toContain('Dedektif Chirmo: Sesi Duy ve Doğru Resmi Seç!');
     expect(content).toContain('Cümle Yapbozu: Kelimeleri Sıraya Diz!');
     expect(content).toContain('Süper Telaffuz Arenası: Chirmo ile Birlikte Söyle!');
     expect(content).toContain('Lego Gibi Cümle Kurma Atölyesi (Kids Pattern Builder)');
     expect(content).toContain('ABC Phonics Song');
-    expect(content).toContain('Ebeveyn Doğrulama Kapısı');
-    expect(content).toContain('Uluslararası Müfredat Uyumlu');
+    expect(content).not.toContain('Veli Güven & Gelişim Paneli');
+    expect(content).toContain('Uluslararası');
   });
 });

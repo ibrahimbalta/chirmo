@@ -84,7 +84,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
   // Navigation & Age State
   const [selectedAge, setSelectedAge] = useState<AgeGroup>('5-7');
   const [activeTab, setActiveTab] = useState<
-    'games' | 'cards' | 'simon' | 'stories' | 'patterns' | 'animals' | 'colors' | 'chat' | 'stickers' | 'songs' | 'parent'
+    'games' | 'cards' | 'simon' | 'stories' | 'patterns' | 'animals' | 'colors' | 'chat' | 'stickers' | 'songs'
   >('games');
   const [categoryFilter, setCategoryFilter] = useState<string>('Tümü');
 
@@ -143,11 +143,6 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
   // Songs & Karaoke State
   const [playingSongId, setPlayingSongId] = useState<string | null>(null);
 
-  // Parent Gate Security State
-  const [parentUnlocked, setParentUnlocked] = useState<boolean>(false);
-  const [parentPinInput, setParentPinInput] = useState<string>('');
-  const [screenLimitMinutes, setScreenLimitMinutes] = useState<number>(15);
-  const [showShareToast, setShowShareToast] = useState<boolean>(false);
 
   // Persistent Stars
   useEffect(() => {
@@ -1119,8 +1114,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
             { id: 'colors', label: '🎨 Sihirli Boya & Konuş', icon: Zap, color: 'text-rose-500' },
             { id: 'chat', label: '💬 Çizgi Karakter Sohbeti', icon: MessageCircle, color: 'text-blue-500' },
             { id: 'stickers', label: '⭐ Çıkartma Albümü', icon: Award, color: 'text-amber-500' },
-            { id: 'songs', label: '🎵 Şarkılar & Karaoke', icon: Music, color: 'text-rose-500' },
-            { id: 'parent', label: '🛡️ Veli Güven & Gelişim Paneli', icon: ShieldCheck, color: 'text-indigo-500' }
+            { id: 'songs', label: '🎵 Şarkılar & Karaoke', icon: Music, color: 'text-rose-500' }
           ].map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -2333,171 +2327,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
           </div>
         )}
 
-        {/* ==================== TAB 5: 🛡️ VELİ GÜVEN & GELİŞİM PANELİ ==================== */}
-        {activeTab === 'parent' && (
-          <div className="space-y-6">
-            {/* Ebeveyn Kilit Doğrulaması (Çocukların yanlışlıkla ayarları değiştirmesini önler) */}
-            {!parentUnlocked ? (
-              <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border-2 border-indigo-200 dark:border-slate-800 shadow-xl text-center space-y-4 max-w-md mx-auto">
-                <div className="w-12 h-12 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center mx-auto text-2xl">
-                  🔒
-                </div>
-                <div>
-                  <h3 className="text-lg font-black text-slate-900 dark:text-white">
-                    Ebeveyn Doğrulama Kapısı
-                  </h3>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Güvenlik sorusu: Lütfen çocuğunuzun ayarları değiştirmemesi için aşağıdaki işlemi onaylayın:
-                  </p>
-                </div>
 
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 text-base font-black text-indigo-700">
-                  4 + 3 = ?
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="text"
-                    value={parentPinInput}
-                    onChange={(e) => setParentPinInput(e.target.value)}
-                    placeholder="Sonucu yazın (örn: 7)"
-                    className="flex-1 p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-center font-bold text-sm bg-white dark:bg-slate-800"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (parentPinInput.trim() === '7') {
-                        setParentUnlocked(true);
-                      } else {
-                        alert('Hatalı yanıt! Lütfen işlemi tekrar kontrol edin.');
-                      }
-                    }}
-                    className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs transition-all shadow-md cursor-pointer"
-                  >
-                    Kilidi Aç
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                {/* 4 Ana Güvenlik Sütunu */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-1">
-                    <div className="flex items-center space-x-2 text-emerald-600 font-black text-xs">
-                      <ShieldCheck className="w-4 h-4" />
-                      <span>%100 Güvenli & Reklamsız</span>
-                    </div>
-                    <div className="text-xs text-slate-500">
-                      Dış bağlantı, reklam ya da tanımadığı kişilerle sohbet alanı kesinlikle bulunmaz.
-                    </div>
-                  </div>
-
-                  <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-1">
-                    <div className="flex items-center space-x-2 text-indigo-600 font-black text-xs">
-                      <GraduationCap className="w-4 h-4" />
-                      <span>Uluslararası Müfredat Uyumlu</span>
-                    </div>
-                    <div className="text-xs text-slate-500">
-                      Uluslararası eğitim müfredatındaki yaşa uygun kelime listeleri ve pratik konuşma kalıplarıyla tam uyumludur.
-                    </div>
-                  </div>
-
-                  <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-1">
-                    <div className="flex items-center space-x-2 text-pink-600 font-black text-xs">
-                      <Clock className="w-4 h-4" />
-                      <span>15 Dk Ekran Koruma Limiti</span>
-                    </div>
-                    <div className="text-xs text-slate-500">
-                      Çocuğu ekrana bağımlı yapmaz; 15 dakikalık odaklı mikro seansla konuşma refleksini geliştirir.
-                    </div>
-                  </div>
-
-                  <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-1">
-                    <div className="flex items-center space-x-2 text-purple-600 font-black text-xs">
-                      <BookCheck className="w-4 h-4" />
-                      <span>Haftalık Veli Raporu</span>
-                    </div>
-                    <div className="text-xs text-slate-500">
-                      Çocuğunuzun o hafta öğrendiği 25 yeni kalıp ve telaffuz performansı veliye özetlenir.
-                    </div>
-                  </div>
-                </div>
-
-                {/* Ekran Süresi Sınırı Ayarlayıcısı */}
-                <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
-                  <h4 className="text-sm font-black text-slate-900 dark:text-white flex items-center space-x-2">
-                    <Clock className="w-4 h-4 text-indigo-600" />
-                    <span>Günlük Ekran ve Odak Süresi Sınırı:</span>
-                  </h4>
-                  <div className="flex items-center space-x-3">
-                    {[10, 15, 20, 30].map((mins) => (
-                      <button
-                        key={mins}
-                        type="button"
-                        onClick={() => setScreenLimitMinutes(mins)}
-                        className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
-                          screenLimitMinutes === mins
-                            ? 'bg-indigo-600 text-white shadow-xs'
-                            : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
-                        }`}
-                      >
-                        {mins} Dakika
-                      </button>
-                    ))}
-                  </div>
-                  <p className="text-[11px] text-slate-500">
-                    Öneri: Dil edinimi psikolojisinde 15 dakikalık günlük düzenli tekrar, haftada bir gün 2 saat çalışmaktan 4 kat daha kalıcıdır.
-                  </p>
-                </div>
-
-                {/* Veli Karnesi / WhatsApp Paylaşım Önizlemesi */}
-                <div className="p-5 rounded-3xl bg-gradient-to-br from-emerald-50 via-white to-indigo-50 dark:from-slate-900 dark:to-slate-800 border-2 border-emerald-200 dark:border-slate-700 shadow-md space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-[10px] font-black uppercase text-emerald-700">Canlı Veli Gelişim Özeti</div>
-                      <h4 className="text-base font-black text-slate-900 dark:text-white">
-                        Öğrenci: Ali / Ayşe • Seviye: Cümle Kaşifi (Pre-A1)
-                      </h4>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setShowShareToast(true)}
-                      className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs flex items-center space-x-1 cursor-pointer shadow-xs"
-                    >
-                      <Share2 className="w-3.5 h-3.5" />
-                      <span>WhatsApp Raporu Al</span>
-                    </button>
-                  </div>
-
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
-                    <div className="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                      <div className="text-lg font-black text-indigo-600">{stars} ⭐</div>
-                      <div className="text-[10px] text-slate-500 font-bold">Kazanılan Yıldız</div>
-                    </div>
-                    <div className="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                      <div className="text-lg font-black text-emerald-600">32 Kelime</div>
-                      <div className="text-[10px] text-slate-500 font-bold">Aktif Hafızada</div>
-                    </div>
-                    <div className="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                      <div className="text-lg font-black text-amber-600">%96</div>
-                      <div className="text-[10px] text-slate-500 font-bold">Ortalama Telaffuz</div>
-                    </div>
-                    <div className="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                      <div className="text-lg font-black text-purple-600">{streakDays} Gün</div>
-                      <div className="text-[10px] text-slate-500 font-bold">Kesintisiz Seri</div>
-                    </div>
-                  </div>
-
-                  {showShareToast && (
-                    <div className="p-3 rounded-xl bg-emerald-100 text-emerald-900 text-xs font-bold text-center animate-fade-in">
-                      ✅ Haftalık karne özeti panoya kopyalandı! Veli WhatsApp grubunda gururla paylaşabilirsiniz.
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
 
       </div>
     </div>
