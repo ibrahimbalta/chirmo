@@ -268,4 +268,97 @@ export class PrivacyAuthService {
       this.saveAccounts(accounts);
     }
   }
+
+  // ==================== ADMIN YÖNETİM METODLARI ====================
+  public static getAllAccounts(): UserAccount[] {
+    const accounts = this.getAccounts();
+    return Object.values(accounts);
+  }
+
+  public static updateAccountPlan(usernameRaw: string, newPlan: 'free' | 'pro' | 'lifetime'): boolean {
+    const username = normalizeUsername(usernameRaw);
+    const accounts = this.getAccounts();
+    const account = accounts[username];
+    if (!account) return false;
+
+    account.plan = newPlan;
+    accounts[username] = account;
+    this.saveAccounts(accounts);
+
+    // If this is current user, update session as well
+    const session = this.getCurrentUser();
+    if (session && session.username === username) {
+      session.plan = newPlan;
+      try {
+        localStorage.setItem(STORAGE_KEYS.SESSION, JSON.stringify(session));
+      } catch {}
+      this.notifyListeners(session);
+    }
+    return true;
+  }
+
+  public static async adminResetPassword(usernameRaw: string, newPasswordRaw: string): Promise<boolean> {
+    const username = normalizeUsername(usernameRaw);
+    const newPassword = (newPasswordRaw || '').trim();
+    if (!newPassword || newPassword.length < 4) {
+      throw new Error('Yeni şifre en az 4 karakter olmalıdır.');
+    }
+
+    const accounts = this.getAccounts();
+    const account = accounts[username];
+    if (!account) return false;
+
+    const newSalt = generateSalt();
+    account.salt = newSalt;
+    account.passwordHash = await sha256Hex(newPassword + newSalt);
+    accounts[username] = account;
+    this.saveAccounts(accounts);
+    return true;
+  }
+
+  public static deleteAccount(usernameRaw: string): boolean {
+    const username = normalizeUsername(usernameRaw);
+    const accounts = this.getAccounts();
+    if (!accounts[username]) return false;
+
+    delete accounts[username];
+    this.saveAccounts(accounts);
+
+    const session = this.getCurrentUser();
+    if (session && session.username === username) {
+      this.logout();
+    }
+    return true;
+  }
+
+  public static async seedDemoAccountsIfEmpty(): Promise<void> {
+    const accounts = this.getAccounts();
+    if (Object.keys(accounts).length > 0) return;
+
+    const demoUsers = [
+      { username: 'ahmet_yilmaz', plan: 'pro' as const, question: PRESET_SECURITY_QUESTIONS[0], answer: 'mehmet hoca' },
+      { username: 'ayse_kaya', plan: 'pro' as const, question: PRESET_SECURITY_QUESTIONS[1], answer: 'boncuk' },
+      { username: 'can_demir', plan: 'free' as const, question: PRESET_SECURITY_QUESTIONS[2], answer: 'burak' },
+      { username: 'elif_sari', plan: 'free' as const, question: PRESET_SECURITY_QUESTIONS[3], answer: 'kadikoy' },
+      { username: 'murat_ozkan', plan: 'lifetime' as const, question: PRESET_SECURITY_QUESTIONS[4], answer: 'kucuk prens' }
+    ];
+
+    for (const d of demoUsers) {
+      const salt = generateSalt();
+      const pHash = await sha256Hex('123456' + salt);
+      const aHash = await sha256Hex(d.answer + salt);
+      accounts[d.username] = {
+        id: 'usr_' + Math.random().toString(36).slice(2, 8),
+        username: d.username,
+        passwordHash: pHash,
+        salt,
+        securityQuestion: d.question,
+        securityAnswerHash: aHash,
+        plan: d.plan,
+        createdAt: new Date(Date.now() - Math.floor(Math.random() * 20) * 86400000).toISOString(),
+        lastLogin: new Date().toISOString()
+      };
+    }
+    this.saveAccounts(accounts);
+  }
 }
