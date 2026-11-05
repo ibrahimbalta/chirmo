@@ -60,6 +60,19 @@ export const extractYouTubeVideoId = (input: string): string | null => {
   return null;
 };
 
+
+export interface InteractiveLessonData {
+  sentenceEn: string;
+  sentenceTr: string;
+  phonetic: string;
+  teacherExplanation: string;
+  grammarFocus: string;
+  substitutionDrills: { en: string; tr: string }[];
+  quizQuestion: string;
+  quizOptions: string[];
+  correctOptionIndex: number;
+}
+
 export interface VideoLesson {
   id: string;
   title: string;
@@ -74,6 +87,75 @@ export interface VideoLesson {
 }
 
 export const CURATED_VIDEOS: VideoLesson[] = [
+  // 0. ÇİZGİ FİLM & GÜNLÜK DİYALOG (KULLANICI VİDEOSU)
+  {
+    id: 'cartoon-1',
+    title: 'İngilis Dilində Cizgi Film - Hediye Kutusu & Günlük Konuşma',
+    channel: 'Məzunların xatirələri',
+    level: 'A1',
+    duration: '5:15',
+    youtubeId: 'lFy4dr4evW8',
+    thumbnail: 'https://i.ytimg.com/vi/lFy4dr4evW8/hqdefault.jpg',
+    category: 'Film',
+    description: 'Renkli ve eğlenceli çizgi film ile temel İngilizce soru kalıpları, nesneler ve hediyeleşme diyalogları.',
+    subtitles: [
+      {
+        id: 1,
+        timeSec: 10,
+        timeStr: '0:10',
+        en: 'Hello my friends, welcome to our lovely story!',
+        tr: 'Merhaba arkadaşlarım, sevimli hikayemize hoş geldiniz!',
+        level: 'A1',
+        highlightWords: ['friends', 'welcome', 'lovely'],
+        blankTargetWord: 'welcome',
+        quizOptions: ['welcome', 'angry', 'goodbye']
+      },
+      {
+        id: 2,
+        timeSec: 26,
+        timeStr: '0:26',
+        en: "What's that?",
+        tr: 'O nedir? / Şu ne?',
+        level: 'A1',
+        highlightWords: ['what', 'that'],
+        blankTargetWord: 'that',
+        quizOptions: ['that', 'who', 'where']
+      },
+      {
+        id: 3,
+        timeSec: 45,
+        timeStr: '0:45',
+        en: 'It is a lovely surprise gift box for you!',
+        tr: 'Bu senin için harika bir sürpriz hediye kutusu!',
+        level: 'A1',
+        highlightWords: ['surprise', 'gift', 'box'],
+        blankTargetWord: 'gift',
+        quizOptions: ['gift', 'stone', 'cloud']
+      },
+      {
+        id: 4,
+        timeSec: 70,
+        timeStr: '1:10',
+        en: 'Can you open the box and see inside?',
+        tr: 'Kutuyu açıp içine bakabilir misin?',
+        level: 'A1',
+        highlightWords: ['open', 'inside'],
+        blankTargetWord: 'open',
+        quizOptions: ['open', 'break', 'lose']
+      },
+      {
+        id: 5,
+        timeSec: 95,
+        timeStr: '1:35',
+        en: 'Thank you so much, this makes me very happy!',
+        tr: 'Çok teşekkür ederim, bu beni çok mutlu etti!',
+        level: 'A1',
+        highlightWords: ['happy', 'thank'],
+        blankTargetWord: 'happy',
+        quizOptions: ['happy', 'sad', 'tired']
+      }
+    ]
+  },
   // 1. FİLM & SİNEMA
   {
     id: 'film-1',
@@ -372,7 +454,17 @@ export const WatchingView: React.FC<WatchingViewProps> = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('Hepsi');
   const [selectedVideo, setSelectedVideo] = useState<VideoLesson>(CURATED_VIDEOS[0]);
+  // Auto initialize interactive lesson for cartoon
+  useEffect(() => {
+    handleGenerateInteractiveLesson("What's that?");
+  }, []);
   const [activeSubtitleIndex, setActiveSubtitleIndex] = useState(0);
+  // Interactive Lesson State (Kullanıcı videosundaki altyazıyı derse dönüştürme)
+  const [interactiveLesson, setInteractiveLesson] = useState<InteractiveLessonData | null>(null);
+  const [userSceneInput, setUserSceneInput] = useState<string>('');
+  const [interactiveQuizAnswer, setInteractiveQuizAnswer] = useState<number | null>(null);
+  const [isInteractiveQuizCorrect, setIsInteractiveQuizCorrect] = useState<boolean | null>(null);
+
   const [customUrlInput, setCustomUrlInput] = useState('');
   const [savedWordsMap, setSavedWordsMap] = useState<Record<string, boolean>>({});
   const [selectedWordPopup, setSelectedWordPopup] = useState<string | null>(null);
@@ -417,6 +509,85 @@ export const WatchingView: React.FC<WatchingViewProps> = ({
     if (!clean) return;
     setSelectedWordPopup(clean);
     LearningStorageService.speak(clean);
+  };
+
+  
+  // Generate Interactive Lesson from any subtitle or user input
+  const handleGenerateInteractiveLesson = (inputSentence?: string) => {
+    const raw = (inputSentence || activeSubtitle?.en || "What's that?").trim();
+    const cleanLower = raw.toLowerCase().replace(/[^a-z'\s]/g, '');
+
+    let lesson: InteractiveLessonData;
+
+    if (cleanLower.includes("what's that") || cleanLower.includes("whats that")) {
+      lesson = {
+        sentenceEn: "What's that?",
+        sentenceTr: "O nedir? / Şu ne?",
+        phonetic: "[wʌts ðæt]",
+        grammarFocus: "Temel Soru Kalıbı & İşaret Zamiri (Demonstrative Question)",
+        teacherExplanation: "Burada karakter karşısındaki hediye kutusunu işaret ederek 'What's that?' diyor. Günlük İngilizcede uzaktaki veya elinizde olmayan bir şeyi merak edip ne olduğunu sormak için en sık kullanılan pratik soru kalıbıdır.",
+        substitutionDrills: [
+          { en: "What's this?", tr: "Bu nedir? (Yakındaki / elindeki nesne için)" },
+          { en: "What's in the box?", tr: "Kutunun içinde ne var?" },
+          { en: "What's that noise?", tr: "Şu duyulan ses ne?" },
+          { en: "What is your favorite toy?", tr: "En sevdiğin oyuncak hangisi?" }
+        ],
+        quizQuestion: "Karakter hediye kutusunu gösterip 'What\'s that?' dediğinde arkadaşı ne cevap verebilir?",
+        quizOptions: [
+          "It is a lovely gift box for you!",
+          "I am going to school yesterday.",
+          "It is raining outdoors."
+        ],
+        correctOptionIndex: 0
+      };
+    } else if (cleanLower.includes("carpe diem") || cleanLower.includes("seize the day")) {
+      lesson = {
+        sentenceEn: "Carpe diem. Seize the day, boys.",
+        sentenceTr: "Günü yakalayın çocuklar. Anı yaşayın.",
+        phonetic: "[ˈkɑːpeɪ ˈdiːɛm / siːz ðə deɪ]",
+        grammarFocus: "Emir Kipi & Felsefi Deyim (Imperative Mood & Idiom)",
+        teacherExplanation: "Burada edebiyat öğretmeni Keating, öğrencilerine zamanın hızla akıp gittiğini ve her anı dolu dolu, olağanüstü yaşamaları gerektiğini öğütlüyor.",
+        substitutionDrills: [
+          { en: "Seize the opportunity!", tr: "Fırsatı yakala / değerlendir!" },
+          { en: "Make your life extraordinary.", tr: "Hayatını olağanüstü kıl." },
+          { en: "Live in the present moment.", tr: "Şimdiki anda yaşa." }
+        ],
+        quizQuestion: "'Seize the day' kalıbı günlük dilde hangi amaçla kullanılır?",
+        quizOptions: [
+          "Anın değerini bilmek ve ertelemeden harekete geçmek için",
+          "Yalnızca saat kaç olduğunu öğrenmek için",
+          "Hava durumunun soğuk olduğunu belirtmek için"
+        ],
+        correctOptionIndex: 0
+      };
+    } else {
+      // Dynamic fallback for any other sentence
+      const firstWord = raw.split(/\s+/)[0] || "Hello";
+      lesson = {
+        sentenceEn: raw,
+        sentenceTr: activeSubtitle?.tr || "Bu cümlenin Türkçe karşılığı",
+        phonetic: "[ " + raw.toLowerCase().slice(0, 15) + "... ]",
+        grammarFocus: "Günlük İletişim & Konuşma Pratiği",
+        teacherExplanation: `Burada videodaki konuşmacı "${raw}" diyor. Bu kalıp günlük konuşmada akıcılık ve doğal tonlama kazanmak için harika bir örnektir.`,
+        substitutionDrills: [
+          { en: `Can you repeat: "${raw}"?`, tr: "Cümleyi ritmiyle tekrar et" },
+          { en: `I understand that ${raw.toLowerCase()}.`, tr: "Bunu anladığımı belirteyim." },
+          { en: "Let's practice this together!", tr: "Bunu birlikte pratik yapalım!" }
+        ],
+        quizQuestion: `"${raw}" cümlesini doğru tonlama ile seslendirdin mi?`,
+        quizOptions: [
+          "Evet, cümlenin anlamını anladım ve seslendirdim!",
+          "Henüz tam dinlemedim, tekrar dinleyeceğim.",
+          "Farklı bir sahneye geçmek istiyorum."
+        ],
+        correctOptionIndex: 0
+      };
+    }
+
+    setInteractiveLesson(lesson);
+    setInteractiveQuizAnswer(null);
+    setIsInteractiveQuizCorrect(null);
+    showToast(`"${lesson.sentenceEn}" için interaktif ders hazırlandı! 🎓`);
   };
 
   const handleSaveWord = (rawWord: string) => {
@@ -661,7 +832,7 @@ export const WatchingView: React.FC<WatchingViewProps> = ({
       : CURATED_VIDEOS.filter((v) => v.category === selectedCategory);
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-[#FAF9FE] dark:bg-slate-950 overflow-y-auto">
+    <div className="flex-1 flex flex-col h-full bg-[#FAF9FE] dark:bg-slate-950 overflow-y-auto pb-24 sm:pb-8">
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed top-16 right-6 z-50 px-4 py-2.5 rounded-2xl bg-indigo-600 text-white text-xs font-bold shadow-xl animate-fade-in flex items-center space-x-2">
@@ -670,7 +841,7 @@ export const WatchingView: React.FC<WatchingViewProps> = ({
       )}
 
       {/* Top Banner & Universal URL Bar */}
-      <div className="p-4 sm:p-6 border-b border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md sticky top-0 z-20">
+      <div className="p-3 sm:p-5 border-b border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md relative sm:sticky top-0 z-20">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center space-x-2 text-red-600 dark:text-red-400 mb-1">
@@ -783,6 +954,257 @@ export const WatchingView: React.FC<WatchingViewProps> = ({
                   allowFullScreen
                 />
               </div>
+            </div>
+
+            {/* ==================== VİDEO İLE İNTERAKTİF DERS & CANLI PRATİK ALANI ==================== */}
+            <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 border-2 border-indigo-200 dark:border-indigo-900/60 shadow-lg space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-indigo-100 dark:border-slate-800 pb-3">
+                <div className="flex items-center space-x-2">
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center text-lg shadow-sm">
+                    🤖
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-black text-slate-900 dark:text-white">
+                      Chirmo İnteraktif Video Dersi: "Burada Ne Diyor?"
+                    </h3>
+                    <p className="text-[11px] text-slate-500">
+                      Videoda gördüğün veya duyduğun cümleyi seç ya da yaz; Chirmo anında anlamını açıklasın ve birlikte konuştursun!
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleGenerateInteractiveLesson(activeSubtitle?.en || "What's that?")}
+                  className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black shadow-xs cursor-pointer transition-all flex items-center space-x-1 shrink-0"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Şimdiki Sahneyi İncele</span>
+                </button>
+              </div>
+
+              {/* Kullanıcı Metin Girişi & Hızlı Cümle Butonları */}
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="text"
+                    value={userSceneInput}
+                    onChange={(e) => setUserSceneInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (userSceneInput.trim()) handleGenerateInteractiveLesson(userSceneInput);
+                      }
+                    }}
+                    placeholder="Videoda geçen cümleyi yaz (örn: What's that?)..."
+                    className="flex-1 px-3.5 py-2 text-xs rounded-xl bg-white dark:bg-slate-800 border border-indigo-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (userSceneInput.trim()) {
+                        handleGenerateInteractiveLesson(userSceneInput);
+                      } else {
+                        handleGenerateInteractiveLesson("What's that?");
+                      }
+                    }}
+                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-black text-xs shadow-xs cursor-pointer transition-all whitespace-nowrap"
+                  >
+                    ✨ Derse Dönüştür
+                  </button>
+                </div>
+
+                {/* Hızlı Seçim Hap Butonları */}
+                <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 scrollbar-none text-[11px]">
+                  <span className="font-bold text-slate-400 shrink-0">Hızlı Seç:</span>
+                  {(selectedVideo.subtitles.map((s) => s.en).concat(["What's that?", "Look, what a nice day!", "Open the box!"]))
+                    .filter((v, i, a) => a.indexOf(v) === i)
+                    .slice(0, 5)
+                    .map((quickSentence, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => {
+                          setUserSceneInput(quickSentence);
+                          handleGenerateInteractiveLesson(quickSentence);
+                        }}
+                        className="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-indigo-100 dark:border-slate-700 hover:border-indigo-400 text-indigo-700 dark:text-indigo-300 font-bold whitespace-nowrap cursor-pointer hover:scale-102 transition-all shadow-2xs"
+                      >
+                        "{quickSentence}"
+                      </button>
+                    ))}
+                </div>
+              </div>
+
+              {/* İNTERAKTİF DERS KARTI */}
+              {interactiveLesson && (
+                <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border-2 border-indigo-300 dark:border-slate-700 shadow-md space-y-4 animate-fade-in">
+                  {/* Başlık ve Chirmo Yorumu */}
+                  <div className="space-y-1.5 bg-indigo-50/70 dark:bg-indigo-950/40 p-3.5 rounded-xl border border-indigo-100 dark:border-indigo-900/50">
+                    <div className="flex items-center justify-between">
+                      <div className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
+                        "{interactiveLesson.sentenceEn}"
+                      </div>
+                      <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-indigo-200 dark:bg-indigo-800 text-indigo-900 dark:text-indigo-100">
+                        {interactiveLesson.grammarFocus}
+                      </span>
+                    </div>
+
+                    <div className="text-xs font-bold text-indigo-700 dark:text-indigo-300">
+                      Anlamı: {interactiveLesson.sentenceTr}
+                    </div>
+
+                    <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed pt-1 border-t border-indigo-100 dark:border-indigo-900/30">
+                      💡 <span className="font-black text-indigo-900 dark:text-indigo-200">Chirmo Diyor ki:</span> {interactiveLesson.teacherExplanation}
+                    </p>
+                  </div>
+
+                  {/* 1. ADIM: DİNLE & SESLENDİR (SHADOWING) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-2">
+                      <div className="text-[11px] font-black text-slate-400 uppercase">
+                        1. Adım: Fonetik & Dinleme
+                      </div>
+                      <div className="text-xs font-mono font-bold text-slate-600 dark:text-slate-300">
+                        {interactiveLesson.phonetic}
+                      </div>
+                      <div className="flex items-center space-x-2 pt-1">
+                        <button
+                          type="button"
+                          onClick={() => handleSpeakSentence(interactiveLesson.sentenceEn, 1.0)}
+                          className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center space-x-1 cursor-pointer"
+                        >
+                          <Volume2 className="w-3.5 h-3.5" />
+                          <span>Dinle</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleSpeakSentence(interactiveLesson.sentenceEn, 0.75)}
+                          className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold flex items-center space-x-1 cursor-pointer"
+                        >
+                          <RotateCcw className="w-3.5 h-3.5" />
+                          <span>0.75x Yavaş</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-rose-50/70 dark:bg-slate-800/80 border border-rose-200 dark:border-slate-700 space-y-2">
+                      <div className="text-[11px] font-black text-rose-700 dark:text-rose-300 uppercase">
+                        2. Adım: Mikrofonla Seslendir
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleStartShadowing}
+                        className={`w-full py-2.5 px-3 rounded-xl text-xs font-black text-white flex items-center justify-center space-x-1.5 cursor-pointer transition-all ${
+                          isListening
+                            ? 'bg-red-500 animate-pulse'
+                            : 'bg-gradient-to-r from-rose-600 to-pink-600 hover:scale-102'
+                        }`}
+                      >
+                        {isListening ? (
+                          <>
+                            <MicOff className="w-3.5 h-3.5" />
+                            <span>Dinleniyor, Cümleyi Oku...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Mic className="w-3.5 h-3.5" />
+                            <span>Bu Cümleyi Konuş & Puan Al</span>
+                          </>
+                        )}
+                      </button>
+                      {shadowingScore !== null && (
+                        <div className="text-center text-xs font-black text-rose-800 dark:text-rose-200">
+                          🎉 Telaffuz Başarın: %{shadowingScore}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* 3. ADIM: BENZER KALIPLARLA KONUŞMA EGZERSİZİ */}
+                  <div className="space-y-2 pt-1">
+                    <div className="text-xs font-black text-slate-800 dark:text-slate-200 flex items-center space-x-1">
+                      <span>🔄</span>
+                      <span>3. Adım: Bu Kalıpla Başka Neler Söyleyebilirsin? (Tıkla & Dinle)</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {interactiveLesson.substitutionDrills.map((drill, dIdx) => (
+                        <div
+                          key={dIdx}
+                          onClick={() => handleSpeakSentence(drill.en)}
+                          className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 hover:border-indigo-400 hover:bg-indigo-50/40 cursor-pointer transition-all flex items-center justify-between group"
+                        >
+                          <div>
+                            <div className="text-xs font-black text-slate-900 dark:text-white group-hover:text-indigo-600">
+                              "{drill.en}"
+                            </div>
+                            <div className="text-[10px] text-slate-500">
+                              {drill.tr}
+                            </div>
+                          </div>
+                          <Volume2 className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600 shrink-0" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 4. ADIM: İNTERAKTİF SAHNE SORUSU */}
+                  <div className="p-3.5 rounded-xl bg-purple-50/70 dark:bg-slate-800/80 border border-purple-200 dark:border-slate-700 space-y-2.5">
+                    <div className="text-xs font-black text-purple-900 dark:text-purple-200 flex items-center space-x-1.5">
+                      <span>🧠</span>
+                      <span>4. Adım: Sahne Anlama Sorusu</span>
+                    </div>
+
+                    <p className="text-xs font-bold text-slate-800 dark:text-slate-100">
+                      {interactiveLesson.quizQuestion}
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      {interactiveLesson.quizOptions.map((opt, oIdx) => (
+                        <button
+                          key={oIdx}
+                          type="button"
+                          onClick={() => {
+                            setInteractiveQuizAnswer(oIdx);
+                            const isCorr = oIdx === interactiveLesson.correctOptionIndex;
+                            setIsInteractiveQuizCorrect(isCorr);
+                            if (isCorr) {
+                              showToast('🎉 Harika cevap! Sahneyi çok iyi anladın (+20 XP)');
+                              LearningStorageService.earnDailyXp(20);
+                            } else {
+                              showToast('🤔 Tekrar düşünelim! Sahneye göre en mantıklı yanıtı seç.');
+                            }
+                          }}
+                          className={`p-2.5 rounded-xl border text-xs font-bold text-left transition-all cursor-pointer ${
+                            interactiveQuizAnswer === oIdx
+                              ? isInteractiveQuizCorrect
+                                ? 'bg-emerald-600 text-white border-emerald-600'
+                                : 'bg-rose-600 text-white border-rose-600'
+                              : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-purple-400 text-slate-800 dark:text-slate-100'
+                          }`}
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                    </div>
+
+                    {isInteractiveQuizCorrect !== null && (
+                      <div
+                        className={`p-2 rounded-lg text-xs font-black text-center animate-bounce ${
+                          isInteractiveQuizCorrect
+                            ? 'bg-emerald-100 text-emerald-900'
+                            : 'bg-rose-100 text-rose-900'
+                        }`}
+                      >
+                        {isInteractiveQuizCorrect
+                          ? '🎉 Mükemmel! Sahneye tam uygun yanıt.'
+                          : '❌ Bu seçenek sahneye uygun değil, diğer seçeneği dene!'}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Mode Switcher Tabs */}

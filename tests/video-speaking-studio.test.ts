@@ -69,6 +69,27 @@ describe('Video & Film English Speaking & Shadowing Studio', () => {
     expect(content).toContain('handleWordClick');
   });
 
+  it('WatchingView implements interactive lesson generator explaining dialogue and providing drills ("burda şunu diyor")', () => {
+    const content = fs.readFileSync(watchingViewPath, 'utf-8');
+
+    // Interactive lesson card with Chirmo teacher explanation
+    expect(content).toContain("What's that?");
+    expect(content).toContain('handleGenerateInteractiveLesson');
+    expect(content).toContain('interactiveLesson');
+    expect(content).toContain('substitutionDrills');
+  });
+
+  it('App implements mobile bottom navigation and responsive mobile video layout', () => {
+    const appContent = fs.readFileSync(appPath, 'utf-8');
+    // Mobile bottom nav must include video/film
+    expect(appContent).toContain("setActiveTab('video')");
+    expect(appContent).toContain('Film');
+
+    const watchingContent = fs.readFileSync(watchingViewPath, 'utf-8');
+    // Mobile bottom clearance so player is not blocked by mobile nav
+    expect(watchingContent).toContain('pb-24');
+  });
+
   it('SimpleLearningHub integrates Video Speaking & Shadowing Studio tab', () => {
     const content = fs.readFileSync(learningHubPath, 'utf-8');
     expect(content).toContain('WatchingView');

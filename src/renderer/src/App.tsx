@@ -261,6 +261,20 @@ export const App: React.FC = () => {
             <span><span className="hidden 2xl:inline">30 Günlük </span>Kamp</span>
           </button>
 
+        <button
+          onClick={() => setActiveTab('video')}
+          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
+            activeTab === 'video'
+              ? 'text-rose-600 dark:text-rose-400 font-black'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
+          }`}
+        >
+          <Film className="w-4 h-4 mb-0.5" />
+          <span className="text-[10px]">Film</span>
+        </button>
+
+        
+
           <button
             onClick={() => setActiveTab('kids')}
             className={`h-9 px-3 rounded-full text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
