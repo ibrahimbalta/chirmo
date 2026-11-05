@@ -6,6 +6,7 @@ interface ProfileEditModalProps {
   isOpen: boolean;
   onClose: () => void;
   onProfileUpdated?: (profile: UserProfile) => void;
+  onOpenAdmin?: () => void;
   isFirstTime?: boolean;
 }
 
@@ -15,6 +16,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   isOpen,
   onClose,
   onProfileUpdated,
+  onOpenAdmin,
   isFirstTime = false
 }) => {
   const [profile, setProfile] = useState<UserProfile>(() => UserProfileService.getProfile());
@@ -173,6 +175,25 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               <span>{isFirstTime ? 'Başla ve Kaydet' : 'Değişiklikleri Kaydet'}</span>
             </button>
           </div>
+
+          {/* Yönetici Girişi Linki */}
+          {!isFirstTime && (
+            <div className="text-center pt-1 border-t border-slate-100 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  if (onOpenAdmin) onOpenAdmin();
+                  else if (typeof window !== 'undefined') window.location.hash = 'admin';
+                }}
+                className="text-[11px] text-slate-400 hover:text-amber-500 dark:hover:text-amber-400 hover:underline transition cursor-pointer inline-flex items-center space-x-1"
+                title="Sistem ve Yönetici Girişi"
+              >
+                <span>🔒</span>
+                <span>Admin Girişi</span>
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </div>

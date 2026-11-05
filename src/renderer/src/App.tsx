@@ -96,9 +96,19 @@ export const App: React.FC = () => {
     const unsubProfile = UserProfileService.subscribe((updated) => {
       setUserProfile(updated);
     });
+
+    const handleHash = () => {
+      if (typeof window !== 'undefined' && window.location.hash === '#admin') {
+        setActiveTab('admin');
+      }
+    };
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+
     return () => {
       unsubAuth();
       unsubProfile();
+      window.removeEventListener('hashchange', handleHash);
     };
   }, []);
 
@@ -353,20 +363,6 @@ export const App: React.FC = () => {
             <span className="hidden sm:inline">APK İndir</span>
           </button>
 
-          {/* Yönetici (Admin) Paneli Butonu */}
-          <button
-            onClick={() => setActiveTab('admin')}
-            className={`h-8.5 px-2.5 sm:px-3 rounded-xl border text-xs font-bold transition-all shadow-xs inline-flex items-center space-x-1.5 cursor-pointer shrink-0 ${
-              activeTab === 'admin'
-                ? 'bg-amber-500 text-white border-amber-600 shadow-amber-500/20'
-                : 'bg-slate-100/90 dark:bg-slate-800/90 hover:bg-amber-50 dark:hover:bg-amber-950/40 text-slate-700 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 border-slate-200/80 dark:border-slate-700'
-            }`}
-            title="Yönetici Paneli (SaaS Metrikleri, Kullanıcılar, Video & Kamp Müfredatı)"
-          >
-            <Lock className="w-3.5 h-3.5 text-amber-500" />
-            <span className="hidden sm:inline font-extrabold">Admin</span>
-          </button>
-
           {/* Gün Serisi & XP Ortak Kapsülü */}
           <div
             onClick={() => setActiveTab('learn')}
@@ -487,6 +483,7 @@ export const App: React.FC = () => {
                     onNavigateToGames={() => setActiveTab('games')}
                     onNavigateToSpeak={() => setActiveTab('speak')}
                     onNavigateToTasks={() => setActiveTab('tasks')}
+                    onNavigateToAdmin={() => setActiveTab('admin')}
                     onOpenInstallModal={() => setIsInstallModalOpen(true)}
                     userLevel={learningProgress.currentLevel}
                     pendingTaskCount={pendingTaskCount}
@@ -679,7 +676,14 @@ export const App: React.FC = () => {
         {/* BÖLÜM 8: YÖNETİCİ & SAAS KONTROL PANELİ */}
         {activeTab === 'admin' && (
           <div className="flex-1 flex flex-col h-full overflow-hidden">
-            <AdminDashboard onBackToApp={() => setActiveTab('search')} />
+            <AdminDashboard
+              onBackToApp={() => {
+                if (typeof window !== 'undefined' && window.location.hash === '#admin') {
+                  history.replaceState(null, '', window.location.pathname + window.location.search);
+                }
+                setActiveTab('search');
+              }}
+            />
           </div>
         )}
       </main>
@@ -714,6 +718,7 @@ export const App: React.FC = () => {
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
         onProfileUpdated={(updated) => setUserProfile(updated)}
+        onOpenAdmin={() => setActiveTab('admin')}
       />
 
       {/* Sıfır Kişisel Veri SaaS Kimlik & Hesap Modalı */}
@@ -721,6 +726,7 @@ export const App: React.FC = () => {
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
         onSuccess={(u) => setCurrentUser(u)}
+        onOpenAdmin={() => setActiveTab('admin')}
       />
 
       {/* ==================== MOBİL ALT MENÜ (SMARTPHONE BOTTOM NAV - 6 TEMEL BÖLÜM) ==================== */}
