@@ -314,6 +314,13 @@ export class LearningStorageService {
     return p;
   }
 
+  public static addXP(amount: number): DailyGoalProgress {
+    const p = this.getProgress();
+    p.xp = (p.xp || 450) + amount;
+    this.saveProgress(p);
+    return p;
+  }
+
   // --- Learning Mode ---
   public static getLearningMode(): LearningMode {
     return (localStorage.getItem(STORAGE_KEYS.MODE) as LearningMode) || 'reading';

@@ -55,8 +55,6 @@ export const ChirmoVisionExplorerModal: React.FC<ChirmoVisionExplorerModalProps>
     };
   }, []);
 
-  if (!isOpen) return null;
-
   const startCamera = async () => {
     setCameraError(null);
     try {
@@ -204,6 +202,8 @@ export const ChirmoVisionExplorerModal: React.FC<ChirmoVisionExplorerModalProps>
       if (onRewardXP) onRewardXP(25);
     }
   };
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fadeIn">

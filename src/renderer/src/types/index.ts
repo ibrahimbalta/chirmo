@@ -118,6 +118,7 @@ export interface DailyGoalProgress {
   lastActiveDate: string;
   totalWordsLearned: number;
   currentLevel: CEFRLevel;
+  xp?: number;
 }
 
 export interface ExploredArticle {

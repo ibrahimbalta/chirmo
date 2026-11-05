@@ -58,6 +58,11 @@ export class ErrorBoundary extends Component<Props, State> {
               <p className="text-xs text-slate-500 leading-relaxed">
                 Uygulama açılırken küçük bir geçiş durumu oluştu. Yeniden başlatarak hemen kaldığın yerden devam edebilirsin.
               </p>
+              {this.state.error && (
+                <div className="text-[11px] text-amber-700 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200 text-left font-mono overflow-auto max-h-24">
+                  {this.state.error.message || String(this.state.error)}
+                </div>
+              )}
             </div>
 
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2.5">

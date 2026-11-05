@@ -33,8 +33,6 @@ export const ChirmoAccentVoiceSelectorModal: React.FC<ChirmoAccentVoiceSelectorM
     }
   }, [isOpen]);
 
-  if (!isOpen) return null;
-
   const handleSelectAccent = (id: VoiceAccentId) => {
     setSelectedAccentId(id);
   };
@@ -68,6 +66,8 @@ export const ChirmoAccentVoiceSelectorModal: React.FC<ChirmoAccentVoiceSelectorM
       onClose();
     }, 600);
   };
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">

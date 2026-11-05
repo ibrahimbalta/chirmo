@@ -73,8 +73,6 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
     };
   }, [duelPhase, secondsLeft]);
 
-  if (!isOpen) return null;
-
   const resetDuel = () => {
     if (timerRef.current) clearInterval(timerRef.current);
     if (recognitionRef.current) {
@@ -207,6 +205,8 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
   const totalUserScore = roundResults.reduce((acc, r) => acc + r.userScore, 0);
   const totalOpponentScore = roundResults.reduce((acc, r) => acc + r.opponentScore, 0);
   const isMatchWinner = totalUserScore >= totalOpponentScore;
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-fadeIn">

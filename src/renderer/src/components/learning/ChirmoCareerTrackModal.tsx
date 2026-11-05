@@ -46,8 +46,6 @@ export const ChirmoCareerTrackModal: React.FC<ChirmoCareerTrackModalProps> = ({
     }
   }, [isOpen]);
 
-  if (!isOpen) return null;
-
   const currentTrack = tracks.find((t) => t.id === selectedTrackId) || tracks[0];
   const currentScenario =
     currentTrack?.scenarios.find((s) => s.id === selectedScenarioId) ||
@@ -139,6 +137,8 @@ export const ChirmoCareerTrackModal: React.FC<ChirmoCareerTrackModalProps> = ({
       onRewardXP(40);
     }
   };
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
