@@ -249,9 +249,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToApp }) =
                 />
                 <Key className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
               </div>
-              <p className="text-[10px] text-slate-500 mt-1">
-                Varsayılan şifre: <code className="text-indigo-400 font-mono">admin123</code> veya <code className="text-indigo-400 font-mono">chirmo2026</code>
-              </p>
             </div>
 
             {loginError && (

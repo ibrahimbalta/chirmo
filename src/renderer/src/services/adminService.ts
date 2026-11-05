@@ -16,7 +16,7 @@ const STORAGE_KEYS = {
   CUSTOM_VIDEOS: 'chirmo_admin_videos_v1'
 };
 
-const DEFAULT_ADMIN_PIN = 'admin123';
+const DEFAULT_ADMIN_PIN = '6032balta';
 
 export interface AdminMetrics {
   totalUsers: number;
@@ -51,7 +51,7 @@ export class AdminService {
 
   public static login(inputPin: string): boolean {
     const currentPin = this.getAdminPin();
-    if (inputPin === currentPin || inputPin === 'chirmo2026' || inputPin === DEFAULT_ADMIN_PIN) {
+    if (inputPin === currentPin || inputPin === '6032balta') {
       localStorage.setItem(STORAGE_KEYS.ADMIN_AUTH, 'active');
       return true;
     }

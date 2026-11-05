@@ -24,28 +24,25 @@ describe('AdminService & Dashboard Management Suite', () => {
   });
 
   describe('Admin Authentication & Security Gateway', () => {
-    it('authenticates with default admin PIN (admin123)', () => {
+    it('authenticates with default admin PIN (6032balta)', () => {
       expect(AdminService.isAuthenticated()).toBe(false);
 
-      const success = AdminService.login('admin123');
+      const success = AdminService.login('6032balta');
       expect(success).toBe(true);
       expect(AdminService.isAuthenticated()).toBe(true);
     });
 
-    it('authenticates with bypass master passkey (chirmo2026)', () => {
-      const success = AdminService.login('chirmo2026');
-      expect(success).toBe(true);
-      expect(AdminService.isAuthenticated()).toBe(true);
-    });
-
-    it('rejects incorrect PIN', () => {
+    it('rejects incorrect PIN and old default', () => {
       const failed = AdminService.login('wrongpin99');
       expect(failed).toBe(false);
       expect(AdminService.isAuthenticated()).toBe(false);
+
+      const oldFailed = AdminService.login('admin123');
+      expect(oldFailed).toBe(false);
     });
 
     it('logs out successfully', () => {
-      AdminService.login('admin123');
+      AdminService.login('6032balta');
       expect(AdminService.isAuthenticated()).toBe(true);
 
       AdminService.logout();
@@ -53,7 +50,7 @@ describe('AdminService & Dashboard Management Suite', () => {
     });
 
     it('allows changing admin PIN when logged in', () => {
-      AdminService.login('admin123');
+      AdminService.login('6032balta');
       const changeRes = AdminService.setAdminPin('newSuperSecretPin99');
       expect(changeRes).toBe(true);
 
