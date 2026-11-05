@@ -184,13 +184,13 @@ export const LearningCenterSidebar: React.FC<LearningCenterSidebarProps> = ({
 
       {/* ==================== 3. ALT BÖLÜM: CHIRMO PREMIUM VE GÜNLÜK HEDEFİM ==================== */}
       <div className="space-y-3 pt-2">
-        {/* Chirmo Premium (200 TL / Ay) Kartı */}
+        {/* Chirmo Premium (200 TL / Yıl - Yıllık Tek Sefer) Kartı */}
         <div className="p-4 rounded-3xl bg-gradient-to-br from-indigo-500 via-purple-600 to-purple-700 text-white shadow-lg shadow-purple-500/20 relative overflow-hidden group">
           <div className="flex items-center space-x-2">
             <span className="text-xl">👑</span>
             <div>
               <div className="font-black text-xs text-white">Chirmo Premium</div>
-              <div className="text-[10px] text-purple-200 font-bold">200 TL / Ay</div>
+              <div className="text-[10px] text-purple-200 font-bold">200 TL / Yıl (Tek Sefer)</div>
             </div>
           </div>
 

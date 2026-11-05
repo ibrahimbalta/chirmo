@@ -68,13 +68,13 @@ export const ChirmoSubscriptionModal: React.FC<ChirmoSubscriptionModalProps> = (
           <div className="space-y-1">
             <div className="inline-flex items-center space-x-1.5 px-3 py-0.5 rounded-full bg-white/20 text-xs font-black uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-              <span>Chirmo Premium Üyelik</span>
+              <span>Chirmo Premium — Yıllık Tek Seferlik Ödeme</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-black">
-              30 Günde Konuşmaya Başla — 200 TL / Ay
+              1 Yıllık Tam Erişim — 200 TL / Yıl
             </h2>
             <p className="text-xs text-indigo-100">
-              Günde sadece 6.6 TL'ye kendi özel yapay zekâ İngilizce öğretmenine sahip ol.
+              Yılda sadece tek seferlik 200 TL ödeyerek 365 gün sınırsız öğren. Aylık tekrarlayan kesinti yok!
             </p>
           </div>
 
@@ -98,7 +98,7 @@ export const ChirmoSubscriptionModal: React.FC<ChirmoSubscriptionModalProps> = (
                 <div>
                   <div className="font-black text-sm">Chirmo Premium Aktif! 🎉</div>
                   <div className="text-[11px] text-emerald-700 dark:text-emerald-300">
-                    Sonraki Yenileme: {new Date(subState.renewsAt || '').toLocaleDateString('tr-TR')} (200 TL)
+                    Bitiş Tarihi: {new Date(subState.renewsAt || '').toLocaleDateString('tr-TR')} (1 Yıllık Tam Erişim)
                   </div>
                 </div>
               </div>
@@ -145,7 +145,7 @@ export const ChirmoSubscriptionModal: React.FC<ChirmoSubscriptionModalProps> = (
               </div>
             </div>
 
-            {/* 200 TL Premium Plan */}
+            {/* 200 TL Yıllık Tek Seferlik Premium Plan */}
             <div className="p-5 rounded-3xl bg-gradient-to-br from-indigo-50/80 via-white to-purple-50/80 dark:from-slate-900 dark:to-slate-800 border-2 border-indigo-600 shadow-md space-y-4 flex flex-col justify-between relative overflow-hidden">
               <div className="absolute top-0 right-0 px-3 py-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-[10px] font-black uppercase tracking-wider rounded-bl-2xl">
                 {premiumPlan.badge}
@@ -153,13 +153,13 @@ export const ChirmoSubscriptionModal: React.FC<ChirmoSubscriptionModalProps> = (
 
               <div className="space-y-3">
                 <div className="space-y-0.5">
-                  <div className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase">Önerilen</div>
+                  <div className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase">Önerilen Fırsat</div>
                   <div className="text-lg font-black text-slate-900 dark:text-white">{premiumPlan.name}</div>
-                  <div className="text-3xl font-black text-indigo-600 dark:text-indigo-400 mt-1 flex items-baseline space-x-1">
+                  <div className="text-3xl font-black text-indigo-600 dark:text-indigo-400 mt-1 flex items-baseline space-x-1.5">
                     <span>200 TL</span>
-                    <span className="text-xs font-bold text-slate-500">/ ay</span>
+                    <span className="text-xs font-bold text-slate-500">/ yıl (Tek Sefer)</span>
                   </div>
-                  <div className="text-[11px] text-slate-500 font-medium">Taahhütsüz • İstediğin an tek tıkla iptal</div>
+                  <div className="text-[11px] text-slate-500 font-medium">Yıllık Tek Seferlik Ödeme • Aylık kesinti veya taahhüt yok</div>
                 </div>
 
                 <div className="space-y-2 pt-2 border-t border-indigo-100 dark:border-slate-700">
@@ -186,17 +186,17 @@ export const ChirmoSubscriptionModal: React.FC<ChirmoSubscriptionModalProps> = (
                     ) : (
                       <>
                         <Zap className="w-4 h-4 text-amber-300" />
-                        <span>Premium'a Geç — 200 TL</span>
+                        <span>Premium'a Geç — 200 TL (Yıllık Tek Sefer)</span>
                       </>
                     )}
                   </button>
                 ) : (
                   <div className="text-center py-2 text-emerald-600 font-black">
-                    ✓ Mevcut Planınız
+                    ✓ Mevcut Planınız (1 Yıl Aktif)
                   </div>
                 )}
                 <div className="text-center text-[10px] text-slate-400">
-                  🔒 256-bit SSL & 3D Secure ile %100 Güvenli Ödeme
+                  🔒 256-bit SSL & 3D Secure ile Güvenli Tek Çekim Ödeme
                 </div>
               </div>
             </div>
@@ -218,10 +218,10 @@ export const ChirmoSubscriptionModal: React.FC<ChirmoSubscriptionModalProps> = (
             <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 space-y-1">
               <div className="font-black text-slate-900 dark:text-white flex items-center space-x-1.5">
                 <RotateCcw className="w-4 h-4 text-indigo-600" />
-                <span>Taahhüt & Ceza Yok</span>
+                <span>Yıllık Tek Seferlik</span>
               </div>
               <p className="text-[11px] text-slate-500 leading-relaxed">
-                Aboneliğinizi dilediğiniz an tek butonla sonlandırabilirsiniz; cayma bedeli yoktur.
+                Yılda yalnızca bir defa 200 TL ödersiniz. Aylık tekrarlayan gizli kart çekimi yapılmaz.
               </p>
             </div>
 
@@ -249,7 +249,7 @@ export const ChirmoSubscriptionModal: React.FC<ChirmoSubscriptionModalProps> = (
             {showCostDetails && (
               <div className="mt-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2 text-[11px]">
                 <div className="font-black text-slate-800 dark:text-slate-200">
-                  200 TL / Kullanıcı / Ay Finansal Dökümü:
+                  200 TL / Kullanıcı / Yıl (Tek Seferlik Ödeme) Finansal Dökümü:
                 </div>
                 <div className="space-y-1">
                   {costBreakdown.map((item, idx) => (

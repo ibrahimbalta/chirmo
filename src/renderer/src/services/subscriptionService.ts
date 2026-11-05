@@ -1,21 +1,24 @@
 /**
  * subscriptionService.ts
- * CHIRMO — 200 TL / Ay Abonelik ve Ticari Mimari Servisi
+ * CHIRMO — 200 TL / Yıl (Yıllık Tek Seferlik Ödeme) Abonelik ve Ticari Mimari Servisi
  * 
  * Türkiye ödeme altyapısı (Iyzico / Kredi Kartı / Havale / Google Play & App Store uyumluluğu)
+ * Yıllık tek seferlik ödeme modeli: Kullanıcı yılda sadece 1 kez 200 TL öder, aylık tekrarlayan kesinti olmaz.
  * Adil Kullanım Politikası (Fair Usage Policy), maliyet ve kârlılık şeffaflığı.
  */
 
 export interface SubscriptionPlan {
   id: string;
   name: string;
-  priceMonthlyTr: number; // 200 TL
+  priceYearlyTr: number; // 200 TL / Yıl (Yıllık Tek Sefer)
+  priceMonthlyTr: number; // Geriye dönük uyumluluk (200)
+  billingPeriod: string; // 'Yıllık (Tek Sefer)'
   currency: string;
   badge: string;
   isPopular?: boolean;
   features: string[];
   limits: {
-    dailyAiSpeakingMinutes: number; // 30 dk/gün (aylık 900 dk)
+    dailyAiSpeakingMinutes: number; // 30 dk/gün
     dailyGames: number | 'unlimited';
     simulationsAccess: 'all' | 'sample';
     sentenceBuilderAccess: 'all' | 'basic';
@@ -26,7 +29,8 @@ export interface SubscriptionPlan {
 
 export interface UserSubscriptionState {
   isPremium: boolean;
-  planId: 'free' | 'premium_monthly';
+  planId: 'free' | 'premium_yearly' | 'premium_monthly';
+  billingType?: 'yearly_one_time';
   startedAt?: string;
   renewsAt?: string;
   cancelledAt?: string;
@@ -52,7 +56,9 @@ export class SubscriptionService {
     free: {
       id: 'free',
       name: 'Chirmo Başlangıç (Ücretsiz)',
+      priceYearlyTr: 0,
       priceMonthlyTr: 0,
+      billingPeriod: 'Kalıcı Ücretsiz',
       currency: 'TL',
       badge: 'Temel Deneyim',
       features: [
@@ -72,14 +78,17 @@ export class SubscriptionService {
       }
     },
     premium: {
-      id: 'premium_monthly',
-      name: 'Chirmo Premium (Tam Erişim)',
+      id: 'premium_yearly',
+      name: 'Chirmo Premium (1 Yıllık Tam Erişim)',
+      priceYearlyTr: 200,
       priceMonthlyTr: 200,
+      billingPeriod: 'Yıllık (Tek Seferlik Ödeme)',
       currency: 'TL',
-      badge: 'En Popüler • Taahhütsüz',
+      badge: 'En Popüler • Yıllık Tek Sefer',
       isPopular: true,
       features: [
-        '30 Günlük Tam Konuşma Kampı müfredatı',
+        '365 Gün Boyunca Tüm Müfredata Sınırsız Erişim',
+        'Aylık Sürpriz Yenileme Yok — Tek Seferlik 200 TL',
         'Yapay Zekâ Konuşma Öğretmeni (Kişisel Geri Bildirim)',
         'Sınırsız Cümle Üretim Laboratuvarı & Permütasyonlar',
         '12+ Gerçek Hayat Simülasyonu (Havalimanı, İş, Otel, Kafe)',
@@ -87,7 +96,7 @@ export class SubscriptionService {
         'Akıllı SM-2 Unutmama ve Aralıklı Tekrar Sistemi',
         'Chirmo Kids (5-17 yaş) ve Veli Haftalık WhatsApp/PDF Karnesi',
         'Reklamsız ve Güvenli Öğrenme Ortamı',
-        '14 Gün Koşulsuz İade Güvencesi & İstediğin An İptal'
+        '14 Gün Koşulsuz İade Güvencesi'
       ],
       limits: {
         dailyAiSpeakingMinutes: 30, // 30 dk/gün
@@ -101,28 +110,25 @@ export class SubscriptionService {
   };
 
   /**
-   * 200 TL Aylık Ücretin Maliyet ve Kârlılık Hesabı:
+   * 200 TL Yıllık Tek Seferlik Ücretin Maliyet ve Kârlılık Hesabı:
    * 
-   * Gelir: 200.00 TL / Kullanıcı / Ay
+   * Gelir: 200.00 TL / Kullanıcı / Yıl (Tek Sefer)
    * - %20 KDV (Dijital Hizmet): 33.33 TL
-   * - Ödeme Geçidi Komisyonu (Iyzico / Banka ort. %3 + 1 TL): ~7.00 TL
-   * - AI LLM Token Maliyeti (Kullanıcı başı ort. 45 diyalog seansı): ~18.50 TL
-   * - Web Speech TTS & STT ve Ses Sentezi Sunucu Maliyeti: ~6.00 TL
-   * - Bulut Sunucu & Veritabanı Maliyeti (Ölçeklenmiş): ~4.00 TL
+   * - Ödeme Geçidi Komisyonu (Iyzico / Banka tek çekim %2.9 + 1 TL): ~6.80 TL
+   * - AI LLM Token & Ses Altyapı Maliyeti: ~25.00 TL
+   * - Bulut Sunucu & Veritabanı Maliyeti: ~5.00 TL
    * ----------------------------------------------------
-   * Toplam Maliyet: ~68.83 TL
-   * NET FAALİYET KÂRI: ~131.17 TL (%65.5 Net Kâr Marjı)
-   * 
-   * Bu hesaplama 200 TL fiyatının hem Türk kullanıcısı için ulaşılabilir hem de işletme için yüksek kârlı ve sürdürülebilir olduğunu kanıtlar.
+   * Toplam Maliyet: ~70.13 TL
+   * NET FAALİYET KÂRI: ~129.87 TL (%65 Net Kâr Marjı)
    */
   public static getCostBreakdown(): CostBreakdownItem[] {
     return [
       { item: 'KDV (%20) & Yasal Vergiler', costPerUserTr: 33.33, description: 'Türkiye yasal e-ticaret KDV kesintisi' },
-      { item: 'Ödeme Altyapısı (Iyzico / 3D Secure)', costPerUserTr: 7.00, description: 'Kart işlem ve banka provizyon komisyonu' },
-      { item: 'AI Diyalog & Dil Modeli Maliyeti', costPerUserTr: 18.50, description: 'Chirmo AI konuşma ve analiz tokenları' },
+      { item: 'Ödeme Altyapısı (Iyzico / 3D Secure)', costPerUserTr: 6.80, description: 'Tek çekim kart işlem ve banka provizyon komisyonu' },
+      { item: 'AI Diyalog & Dil Modeli Maliyeti', costPerUserTr: 25.00, description: 'Chirmo AI konuşma ve analiz tokenları' },
       { item: 'Ses & TTS Altyapısı', costPerUserTr: 6.00, description: 'Doğal telaffuz ve ses sentezi bant genişliği' },
-      { item: 'Bulut & Veri Saklama', costPerUserTr: 4.00, description: 'SM-2 hafıza ve ilerleme güvenliği' },
-      { item: 'NET İŞLETME KÂRI', costPerUserTr: 131.17, description: 'Platform geliştirme, öğretmen maaşları ve kâr' }
+      { item: 'Bulut & Veri Saklama', costPerUserTr: 5.00, description: '1 yıllık SM-2 hafıza ve ilerleme güvenliği' },
+      { item: 'NET İŞLETME KÂRI', costPerUserTr: 123.87, description: 'Platform geliştirme, öğretmen maaşları ve net kâr' }
     ];
   }
 
@@ -152,18 +158,19 @@ export class SubscriptionService {
   }
 
   /**
-   * Premium Aboneliği Başlatır
+   * Premium Aboneliği Başlatır (1 Yıl Boyunca Geçerli Tek Seferlik Ödeme)
    */
   public static activatePremium(paymentMethod: 'credit_card' | 'iyzico_checkout' | 'bank_transfer' = 'iyzico_checkout'): UserSubscriptionState {
     const now = new Date();
-    const renewDate = new Date();
-    renewDate.setDate(now.getDate() + 30);
+    const expiryDate = new Date();
+    expiryDate.setFullYear(now.getFullYear() + 1); // 1 Yıl sonra biter (Aylık otomatik yenileme yok)
 
     const newState: UserSubscriptionState = {
       isPremium: true,
-      planId: 'premium_monthly',
+      planId: 'premium_yearly',
+      billingType: 'yearly_one_time',
       startedAt: now.toISOString(),
-      renewsAt: renewDate.toISOString(),
+      renewsAt: expiryDate.toISOString(),
       paymentMethod,
       monthlyFairUsage: {
         aiMinutesUsed: 0,
