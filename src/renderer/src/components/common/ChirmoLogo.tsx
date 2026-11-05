@@ -31,19 +31,19 @@ export const ChirmoLogo: React.FC<ChirmoLogoProps> = ({
 
   // Sizes for image rendering
   const heightClasses = {
-    xs: 'h-6 w-auto',
-    sm: 'h-8 w-auto',
-    md: 'h-8.5 sm:h-9 w-auto',
-    lg: 'h-12 w-auto',
-    xl: 'h-20 sm:h-24 md:h-28 w-auto max-w-full'
+    xs: 'h-6 max-h-6 w-auto',
+    sm: 'h-7 sm:h-8 max-h-8 w-auto',
+    md: 'h-8 sm:h-9 md:h-11 lg:h-12 max-h-8 sm:max-h-9 md:max-h-11 lg:max-h-12 w-auto',
+    lg: 'h-12 sm:h-14 max-h-14 w-auto',
+    xl: 'h-20 sm:h-24 md:h-28 max-h-28 w-auto max-w-full'
   }[size];
 
   // Icon only sizes
   const iconSizes = {
     xs: 'w-6 h-6',
     sm: 'w-8 h-8',
-    md: 'w-10 h-10',
-    lg: 'w-13 h-13',
+    md: 'w-8 h-8 sm:w-9 sm:h-9 md:w-11 md:h-11',
+    lg: 'w-12 h-12',
     xl: 'w-20 h-20'
   }[size];
 
@@ -51,7 +51,7 @@ export const ChirmoLogo: React.FC<ChirmoLogoProps> = ({
     <div
       role="img"
       aria-label="Chirmo - AI Language Studio"
-      className={`relative inline-flex items-center justify-center select-none overflow-visible ${
+      className={`relative inline-flex items-center justify-center select-none shrink-0 ${
         animated ? 'transition-transform duration-300 hover:scale-[1.02]' : ''
       } ${className}`}
     >
@@ -66,7 +66,10 @@ export const ChirmoLogo: React.FC<ChirmoLogoProps> = ({
         <img
           src="./chirmo-logo.png"
           alt="Chirmo"
-          className={`${heightClasses} object-contain`}
+          className={`${heightClasses} object-contain shrink-0 block`}
+          style={{
+            maxHeight: size === 'md' ? '48px' : undefined
+          }}
           draggable={false}
         />
       )}

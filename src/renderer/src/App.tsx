@@ -227,7 +227,7 @@ export const App: React.FC = () => {
         <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
           <div
             onClick={handleGoHome}
-            className="cursor-pointer flex items-center hover:opacity-90 transition-opacity shrink-0"
+            className="cursor-pointer flex items-center hover:opacity-90 transition-opacity shrink-0 max-h-12 overflow-hidden"
             title="Chirmo Ana Sayfa - 30 Günde Konuşma Garantili Sanal Öğretmen"
             aria-label="30 Günde Konuşma Garantili Sanal Öğretmen"
           >
