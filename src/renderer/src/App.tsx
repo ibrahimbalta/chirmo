@@ -630,7 +630,7 @@ export const App: React.FC = () => {
       </header>
 
       {/* ==================== ANA ÇALIŞMA ALANI ==================== */}
-      <main className="flex-1 relative overflow-hidden flex flex-col">
+      <main className="flex-1 relative overflow-hidden flex flex-col pb-14 sm:pb-0">
         {/* BÖLÜM 1: ARAMA & TARAYICI */}
         {activeTab === 'search' && (
           <div className="flex-1 relative flex flex-col h-full overflow-hidden">
@@ -924,89 +924,89 @@ export const App: React.FC = () => {
         onSuccess={(u) => setCurrentUser(u)}
       />
 
-      {/* ==================== MOBİL ALT MENÜ (SMARTPHONE BOTTOM NAV - 6 TEMEL BÖLÜM) ==================== */}
-      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/90 dark:border-slate-800 shadow-xl px-1 py-1 flex items-center justify-around">
+      {/* ==================== MOBİL ALT MENÜ (SMARTPHONE BOTTOM NAV - 7 TEMEL BÖLÜM) ==================== */}
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/90 dark:border-slate-800 shadow-xl px-1 py-1 flex items-center justify-around select-none">
         <button
           onClick={() => setActiveTab('search')}
-          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
+          className={`flex flex-col items-center justify-center py-1 px-1 rounded-xl flex-1 text-center transition-all cursor-pointer min-h-[46px] active:scale-95 ${
             activeTab === 'search'
-              ? 'text-indigo-600 dark:text-indigo-400 font-black'
+              ? 'text-indigo-600 dark:text-indigo-400 font-black bg-indigo-50/80 dark:bg-indigo-950/50 shadow-2xs'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
           }`}
         >
-          <Sparkles className="w-4 h-4 mb-0.5" />
-          <span className="text-[10px]">Stüdyo</span>
+          <Sparkles className="w-4 h-4 mb-0.5 shrink-0" />
+          <span className="text-[10px] leading-tight truncate">Stüdyo</span>
         </button>
         <button
           onClick={() => setActiveTab('video')}
-          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
+          className={`flex flex-col items-center justify-center py-1 px-1 rounded-xl flex-1 text-center transition-all cursor-pointer min-h-[46px] active:scale-95 ${
             activeTab === 'video'
-              ? 'text-rose-600 dark:text-rose-400 font-black'
+              ? 'text-rose-600 dark:text-rose-400 font-black bg-rose-50/80 dark:bg-rose-950/50 shadow-2xs'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
           }`}
         >
-          <Film className="w-4 h-4 mb-0.5" />
-          <span className="text-[10px]">Film</span>
+          <Film className="w-4 h-4 mb-0.5 shrink-0" />
+          <span className="text-[10px] leading-tight truncate">Film</span>
         </button>
 
         <button
           onClick={() => setActiveTab('learn')}
-          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
+          className={`flex flex-col items-center justify-center py-1 px-1 rounded-xl flex-1 text-center transition-all cursor-pointer min-h-[46px] active:scale-95 ${
             activeTab === 'learn'
-              ? 'text-emerald-600 dark:text-emerald-400 font-black'
+              ? 'text-emerald-600 dark:text-emerald-400 font-black bg-emerald-50/80 dark:bg-emerald-950/50 shadow-2xs'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
           }`}
         >
-          <BookOpen className="w-4 h-4 mb-0.5" />
-          <span className="text-[10px]">Kamp</span>
+          <BookOpen className="w-4 h-4 mb-0.5 shrink-0" />
+          <span className="text-[10px] leading-tight truncate">Kamp</span>
         </button>
 
         <button
           onClick={() => setActiveTab('kids')}
-          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
+          className={`flex flex-col items-center justify-center py-1 px-1 rounded-xl flex-1 text-center transition-all cursor-pointer min-h-[46px] active:scale-95 ${
             activeTab === 'kids'
-              ? 'text-pink-600 dark:text-pink-400 font-black'
+              ? 'text-pink-600 dark:text-pink-400 font-black bg-pink-50/80 dark:bg-pink-950/50 shadow-2xs'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
           }`}
         >
-          <Smile className="w-4 h-4 mb-0.5" />
-          <span className="text-[10px]">Kids</span>
+          <Smile className="w-4 h-4 mb-0.5 shrink-0" />
+          <span className="text-[10px] leading-tight truncate">Kids</span>
         </button>
 
         <button
           onClick={() => setActiveTab('games')}
-          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
+          className={`flex flex-col items-center justify-center py-1 px-1 rounded-xl flex-1 text-center transition-all cursor-pointer min-h-[46px] active:scale-95 ${
             activeTab === 'games'
-              ? 'text-amber-500 dark:text-amber-400 font-black'
+              ? 'text-amber-500 dark:text-amber-400 font-black bg-amber-50/80 dark:bg-amber-950/50 shadow-2xs'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
           }`}
         >
-          <Gamepad2 className="w-4 h-4 mb-0.5" />
-          <span className="text-[10px]">Oyun</span>
+          <Gamepad2 className="w-4 h-4 mb-0.5 shrink-0" />
+          <span className="text-[10px] leading-tight truncate">Oyun</span>
         </button>
 
         <button
           onClick={() => setActiveTab('speak')}
-          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
+          className={`flex flex-col items-center justify-center py-1 px-1 rounded-xl flex-1 text-center transition-all cursor-pointer min-h-[46px] active:scale-95 ${
             activeTab === 'speak'
-              ? 'text-rose-600 dark:text-rose-400 font-black'
+              ? 'text-purple-600 dark:text-purple-400 font-black bg-purple-50/80 dark:bg-purple-950/50 shadow-2xs'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
           }`}
         >
-          <Mic className="w-4 h-4 mb-0.5" />
-          <span className="text-[10px]">Simülatör</span>
+          <Mic className="w-4 h-4 mb-0.5 shrink-0" />
+          <span className="text-[10px] leading-tight truncate">Simülatör</span>
         </button>
 
         <button
           onClick={() => setActiveTab('tasks')}
-          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
+          className={`flex flex-col items-center justify-center py-1 px-1 rounded-xl flex-1 text-center transition-all cursor-pointer min-h-[46px] active:scale-95 ${
             activeTab === 'tasks'
-              ? 'text-purple-600 dark:text-purple-400 font-black'
+              ? 'text-blue-600 dark:text-blue-400 font-black bg-blue-50/80 dark:bg-blue-950/50 shadow-2xs'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
           }`}
         >
-          <CheckSquare className="w-4 h-4 mb-0.5" />
-          <span className="text-[10px]">Hedefler</span>
+          <CheckSquare className="w-4 h-4 mb-0.5 shrink-0" />
+          <span className="text-[10px] leading-tight truncate">Hedefler</span>
         </button>
       </nav>
     </div>

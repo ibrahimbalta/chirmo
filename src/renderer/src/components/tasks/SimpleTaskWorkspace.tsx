@@ -120,16 +120,16 @@ export const SimpleTaskWorkspace: React.FC = () => {
   const pendingCount = tasks.filter((t) => !t.completed).length;
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-slate-50 dark:bg-slate-950 overflow-y-auto select-none">
+    <div className="flex-1 flex flex-col h-full bg-slate-50 dark:bg-slate-950 overflow-y-auto select-none pb-24 sm:pb-8">
       {/* Başlık Alanı */}
-      <div className="p-6 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="p-4 sm:p-6 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
           <div>
             <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400 mb-1">
               <CheckSquare className="w-5 h-5" />
               <span className="text-xs font-bold uppercase tracking-wider">İş & Çalışma Yönetimi</span>
             </div>
-            <h1 className="text-2xl font-black text-slate-900 dark:text-white">
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
               İş Takibi & Günlük Plan
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -137,13 +137,13 @@ export const SimpleTaskWorkspace: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex items-center space-x-2 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 px-3.5 py-1.5 rounded-2xl text-xs font-bold text-emerald-700 dark:text-emerald-300">
+          <div className="flex items-center space-x-2 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 px-3.5 py-1.5 rounded-2xl text-xs font-bold text-emerald-700 dark:text-emerald-300 self-start sm:self-auto">
             <span>{pendingCount > 0 ? `Kalan: ${pendingCount} İş` : 'Tüm İşler Bitti! 🎉'}</span>
           </div>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto w-full p-6 space-y-6">
+      <div className="max-w-5xl mx-auto w-full p-3.5 sm:p-6 space-y-4 sm:space-y-6">
         {/* ==================== KİŞİSEL ÖĞRENME KARNESİ & GELİŞİM RAPORU ==================== */}
         {(() => {
           const report = AnalyticsService.generateWeeklyReport();
@@ -197,7 +197,7 @@ export const SimpleTaskWorkspace: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Sol Kolon: Yapılacaklar Listesi (2 Birim) */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-5">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 sm:space-y-5">
               <div className="flex items-center justify-between">
                 <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
                   <ListTodo className="w-5 h-5 text-blue-600" />

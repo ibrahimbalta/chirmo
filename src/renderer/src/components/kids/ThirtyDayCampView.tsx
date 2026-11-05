@@ -168,10 +168,10 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-slate-50 dark:bg-slate-950 overflow-y-auto select-none p-4 sm:p-6">
-      <div className="max-w-5xl mx-auto w-full space-y-6">
+    <div className="flex-1 flex flex-col h-full bg-slate-50 dark:bg-slate-950 overflow-y-auto select-none p-3 sm:p-6 pb-28 sm:pb-8">
+      <div className="max-w-5xl mx-auto w-full space-y-4 sm:space-y-6">
         {/* ==================== 20 YILLIK ÖĞRETMEN FORMÜLÜ & MOTİVASYON BARI ==================== */}
-        <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-violet-800 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-violet-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 text-white shadow-lg relative overflow-hidden">
           <div className="absolute right-0 top-0 translate-x-12 -translate-y-12 w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
@@ -278,7 +278,7 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
         </div>
 
         {/* ==================== SEÇİLİ GÜNÜN SESLİ MİSYONU ==================== */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-blue-100 dark:border-slate-800 p-6 shadow-sm space-y-6">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-blue-100 dark:border-slate-800 p-4 sm:p-6 shadow-sm space-y-4 sm:space-y-6">
           {/* Başlık ve Hafta Bilgisi */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 gap-3">
             <div>

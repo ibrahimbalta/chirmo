@@ -1031,7 +1031,7 @@ export const WatchingView: React.FC<WatchingViewProps> = ({
       </div>
 
       {/* Main Studio Body: 2-Column Responsive Layout */}
-      <div className="max-w-7xl mx-auto w-full p-4 sm:p-6 space-y-6">
+      <div className="max-w-7xl mx-auto w-full p-2.5 sm:p-6 space-y-4 sm:space-y-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
           {/* ==================== SOL KOLON (7 COL): VİDEO OYNATICI & 3 ADIMLI KONUŞMA ATÖLYESİ ==================== */}

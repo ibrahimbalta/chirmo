@@ -103,7 +103,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   };
 
   return (
-    <div className="w-full h-full flex flex-col bg-[#f8faff] dark:bg-slate-950 overflow-y-auto p-3 sm:p-5 lg:p-7 space-y-4 sm:space-y-5 select-none">
+    <div className="w-full h-full flex flex-col bg-[#f8faff] dark:bg-slate-950 overflow-y-auto p-2.5 sm:p-5 lg:p-7 pb-24 sm:pb-8 space-y-4 sm:space-y-5 select-none overflow-x-hidden">
       <div className="max-w-7xl mx-auto w-full space-y-4 sm:space-y-5">
 
         {/* ==================== 1. ÜST ARAMA VE PROFİL BARI ==================== */}
@@ -156,7 +156,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
         </div>
 
         {/* ==================== 2. MERKEZİ CHIRMO ROBOT KONUŞMA SAHNESİ ==================== */}
-        <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-[#4f46e5] via-[#7c3aed] to-[#9333ea] text-white p-6 sm:p-8 lg:p-10 shadow-xl shadow-indigo-500/20 border border-indigo-300/30">
+        <div className="relative overflow-hidden rounded-2xl sm:rounded-[32px] bg-gradient-to-br from-[#4f46e5] via-[#7c3aed] to-[#9333ea] text-white p-4 sm:p-8 lg:p-10 shadow-xl shadow-indigo-500/20 border border-indigo-300/30">
 
           {/* Sağ Üst Köşe: Chirmo Canlı Durum İmzası */}
           <div className="absolute top-4 right-4 sm:top-5 sm:right-6 z-20 hidden sm:flex items-center space-x-2 px-3.5 py-1.5 rounded-2xl bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/20 shadow-sm transition-all select-none">
