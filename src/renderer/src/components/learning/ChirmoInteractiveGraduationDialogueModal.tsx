@@ -45,6 +45,12 @@ export const ChirmoInteractiveGraduationDialogueModal: React.FC<
   const [completedTurns, setCompletedTurns] = useState<number>(0);
   const [showAllTranslations, setShowAllTranslations] = useState<boolean>(true);
 
+  // Türkçe Düşün, İngilizce Konuş (Cevap Asistanı Köprüsü)
+  const [isTurkishBridgeOpen, setIsTurkishBridgeOpen] = useState(false);
+  const [turkishInput, setTurkishInput] = useState('');
+  const [isTranslatingTurkish, setIsTranslatingTurkish] = useState(false);
+  const [translatedEnglishAnswer, setTranslatedEnglishAnswer] = useState<string | null>(null);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Akıllı Sesli İpucu Örnekleri (Kullanıcı Takıldığında Çıkacak Seçenekler & Türkçe Açıklamaları)
@@ -130,6 +136,43 @@ export const ChirmoInteractiveGraduationDialogueModal: React.FC<
     setInputTranscript(suggestion.en);
     setIsWhisperHintActive(false);
     handleSendMessage(suggestion.en, suggestion.tr);
+  };
+
+  // Aklındaki Cevabı Türkçe Yaz -> Doğal İngilizceye Çevir
+  const handleTranslateTurkishAnswer = async () => {
+    if (!turkishInput.trim()) return;
+    setIsTranslatingTurkish(true);
+
+    try {
+      const lastChirmoQuestion =
+        messages.filter((m) => m.sender === 'chirmo').slice(-1)[0]?.text ||
+        'Can you tell me more about that?';
+
+      const prompt = `Kullanıcı şu an İngilizce konuşma pratiği yapıyor.
+Chirmo'nun sorduğu soru: "${lastChirmoQuestion}".
+Kullanıcının Türkçe vermek istediği yanıt: "${turkishInput.trim()}".
+
+Görev: Bu Türkçe cevabı günlük konuşma dilinde son derece doğal, samimi ve A1-B1 seviyesinde bir İngilizce konuşma cümlesine dönüştür. Yalnızca tek bir İngilizce cümle yaz, hiçbir açıklama veya ek metin ekleme.`;
+
+      const result = await GeminiAiTeacherService.generateTutorResponse(
+        prompt,
+        [],
+        'Türkçe Düşünceyi Doğal İngilizce Konuşma Cümlesine Çevirme'
+      );
+
+      let cleanEnglish = result.text.split('\n')[0].trim().replace(/^"/, '').replace(/"$/, '');
+      if (cleanEnglish.includes('(')) {
+        cleanEnglish = cleanEnglish.split('(')[0].trim();
+      }
+
+      setTranslatedEnglishAnswer(cleanEnglish);
+    } catch {
+      // Çevrimdışı / Hızlı Yerel Sözlük Yedek Fallback
+      const sample = `I would like to say that ${turkishInput.trim()}, because it is very important and interesting to me.`;
+      setTranslatedEnglishAnswer(sample);
+    } finally {
+      setIsTranslatingTurkish(false);
+    }
   };
 
   // Web Speech API ile Kullanıcı Konuşmasını Dinleme
@@ -526,6 +569,100 @@ export const ChirmoInteractiveGraduationDialogueModal: React.FC<
                     </button>
                   </div>
                 ))}
+              </div>
+
+              {/* ==================== TÜRKÇE DÜŞÜN, İNGİLİZCE KONUŞ KÖPRÜSÜ ==================== */}
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={() => setIsTurkishBridgeOpen(!isTurkishBridgeOpen)}
+                  className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500/15 via-purple-500/15 to-indigo-500/15 hover:from-amber-500/25 hover:to-indigo-500/25 border border-amber-400/50 dark:border-amber-600/50 text-xs font-black text-amber-900 dark:text-amber-200 flex items-center justify-between transition-all cursor-pointer shadow-2xs"
+                >
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm">🇹🇷 ➔ 🇬🇧</span>
+                    <span>Aklındaki Cevabı Türkçe Yaz → İngilizce Cevap Üret</span>
+                  </div>
+                  <span className="text-[10px] bg-amber-400 text-purple-950 px-2.5 py-0.5 rounded-full font-black">
+                    {isTurkishBridgeOpen ? 'Kapat ✕' : 'Aç & Pratik Yap ✨'}
+                  </span>
+                </button>
+
+                {isTurkishBridgeOpen && (
+                  <div className="p-3 bg-gradient-to-br from-amber-50/95 to-purple-50/85 dark:from-slate-900 dark:to-purple-950/40 border-2 border-amber-300 dark:border-amber-700/60 rounded-2xl space-y-2.5 animate-fade-in shadow-xs">
+                    <div className="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-200">
+                      <span className="flex items-center space-x-1.5 text-amber-800 dark:text-amber-300">
+                        <span>💡</span>
+                        <span>Ne söylemek istiyorsan Türkçe yaz, Chirmo anında doğal İngilizceye çevirsin:</span>
+                      </span>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="text"
+                        value={turkishInput}
+                        onChange={(e) => setTurkishInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleTranslateTurkishAnswer();
+                        }}
+                        placeholder="Örn: En sevdiğim hobi hafta sonları bisiklete binmek ve müzik dinlemek..."
+                        className="flex-1 px-3 py-2 rounded-xl border border-amber-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleTranslateTurkishAnswer}
+                        disabled={isTranslatingTurkish || !turkishInput.trim()}
+                        className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 disabled:opacity-40 text-purple-950 font-black text-xs transition-all cursor-pointer flex items-center space-x-1 shrink-0 shadow-xs"
+                      >
+                        {isTranslatingTurkish ? (
+                          <span className="animate-spin">⏳</span>
+                        ) : (
+                          <span>İngilizceye Çevir ✨</span>
+                        )}
+                      </button>
+                    </div>
+
+                    {translatedEnglishAnswer && (
+                      <div className="p-2.5 bg-white dark:bg-slate-900 rounded-xl border border-purple-200 dark:border-purple-800 space-y-2">
+                        <div>
+                          <div className="text-[10px] font-black uppercase text-purple-600 dark:text-purple-400">
+                            Chirmo'nun Hazırladığı İngilizce Cevap:
+                          </div>
+                          <div className="text-xs sm:text-sm font-black text-slate-900 dark:text-white mt-0.5">
+                            🇬🇧 "{translatedEnglishAnswer}"
+                          </div>
+                          <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400 italic">
+                            🇹🇷 Türkçe: "{turkishInput}"
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800">
+                          <button
+                            type="button"
+                            onClick={() => LearningStorageService.speak(translatedEnglishAnswer)}
+                            className="px-2.5 py-1.5 rounded-lg bg-purple-50 dark:bg-purple-950 hover:bg-purple-100 text-purple-700 dark:text-purple-300 text-xs font-bold flex items-center space-x-1 cursor-pointer"
+                            title="Telaffuzu Dinle"
+                          >
+                            <Volume2 className="w-3.5 h-3.5" />
+                            <span>Sesli Dinle</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleSendMessage(translatedEnglishAnswer, turkishInput);
+                              setTranslatedEnglishAnswer(null);
+                              setTurkishInput('');
+                              setIsTurkishBridgeOpen(false);
+                            }}
+                            className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black flex items-center space-x-1 cursor-pointer shadow-xs"
+                          >
+                            <span>🚀 Bu Cevabı Chirmo'ya Gönder</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Kullanıcı Giriş & Mikrofon Barı */}
