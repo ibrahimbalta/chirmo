@@ -79,10 +79,12 @@ describe('Video & Film English Speaking & Shadowing Studio', () => {
     expect(content).toContain('substitutionDrills');
   });
 
-  it('App implements mobile bottom navigation and responsive mobile video layout', () => {
+  it('App implements mobile header and mobile bottom navigation for Film button', () => {
     const appContent = fs.readFileSync(appPath, 'utf-8');
-    // Mobile bottom nav must include video/film
+    // Header must have visible mobile Film button next to logo
+    expect(appContent).toContain('md:hidden');
     expect(appContent).toContain("setActiveTab('video')");
+    // Mobile bottom nav must also include Film
     expect(appContent).toContain('Film');
 
     const watchingContent = fs.readFileSync(watchingViewPath, 'utf-8');

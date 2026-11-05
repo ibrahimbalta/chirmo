@@ -210,14 +210,30 @@ export const App: React.FC = () => {
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#FAF9FE] text-slate-800 select-none font-sans">
       {/* ==================== ÜST KUSURSUZ SİMETRİK & TAM SIĞAN MODERN ANA BAŞLIK ==================== */}
       <header className="h-14 px-3 sm:px-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-2 z-30 shrink-0 select-none">
-        {/* Sol: Sadece Temiz Logo (Metin Kullanıcı Talebiyle Kaldırıldı) */}
-        <div
-          onClick={handleGoHome}
-          className="cursor-pointer flex items-center hover:opacity-90 transition-opacity shrink-0"
-          title="Chirmo Ana Sayfa - 30 Günde Konuşma Garantili Sanal Öğretmen"
-          aria-label="30 Günde Konuşma Garantili Sanal Öğretmen"
-        >
-          <ChirmoLogo size="md" variant="header" />
+        {/* Sol: Sadece Temiz Logo + Mobilde Her Zaman Görünen Kırmızı Film Butonu */}
+        <div className="flex items-center space-x-1.5 shrink-0">
+          <div
+            onClick={handleGoHome}
+            className="cursor-pointer flex items-center hover:opacity-90 transition-opacity shrink-0"
+            title="Chirmo Ana Sayfa - 30 Günde Konuşma Garantili Sanal Öğretmen"
+            aria-label="30 Günde Konuşma Garantili Sanal Öğretmen"
+          >
+            <ChirmoLogo size="md" variant="header" />
+          </div>
+
+          {/* Mobilde Görünen Kırmızı Film Butonu */}
+          <button
+            onClick={() => setActiveTab('video')}
+            className={`md:hidden h-8 px-2.5 rounded-full text-xs font-black transition-all duration-200 cursor-pointer inline-flex items-center space-x-1 shrink-0 whitespace-nowrap shadow-xs ${
+              activeTab === 'video'
+                ? 'bg-rose-600 text-white shadow-sm ring-2 ring-rose-200 dark:ring-rose-800'
+                : 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 hover:bg-rose-100'
+            }`}
+            title="YouTube & Film ile Konuş"
+          >
+            <Film className="w-3.5 h-3.5 shrink-0" />
+            <span>Film</span>
+          </button>
         </div>
 
         {/* Orta: 6 Renkli Minimal Hap Buton (Hafif Kompakt, Ekrana Tam Sığan, Kusursuz Simetrik) */}
@@ -703,6 +719,17 @@ export const App: React.FC = () => {
         >
           <Sparkles className="w-4 h-4 mb-0.5" />
           <span className="text-[10px]">Stüdyo</span>
+        </button>
+        <button
+          onClick={() => setActiveTab('video')}
+          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
+            activeTab === 'video'
+              ? 'text-rose-600 dark:text-rose-400 font-black'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
+          }`}
+        >
+          <Film className="w-4 h-4 mb-0.5" />
+          <span className="text-[10px]">Film</span>
         </button>
 
         <button
