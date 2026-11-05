@@ -209,9 +209,9 @@ export const App: React.FC = () => {
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#FAF9FE] text-slate-800 select-none font-sans">
       {/* ==================== ÜST KUSURSUZ SİMETRİK & TAM SIĞAN MODERN ANA BAŞLIK ==================== */}
-      <header className="h-14 px-3 sm:px-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-2 z-30 shrink-0 select-none">
+      <header className="h-14 px-3 sm:px-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3 z-30 shrink-0 select-none">
         {/* Sol: Sadece Temiz Logo + Mobilde Her Zaman Görünen Kırmızı Film Butonu */}
-        <div className="flex items-center space-x-1.5 shrink-0">
+        <div className="flex items-center space-x-2 shrink-0">
           <div
             onClick={handleGoHome}
             className="cursor-pointer flex items-center hover:opacity-90 transition-opacity shrink-0"
@@ -224,7 +224,7 @@ export const App: React.FC = () => {
           {/* Mobilde Görünen Kırmızı Film Butonu */}
           <button
             onClick={() => setActiveTab('video')}
-            className={`md:hidden h-8 px-2.5 rounded-full text-xs font-black transition-all duration-200 cursor-pointer inline-flex items-center space-x-1 shrink-0 whitespace-nowrap shadow-xs ${
+            className={`md:hidden h-8 px-2.5 rounded-xl text-xs font-black transition-all duration-200 cursor-pointer inline-flex items-center space-x-1 shrink-0 whitespace-nowrap shadow-xs ${
               activeTab === 'video'
                 ? 'bg-rose-600 text-white shadow-sm ring-2 ring-rose-200 dark:ring-rose-800'
                 : 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 hover:bg-rose-100'
@@ -236,157 +236,149 @@ export const App: React.FC = () => {
           </button>
         </div>
 
-        {/* Orta: 6 Renkli Minimal Hap Buton (Hafif Kompakt, Ekrana Tam Sığan, Kusursuz Simetrik) */}
-        <nav className="hidden md:flex items-center justify-center gap-1.5 shrink-0">
-                    <button
+        {/* Orta: PREMİUM SİMETRİK NAVİGASYON KAPSÜLÜ (TEK FİLM BUTONU, MODERN & KARİZMATİK) */}
+        <nav className="hidden md:flex items-center bg-slate-100/80 dark:bg-slate-800/80 p-1 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 gap-0.5 shrink-0 shadow-2xs">
+          
+          {/* 1. Film (TEK VE NET FİLM BUTONU) */}
+          <button
             onClick={() => setActiveTab('video')}
-            className={`h-9 px-3 rounded-full text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
+            className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
               activeTab === 'video'
-                ? 'bg-rose-600 text-white font-extrabold shadow-sm ring-2 ring-rose-200 dark:ring-rose-800'
-                : 'bg-red-50/90 dark:bg-red-950/50 text-red-700 dark:text-red-300 border border-red-200/80 dark:border-red-800/70 hover:bg-red-100 font-bold'
+                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-black shadow-xs ring-1 ring-slate-200 dark:ring-slate-700'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/50 font-semibold'
             }`}
             title="YouTube, Film ve Dizi ile Konuşma Stüdyosu"
           >
-            <Film className="w-3.5 h-3.5 shrink-0" />
-            <span><span className="hidden 2xl:inline">YouTube & </span>Film</span>
+            <Film className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'video' ? 'text-rose-500' : 'text-slate-400'}`} />
+            <span>Film</span>
           </button>
 
-<button
+          {/* 2. Stüdyo */}
+          <button
             onClick={() => setActiveTab('search')}
-            className={`h-9 px-3 rounded-full text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
+            className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
               activeTab === 'search'
-                ? 'bg-indigo-600 text-white font-extrabold shadow-sm ring-2 ring-indigo-200 dark:ring-indigo-800'
-                : 'bg-indigo-50/90 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800/70 hover:bg-indigo-100 font-bold'
+                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-black shadow-xs ring-1 ring-slate-200 dark:ring-slate-700'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/50 font-semibold'
             }`}
             title="Chirmo Stüdyo"
           >
-            <Sparkles className="w-3.5 h-3.5 shrink-0" />
-            <span><span className="hidden 2xl:inline">Chirmo </span>Stüdyo</span>
+            <Sparkles className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'search' ? 'text-indigo-500' : 'text-slate-400'}`} />
+            <span>Stüdyo</span>
           </button>
 
+          {/* 3. 30 Günlük Kamp */}
           <button
             onClick={() => setActiveTab('learn')}
-            className={`h-9 px-3 rounded-full text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
+            className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
               activeTab === 'learn'
-                ? 'bg-emerald-600 text-white font-extrabold shadow-sm ring-2 ring-emerald-200 dark:ring-emerald-800'
-                : 'bg-emerald-50/90 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/70 hover:bg-emerald-100 font-bold'
+                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-black shadow-xs ring-1 ring-slate-200 dark:ring-slate-700'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/50 font-semibold'
             }`}
             title="30 Günlük Kamp"
           >
-            <BookOpen className="w-3.5 h-3.5 shrink-0" />
-            <span><span className="hidden 2xl:inline">30 Günlük </span>Kamp</span>
+            <BookOpen className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'learn' ? 'text-emerald-500' : 'text-slate-400'}`} />
+            <span>Kamp</span>
           </button>
 
-        <button
-          onClick={() => setActiveTab('video')}
-          className={`flex flex-col items-center justify-center p-1 rounded-xl flex-1 text-center transition-colors cursor-pointer min-h-[44px] ${
-            activeTab === 'video'
-              ? 'text-rose-600 dark:text-rose-400 font-black'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
-          }`}
-        >
-          <Film className="w-4 h-4 mb-0.5" />
-          <span className="text-[10px]">Film</span>
-        </button>
-
-        
-
+          {/* 4. Chirmo Kids */}
           <button
             onClick={() => setActiveTab('kids')}
-            className={`h-9 px-3 rounded-full text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
+            className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
               activeTab === 'kids'
-                ? 'bg-pink-600 text-white font-extrabold shadow-sm ring-2 ring-pink-200 dark:ring-pink-800'
-                : 'bg-pink-50/90 dark:bg-pink-950/50 text-pink-700 dark:text-pink-300 border border-pink-200/80 dark:border-pink-800/70 hover:bg-pink-100 font-bold'
+                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-black shadow-xs ring-1 ring-slate-200 dark:ring-slate-700'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/50 font-semibold'
             }`}
-            title="5-17 Yaş Çocuklar İçin Chirmo Kids Dünyası"
+            title="5-17 Yaş Çocuklar İçin Chirmo Kids"
           >
-            <Smile className="w-3.5 h-3.5 shrink-0" />
-            <span><span className="hidden 2xl:inline">Chirmo </span>Kids</span>
+            <Smile className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'kids' ? 'text-pink-500' : 'text-slate-400'}`} />
+            <span>Kids</span>
           </button>
 
+          {/* 5. Oyunlar */}
           <button
             onClick={() => setActiveTab('games')}
-            className={`h-9 px-3 rounded-full text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
+            className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
               activeTab === 'games'
-                ? 'bg-amber-500 text-white font-extrabold shadow-sm ring-2 ring-amber-200 dark:ring-amber-800'
-                : 'bg-amber-50/90 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/70 hover:bg-amber-100 font-bold'
+                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-black shadow-xs ring-1 ring-slate-200 dark:ring-slate-700'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/50 font-semibold'
             }`}
-            title="Oyunlar"
+            title="Eğitici İngilizce Oyunları"
           >
-            <Gamepad2 className="w-3.5 h-3.5 shrink-0" />
+            <Gamepad2 className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'games' ? 'text-amber-500' : 'text-slate-400'}`} />
             <span>Oyunlar</span>
           </button>
 
+          {/* 6. Simülatör */}
           <button
             onClick={() => setActiveTab('speak')}
-            className={`h-9 px-3 rounded-full text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
+            className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
               activeTab === 'speak'
-                ? 'bg-rose-600 text-white font-extrabold shadow-sm ring-2 ring-rose-200 dark:ring-rose-800'
-                : 'bg-rose-50/90 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border border-rose-200/80 dark:border-rose-800/70 hover:bg-rose-100 font-bold'
+                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-black shadow-xs ring-1 ring-slate-200 dark:ring-slate-700'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/50 font-semibold'
             }`}
-            title="Simülatör"
+            title="Gerçek Yaşam Konuşma Simülatörü"
           >
-            <Mic className="w-3.5 h-3.5 shrink-0" />
+            <Mic className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'speak' ? 'text-purple-500' : 'text-slate-400'}`} />
             <span>Simülatör</span>
           </button>
 
+          {/* 7. Hedeflerim */}
           <button
             onClick={() => setActiveTab('tasks')}
-            className={`h-9 px-3 rounded-full text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
+            className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
               activeTab === 'tasks'
-                ? 'bg-purple-600 text-white font-extrabold shadow-sm ring-2 ring-purple-200 dark:ring-purple-800'
-                : 'bg-purple-50/90 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 border border-purple-200/80 dark:border-purple-800/70 hover:bg-purple-100 font-bold'
+                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-black shadow-xs ring-1 ring-slate-200 dark:ring-slate-700'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/50 font-semibold'
             }`}
-            title="Hedeflerim"
+            title="Günlük Hedeflerim & Rapor"
           >
-            <CheckSquare className="w-3.5 h-3.5 shrink-0" />
+            <CheckSquare className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'tasks' ? 'text-blue-500' : 'text-slate-400'}`} />
             <span>Hedeflerim</span>
           </button>
         </nav>
 
-        {/* Sağ: İlerleme & Aksiyon Butonları (Tek Düzlem, Tam Sığan & Simetrik) */}
+        {/* Sağ: İlerleme & Modern Aksiyon Butonları (Simetrik, Karizmatik & Dengeli) */}
         <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
-          {/* APK İndir (Kullanıcı Talebiyle "Uygulamayı İndir" yerine "APK İndir" yapıldı) */}
+          {/* APK İndir */}
           <button
             onClick={() => setIsInstallModalOpen(true)}
-            className="h-9 px-2 sm:px-3 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold shadow-xs cursor-pointer transition-all inline-flex items-center space-x-1 sm:space-x-1.5 whitespace-nowrap hover:scale-[1.02] shrink-0"
+            className="h-8.5 px-2.5 sm:px-3 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold shadow-xs cursor-pointer transition-all inline-flex items-center space-x-1.5 whitespace-nowrap hover:scale-[1.02] shrink-0"
             title="Chirmo Android APK ve PWA İndir"
           >
             <Download className="w-3.5 h-3.5 shrink-0" />
             <span className="hidden sm:inline">APK İndir</span>
           </button>
 
-          {/* Gün Serisi */}
+          {/* Gün Serisi & XP Ortak Kapsülü */}
           <div
             onClick={() => setActiveTab('learn')}
-            className="h-9 px-2 sm:px-2.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-700 dark:text-amber-300 text-xs font-bold cursor-pointer hover:bg-amber-500/20 transition-colors inline-flex items-center space-x-1 whitespace-nowrap shrink-0"
-            title="30 Günlük Kamp Kesintisiz Serisi"
+            className="h-8.5 px-2.5 sm:px-3 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 flex items-center space-x-2 text-xs font-bold cursor-pointer hover:bg-slate-200/70 dark:hover:bg-slate-700/70 transition-all shrink-0"
+            title="30 Günlük Kamp Kesintisiz Serisi ve Toplam XP"
           >
-            <span className="text-xs">🔥</span>
-            <span>{campProgress.streakDays}</span>
-            <span className="hidden sm:inline"> Gün</span>
-          </div>
-
-          {/* Toplam XP */}
-          <div
-            onClick={() => setActiveTab('learn')}
-            className="h-9 px-2.5 rounded-full bg-purple-500/10 border border-purple-500/25 text-purple-700 dark:text-purple-300 text-xs font-bold cursor-pointer hover:bg-purple-500/20 transition-colors hidden sm:inline-flex items-center space-x-1 whitespace-nowrap"
-            title="Kazanılan Toplam Konuşma Puanı"
-          >
-            <span className="text-xs">⭐</span>
-            <span>{campProgress.totalXp} XP</span>
+            <div className="flex items-center space-x-1 text-amber-600 dark:text-amber-400 font-black">
+              <span>🔥</span>
+              <span>{campProgress.streakDays}</span>
+              <span className="hidden xl:inline text-[10px] font-semibold text-slate-500 dark:text-slate-400">Gün</span>
+            </div>
+            <span className="text-slate-300 dark:text-slate-600 font-light">|</span>
+            <div className="flex items-center space-x-1 text-purple-600 dark:text-purple-400 font-black">
+              <span>⭐</span>
+              <span>{campProgress.totalXp}</span>
+              <span className="hidden xl:inline text-[10px] font-semibold text-slate-500 dark:text-slate-400">XP</span>
+            </div>
           </div>
 
           {/* Kişiye Özel Profil Çipi */}
           <div
             onClick={() => setIsProfileModalOpen(true)}
-            className="h-9 p-1 sm:pl-1 sm:pr-2.5 rounded-full bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-500 cursor-pointer transition-all shrink-0 inline-flex items-center space-x-1.5 group"
+            className="h-8.5 p-1 sm:pl-1.5 sm:pr-2.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-500 cursor-pointer transition-all shrink-0 inline-flex items-center space-x-1.5 group"
             title={`${userProfile.hasCustomName ? userProfile.name : 'Profilini Düzenle'} (${userProfile.level})`}
           >
-            <div className="w-6.5 h-6.5 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-xs shadow-2xs group-hover:scale-105 transition-transform">
+            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-xs shadow-2xs group-hover:scale-105 transition-transform">
               {userProfile.avatarEmoji || '🎓'}
             </div>
-            <span className="hidden lg:inline text-xs font-bold text-slate-700 dark:text-slate-300">
+            <span className="hidden xl:inline text-xs font-bold text-slate-700 dark:text-slate-300">
               {userProfile.hasCustomName ? userProfile.name : 'Profilim'}
             </span>
           </div>
@@ -395,7 +387,7 @@ export const App: React.FC = () => {
           {!currentUser ? (
             <button
               onClick={() => setIsAuthModalOpen(true)}
-              className="h-9 px-2.5 sm:px-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-xs font-black shadow-xs cursor-pointer transition-all inline-flex items-center space-x-1 sm:space-x-1.5 shrink-0 whitespace-nowrap hover:scale-[1.02]"
+              className="h-8.5 px-3 sm:px-3.5 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-black shadow-sm cursor-pointer transition-all inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap hover:scale-[1.02]"
               title="Sıfır Kişisel Veri ile Giriş Yap veya Kayıt Ol"
             >
               <span>🛡️</span>
@@ -405,18 +397,18 @@ export const App: React.FC = () => {
             <div className="flex items-center space-x-1.5">
               <div
                 onClick={() => setIsAuthModalOpen(true)}
-                className="h-9 px-2.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-700 dark:text-cyan-300 text-xs font-bold cursor-pointer hover:bg-cyan-500/20 transition-colors inline-flex items-center space-x-1.5 whitespace-nowrap"
+                className="h-8.5 px-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300 text-xs font-bold cursor-pointer hover:bg-indigo-500/20 transition-colors inline-flex items-center space-x-1.5 whitespace-nowrap"
                 title={`Oturum Açık: @${currentUser.username} (${currentUser.plan.toUpperCase()})`}
               >
                 <span>👤</span>
-                <span className="font-extrabold max-w-[65px] sm:max-w-none truncate">@{currentUser.username}</span>
-                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-cyan-500/20 text-cyan-400 font-mono">
+                <span className="font-extrabold max-w-[65px] sm:max-w-none truncate">@${currentUser.username}</span>
+                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-indigo-500/20 text-indigo-500 font-mono">
                   {currentUser.plan === 'pro' ? '👑 PRO' : 'ÜCRETSİZ'}
                 </span>
               </div>
               <button
                 onClick={() => PrivacyAuthService.logout()}
-                className="h-9 px-2 rounded-full bg-slate-100 hover:bg-rose-100 dark:bg-slate-800 dark:hover:bg-rose-950/50 text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 text-xs font-bold transition-colors cursor-pointer"
+                className="h-8.5 px-2 rounded-xl bg-slate-100 hover:bg-rose-100 dark:bg-slate-800 dark:hover:bg-rose-950/50 text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 text-xs font-bold transition-colors cursor-pointer"
                 title="Güvenli Çıkış Yap"
               >
                 ✕ Çıkış
