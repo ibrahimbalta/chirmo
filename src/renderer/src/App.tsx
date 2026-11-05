@@ -60,7 +60,8 @@ export const App: React.FC = () => {
   const [campProgress, setCampProgress] = useState<StudentCampProgress>(() =>
     CampStorageService.getProgress()
   );
-  const [isTutorOpen, setIsTutorOpen] = useState(true);
+  // Varsayılan olarak sağ asistanı kapalı başlatarak ana sahneye maksimum ferahlık sağlıyoruz
+  const [isTutorOpen, setIsTutorOpen] = useState(false);
   const [isSmartReaderOpen, setIsSmartReaderOpen] = useState(false);
   const [activeLearningText, setActiveLearningText] = useState(
     'Artificial intelligence is helping businesses improve their services and reduce costs.'

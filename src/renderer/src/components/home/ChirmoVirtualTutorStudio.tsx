@@ -19,6 +19,7 @@ import { ChirmoAiChatModal } from './ChirmoAiChatModal';
 import { ChirmoFluencyBooster } from '../learning/ChirmoFluencyBooster';
 import { ChirmoStoryDialogueStudio } from '../learning/ChirmoStoryDialogueStudio';
 import { ChirmoInteractiveGraduationDialogueModal } from '../learning/ChirmoInteractiveGraduationDialogueModal';
+import { ChirmoTalkingRobotAvatar } from '../avatar/ChirmoTalkingRobotAvatar';
 import { CEFRLevel } from '../../types';
 
 export interface ChirmoVirtualTutorStudioProps {
@@ -140,28 +141,28 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
           </div>
         </div>
 
-        {/* ==================== 2. KAHRAMAN AFİŞ (HERO BANNER - 1. GÖRSELLE BİREBİR) ==================== */}
-        <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-r from-[#6366f1] via-[#7c3aed] to-[#8b5cf6] text-white p-6 sm:p-8 lg:p-9 shadow-lg shadow-indigo-500/15 border border-indigo-400/30">
+        {/* ==================== 2. MERKEZİ CHIRMO ROBOT KONUŞMA SAHNESİ ==================== */}
+        <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-[#4f46e5] via-[#7c3aed] to-[#9333ea] text-white p-6 sm:p-8 lg:p-10 shadow-xl shadow-indigo-500/20 border border-indigo-300/30">
 
-          {/* Sağ Üst Köşe: Chirmo Zarif Marka İmzası */}
+          {/* Sağ Üst Köşe: Chirmo Canlı Durum İmzası */}
           <div className="absolute top-4 right-4 sm:top-5 sm:right-6 z-20 hidden sm:flex items-center space-x-2 px-3.5 py-1.5 rounded-2xl bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/20 shadow-sm transition-all select-none">
-            <span className="relative flex h-2 w-2">
+            <span className="relative flex h-2.5 w-2.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
             </span>
             <span
               style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
               className="text-sm sm:text-base font-black tracking-widest uppercase text-transparent bg-clip-text bg-gradient-to-r from-white via-indigo-100 to-amber-200 drop-shadow-xs"
             >
-              CHIRMO
+              CHIRMO AI
             </span>
-            <span className="text-[9px] font-black uppercase tracking-widest bg-white/20 text-indigo-100 px-1.5 py-0.5 rounded">
-              STUDIO
+            <span className="text-[10px] font-black uppercase tracking-wider bg-amber-400 text-purple-950 px-2 py-0.5 rounded-full shadow-xs">
+              Çevrimiçi
             </span>
           </div>
 
           {/* Arka Plan: Londra / Big Ben Vektörel Şehir Silüeti */}
-          <div className="absolute right-48 sm:right-64 bottom-0 opacity-20 pointer-events-none hidden md:block">
+          <div className="absolute right-48 sm:right-64 bottom-0 opacity-15 pointer-events-none hidden md:block">
             <svg width="260" height="180" viewBox="0 0 260 180" fill="currentColor" className="text-white">
               <rect x="90" y="55" width="30" height="125" rx="2" />
               <polygon points="90,55 105,25 120,55" />
@@ -177,86 +178,113 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             </svg>
           </div>
 
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            {/* Sol İçerik */}
-            <div className="space-y-3 sm:space-y-4 max-w-xl">
-              {/* Kamp Rozeti & Chirmo Etiketi */}
-              <div className="flex flex-wrap items-center gap-2">
+          <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+            {/* Sol İçerik: Konuşma Daveti ve Tek Büyük Aksiyon */}
+            <div className="space-y-4 max-w-xl text-center lg:text-left">
+              {/* Günün Konusu & Kamp Hapı */}
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2">
                 <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-black shadow-xs">
                   <span>⭐</span>
-                  <span>30 Günlük İngilizce Konuşma Kampı</span>
+                  <span>30 Günde Kendini İfade Etme Kampı</span>
                 </div>
-                <div className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full bg-amber-300/90 text-purple-950 text-xs font-black shadow-xs">
-                  <Sparkles className="w-3 h-3 text-purple-900" />
-                  <span style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}>Chirmo</span>
+                <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-amber-400 text-purple-950 text-xs font-black shadow-xs">
+                  <span>☕</span>
+                  <span>Kafede Sipariş Verme (5 Dk)</span>
                 </div>
               </div>
 
               {/* Büyük Başlık */}
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight flex items-center space-x-2">
-                <span>Merhaba!</span>
-                <span className="inline-block animate-wiggle">👋</span>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
+                Günün Konuşma Pratiğine Hazır mısın? 👋
               </h1>
 
-              {/* Alt Karşılama Cümlesi */}
-              <p className="text-sm sm:text-base text-indigo-100 font-medium leading-relaxed">
-                Bugün İngilizce konuşma yolculuğunda<br className="hidden sm:inline" /> harika bir gün!
-              </p>
+              {/* Çift Dilli Konuşma Daveti */}
+              <div className="p-3.5 sm:p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-left space-y-1.5 shadow-xs">
+                <div className="text-sm sm:text-base font-bold text-white flex items-center space-x-2">
+                  <span>🇬🇧</span>
+                  <span>"Let's practice ordering coffee and delicious snacks together today!"</span>
+                </div>
+                <div className="text-xs sm:text-sm font-medium text-indigo-100 flex items-center space-x-2">
+                  <span>🇹🇷</span>
+                  <span>Bugün kafede İngilizce kahve ve atıştırmalık siparişi vermeyi pratik yapalım!</span>
+                </div>
+              </div>
 
-              {/* Butonlar: Ders Başlat & Canlı Robot Sohbeti */}
-              <div className="pt-1 flex flex-wrap items-center gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => onNavigateToLearn && onNavigateToLearn()}
-                  className="px-6 py-3.5 rounded-2xl bg-white hover:bg-slate-100 text-[#6d28d9] font-black text-sm sm:text-[15px] shadow-lg shadow-black/15 flex items-center space-x-2.5 transition-all cursor-pointer active:scale-95 hover:scale-[1.02]"
-                >
-                  <Play className="w-4 h-4 fill-[#6d28d9]" />
-                  <span>Bugünün Dersini Başlat</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-
+              {/* TEK VE BÜYÜK ANA AKSİYON: CHIRMO İLE KONUŞMAYA BAŞLA */}
+              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <button
                   type="button"
                   onClick={() => setIsRobotDialogueOpen(true)}
-                  className="px-5 py-3.5 rounded-2xl bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/40 text-white font-black text-sm sm:text-[15px] shadow-lg shadow-black/10 flex items-center space-x-2 transition-all cursor-pointer active:scale-95 hover:scale-[1.02]"
+                  className="px-7 py-4 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-purple-950 font-black text-base sm:text-lg shadow-xl shadow-amber-500/30 flex items-center justify-center space-x-3 transition-all cursor-pointer active:scale-95 hover:scale-[1.02]"
                 >
-                  <Sparkles className="w-4 h-4 text-amber-300" />
-                  <span>🤖 Chirmo ile Canlı Konuş</span>
+                  <Mic className="w-5 h-5 fill-purple-950 animate-pulse" />
+                  <span>🎙️ Chirmo ile Canlı Konuşmaya Başla</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => onNavigateToLearn && onNavigateToLearn()}
+                  className="px-5 py-3.5 rounded-2xl bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/30 text-white font-bold text-sm flex items-center justify-center space-x-2 transition-all cursor-pointer active:scale-95"
+                >
+                  <Play className="w-4 h-4 fill-white" />
+                  <span>Ders Adımları</span>
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
 
-              {/* Carousel Noktaları */}
-              <div className="flex items-center space-x-1.5 pt-2">
-                <div className="w-5 h-1.5 rounded-full bg-white" />
-                <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
-                <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
-                <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
-                <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
+              {/* 3 Hızlı Alternatif Kısayol Hapı */}
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 pt-1 text-xs font-bold text-indigo-100">
+                <span className="text-[11px] text-white/70">Hızlı Kısayollar:</span>
+                <button
+                  type="button"
+                  onClick={() => setIsStoryModalOpen(true)}
+                  className="px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 border border-white/20 transition-all cursor-pointer flex items-center space-x-1"
+                >
+                  <span>🎭</span>
+                  <span>Hikaye Diyaloğu</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsBoosterModalOpen(true)}
+                  className="px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 border border-white/20 transition-all cursor-pointer flex items-center space-x-1"
+                >
+                  <span>⚡</span>
+                  <span>3x Hızlı Refleks</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onNavigateToGames && onNavigateToGames()}
+                  className="px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 border border-white/20 transition-all cursor-pointer flex items-center space-x-1"
+                >
+                  <span>🎮</span>
+                  <span>Kelime Oyunu</span>
+                </button>
               </div>
             </div>
 
-            {/* Sağ İçerik: Orijinal Şeffaf 3D Chirmo Maskot Karakteri */}
-            <div className="relative flex flex-col items-center justify-center self-center lg:self-auto shrink-0 mt-2 lg:mt-0">
+            {/* Sağ İçerik: Canlı ve Nefes Alan 3D Chirmo Robotu */}
+            <div className="relative flex flex-col items-center justify-center shrink-0">
               <div
                 onClick={() => setIsRobotDialogueOpen(true)}
-                className="relative w-48 h-48 sm:w-60 sm:h-60 lg:w-72 lg:h-72 flex items-center justify-center group cursor-pointer"
+                className="relative w-56 h-56 sm:w-64 sm:h-64 lg:w-80 lg:h-80 flex items-center justify-center group cursor-pointer"
                 title="Chirmo ile Canlı Konuşmak İçin Tıkla!"
               >
-                {/* Karakter Üstü Şık Konuşma Rozeti */}
-                <div className="absolute -top-1 sm:-top-2 right-0 sm:right-2 z-20 flex items-center space-x-1.5 bg-white/95 text-[#6d28d9] px-3.5 py-1.5 rounded-2xl rounded-bl-xs shadow-lg shadow-black/10 border border-purple-100/50 hover:scale-105 transition-transform">
-                  <span className="text-xs">💜</span>
+                {/* Robotun Başüstü Konuşma Balonu */}
+                <div className="absolute -top-1 sm:-top-2 right-2 sm:right-4 z-20 flex items-center space-x-1.5 bg-white text-[#6d28d9] px-4 py-2 rounded-2xl rounded-bl-xs shadow-xl shadow-purple-950/20 border border-purple-100 group-hover:scale-105 transition-transform">
+                  <span className="text-sm">💜</span>
                   <span
                     style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
                     className="font-black text-xs sm:text-sm tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#6d28d9] to-[#7c3aed]"
                   >
-                    Chirmo
+                    Let's Talk English!
                   </span>
                 </div>
 
+                {/* 3D Maskot Görseli */}
                 <img
                   src="./chirmo-character.png"
                   alt="Chirmo Maskot Karakteri"
-                  className="w-full h-full object-contain filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform"
+                  className="w-full h-full object-contain filter drop-shadow-[0_16px_36px_rgba(0,0,0,0.35)] group-hover:scale-105 transition-transform"
                   onError={(e) => {
                     const img = e.currentTarget as HTMLImageElement;
                     if (!img.src.endsWith('/chirmo-avatar.png')) {
@@ -266,20 +294,20 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 />
 
                 {/* Altın Parıltı Yıldızları */}
-                <span className="absolute top-2 right-4 text-amber-300 text-xl animate-ping pointer-events-none">✨</span>
-                <span className="absolute bottom-8 -right-1 text-amber-300 text-base animate-pulse pointer-events-none">⭐</span>
+                <span className="absolute top-4 left-6 text-amber-300 text-xl animate-ping pointer-events-none">✨</span>
+                <span className="absolute bottom-10 -right-2 text-amber-300 text-base animate-pulse pointer-events-none">⭐</span>
 
                 {/* Karakter İsim Plaketi / Glowing Brand Badge */}
-                <div className="absolute -bottom-2 sm:-bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center space-x-1.5 px-4 py-1 sm:py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/40 shadow-xl shadow-purple-950/20 hover:scale-105 transition-transform select-none">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+                <div className="absolute -bottom-2 sm:-bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center space-x-2 px-5 py-2 rounded-full bg-white/20 backdrop-blur-md border border-white/40 shadow-xl shadow-purple-950/20 group-hover:scale-105 transition-transform select-none">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
                   <span
                     style={{ fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif" }}
                     className="text-base sm:text-lg font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white via-indigo-100 to-amber-200 drop-shadow-[0_2px_8px_rgba(255,255,255,0.4)]"
                   >
-                    Chirmo
+                    Chirmo AI
                   </span>
-                  <span className="text-[10px] font-black uppercase tracking-wider text-purple-950 bg-amber-300 px-1.5 py-0.5 rounded-md shadow-xs">
-                    AI
+                  <span className="text-[10px] font-black uppercase tracking-wider text-purple-950 bg-amber-300 px-2 py-0.5 rounded-full shadow-xs">
+                    Çevrimiçi
                   </span>
                 </div>
               </div>
