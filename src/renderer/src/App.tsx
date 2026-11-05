@@ -200,7 +200,7 @@ export const App: React.FC = () => {
           title="Chirmo Ana Sayfa - 30 Günde Konuşma Garantili Sanal Öğretmen"
           aria-label="30 Günde Konuşma Garantili Sanal Öğretmen"
         >
-          <ChirmoLogo size="sm" variant="header" />
+          <ChirmoLogo size="md" variant="header" />
         </div>
 
         {/* Orta: 6 Renkli Minimal Hap Buton (Hafif Kompakt, Ekrana Tam Sığan, Kusursuz Simetrik) */}

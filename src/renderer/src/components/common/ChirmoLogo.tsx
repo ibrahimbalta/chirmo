@@ -32,18 +32,18 @@ export const ChirmoLogo: React.FC<ChirmoLogoProps> = ({
   // Sizes for image rendering
   const heightClasses = {
     xs: 'h-6 w-auto',
-    sm: 'h-7 sm:h-8 w-auto',
-    md: 'h-9 sm:h-10 w-auto',
-    lg: 'h-12 sm:h-14 w-auto',
+    sm: 'h-8 sm:h-9 w-auto',
+    md: 'h-10 sm:h-11 w-auto',
+    lg: 'h-13 sm:h-14 w-auto',
     xl: 'h-20 sm:h-24 md:h-28 w-auto max-w-full'
   }[size];
 
   // Icon only sizes
   const iconSizes = {
     xs: 'w-6 h-6',
-    sm: 'w-7 h-7',
-    md: 'w-9 h-9',
-    lg: 'w-12 h-12',
+    sm: 'w-8 h-8',
+    md: 'w-10 h-10',
+    lg: 'w-13 h-13',
     xl: 'w-20 h-20'
   }[size];
 
