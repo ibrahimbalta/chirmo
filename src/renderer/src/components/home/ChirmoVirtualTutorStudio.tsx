@@ -20,6 +20,7 @@ import { ChirmoFluencyBooster } from '../learning/ChirmoFluencyBooster';
 import { ChirmoStoryDialogueStudio } from '../learning/ChirmoStoryDialogueStudio';
 import { ChirmoInteractiveGraduationDialogueModal } from '../learning/ChirmoInteractiveGraduationDialogueModal';
 import { ChirmoVoiceCallSimulatorModal } from '../learning/ChirmoVoiceCallSimulatorModal';
+import { ChirmoPronunciationDoctor } from '../learning/ChirmoPronunciationDoctor';
 import { ChirmoTalkingRobotAvatar } from '../avatar/ChirmoTalkingRobotAvatar';
 import { CEFRLevel } from '../../types';
 
@@ -50,6 +51,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   const [isStoryModalOpen, setIsStoryModalOpen] = useState(false);
   const [isRobotDialogueOpen, setIsRobotDialogueOpen] = useState(false);
   const [isVoiceCallModalOpen, setIsVoiceCallModalOpen] = useState(false);
+  const [isPronunciationDoctorOpen, setIsPronunciationDoctorOpen] = useState(false);
 
   // AI Teacher Speech State
   const [tutorSpeechText] = useState(
@@ -244,6 +246,14 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 >
                   <span>📞</span>
                   <span>2 Dk Sesli Arama</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsPronunciationDoctorOpen(true)}
+                  className="px-3.5 py-1 rounded-full bg-emerald-400 hover:bg-emerald-300 text-purple-950 font-black transition-all cursor-pointer flex items-center space-x-1 shadow-xs"
+                >
+                  <span>🎯</span>
+                  <span>Telaffuz Doktoru</span>
                 </button>
                 <button
                   type="button"
@@ -769,6 +779,12 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
       <ChirmoVoiceCallSimulatorModal
         isOpen={isVoiceCallModalOpen}
         onClose={() => setIsVoiceCallModalOpen(false)}
+      />
+
+      {/* Chirmo Telaffuz Doktoru & Fonetik Hece Isı Haritası */}
+      <ChirmoPronunciationDoctor
+        isOpen={isPronunciationDoctorOpen}
+        onClose={() => setIsPronunciationDoctorOpen(false)}
       />
     </div>
   );
