@@ -35,6 +35,10 @@ import { WatchingView } from './WatchingView';
 import { CampStorageService } from '../../services/curriculumData';
 import { TargetLanguageService, SupportedLanguage } from '../../services/targetLanguageService';
 import { SpacedRepetitionService, SrsWordData } from '../../services/spacedRepetitionService';
+import { ChirmoReflexDrillModal } from './ChirmoReflexDrillModal';
+import { ChirmoLegoChunkingModal } from './ChirmoLegoChunkingModal';
+import { ChirmoGermanGenderMasteryModal } from './ChirmoGermanGenderMasteryModal';
+import { ChirmoCareerTrackModal } from './ChirmoCareerTrackModal';
 
 export type LearningHubTab =
   | 'camp'
@@ -71,6 +75,10 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [campProgress, setCampProgress] = useState(() => CampStorageService.getProgress());
   const [targetLang, setTargetLang] = useState<SupportedLanguage>(() => TargetLanguageService.getTargetLanguage());
+  const [isReflexDrillOpen, setIsReflexDrillOpen] = useState(false);
+  const [isLegoModalOpen, setIsLegoModalOpen] = useState(false);
+  const [isGermanGenderModalOpen, setIsGermanGenderModalOpen] = useState(false);
+  const [isCareerModalOpen, setIsCareerModalOpen] = useState(false);
 
   useEffect(() => {
     return TargetLanguageService.subscribe((lang) => setTargetLang(lang));
@@ -337,6 +345,52 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
             <Award className="w-3.5 h-3.5" />
             <span>Refleks Testi</span>
           </button>
+        </div>
+      </div>
+
+      {/* 20 Yıllık Öğretmen Metotları Hızlı Aksiyon Barı */}
+      <div className="px-3.5 sm:px-6 py-2 bg-gradient-to-r from-amber-500/10 via-indigo-500/10 to-purple-500/10 border-b border-indigo-100 dark:border-slate-800 shrink-0">
+        <div className="max-w-5xl mx-auto flex items-center justify-between gap-2 overflow-x-auto text-xs">
+          <span className="text-[11px] font-black text-indigo-700 dark:text-indigo-300 whitespace-nowrap flex items-center space-x-1">
+            <span>🎓</span>
+            <span>20 Yıllık Öğretmen Metotları:</span>
+          </span>
+          <div className="flex items-center space-x-2">
+            <button
+              type="button"
+              onClick={() => setIsReflexDrillOpen(true)}
+              className="px-3 py-1 rounded-xl bg-amber-400 hover:bg-amber-500 text-purple-950 font-black text-xs transition cursor-pointer shadow-xs whitespace-nowrap flex items-center space-x-1 active:scale-95"
+            >
+              <span>⚡</span>
+              <span>3 Saniye Refleks</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsLegoModalOpen(true)}
+              className="px-3 py-1 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs transition cursor-pointer shadow-xs whitespace-nowrap flex items-center space-x-1 active:scale-95"
+            >
+              <span>🧱</span>
+              <span>Lego Kalıp Sihirbazı</span>
+            </button>
+            {targetLang === 'de' ? (
+              <button
+                type="button"
+                onClick={() => setIsGermanGenderModalOpen(true)}
+                className="px-3 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs transition cursor-pointer shadow-xs whitespace-nowrap flex items-center space-x-1 active:scale-95"
+              >
+                <span>🔵</span>
+                <span>Korkusuz der/die/das</span>
+              </button>
+            ) : null}
+            <button
+              type="button"
+              onClick={() => setIsCareerModalOpen(true)}
+              className="px-3 py-1 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-black text-xs transition cursor-pointer shadow-xs whitespace-nowrap flex items-center space-x-1 active:scale-95"
+            >
+              <span>💼</span>
+              <span>{targetLang === 'de' ? '🇩🇪 Almanya Vize & Mülakat' : '🇬🇧 Vize & Kariyer Mülakatı'}</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -757,6 +811,30 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
           </div>
         )}
       </div>
+
+      {/* 3 Saniye Refleks Antrenörü Modalı */}
+      <ChirmoReflexDrillModal
+        isOpen={isReflexDrillOpen}
+        onClose={() => setIsReflexDrillOpen(false)}
+      />
+
+      {/* Lego Kalıp Sihirbazı Modalı */}
+      <ChirmoLegoChunkingModal
+        isOpen={isLegoModalOpen}
+        onClose={() => setIsLegoModalOpen(false)}
+      />
+
+      {/* Korkusuz Almanca: der/die/das Renk Sistemi Modalı */}
+      <ChirmoGermanGenderMasteryModal
+        isOpen={isGermanGenderModalOpen}
+        onClose={() => setIsGermanGenderModalOpen(false)}
+      />
+
+      {/* Vize & Mesleki Mülakat Modalı */}
+      <ChirmoCareerTrackModal
+        isOpen={isCareerModalOpen}
+        onClose={() => setIsCareerModalOpen(false)}
+      />
     </div>
   );
 };

@@ -5,6 +5,7 @@ import {
   CareerScenario,
   CareerEvaluationResult
 } from '../../services/careerTrackService';
+import { TargetLanguageService } from '../../services/targetLanguageService';
 import { LearningStorageService } from '../../services/learningStorage';
 
 interface ChirmoCareerTrackModalProps {
@@ -31,9 +32,11 @@ export const ChirmoCareerTrackModal: React.FC<ChirmoCareerTrackModalProps> = ({
 
   const recognitionRef = useRef<any>(null);
 
+  const targetLang = TargetLanguageService.getTargetLanguage();
+
   useEffect(() => {
     if (isOpen) {
-      const allTracks = CareerTrackService.getTracks();
+      const allTracks = CareerTrackService.getTracks(targetLang);
       setTracks(allTracks);
       if (allTracks.length > 0) {
         setSelectedTrackId(allTracks[0].id);
@@ -44,7 +47,7 @@ export const ChirmoCareerTrackModal: React.FC<ChirmoCareerTrackModalProps> = ({
     } else {
       if (isListening) stopListening();
     }
-  }, [isOpen]);
+  }, [isOpen, targetLang]);
 
   const currentTrack = tracks.find((t) => t.id === selectedTrackId) || tracks[0];
   const currentScenario =
@@ -87,7 +90,7 @@ export const ChirmoCareerTrackModal: React.FC<ChirmoCareerTrackModalProps> = ({
 
     try {
       const recognition = new SpeechRecognition();
-      recognition.lang = 'en-US';
+      recognition.lang = targetLang === 'de' ? 'de-DE' : 'en-US';
       recognition.interimResults = true;
       recognition.continuous = false;
 

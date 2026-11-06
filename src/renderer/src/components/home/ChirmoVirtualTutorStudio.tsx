@@ -26,6 +26,9 @@ import { ChirmoAccentVoiceSelectorModal } from '../learning/ChirmoAccentVoiceSel
 import { ChirmoVisionExplorerModal } from '../learning/ChirmoVisionExplorerModal';
 import { ChirmoCareerTrackModal } from '../learning/ChirmoCareerTrackModal';
 import { ChirmoSpeakingDuelModal } from '../learning/ChirmoSpeakingDuelModal';
+import { ChirmoReflexDrillModal } from '../learning/ChirmoReflexDrillModal';
+import { ChirmoLegoChunkingModal } from '../learning/ChirmoLegoChunkingModal';
+import { ChirmoGermanGenderMasteryModal } from '../learning/ChirmoGermanGenderMasteryModal';
 import { ChirmoTalkingRobotAvatar } from '../avatar/ChirmoTalkingRobotAvatar';
 import { CEFRLevel } from '../../types';
 
@@ -62,6 +65,9 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   const [isVisionExplorerOpen, setIsVisionExplorerOpen] = useState(false);
   const [isCareerModalOpen, setIsCareerModalOpen] = useState(false);
   const [isDuelModalOpen, setIsDuelModalOpen] = useState(false);
+  const [isReflexDrillOpen, setIsReflexDrillOpen] = useState(false);
+  const [isLegoModalOpen, setIsLegoModalOpen] = useState(false);
+  const [isGermanGenderModalOpen, setIsGermanGenderModalOpen] = useState(false);
   const [currentAccent, setCurrentAccent] = useState(LearningStorageService.getSelectedAccent());
   const [targetLang, setTargetLang] = useState<SupportedLanguage>(() => TargetLanguageService.getTargetLanguage());
 
@@ -301,7 +307,42 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
 
               {/* Hızlı Alternatif Kısayol Hapları */}
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 pt-1 text-xs font-bold text-indigo-100">
-                <span className="text-[11px] text-white/70">Hızlı Kısayollar:</span>
+                <span className="text-[11px] text-white/70">20 Yıllık Öğretmen Metotları:</span>
+                <button
+                  type="button"
+                  onClick={() => setIsReflexDrillOpen(true)}
+                  className="px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-300 hover:to-orange-300 text-purple-950 font-black transition-all cursor-pointer flex items-center space-x-1 shadow-md scale-102"
+                >
+                  <span>⚡</span>
+                  <span>3 Saniye Refleks</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsLegoModalOpen(true)}
+                  className="px-3.5 py-1 rounded-full bg-gradient-to-r from-blue-400 to-indigo-400 hover:from-blue-300 hover:to-indigo-300 text-purple-950 font-black transition-all cursor-pointer flex items-center space-x-1 shadow-md"
+                >
+                  <span>🧱</span>
+                  <span>Lego Kalıplar</span>
+                </button>
+                {targetLang === 'de' ? (
+                  <button
+                    type="button"
+                    onClick={() => setIsGermanGenderModalOpen(true)}
+                    className="px-3.5 py-1 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-purple-950 font-black transition-all cursor-pointer flex items-center space-x-1 shadow-md"
+                  >
+                    <span>🔵</span>
+                    <span>der / die / das Renkleri</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setIsCareerModalOpen(true)}
+                    className="px-3.5 py-1 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-purple-950 font-black transition-all cursor-pointer flex items-center space-x-1 shadow-md"
+                  >
+                    <span>🛂</span>
+                    <span>Vize & Mülakat</span>
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => setIsVoiceCallModalOpen(true)}
@@ -929,6 +970,26 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
         isOpen={isDuelModalOpen}
         onClose={() => setIsDuelModalOpen(false)}
         onRewardXP={(xp) => LearningStorageService.addXP(xp)}
+      />
+
+      {/* 3 Saniye Refleks Antrenörü Modalı */}
+      <ChirmoReflexDrillModal
+        isOpen={isReflexDrillOpen}
+        onClose={() => setIsReflexDrillOpen(false)}
+        onRewardXP={(xp) => LearningStorageService.addXP(xp)}
+      />
+
+      {/* Lego Kalıp Sihirbazı Modalı */}
+      <ChirmoLegoChunkingModal
+        isOpen={isLegoModalOpen}
+        onClose={() => setIsLegoModalOpen(false)}
+        onRewardXP={(xp) => LearningStorageService.addXP(xp)}
+      />
+
+      {/* Korkusuz Almanca: der/die/das Renk Sistemi Modalı */}
+      <ChirmoGermanGenderMasteryModal
+        isOpen={isGermanGenderModalOpen}
+        onClose={() => setIsGermanGenderModalOpen(false)}
       />
     </div>
   );

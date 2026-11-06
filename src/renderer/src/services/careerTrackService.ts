@@ -281,13 +281,117 @@ export const CAREER_TRACKS: CareerTrack[] = [
   }
 ];
 
+export const GERMAN_CAREER_TRACKS: CareerTrack[] = [
+  // ==================== ALMANYA VİZE & KARİYER PAKETLERİ (DEUTSCH) ====================
+  {
+    id: 'german_visa',
+    title: 'Almanya Konsolosluğu Vize Mülakatı',
+    turkishTitle: '🇩🇪 Almanya Vize & Konsolosluk Mülakatı',
+    icon: '🛂',
+    description: 'Almanya Konsolosluğu vize memurunun seyahat amacı, kalış süresi ve mali güvence sorularına özgüvenle cevap verin.',
+    powerJargon: [
+      {
+        term: 'Aufenthaltstitel',
+        tr: 'Oturma izni / İkamet tezkeresi',
+        example: 'Ich beantrage eine Blaue Karte EU als Softwareentwickler.'
+      },
+      {
+        term: 'Krankenversicherung',
+        tr: 'Sağlık sigortası',
+        example: 'Ich habe eine lückenlose deutsche Krankenversicherung abgeschlossen.'
+      },
+      {
+        term: 'Sperrkonto',
+        tr: 'Bloke hesap (Öğrenci/İş arama güvencesi)',
+        example: 'Mein Sperrkonto bei einer deutschen Bank deckt alle Lebenshaltungskosten ab.'
+      }
+    ],
+    scenarios: [
+      {
+        id: 'de_visa_purpose',
+        title: 'Zweck des Aufenthalts',
+        turkishTitle: 'Almanya\'ya Gidiş Amacı & Kalış Planı',
+        characterName: 'Herr Schmidt',
+        characterRole: 'Konsulatsbeamter (Deutsches Generalkonsulat)',
+        prompt: 'Guten Tag! Was ist der genaue Zweck Ihrer Reise nach Deutschland und wie lange planen Sie zu bleiben?',
+        promptTr: 'İyi günler! Almanya seyahatinizin tam amacı nedir ve ne kadar süre kalmayı planlıyorsunuz?',
+        targetKeywords: ['zweck', 'arbeiten', 'studium', 'vertrag', 'aufenthalt', 'deutschland', 'berlin'],
+        suggestedReplies: [
+          'Guten Tag! Ich habe einen unbefristeten Arbeitsvertrag als Ingenieur in Frankfurt und reise für meine berufliche Tätigkeit ein.',
+          'Ich habe eine Zulassung an der Technischen Universität München für meinen Master und werde dort zwei Jahre studieren.',
+          'Ich reise mit einem Visum zur Arbeitsplatzsuche ein und meine Finanzierung ist durch ein Sperrkonto vollständig gesichert.'
+        ]
+      },
+      {
+        id: 'de_visa_accommodation',
+        title: 'Unterkunft und Lebensunterhalt',
+        turkishTitle: 'Konaklama Yeri ve Yaşam Masrafları',
+        characterName: 'Frau Weber',
+        characterRole: 'Visa-Sachbearbeiterin',
+        prompt: 'Wo werden Sie in den ersten Wochen wohnen und wie finanzieren Sie Ihren Lebensunterhalt in Deutschland?',
+        promptTr: 'İlk haftalarda nerede ikamet edeceksiniz ve Almanya\'daki yaşam masraflarınızı nasıl finanse edeceksiniz?',
+        targetKeywords: ['wohnung', 'hotel', 'gehalt', 'konto', 'finanzieren', 'monatlich', 'versicherung'],
+        suggestedReplies: [
+          'Für den ersten Monat habe ich eine möblierte Wohnung gemietet, und mein Monatsgehalt sichert meinen Lebensunterhalt vollständig ab.',
+          'Ich habe bereits eine Unterkunft über meinen Arbeitgeber reserviert und verfüge über ausreichende finanzielle Mittel.',
+          'Mein Sperrkonto enthält den geforderten Betrag für ein ganzes Jahr, inklusive voller Krankenversicherung.'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'german_health',
+    title: 'Almanya Sağlık & Klinik Hemşirelik',
+    turkishTitle: '🇩🇪 Almanya Sağlık, Doktor & Hemşirelik',
+    icon: '🩺',
+    description: 'Alman hastane ve kliniklerinde hasta kabulü, semptom sorma ve hekim raporlama diyalogları.',
+    powerJargon: [
+      {
+        term: 'Anamnese',
+        tr: 'Hasta tıbbi öyküsü / Geçmişi',
+        example: 'Wir müssen zuerst eine gründliche Anamnese durchführen.'
+      },
+      {
+        term: 'Blutdruck',
+        tr: 'Tansiyon / Kan basıncı',
+        example: 'Ich werde jetzt Ihren Blutdruck und Puls messen.'
+      },
+      {
+        term: 'Beschwerden',
+        tr: 'Şikayetler / Ağrı',
+        example: 'Seit wann haben Sie diese akuten Beschwerden?'
+      }
+    ],
+    scenarios: [
+      {
+        id: 'de_med_intake',
+        title: 'Patientenaufnahme & Symptome',
+        turkishTitle: 'Hasta Kabul & Şikayet Tespiti',
+        characterName: 'Dr. Hoffmann',
+        characterRole: 'Oberarzt (Uniklinik Berlin)',
+        prompt: 'Guten Tag! Der neue Patient klagt über starke Brustschmerzen. Wie ist sein aktueller Zustand und was haben Sie dokumentiert?',
+        promptTr: 'İyi günler! Yeni hasta şiddetli göğüs ağrısından şikayet ediyor. Mevcut durumu nasıl ve neleri kaydettiniz?',
+        targetKeywords: ['blutdruck', 'schmerzen', 'zustand', 'puls', 'stabil', 'medikamente', 'patient'],
+        suggestedReplies: [
+          'Der Blutdruck liegt bei 130 zu 85, der Puls ist stabil. Ich habe ihm ein EKG angelegt und den Kardiologen informiert.',
+          'Der Patient berichtet von ziehenden Schmerzen seit heute Morgen. Die Vitalwerte sind stabil und die Akte ist vorbereitet.',
+          'Wir haben die Erstversorgung abgeschlossen, Vitalzeichen gemessen und die Blutprobe ins Labor geschickt.'
+        ]
+      }
+    ]
+  }
+];
+
 export class CareerTrackService {
-  public static getTracks(): CareerTrack[] {
+  public static getTracks(lang?: string): CareerTrack[] {
+    if (lang === 'de') {
+      return [...GERMAN_CAREER_TRACKS, ...CAREER_TRACKS];
+    }
     return CAREER_TRACKS;
   }
 
   public static getTrackById(id: string): CareerTrack | undefined {
-    return CAREER_TRACKS.find(t => t.id === id);
+    return [...CAREER_TRACKS, ...GERMAN_CAREER_TRACKS].find(t => t.id === id);
   }
 
   public static evaluateCareerSpeech(
