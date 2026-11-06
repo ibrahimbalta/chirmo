@@ -140,87 +140,97 @@ export const ChirmoAuthModal: React.FC<ChirmoAuthModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-fadeIn select-none">
-      <div className="relative w-full max-w-lg bg-gradient-to-b from-gray-900 via-gray-900 to-black border border-cyan-500/30 rounded-3xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/70 backdrop-blur-sm animate-fadeIn select-none">
+      <div className="relative w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col transition-all">
         {/* Glow Effects */}
-        <div className="absolute top-0 right-1/4 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/4 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-1/4 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
 
         {/* Top Header */}
-        <div className="p-5 border-b border-gray-800 bg-gray-900/60 flex items-start justify-between shrink-0">
+        <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/70 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 border border-cyan-400/30 flex items-center justify-center text-2xl shadow-inner">
-              🛡️
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-0.5 flex items-center justify-center shadow-md shadow-indigo-500/20 shrink-0">
+              <div className="w-full h-full bg-white dark:bg-slate-900 rounded-[14px] flex items-center justify-center overflow-hidden">
+                <img
+                  src="./chirmo-avatar.png"
+                  alt="Chirmo Mascot"
+                  className="w-8 h-8 object-contain"
+                  onError={(e) => {
+                    (e.currentTarget as any).src = './chirmo-icon.png';
+                  }}
+                />
+              </div>
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-lg font-black text-white">Chirmo SaaS Kimlik Merkezi</h2>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                  Sıfır Kişisel Veri
-                </span>
-              </div>
-              <p className="text-xs text-gray-400 mt-0.5">
-                E-posta veya telefon gerekmez. Tamamen anonim ve güvenli.
+              <h2 className="text-base sm:text-lg font-black text-slate-800 dark:text-white tracking-tight">
+                Chirmo'ya Hoş Geldiniz 👋
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Konuşma garantili İngilizce dünyasına adım atın
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white p-2 rounded-xl hover:bg-gray-800 transition"
+            className="text-slate-400 hover:text-slate-700 dark:hover:text-white p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition"
             aria-label="Kapat"
           >
             ✕
           </button>
         </div>
 
-        {/* Tab Buttons */}
-        <div className="grid grid-cols-3 p-2 bg-gray-950/80 border-b border-gray-800 shrink-0 text-xs font-bold gap-1">
-          <button
-            type="button"
-            onClick={() => handleTabChange('login')}
-            className={`py-2 rounded-xl transition ${
-              tab === 'login'
-                ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-black shadow'
-                : 'text-gray-400 hover:text-white'
-            }`}
-          >
-            Giriş Yap
-          </button>
-          <button
-            type="button"
-            onClick={() => handleTabChange('register')}
-            className={`py-2 rounded-xl transition ${
-              tab === 'register'
-                ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-black shadow'
-                : 'text-gray-400 hover:text-white'
-            }`}
-          >
-            Kayıt Ol ✨
-          </button>
-          <button
-            type="button"
-            onClick={() => handleTabChange('forgot')}
-            className={`py-2 rounded-xl transition ${
-              tab === 'forgot'
-                ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-black shadow'
-                : 'text-gray-400 hover:text-white'
-            }`}
-          >
-            Şifre Sıfırla
-          </button>
+        {/* Tab Buttons - Symmetrical & Clean */}
+        <div className="px-4 sm:px-6 pt-4 pb-1 bg-white dark:bg-slate-900 shrink-0">
+          <div className="grid grid-cols-3 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl gap-1 text-xs font-bold border border-slate-200/60 dark:border-slate-700/60 shadow-inner">
+            <button
+              type="button"
+              onClick={() => handleTabChange('login')}
+              className={`py-2.5 rounded-xl transition-all duration-200 text-center ${
+                tab === 'login'
+                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-md shadow-indigo-500/25 scale-[1.02]'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              Giriş Yap
+            </button>
+            <button
+              type="button"
+              onClick={() => handleTabChange('register')}
+              className={`py-2.5 rounded-xl transition-all duration-200 text-center ${
+                tab === 'register'
+                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-md shadow-indigo-500/25 scale-[1.02]'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              Kayıt Ol ✨
+            </button>
+            <button
+              type="button"
+              onClick={() => handleTabChange('forgot')}
+              className={`py-2.5 rounded-xl transition-all duration-200 text-center ${
+                tab === 'forgot'
+                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-md shadow-indigo-500/25 scale-[1.02]'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              Şifremi Unuttum
+            </button>
+          </div>
         </div>
 
         {/* Content Body */}
-        <div className="p-5 sm:p-6 overflow-y-auto flex-1 custom-scrollbar text-xs space-y-4">
+        <div className="p-4 sm:p-6 overflow-y-auto flex-1 custom-scrollbar text-xs space-y-4">
           {/* Notifications */}
           {errorMessage && (
-            <div className="p-3 rounded-xl bg-rose-950/60 border border-rose-500/40 text-rose-200 animate-fadeIn font-medium">
-              ⚠️ {errorMessage}
+            <div className="p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 text-rose-700 dark:text-rose-300 font-semibold animate-fadeIn flex items-center gap-2">
+              <span>⚠️</span>
+              <span>{errorMessage}</span>
             </div>
           )}
           {successMessage && (
-            <div className="p-3 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-200 animate-fadeIn font-medium">
-              ✓ {successMessage}
+            <div className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-700 dark:text-emerald-300 font-semibold animate-fadeIn flex items-center gap-2">
+              <span>✓</span>
+              <span>{successMessage}</span>
             </div>
           )}
 
@@ -228,7 +238,7 @@ export const ChirmoAuthModal: React.FC<ChirmoAuthModalProps> = ({
           {tab === 'login' && (
             <form onSubmit={handleLoginSubmit} className="space-y-4">
               <div>
-                <label className="block text-gray-300 font-bold mb-1.5">
+                <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1.5">
                   Kullanıcı Adı:
                 </label>
                 <input
@@ -237,17 +247,17 @@ export const ChirmoAuthModal: React.FC<ChirmoAuthModalProps> = ({
                   value={loginUsername}
                   onChange={(e) => setLoginUsername(e.target.value)}
                   placeholder="Kullanıcı adınızı yazın..."
-                  className="w-full bg-gray-950 border border-gray-800 rounded-xl px-3.5 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"
+                  className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition"
                 />
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-gray-300 font-bold">Şifre:</label>
+                  <label className="text-slate-700 dark:text-slate-300 font-bold">Şifre:</label>
                   <button
                     type="button"
                     onClick={() => handleTabChange('forgot')}
-                    className="text-[11px] text-cyan-400 hover:underline"
+                    className="text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold hover:underline"
                   >
                     Şifremi Unuttum?
                   </button>
@@ -259,12 +269,12 @@ export const ChirmoAuthModal: React.FC<ChirmoAuthModalProps> = ({
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
                     placeholder="Şifrenizi yazın..."
-                    className="w-full bg-gray-950 border border-gray-800 rounded-xl px-3.5 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"
+                    className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-2.5 text-gray-400 hover:text-white"
+                    className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                   >
                     {showPassword ? '🙈' : '👁️'}
                   </button>
@@ -274,17 +284,17 @@ export const ChirmoAuthModal: React.FC<ChirmoAuthModalProps> = ({
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:brightness-110 text-black font-black rounded-xl shadow-lg shadow-cyan-500/20 transition mt-2 disabled:opacity-50"
+                className="w-full py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-500 hover:to-purple-500 text-white font-black rounded-2xl shadow-lg shadow-indigo-500/25 transition-all active:scale-[0.98] mt-2 disabled:opacity-50 flex items-center justify-center gap-2 text-xs sm:text-sm"
               >
                 {loading ? 'Giriş Yapılıyor...' : 'Oturum Aç ➔'}
               </button>
 
               <div className="text-center pt-2">
-                <span className="text-gray-400">Henüz bir hesabınız yok mu? </span>
+                <span className="text-slate-500 dark:text-slate-400">Henüz bir hesabınız yok mu? </span>
                 <button
                   type="button"
                   onClick={() => handleTabChange('register')}
-                  className="text-cyan-400 font-bold hover:underline"
+                  className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline"
                 >
                   Hemen Kayıt Olun
                 </button>
@@ -295,12 +305,12 @@ export const ChirmoAuthModal: React.FC<ChirmoAuthModalProps> = ({
           {/* TAB 2: REGISTER (ZERO-PII) */}
           {tab === 'register' && (
             <form onSubmit={handleRegisterSubmit} className="space-y-3.5">
-              <div className="p-3 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-cyan-200 text-[11px] leading-relaxed">
-                🛡️ <strong>Gizlilik Garantisi:</strong> E-posta adresinizi veya telefon numaranızı asla istemiyoruz. Şifrenizi unutursanız hesabınızı yalnızca seçeceğiniz güvenlik sorusuyla kurtarabilirsiniz.
+              <div className="p-3.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/50 text-indigo-800 dark:text-indigo-200 text-[11px] leading-relaxed">
+                🛡️ <strong>Güvenli ve Pratik:</strong> Telefon veya e-posta gerekmez. Şifrenizi unutursanız hesabınızı güvenlik sorunuzla anında kurtarabilirsiniz.
               </div>
 
               <div>
-                <label className="block text-gray-300 font-bold mb-1">
+                <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">
                   Kullanıcı Adı Seçin:
                 </label>
                 <input
@@ -309,46 +319,46 @@ export const ChirmoAuthModal: React.FC<ChirmoAuthModalProps> = ({
                   value={regUsername}
                   onChange={(e) => setRegUsername(e.target.value)}
                   placeholder="Örn: ahmet_dev, ece99..."
-                  className="w-full bg-gray-950 border border-gray-800 rounded-xl px-3.5 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"
+                  className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
-                  <label className="block text-gray-300 font-bold mb-1">Şifre:</label>
+                  <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Şifre:</label>
                   <input
                     type="password"
                     required
                     value={regPassword}
                     onChange={(e) => setRegPassword(e.target.value)}
                     placeholder="En az 4 karakter..."
-                    className="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"
+                    className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition"
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-300 font-bold mb-1">Şifre Tekrarı:</label>
+                  <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">Şifre Tekrarı:</label>
                   <input
                     type="password"
                     required
                     value={regPasswordConfirm}
                     onChange={(e) => setRegPasswordConfirm(e.target.value)}
                     placeholder="Şifreyi tekrar yazın..."
-                    className="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"
+                    className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-gray-300 font-bold mb-1">
-                  Güvenlik Sorusu Seçin (Şifre Kurtarma İçin):
+                <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">
+                  Güvenlik Sorusu Seçin (Kurtarma İçin):
                 </label>
                 <select
                   value={regQuestion}
                   onChange={(e) => setRegQuestion(e.target.value)}
-                  className="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-400 transition"
+                  className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition"
                 >
                   {PRESET_SECURITY_QUESTIONS.map((q, idx) => (
-                    <option key={idx} value={q} className="bg-gray-900">
+                    <option key={idx} value={q} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
                       {q}
                     </option>
                   ))}
@@ -356,7 +366,7 @@ export const ChirmoAuthModal: React.FC<ChirmoAuthModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-gray-300 font-bold mb-1">
+                <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">
                   Güvenlik Sorunuzun Cevabı:
                 </label>
                 <input
@@ -364,10 +374,10 @@ export const ChirmoAuthModal: React.FC<ChirmoAuthModalProps> = ({
                   required
                   value={regAnswer}
                   onChange={(e) => setRegAnswer(e.target.value)}
-                  placeholder="Örn: Mehmet Hoca, Pamuk, Ali vb..."
-                  className="w-full bg-gray-950 border border-gray-800 rounded-xl px-3.5 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"
+                  placeholder="Örn: Pamuk, Mehmet Hoca vb..."
+                  className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition"
                 />
-                <span className="text-[10px] text-gray-400 mt-1 block">
+                <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 block">
                   * Cevap büyük/küçük harf duyarsız olarak güvenle saklanır.
                 </span>
               </div>
@@ -375,17 +385,17 @@ export const ChirmoAuthModal: React.FC<ChirmoAuthModalProps> = ({
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-400 hover:brightness-110 text-black font-black rounded-xl shadow-lg shadow-emerald-500/20 transition mt-2 disabled:opacity-50"
+                className="w-full py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-500 hover:to-purple-500 text-white font-black rounded-2xl shadow-lg shadow-indigo-500/25 transition-all active:scale-[0.98] mt-2 disabled:opacity-50 flex items-center justify-center gap-2 text-xs sm:text-sm"
               >
-                {loading ? 'Hesap Oluşturuluyor...' : 'Hesabımı Güvenle Oluştur 🚀'}
+                {loading ? 'Hesap Oluşturuluyor...' : 'Hesabımı Oluştur 🚀'}
               </button>
 
               <div className="text-center pt-1">
-                <span className="text-gray-400">Zaten bir hesabınız var mı? </span>
+                <span className="text-slate-500 dark:text-slate-400">Zaten bir hesabınız var mı? </span>
                 <button
                   type="button"
                   onClick={() => handleTabChange('login')}
-                  className="text-cyan-400 font-bold hover:underline"
+                  className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline"
                 >
                   Giriş Yapın
                 </button>
@@ -396,14 +406,14 @@ export const ChirmoAuthModal: React.FC<ChirmoAuthModalProps> = ({
           {/* TAB 3: FORGOT PASSWORD (SECURITY QUESTION RECOVERY) */}
           {tab === 'forgot' && (
             <div className="space-y-4">
-              <div className="p-3 rounded-xl bg-purple-950/40 border border-purple-500/30 text-purple-200 text-[11px] leading-relaxed">
-                🔑 <strong>Şifre Sıfırlama:</strong> E-posta doğrulaması gerekmez. Kaydolurken seçtiğiniz güvenlik sorusunu doğru yanıtlayarak anında yeni şifrenizi belirleyebilirsiniz.
+              <div className="p-3.5 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border border-purple-100 dark:border-purple-900/50 text-purple-800 dark:text-purple-200 text-[11px] leading-relaxed">
+                🔑 <strong>Şifre Sıfırlama:</strong> Kaydolurken seçtiğiniz güvenlik sorusunu yanıtlayarak şifrenizi hemen yenileyebilirsiniz.
               </div>
 
               {!retrievedQuestion ? (
                 <form onSubmit={handleForgotLookupQuestion} className="space-y-3">
                   <div>
-                    <label className="block text-gray-300 font-bold mb-1">
+                    <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">
                       Kullanıcı Adınız:
                     </label>
                     <input
@@ -412,29 +422,29 @@ export const ChirmoAuthModal: React.FC<ChirmoAuthModalProps> = ({
                       value={forgotUsername}
                       onChange={(e) => setForgotUsername(e.target.value)}
                       placeholder="Kayıtlı kullanıcı adınızı yazın..."
-                      className="w-full bg-gray-950 border border-gray-800 rounded-xl px-3.5 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"
+                      className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition"
                     />
                   </div>
                   <button
                     type="submit"
-                    className="w-full py-2.5 bg-gray-800 hover:bg-gray-700 text-white font-bold rounded-xl border border-gray-700 transition"
+                    className="w-full py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-white font-bold rounded-xl border border-slate-200 dark:border-slate-700 transition"
                   >
                     Güvenlik Sorumu Getir 🔍
                   </button>
                 </form>
               ) : (
                 <form onSubmit={handleForgotResetSubmit} className="space-y-3.5">
-                  <div className="p-3.5 rounded-xl bg-gray-950 border border-cyan-500/40">
-                    <span className="text-[11px] text-gray-400 uppercase font-bold tracking-wider block mb-1">
+                  <div className="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-indigo-200 dark:border-indigo-800">
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider block mb-1">
                       Kayıtlı Güvenlik Sorunuz:
                     </span>
-                    <p className="text-sm font-bold text-white">
+                    <p className="text-sm font-bold text-slate-800 dark:text-white">
                       "{retrievedQuestion}"
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-gray-300 font-bold mb-1">
+                    <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">
                       Güvenlik Sorunuzun Cevabı:
                     </label>
                     <input
@@ -443,12 +453,12 @@ export const ChirmoAuthModal: React.FC<ChirmoAuthModalProps> = ({
                       value={forgotAnswer}
                       onChange={(e) => setForgotAnswer(e.target.value)}
                       placeholder="Cevabınızı yazın..."
-                      className="w-full bg-gray-950 border border-gray-800 rounded-xl px-3.5 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"
+                      className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-gray-300 font-bold mb-1">
+                    <label className="block text-slate-700 dark:text-slate-300 font-bold mb-1">
                       Yeni Şifreniz:
                     </label>
                     <input
@@ -457,14 +467,14 @@ export const ChirmoAuthModal: React.FC<ChirmoAuthModalProps> = ({
                       value={forgotNewPassword}
                       onChange={(e) => setForgotNewPassword(e.target.value)}
                       placeholder="Yeni şifrenizi yazın (en az 4 karakter)..."
-                      className="w-full bg-gray-950 border border-gray-800 rounded-xl px-3.5 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"
+                      className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-400 hover:brightness-110 text-black font-black rounded-xl shadow-lg shadow-amber-500/20 transition disabled:opacity-50"
+                    className="w-full py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-500 hover:to-purple-500 text-white font-black rounded-2xl shadow-lg shadow-indigo-500/25 transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 text-xs sm:text-sm"
                   >
                     {loading ? 'Şifre Güncelleniyor...' : 'Şifremi Sıfırla ve Oturum Aç ➔'}
                   </button>
@@ -475,7 +485,7 @@ export const ChirmoAuthModal: React.FC<ChirmoAuthModalProps> = ({
                 <button
                   type="button"
                   onClick={() => handleTabChange('login')}
-                  className="text-gray-400 hover:text-white transition"
+                  className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 font-semibold transition"
                 >
                   ← Giriş Ekranına Dön
                 </button>
