@@ -414,12 +414,42 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 </div>
               </div>
 
-              {/* Büyük Başlık */}
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
-                {targetLang === 'de'
-                  ? 'Günün Almanca Pratiğine Hazır mısın? 👋'
-                  : 'Günün Konuşma Pratiğine Hazır mısın? 👋'}
-              </h1>
+              {/* Büyük Başlık ve Sevimli Dil Seçim Rozetleri */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
+                  {targetLang === 'de'
+                    ? 'Günün Almanca Pratiğine Hazır mısın? 👋'
+                    : 'Günün Konuşma Pratiğine Hazır mısın? 👋'}
+                </h1>
+
+                {/* Sevimli Canlı Dil Değiştirici */}
+                <div className="inline-flex items-center p-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-xs self-start sm:self-center shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => TargetLanguageService.setTargetLanguage('en')}
+                    className={`px-3 py-1 rounded-full text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+                      targetLang === 'en'
+                        ? 'bg-amber-400 text-purple-950 shadow-xs scale-105'
+                        : 'text-white/80 hover:text-white'
+                    }`}
+                  >
+                    <span>🇬🇧</span>
+                    <span>İngilizce</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => TargetLanguageService.setTargetLanguage('de')}
+                    className={`px-3 py-1 rounded-full text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+                      targetLang === 'de'
+                        ? 'bg-amber-400 text-purple-950 shadow-xs scale-105'
+                        : 'text-white/80 hover:text-white'
+                    }`}
+                  >
+                    <span>🇩🇪</span>
+                    <span>Almanca</span>
+                  </button>
+                </div>
+              </div>
 
               {/* Çift Dilli Konuşma Daveti */}
               <div className="p-3.5 sm:p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-left space-y-1.5 shadow-xs">
@@ -441,27 +471,37 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 </div>
               </div>
 
-              {/* TEK VE BÜYÜK ANA AKSİYON: CHIRMO İLE KONUŞMAYA BAŞLA */}
+              {/* ANA AKSİYON BUTONLARI: SEVİMLİ, SİMETRİK VE ÇİFT DİLLİ (İNGİLİZCE & ALMANCA) */}
               <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                {/* Ana Konuşma Butonu */}
                 <button
                   type="button"
                   onClick={() => setIsRobotDialogueOpen(true)}
-                  className="px-7 py-4 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-purple-950 font-black text-base sm:text-lg shadow-xl shadow-amber-500/30 flex items-center justify-center space-x-3 transition-all cursor-pointer active:scale-95 hover:scale-[1.02]"
+                  title="Chirmo ile Canlı Konuşmaya Başla"
+                  className="group relative flex-1 py-3.5 sm:py-4 px-6 sm:px-8 rounded-2xl sm:rounded-full bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-purple-950 font-black text-sm sm:text-base shadow-xl shadow-amber-500/30 border-2 border-amber-200/80 flex items-center justify-center gap-2.5 transition-all cursor-pointer active:scale-95 hover:scale-[1.02] text-center"
                 >
-                  <Mic className="w-5 h-5 fill-purple-950 animate-pulse" />
-                  <span>
-                    🎙️ Chirmo ile Canlı {targetLang === 'de' ? 'Almanca' : 'İngilizce'} Konuşmaya Başla
+                  <span className="text-xl sm:text-2xl group-hover:scale-115 transition-transform shrink-0">
+                    🎙️
                   </span>
+                  <div className="flex items-center gap-1.5 flex-wrap justify-center leading-snug">
+                    <span>Chirmo ile Canlı</span>
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-purple-950/15 text-purple-950 text-xs sm:text-sm font-black border border-purple-950/20 shadow-2xs">
+                      🇬🇧 İngilizce & 🇩🇪 Almanca
+                    </span>
+                    <span>Konuşmaya Başla</span>
+                  </div>
+                  <Sparkles className="w-4 h-4 text-amber-800/80 shrink-0 group-hover:rotate-12 transition-transform hidden sm:inline" />
                 </button>
 
+                {/* Ders Adımları Butonu - Tam Simetrik Tasarım */}
                 <button
                   type="button"
                   onClick={() => onNavigateToLearn && onNavigateToLearn()}
-                  className="px-5 py-3.5 rounded-2xl bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/30 text-white font-bold text-sm flex items-center justify-center space-x-2 transition-all cursor-pointer active:scale-95"
+                  className="py-3.5 sm:py-4 px-6 sm:px-7 rounded-2xl sm:rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md border-2 border-white/30 text-white font-bold text-sm sm:text-base shadow-md flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95 hover:scale-[1.02] shrink-0 text-center"
                 >
-                  <Play className="w-4 h-4 fill-white" />
+                  <Play className="w-4 h-4 fill-white shrink-0" />
                   <span>Ders Adımları</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 shrink-0" />
                 </button>
               </div>
 
