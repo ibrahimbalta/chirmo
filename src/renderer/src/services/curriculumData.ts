@@ -927,8 +927,9 @@ export const CampStorageService = {
 
   getDayMissions(lang?: SupportedLanguage): DayMission[] {
     const code = lang || TargetLanguageService.getTargetLanguage();
-    return code === 'de' ? GERMAN_DAY_MISSIONS : DAY_MISSIONS;
+    return code === 'de' ? GERMAN_DAY_MISSIONS : THIRTY_DAY_MISSIONS;
   }
 };
 
+export const DAY_MISSIONS = THIRTY_DAY_MISSIONS;
 export const CurriculumService = CampStorageService;

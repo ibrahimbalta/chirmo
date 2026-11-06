@@ -74,8 +74,10 @@ describe('TargetLanguageService (Multi-Language English & German)', () => {
     expect(enScenarios[0].id).toBe('scenario-coffee');
 
     const deMissions = CurriculumService.getDayMissions('de');
-    expect(deMissions.length).toBeGreaterThan(0);
+    expect(deMissions.length).toBe(30);
     expect(deMissions[0].speakingGoal).toContain('heiße');
+    expect(deMissions[29].day).toBe(30);
+    expect(deMissions[29].suggestedAnswer).toContain('Deutsch');
   });
 
   it('translates Turkish thought to German when target language is German', async () => {

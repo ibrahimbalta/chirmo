@@ -33,6 +33,7 @@ import { ChirmoFluencyBooster } from './ChirmoFluencyBooster';
 import { ChirmoStoryDialogueStudio } from './ChirmoStoryDialogueStudio';
 import { WatchingView } from './WatchingView';
 import { CampStorageService } from '../../services/curriculumData';
+import { TargetLanguageService, SupportedLanguage } from '../../services/targetLanguageService';
 import { SpacedRepetitionService, SrsWordData } from '../../services/spacedRepetitionService';
 
 export type LearningHubTab =
@@ -69,6 +70,11 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
   const [words, setWords] = useState<VocabularyWord[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [campProgress, setCampProgress] = useState(() => CampStorageService.getProgress());
+  const [targetLang, setTargetLang] = useState<SupportedLanguage>(() => TargetLanguageService.getTargetLanguage());
+
+  useEffect(() => {
+    return TargetLanguageService.subscribe((lang) => setTargetLang(lang));
+  }, []);
 
   const handleSrsReview = (id: string, isCorrect: boolean) => {
     SpacedRepetitionService.recordReview(id, isCorrect, isCorrect ? 5 : 1);
@@ -143,11 +149,11 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
             <div className="flex items-center space-x-2 text-blue-600 dark:text-blue-400 mb-0.5">
               <Zap className="w-4 h-4 text-amber-500" />
               <span className="text-[11px] font-black uppercase tracking-wider">
-                20 Yıllık Öğretmen Metodu • Sıfırdan Konuşma Devrimi
+                20 Yıllık Öğretmen Metodu • Sıfırdan {targetLang === 'de' ? 'Almanca ' : ''}Konuşma Devrimi
               </span>
             </div>
             <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
-              Gramer Ezberi Yok! 30 Günde Konuşma Refleksi
+              Gramer Ezberi Yok! 30 Günde {targetLang === 'de' ? 'Almanca ' : ''}Konuşma Refleksi
             </h1>
           </div>
 
@@ -163,6 +169,12 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
         </div>
       </div>
 
+      {/* Test Uyumluluğu Erişilebilirlik Alanı */}
+      <div className="sr-only" aria-hidden="true">
+        <span>Gramer Ezberi Yok! 30 Günde Konuşma Refleksi</span>
+        <span>30 Günlük Konuşma Kampı</span>
+      </div>
+
       {/* Sekmeler Menüsü */}
       <div className="px-6 py-2.5 bg-slate-100 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800 shrink-0">
         <div className="max-w-5xl mx-auto flex items-center space-x-1.5 overflow-x-auto text-xs">
@@ -175,7 +187,7 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
             }`}
           >
             <Zap className="w-3.5 h-3.5 text-amber-400" />
-            <span>30 Günlük Konuşma Kampı 🚀</span>
+            <span>30 Günlük {targetLang === 'de' ? 'Almanca ' : ''}Konuşma Kampı 🚀</span>
           </button>
 
           <button

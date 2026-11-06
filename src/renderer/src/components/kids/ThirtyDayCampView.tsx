@@ -44,6 +44,13 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isGraduationDialogueOpen, setIsGraduationDialogueOpen] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile>(() => UserProfileService.getProfile());
+  const [targetLang, setTargetLang] = useState(() => TargetLanguageService.getTargetLanguage());
+
+  useEffect(() => {
+    return TargetLanguageService.subscribe((lang) => {
+      setTargetLang(lang);
+    });
+  }, []);
 
   // Voice recording & feedback state
   const [isListening, setIsListening] = useState(false);
@@ -56,7 +63,6 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
   } | null>(null);
   const [isCompletedForToday, setIsCompletedForToday] = useState(false);
 
-  const targetLang = TargetLanguageService.getTargetLanguage();
   const activeMissions = CurriculumService.getDayMissions(targetLang);
   const selectedMission: DayMission =
     activeMissions.find((m) => m.day === selectedDayNumber) || activeMissions[0];
@@ -136,14 +142,21 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
     const finalScore = Math.min(100, Math.max(80, Math.round(78 + matchRatio * 22)));
     const stars = finalScore >= 90 ? 3 : 2;
 
-    const praises = [
+    const praises = targetLang === 'de' ? [
+      'Harika telaffuz! Ağzından çok doğal ve akıcı bir Almanca döküldü.',
+      'Süpersin! Dil kasın açılıyor, Almanca konuşurken ses tonundaki özgüven harika!',
+      'Mükemmel! Kafanda Türkçe çeviri yapmadan doğrudan Almanca refleks verdin.',
+      'Çok iyi! Hata yapmaktan korkmadan konuştun, tam olarak bu ruh lazım!'
+    ] : [
       'Harika telaffuz! Ağzından çok doğal ve akıcı döküldü.',
       'Süpersin! Dil kasın açılıyor, ses tonundaki özgüven harika!',
       'Mükemmel! Kafanda Türkçe çeviri yapmadan doğrudan İngilizce refleks verdin.',
       'Çok iyi! Hata yapmaktan korkmadan konuştun, tam olarak bu ruh lazım!'
     ];
     const praiseTr = praises[Math.floor(Math.random() * praises.length)];
-    const aiReplyEn = 'Brilliant! You sound so natural, keep it up!';
+    const aiReplyEn = targetLang === 'de'
+      ? 'Ausgezeichnet! Du klingst so natürlich, mach weiter so!'
+      : 'Brilliant! You sound so natural, keep it up!';
 
     setScoreResult({
       stars,
@@ -182,13 +195,17 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
             <div>
               <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-black text-amber-300 mb-2">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>20 Yıllık Öğretmen Metodu • Sıfırdan 30 Günde Konuşma Devrimi</span>
+                <span>
+                  20 Yıllık Öğretmen Metodu • Sıfırdan 30 Günde {targetLang === 'de' ? 'Almanca ' : ''}Konuşma Devrimi
+                </span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
-                Gramer Ezberini Unut! Günde 5 Dakika Konuşarak Dili Sök 🚀
+                Gramer Ezberini Unut! Günde 5 Dakika {targetLang === 'de' ? 'Almanca ' : ''}Konuşarak Dili Sök 🚀
               </h1>
               <p className="text-xs sm:text-sm text-blue-100 max-w-xl mt-1.5 leading-relaxed">
-                İngilizce konuşmanın en etkili yolu her gün düzenli olarak sesli pratik yapmaktır. Chirmo ile her gün sesli bir görev yap, 30. günün sonunda dünyayla özgüvenle sohbet et!
+                {targetLang === 'de'
+                  ? 'Almanca konuşmanın en etkili yolu her gün düzenli olarak sesli pratik yapmaktır. Chirmo ile her gün sesli bir görev yap, 30. günün sonunda dünyayla özgüvenle Almanca sohbet et!'
+                  : 'İngilizce konuşmanın en etkili yolu her gün düzenli olarak sesli pratik yapmaktır. Chirmo ile her gün sesli bir görev yap, 30. günün sonunda dünyayla özgüvenle sohbet et!'}
               </p>
             </div>
 
@@ -251,7 +268,7 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
 
           {/* Gün Seçim Düğmeleri */}
           <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
-            {THIRTY_DAY_MISSIONS.map((mission) => {
+            {activeMissions.map((mission) => {
               const isCompleted = progress.completedDays.includes(mission.day);
               const isSelected = selectedDayNumber === mission.day;
               const isCurrent = progress.currentDay === mission.day;
@@ -270,7 +287,7 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
                       : 'bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200'
                   }`}
                 >
-                  <span className="text-[10px] font-bold opacity-75">GÜN</span>
+                  <span className="text-[10px] font-bold opacity-75">{targetLang === 'de' ? 'TAG' : 'GÜN'}</span>
                   <span className="text-base">{mission.day}</span>
                   {isCompleted && (
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 absolute -top-1 -right-1 bg-white rounded-full" />
@@ -404,10 +421,18 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
 
             <div className="text-center space-y-1">
               <div className="text-sm font-extrabold text-slate-800 dark:text-white">
-                {isListening ? 'Seni Dinliyorum, Cümleyi Sesli Söyle...' : 'Mikrofona Bas ve Cümleyi Konuşarak Cevap Ver'}
+                {isListening
+                  ? targetLang === 'de'
+                    ? 'Seni Dinliyorum, Cümleyi Almanca Sesli Söyle...'
+                    : 'Seni Dinliyorum, Cümleyi Sesli Söyle...'
+                  : targetLang === 'de'
+                  ? 'Mikrofona Bas ve Cümleyi Almanca Konuşarak Cevap Ver'
+                  : 'Mikrofona Bas ve Cümleyi Konuşarak Cevap Ver'}
               </div>
               <p className="text-xs text-slate-400">
-                Chirmo seni asla yargılamaz veya not vermez; sadece konuşma kasını geliştirmene yardım eder.
+                {targetLang === 'de'
+                  ? 'Chirmo seni asla yargılamaz veya not vermez; sadece Almanca konuşma kasını geliştirmene yardım eder.'
+                  : 'Chirmo seni asla yargılamaz veya not vermez; sadece konuşma kasını geliştirmene yardım eder.'}
               </p>
             </div>
 
