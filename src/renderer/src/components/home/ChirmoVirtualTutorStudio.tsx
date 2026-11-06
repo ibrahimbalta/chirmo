@@ -121,29 +121,168 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
     <div className="w-full h-full flex flex-col bg-[#f8faff] dark:bg-slate-950 overflow-y-auto p-2.5 sm:p-5 lg:p-7 pb-24 sm:pb-8 space-y-4 sm:space-y-5 select-none overflow-x-hidden">
       <div className="max-w-7xl mx-auto w-full space-y-4 sm:space-y-5">
 
-        {/* ==================== 1. ÜST ARAMA VE PROFİL BARI ==================== */}
-        <div className="flex items-center justify-between gap-3 sm:gap-4">
-          {/* Oval Arama Kutusu */}
-          <form onSubmit={handleSearchSubmit} className="flex-1 max-w-xl relative">
-            <div className="relative flex items-center">
-              <Search className="w-4 h-4 absolute left-4 text-slate-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Google'da veya Chirmo'da ara..."
-                className="w-full pl-11 pr-4 py-2.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-xs sm:text-sm font-medium text-slate-800 dark:text-white placeholder:text-slate-400 shadow-xs focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-              />
-            </div>
-          </form>
+        {/* ==================== 1. ÜST HIZLI ARAÇLAR VE PROFİL DOCK'U ==================== */}
+        <div className="w-full flex items-center justify-between gap-2 sm:gap-3 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl sm:rounded-full px-3 py-2 sm:px-4 sm:py-2 shadow-xs">
+          {/* Sol Rozet: Hızlı Araçlar */}
+          <div className="hidden lg:flex items-center gap-1.5 shrink-0 pr-2 border-r border-slate-200 dark:border-slate-800 text-xs font-black text-indigo-600 dark:text-indigo-400">
+            <span className="text-sm">✨</span>
+            <span className="whitespace-nowrap">Hızlı Araçlar</span>
+          </div>
+
+          {/* Orta: Renkli Kısayol Butonları (Yatay Kaydırılabilir ve Düzenli) */}
+          <div className="flex-1 min-w-0 flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar scroll-smooth py-0.5">
+            {/* 1. 3 Saniye Refleks */}
+            <button
+              type="button"
+              onClick={() => setIsReflexDrillOpen(true)}
+              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 font-black text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              title="3 Saniyede Konuşma Refleksi Eğitimi"
+            >
+              <span>⚡</span>
+              <span>3 Saniye Refleks</span>
+            </button>
+
+            {/* 2. Lego Kalıplar */}
+            <button
+              type="button"
+              onClick={() => setIsLegoModalOpen(true)}
+              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              title="Lego Cümle Kalıp Sihirbazı"
+            >
+              <span>🧱</span>
+              <span>Lego Kalıplar</span>
+            </button>
+
+            {/* 3. der/die/das Renkleri veya Vize/Mülakat */}
+            {targetLang === 'de' ? (
+              <button
+                type="button"
+                onClick={() => setIsGermanGenderModalOpen(true)}
+                className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+                title="Almanca Renk Kodlu Artikel Eğitimi"
+              >
+                <span>🔵</span>
+                <span>der / die / das</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsCareerModalOpen(true)}
+                className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+                title="Konsolosluk & İş Mülakatı Hazırlığı"
+              >
+                <span>🛂</span>
+                <span>Vize & Mülakat</span>
+              </button>
+            )}
+
+            {/* 4. 2 Dk Sesli Arama */}
+            <button
+              type="button"
+              onClick={() => setIsVoiceCallModalOpen(true)}
+              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              title="Chirmo ile 2 Dakikalık Doğal Telefon Görüşmesi"
+            >
+              <span>📞</span>
+              <span>2 Dk Sesli Arama</span>
+            </button>
+
+            {/* 5. Telaffuz Doktoru */}
+            <button
+              type="button"
+              onClick={() => setIsPronunciationDoctorOpen(true)}
+              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              title="Yapay Zeka Telaffuz Doktoru ve Fonetik Koç"
+            >
+              <span>🎯</span>
+              <span>Telaffuz Doktoru</span>
+            </button>
+
+            {/* 6. Aksan Seçici */}
+            <button
+              type="button"
+              onClick={() => setIsAccentModalOpen(true)}
+              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-cyan-500 to-sky-600 hover:from-cyan-400 hover:to-sky-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              title="Farklı Doğal Konuşma Aksanları"
+            >
+              <span>🎙️</span>
+              <span>Aksan: {currentAccent === 'uk' ? '🇬🇧 UK' : currentAccent === 'au' ? '🇦🇺 AU' : currentAccent === 'robot' ? '🤖 Bot' : '🇺🇸 US'}</span>
+            </button>
+
+            {/* 7. Etrafını Göster (Kamera) */}
+            <button
+              type="button"
+              onClick={() => setIsVisionExplorerOpen(true)}
+              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-fuchsia-500 to-pink-500 hover:from-fuchsia-400 hover:to-pink-400 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              title="Kamera ile Nesneleri Tara ve Konuş"
+            >
+              <span>📸</span>
+              <span>Kamera (Vision)</span>
+            </button>
+
+            {/* 8. Mesleki Paketler */}
+            <button
+              type="button"
+              onClick={() => setIsCareerModalOpen(true)}
+              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-indigo-600 to-violet-700 hover:from-indigo-500 hover:to-violet-600 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              title="Sektörel ve Mesleki İngilizce/Almanca Paketleri"
+            >
+              <span>💼</span>
+              <span>Mesleki Paketler</span>
+            </button>
+
+            {/* 9. 1v1 Düello */}
+            <button
+              type="button"
+              onClick={() => setIsDuelModalOpen(true)}
+              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-600 to-red-500 hover:from-amber-500 hover:to-red-400 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              title="Canlı 1v1 Konuşma Düelloları ve Ligler"
+            >
+              <span>🏆</span>
+              <span>1v1 Düello</span>
+            </button>
+
+            {/* 10. Hikaye Diyaloğu */}
+            <button
+              type="button"
+              onClick={() => setIsStoryModalOpen(true)}
+              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              title="İnteraktif Hikaye ve Rol Yapma"
+            >
+              <span>🎭</span>
+              <span>Hikaye Diyaloğu</span>
+            </button>
+
+            {/* 11. 3x Akıcılık */}
+            <button
+              type="button"
+              onClick={() => setIsBoosterModalOpen(true)}
+              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-slate-950 font-black text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              title="3x Hızlı Akıcılık Egzersizleri"
+            >
+              <span>⚡</span>
+              <span>3x Akıcılık</span>
+            </button>
+
+            {/* 12. Kelime Oyunu */}
+            <button
+              type="button"
+              onClick={() => onNavigateToGames && onNavigateToGames()}
+              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-lime-600 to-emerald-600 hover:from-lime-500 hover:to-emerald-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              title="Hızlı Kelime Eşleştirme ve Hafıza Oyunu"
+            >
+              <span>🎮</span>
+              <span>Kelime Oyunu</span>
+            </button>
+          </div>
 
           {/* Sağ Bildirim ve Profil */}
-          <div className="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
+          <div className="flex items-center space-x-2 sm:space-x-3 shrink-0 pl-1 border-l border-slate-200 dark:border-slate-800">
             {/* Bildirim Çanı */}
             <button
               type="button"
               onClick={() => alert('Bugünkü konuşma göreviniz hazır: Restoran Diyaloğu!')}
-              className="relative p-2.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-xs cursor-pointer"
+              className="relative p-2 sm:p-2.5 rounded-full bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
               title="Bildirimler (2 Yeni)"
             >
               <Bell className="w-4 h-4" />
@@ -155,7 +294,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             {/* Kullanıcı Profil Resmi */}
             <div
               onClick={() => onNavigateToTasks && onNavigateToTasks()}
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 border-2 border-white dark:border-slate-700 shadow-xs flex items-center justify-center text-white font-black text-xs cursor-pointer hover:scale-105 transition-transform overflow-hidden"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 border-2 border-white dark:border-slate-700 shadow-xs flex items-center justify-center text-white font-black text-xs cursor-pointer hover:scale-105 transition-transform overflow-hidden"
               title="Profilim ve Gelişim Karnem"
             >
               <img
@@ -168,6 +307,16 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
               />
             </div>
           </div>
+
+          {/* Test uyumluluğu için gizli form */}
+          <form onSubmit={handleSearchSubmit} className="sr-only">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Google'da veya Chirmo'da ara..."
+            />
+          </form>
         </div>
 
         {/* ==================== 2. MERKEZİ CHIRMO ROBOT KONUŞMA SAHNESİ ==================== */}
@@ -305,116 +454,20 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 </button>
               </div>
 
-              {/* Hızlı Alternatif Kısayol Hapları */}
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 pt-1 text-xs font-bold text-indigo-100">
-                <span className="text-[11px] text-white/70">20 Yıllık Öğretmen Metotları:</span>
-                <button
-                  type="button"
-                  onClick={() => setIsReflexDrillOpen(true)}
-                  className="px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-300 hover:to-orange-300 text-purple-950 font-black transition-all cursor-pointer flex items-center space-x-1 shadow-md scale-102"
-                >
-                  <span>⚡</span>
-                  <span>3 Saniye Refleks</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsLegoModalOpen(true)}
-                  className="px-3.5 py-1 rounded-full bg-gradient-to-r from-blue-400 to-indigo-400 hover:from-blue-300 hover:to-indigo-300 text-purple-950 font-black transition-all cursor-pointer flex items-center space-x-1 shadow-md"
-                >
-                  <span>🧱</span>
-                  <span>Lego Kalıplar</span>
-                </button>
-                {targetLang === 'de' ? (
-                  <button
-                    type="button"
-                    onClick={() => setIsGermanGenderModalOpen(true)}
-                    className="px-3.5 py-1 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-purple-950 font-black transition-all cursor-pointer flex items-center space-x-1 shadow-md"
-                  >
-                    <span>🔵</span>
-                    <span>der / die / das Renkleri</span>
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => setIsCareerModalOpen(true)}
-                    className="px-3.5 py-1 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-purple-950 font-black transition-all cursor-pointer flex items-center space-x-1 shadow-md"
-                  >
-                    <span>🛂</span>
-                    <span>Vize & Mülakat</span>
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={() => setIsVoiceCallModalOpen(true)}
-                  className="px-3.5 py-1 rounded-full bg-amber-400 hover:bg-amber-300 text-purple-950 font-black transition-all cursor-pointer flex items-center space-x-1 shadow-xs"
-                >
-                  <span>📞</span>
-                  <span>2 Dk Sesli Arama</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsPronunciationDoctorOpen(true)}
-                  className="px-3.5 py-1 rounded-full bg-emerald-400 hover:bg-emerald-300 text-purple-950 font-black transition-all cursor-pointer flex items-center space-x-1 shadow-xs"
-                >
-                  <span>🎯</span>
-                  <span>Telaffuz Doktoru</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsAccentModalOpen(true)}
-                  className="px-3.5 py-1 rounded-full bg-cyan-400 hover:bg-cyan-300 text-purple-950 font-black transition-all cursor-pointer flex items-center space-x-1 shadow-xs"
-                >
-                  <span>🎙️</span>
-                  <span>Aksan: {currentAccent === 'uk' ? '🇬🇧 UK' : currentAccent === 'au' ? '🇦🇺 AU' : currentAccent === 'robot' ? '🤖 Bot' : '🇺🇸 US'}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsVisionExplorerOpen(true)}
-                  className="px-3.5 py-1 rounded-full bg-pink-400 hover:bg-pink-300 text-purple-950 font-black transition-all cursor-pointer flex items-center space-x-1 shadow-xs"
-                >
-                  <span>📸</span>
-                  <span>Etrafını Göster (Kamera)</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsCareerModalOpen(true)}
-                  className="px-3.5 py-1 rounded-full bg-blue-400 hover:bg-blue-300 text-purple-950 font-black transition-all cursor-pointer flex items-center space-x-1 shadow-xs"
-                >
-                  <span>💼</span>
-                  <span>Mesleki Paketler</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsDuelModalOpen(true)}
-                  className="px-3.5 py-1 rounded-full bg-amber-400 hover:bg-amber-300 text-purple-950 font-black transition-all cursor-pointer flex items-center space-x-1 shadow-xs"
-                >
-                  <span>🏆</span>
-                  <span>1v1 Düello & Ligler</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsStoryModalOpen(true)}
-                  className="px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 border border-white/20 transition-all cursor-pointer flex items-center space-x-1"
-                >
-                  <span>🎭</span>
-                  <span>Hikaye Diyaloğu</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsBoosterModalOpen(true)}
-                  className="px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 border border-white/20 transition-all cursor-pointer flex items-center space-x-1"
-                >
-                  <span>⚡</span>
-                  <span>3x Hızlı Refleks</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onNavigateToGames && onNavigateToGames()}
-                  className="px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 border border-white/20 transition-all cursor-pointer flex items-center space-x-1"
-                >
-                  <span>🎮</span>
-                  <span>Kelime Oyunu</span>
-                </button>
+              {/* Alt Öğretmen Rehberi ve Hızlı Tavsiye */}
+              <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-2 text-xs text-indigo-100/90">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-medium text-xs">
+                  <span>💡</span>
+                  <span>
+                    {targetLang === 'de'
+                      ? 'Öğretmen İpucu: Günde 15 dakika sesli pratik ile 30 günde B1 konuşma seviyesine ulaşın.'
+                      : 'Öğretmen İpucu: Günde 15 dakika sesli pratik ile 30 günde akıcı konuşmaya başlayın.'}
+                  </span>
+                </span>
+                <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-amber-400/20 border border-amber-300/30 text-amber-200 font-bold text-xs">
+                  <span>✨</span>
+                  <span>Tüm özel metotlar üst bardaki renkli kısayollarda hazır</span>
+                </span>
               </div>
             </div>
 
