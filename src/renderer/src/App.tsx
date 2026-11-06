@@ -442,6 +442,29 @@ export const App: React.FC = () => {
                   </div>
                   {activeTab === 'tasks' && <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />}
                 </button>
+
+                {/* 8. Giriş Yap / Hesap (Mobilde Kolayca Erişilebilir) */}
+                <div className="pt-1 mt-1 border-t border-slate-100 dark:border-slate-800">
+                  <button
+                    onClick={() => {
+                      setIsAuthModalOpen(true);
+                      setIsMobileNavOpen(false);
+                    }}
+                    className="w-full flex items-center space-x-2.5 px-2.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/50"
+                  >
+                    <div className="w-7 h-7 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center shrink-0 text-sm">
+                      🛡️
+                    </div>
+                    <div className="text-left flex-1 min-w-0">
+                      <div className="font-extrabold truncate">
+                        {currentUser ? `@${currentUser.username} (Hesabım)` : 'Giriş Yap / Kayıt Ol'}
+                      </div>
+                      <div className="text-[10px] text-slate-400 font-normal truncate">
+                        {currentUser ? 'Hesap & Abonelik Detayları' : 'Sıfır Kişisel Veri ile Giriş'}
+                      </div>
+                    </div>
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -549,22 +572,22 @@ export const App: React.FC = () => {
           </button>
         </nav>
 
-        {/* Sağ: İlerleme & Modern Aksiyon Butonları (1. Görseldeki Butonlarla Kusursuz Aynı h-8 Boyut & Hizada) */}
+        {/* Sağ: İlerleme & Modern Aksiyon Butonları (Mobilde Giriş Butonuna Tam Yer Açan Akıllı Düzen) */}
         <div className="flex items-center space-x-1 sm:space-x-1.5 md:space-x-2 shrink-0">
-          {/* APK İndir */}
+          {/* APK İndir - Sadece Tablet ve Masaüstünde Görünür, Mobilde Login Butonunu Sıkıştırmaz */}
           <button
             onClick={() => setIsInstallModalOpen(true)}
-            className="h-8 px-2 sm:px-3 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold shadow-xs cursor-pointer transition-all inline-flex items-center space-x-1 sm:space-x-1.5 whitespace-nowrap hover:scale-[1.02] shrink-0"
+            className="hidden sm:inline-flex h-8 px-2 sm:px-3 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold shadow-xs cursor-pointer transition-all items-center space-x-1 sm:space-x-1.5 whitespace-nowrap hover:scale-[1.02] shrink-0"
             title="Chirmo Android APK ve PWA İndir"
           >
             <Download className="w-3.5 h-3.5 shrink-0" />
-            <span className="hidden sm:inline">APK İndir</span>
+            <span className="hidden md:inline">APK İndir</span>
           </button>
 
-          {/* Gün Serisi & XP Ortak Kapsülü */}
+          {/* Gün Serisi & XP Ortak Kapsülü - Mobilde Ekranı Sıkıştırmaz, Tablet ve Masaüstünde Net Görünür */}
           <div
             onClick={() => setActiveTab('learn')}
-            className="h-8 px-2 sm:px-2.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 flex items-center space-x-1 sm:space-x-1.5 text-xs font-bold cursor-pointer hover:bg-slate-200/70 dark:hover:bg-slate-700/70 transition-all shrink-0"
+            className="hidden sm:flex h-8 px-2 sm:px-2.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 items-center space-x-1 sm:space-x-1.5 text-xs font-bold cursor-pointer hover:bg-slate-200/70 dark:hover:bg-slate-700/70 transition-all shrink-0"
             title="30 Günlük Kamp Kesintisiz Serisi ve Toplam XP"
           >
             <div className="flex items-center space-x-0.5 sm:space-x-1 text-amber-600 dark:text-amber-400 font-black">
@@ -594,18 +617,18 @@ export const App: React.FC = () => {
             </span>
           </div>
 
-          {/* Sıfır Kişisel Veri SaaS Giriş / Kayıt Butonu & Oturum Rozeti */}
+          {/* Sıfır Kişisel Veri SaaS Giriş / Kayıt Butonu & Oturum Rozeti (Mobilde %100 Görünür ve Asla Taşmaz) */}
           {!currentUser ? (
             <button
               onClick={() => setIsAuthModalOpen(true)}
-              className="h-8 px-2.5 sm:px-3.5 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-black shadow-xs cursor-pointer transition-all inline-flex items-center space-x-1 shrink-0 whitespace-nowrap hover:scale-[1.02]"
+              className="h-8 px-2.5 sm:px-3.5 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-black shadow-xs cursor-pointer transition-all inline-flex items-center space-x-1 shrink-0 whitespace-nowrap active:scale-95"
               title="Sıfır Kişisel Veri ile Giriş Yap veya Kayıt Ol"
             >
               <span>🛡️</span>
-              <span>Giriş<span className="hidden xs:inline sm:inline"> / Kayıt</span></span>
+              <span>Giriş Yap</span>
             </button>
           ) : (
-            <div className="flex items-center space-x-1 sm:space-x-1.5">
+            <div className="flex items-center space-x-1 sm:space-x-1.5 shrink-0">
               <div
                 onClick={() => setIsAuthModalOpen(true)}
                 className="h-8 px-2 sm:px-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300 text-xs font-bold cursor-pointer hover:bg-indigo-500/20 transition-colors inline-flex items-center space-x-1 sm:space-x-1.5 whitespace-nowrap"
@@ -613,16 +636,16 @@ export const App: React.FC = () => {
               >
                 <span>👤</span>
                 <span className="font-extrabold max-w-[55px] xs:max-w-[75px] sm:max-w-none truncate">@{currentUser.username}</span>
-                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-indigo-500/20 text-indigo-500 font-mono">
+                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-indigo-500/20 text-indigo-500 font-mono hidden xs:inline">
                   {currentUser.plan === 'pro' ? '👑 PRO' : 'ÜCRETSİZ'}
                 </span>
               </div>
               <button
                 onClick={() => PrivacyAuthService.logout()}
-                className="h-8 px-2 rounded-xl bg-slate-100 hover:bg-rose-100 dark:bg-slate-800 dark:hover:bg-rose-950/50 text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 text-xs font-bold transition-colors cursor-pointer"
+                className="h-8 px-2 rounded-xl bg-slate-100 hover:bg-rose-100 dark:bg-slate-800 dark:hover:bg-rose-950/50 text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 text-xs font-bold transition-colors cursor-pointer shrink-0"
                 title="Güvenli Çıkış Yap"
               >
-                ✕ Çıkış
+                ✕
               </button>
             </div>
           )}
