@@ -122,20 +122,63 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
       <div className="max-w-7xl mx-auto w-full space-y-4 sm:space-y-5">
 
         {/* ==================== 1. ÜST HIZLI ARAÇLAR VE PROFİL DOCK'U ==================== */}
-        <div className="w-full flex items-center justify-between gap-2 sm:gap-3 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl sm:rounded-full px-3 py-2 sm:px-4 sm:py-2 shadow-xs">
-          {/* Sol Rozet: Hızlı Araçlar */}
-          <div className="hidden lg:flex items-center gap-1.5 shrink-0 pr-2 border-r border-slate-200 dark:border-slate-800 text-xs font-black text-indigo-600 dark:text-indigo-400">
-            <span className="text-sm">✨</span>
-            <span className="whitespace-nowrap">Hızlı Araçlar</span>
+        <div className="w-full bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-xs space-y-2.5">
+          {/* Üst Başlık Satırı: Başlık & Sağda Bildirim ve Profil */}
+          <div className="flex items-center justify-between gap-3 pb-2 border-b border-slate-100 dark:border-slate-800/80">
+            <div className="flex items-center gap-2">
+              <span className="flex items-center justify-center w-7 h-7 rounded-xl bg-gradient-to-tr from-amber-400 to-indigo-600 text-white text-xs shadow-xs font-black">
+                ✨
+              </span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="text-xs sm:text-sm font-black text-slate-800 dark:text-white">
+                  Hızlı Öğretmen & Pratik Araçları
+                </h3>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-800/60">
+                  {targetLang === 'de' ? '🇩🇪 Almanca İstasyonu' : '🇬🇧 İngilizce İstasyonu'}
+                </span>
+              </div>
+            </div>
+
+            {/* Sağ Bildirim ve Profil */}
+            <div className="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
+              {/* Bildirim Çanı */}
+              <button
+                type="button"
+                onClick={() => alert('Bugünkü konuşma göreviniz hazır: Restoran Diyaloğu!')}
+                className="relative p-2 rounded-full bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+                title="Bildirimler (2 Yeni)"
+              >
+                <Bell className="w-4 h-4" />
+                <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-rose-500 text-white text-[9px] font-black rounded-full flex items-center justify-center shadow-xs">
+                  2
+                </span>
+              </button>
+
+              {/* Kullanıcı Profil Resmi */}
+              <div
+                onClick={() => onNavigateToTasks && onNavigateToTasks()}
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 border-2 border-white dark:border-slate-700 shadow-xs flex items-center justify-center text-white font-black text-xs cursor-pointer hover:scale-105 transition-transform overflow-hidden"
+                title="Profilim ve Gelişim Karnem"
+              >
+                <img
+                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
+                  alt="Profil Avatar"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLElement).style.display = 'none';
+                  }}
+                />
+              </div>
+            </div>
           </div>
 
-          {/* Orta: Renkli Kısayol Butonları (Yatay Kaydırılabilir ve Düzenli) */}
-          <div className="flex-1 min-w-0 flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar scroll-smooth py-0.5">
+          {/* Alt Satır(lar): Tüm Renkli Butonlar - flex-wrap ile alt satıra iner, asla içeri taşmaz veya gizlenmez */}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 pt-0.5">
             {/* 1. 3 Saniye Refleks */}
             <button
               type="button"
               onClick={() => setIsReflexDrillOpen(true)}
-              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 font-black text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 font-black text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
               title="3 Saniyede Konuşma Refleksi Eğitimi"
             >
               <span>⚡</span>
@@ -146,7 +189,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             <button
               type="button"
               onClick={() => setIsLegoModalOpen(true)}
-              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
               title="Lego Cümle Kalıp Sihirbazı"
             >
               <span>🧱</span>
@@ -158,7 +201,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
               <button
                 type="button"
                 onClick={() => setIsGermanGenderModalOpen(true)}
-                className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+                className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
                 title="Almanca Renk Kodlu Artikel Eğitimi"
               >
                 <span>🔵</span>
@@ -168,7 +211,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
               <button
                 type="button"
                 onClick={() => setIsCareerModalOpen(true)}
-                className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+                className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
                 title="Konsolosluk & İş Mülakatı Hazırlığı"
               >
                 <span>🛂</span>
@@ -180,7 +223,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             <button
               type="button"
               onClick={() => setIsVoiceCallModalOpen(true)}
-              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
               title="Chirmo ile 2 Dakikalık Doğal Telefon Görüşmesi"
             >
               <span>📞</span>
@@ -191,7 +234,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             <button
               type="button"
               onClick={() => setIsPronunciationDoctorOpen(true)}
-              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
               title="Yapay Zeka Telaffuz Doktoru ve Fonetik Koç"
             >
               <span>🎯</span>
@@ -202,7 +245,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             <button
               type="button"
               onClick={() => setIsAccentModalOpen(true)}
-              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-cyan-500 to-sky-600 hover:from-cyan-400 hover:to-sky-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-cyan-500 to-sky-600 hover:from-cyan-400 hover:to-sky-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
               title="Farklı Doğal Konuşma Aksanları"
             >
               <span>🎙️</span>
@@ -213,7 +256,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             <button
               type="button"
               onClick={() => setIsVisionExplorerOpen(true)}
-              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-fuchsia-500 to-pink-500 hover:from-fuchsia-400 hover:to-pink-400 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-fuchsia-500 to-pink-500 hover:from-fuchsia-400 hover:to-pink-400 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
               title="Kamera ile Nesneleri Tara ve Konuş"
             >
               <span>📸</span>
@@ -224,7 +267,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             <button
               type="button"
               onClick={() => setIsCareerModalOpen(true)}
-              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-indigo-600 to-violet-700 hover:from-indigo-500 hover:to-violet-600 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-indigo-600 to-violet-700 hover:from-indigo-500 hover:to-violet-600 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
               title="Sektörel ve Mesleki İngilizce/Almanca Paketleri"
             >
               <span>💼</span>
@@ -235,7 +278,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             <button
               type="button"
               onClick={() => setIsDuelModalOpen(true)}
-              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-600 to-red-500 hover:from-amber-500 hover:to-red-400 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-600 to-red-500 hover:from-amber-500 hover:to-red-400 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
               title="Canlı 1v1 Konuşma Düelloları ve Ligler"
             >
               <span>🏆</span>
@@ -246,7 +289,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             <button
               type="button"
               onClick={() => setIsStoryModalOpen(true)}
-              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
               title="İnteraktif Hikaye ve Rol Yapma"
             >
               <span>🎭</span>
@@ -257,7 +300,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             <button
               type="button"
               onClick={() => setIsBoosterModalOpen(true)}
-              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-slate-950 font-black text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-slate-950 font-black text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
               title="3x Hızlı Akıcılık Egzersizleri"
             >
               <span>⚡</span>
@@ -268,44 +311,12 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             <button
               type="button"
               onClick={() => onNavigateToGames && onNavigateToGames()}
-              className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-lime-600 to-emerald-600 hover:from-lime-500 hover:to-emerald-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
+              className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-lime-600 to-emerald-600 hover:from-lime-500 hover:to-emerald-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:shadow-md hover:scale-105 active:scale-95"
               title="Hızlı Kelime Eşleştirme ve Hafıza Oyunu"
             >
               <span>🎮</span>
               <span>Kelime Oyunu</span>
             </button>
-          </div>
-
-          {/* Sağ Bildirim ve Profil */}
-          <div className="flex items-center space-x-2 sm:space-x-3 shrink-0 pl-1 border-l border-slate-200 dark:border-slate-800">
-            {/* Bildirim Çanı */}
-            <button
-              type="button"
-              onClick={() => alert('Bugünkü konuşma göreviniz hazır: Restoran Diyaloğu!')}
-              className="relative p-2 sm:p-2.5 rounded-full bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
-              title="Bildirimler (2 Yeni)"
-            >
-              <Bell className="w-4 h-4" />
-              <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-rose-500 text-white text-[9px] font-black rounded-full flex items-center justify-center shadow-xs">
-                2
-              </span>
-            </button>
-
-            {/* Kullanıcı Profil Resmi */}
-            <div
-              onClick={() => onNavigateToTasks && onNavigateToTasks()}
-              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 border-2 border-white dark:border-slate-700 shadow-xs flex items-center justify-center text-white font-black text-xs cursor-pointer hover:scale-105 transition-transform overflow-hidden"
-              title="Profilim ve Gelişim Karnem"
-            >
-              <img
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
-                alt="Profil Avatar"
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  (e.target as HTMLElement).style.display = 'none';
-                }}
-              />
-            </div>
           </div>
 
           {/* Test uyumluluğu için gizli form */}
