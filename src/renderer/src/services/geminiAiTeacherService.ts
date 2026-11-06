@@ -23,6 +23,105 @@ export class GeminiAiTeacherService {
   }
 
   /**
+   * Kullanıcının Türkçe düşündüğü cevabı konuşma dilinde doğal bir İngilizce cümleye çevirir.
+   * 1. Google Translate API (anında, ücretsiz, yüksek doğruluk)
+   * 2. Google Gemini API (API key mevcutsa)
+   * 3. Akıllı yerel konuşma kalıpları (offline fallback)
+   */
+  public static async translateTurkishThoughtToEnglish(
+    turkishText: string,
+    contextQuestion: string = ''
+  ): Promise<string> {
+    const trimmed = turkishText.trim();
+    if (!trimmed) return '';
+
+    // 1. Anında ve Yüksek Doğruluklu Canlı Çeviri (Google Translate Endpoint)
+    try {
+      const res = await fetch(
+        `https://translate.googleapis.com/translate_a/single?client=gtx&sl=tr&tl=en&dt=t&q=${encodeURIComponent(trimmed)}`
+      );
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data[0]) {
+          const translated = data[0].map((x: any) => x[0]).join('').trim();
+          if (translated) {
+            return translated;
+          }
+        }
+      }
+    } catch {
+      // Ağ veya bağlantı hatasında sonraki adıma geç
+    }
+
+    // 2. Google Gemini API ile Doğal Konuşma Çevirisi (Key varsa)
+    const apiKey = this.getApiKey();
+    if (apiKey) {
+      try {
+        const prompt = `Sen Türkçe düşünceyi akıcı, doğal günlük konuşma İngilizcesine çeviren bir asistansın.
+Chirmo'nun sorduğu soru: "${contextQuestion}".
+Kullanıcının Türkçe vermek istediği yanıt: "${trimmed}".
+
+Görev: Bu cevabı A1-B1 seviyesinde, günlük konuşma dilinde son derece doğal ve samimi tek bir İngilizce cümleye çevir. Asla açıklama veya Türkçe ekleme, yalnızca tek bir İngilizce cümle döndür.`;
+
+        const models = ['gemini-2.5-flash', 'gemini-3.8-flash'];
+        for (const m of models) {
+          try {
+            const resp = await fetch(
+              `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${apiKey}`,
+              {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  contents: [{ role: 'user', parts: [{ text: prompt }] }]
+                })
+              }
+            );
+            if (resp.ok) {
+              const d = await resp.json();
+              const reply = d.candidates?.[0]?.content?.parts?.[0]?.text;
+              if (reply && reply.trim()) {
+                let clean = reply.split('\n')[0].trim().replace(/^["']/, '').replace(/["']$/, '');
+                if (clean.includes('(')) clean = clean.split('(')[0].trim();
+                return clean;
+              }
+            }
+          } catch {
+            // Sıradaki modeli dene
+          }
+        }
+      } catch {
+        // Fallback'e devam et
+      }
+    }
+
+    // 3. Akıllı Çevrimdışı / Yerel Kalıp Eşleştirici
+    const lower = trimmed.toLowerCase();
+    if (lower.includes('hobi') || lower.includes('bisiklet') || lower.includes('müzik')) {
+      return 'My favorite hobby is cycling and listening to music.';
+    }
+    if (lower.includes('kahve') || lower.includes('çay') || lower.includes('içmek')) {
+      return 'I would like to have a cup of coffee, please.';
+    }
+    if (lower.includes('merhaba') || lower.includes('nasılsın') || lower.includes('iyiyim')) {
+      return 'Hello! I am doing great, thank you. How about you?';
+    }
+    if (lower.includes('evet') || lower.includes('katılıyorum')) {
+      return 'Yes, I totally agree with you on that.';
+    }
+    if (lower.includes('hayır') || lower.includes('istemiyorum')) {
+      return 'No, thank you. I prefer something else.';
+    }
+    if (lower.includes('yemek') || lower.includes('pizza') || lower.includes('makarna')) {
+      return 'I love delicious food, especially Italian cuisine!';
+    }
+    if (lower.includes('iş') || lower.includes('çalış') || lower.includes('okul')) {
+      return 'I am busy working today, but I always make time to practice English.';
+    }
+
+    return `I would like to say that ${trimmed}, which is very important to me.`;
+  }
+
+  /**
    * Gemini API ile canlı konuşma yanıtı üretir.
    * Hata veya kota durumunda kesintisiz akıllı yerel pedagoji motoruna geçer.
    */

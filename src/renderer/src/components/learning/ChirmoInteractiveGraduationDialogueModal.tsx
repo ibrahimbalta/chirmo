@@ -148,24 +148,12 @@ export const ChirmoInteractiveGraduationDialogueModal: React.FC<
         messages.filter((m) => m.sender === 'chirmo').slice(-1)[0]?.text ||
         'Can you tell me more about that?';
 
-      const prompt = `Kullanıcı şu an İngilizce konuşma pratiği yapıyor.
-Chirmo'nun sorduğu soru: "${lastChirmoQuestion}".
-Kullanıcının Türkçe vermek istediği yanıt: "${turkishInput.trim()}".
-
-Görev: Bu Türkçe cevabı günlük konuşma dilinde son derece doğal, samimi ve A1-B1 seviyesinde bir İngilizce konuşma cümlesine dönüştür. Yalnızca tek bir İngilizce cümle yaz, hiçbir açıklama veya ek metin ekleme.`;
-
-      const result = await GeminiAiTeacherService.generateTutorResponse(
-        prompt,
-        [],
-        'Türkçe Düşünceyi Doğal İngilizce Konuşma Cümlesine Çevirme'
+      const englishAnswer = await GeminiAiTeacherService.translateTurkishThoughtToEnglish(
+        turkishInput.trim(),
+        lastChirmoQuestion
       );
 
-      let cleanEnglish = result.text.split('\n')[0].trim().replace(/^"/, '').replace(/"$/, '');
-      if (cleanEnglish.includes('(')) {
-        cleanEnglish = cleanEnglish.split('(')[0].trim();
-      }
-
-      setTranslatedEnglishAnswer(cleanEnglish);
+      setTranslatedEnglishAnswer(englishAnswer);
     } catch {
       // Çevrimdışı / Hızlı Yerel Sözlük Yedek Fallback
       const sample = `I would like to say that ${turkishInput.trim()}, because it is very important and interesting to me.`;
@@ -315,31 +303,33 @@ Görev: Bu Türkçe cevabı günlük konuşma dilinde son derece doğal, samimi 
       <div className="w-full max-w-4xl h-[96vh] sm:h-[94vh] max-h-[850px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl flex flex-col bg-white dark:bg-slate-950 border border-purple-300 dark:border-purple-900/60">
         
         {/* ==================== 1. ÜST BAŞLIK & MEZUNİYET ROZETİ ==================== */}
-        <div className="px-4 py-3 sm:px-5 sm:py-3.5 bg-gradient-to-r from-indigo-700 via-purple-700 to-violet-800 text-white flex items-center justify-between shrink-0">
-          <div className="flex items-center space-x-2.5 sm:space-x-3">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-md shrink-0">
+        <div className="px-3 sm:px-5 py-2.5 sm:py-3.5 bg-gradient-to-r from-indigo-700 via-purple-700 to-violet-800 text-white flex items-center justify-between shrink-0 gap-2">
+          {/* Sol Kısım: Başlık & Rozet */}
+          <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-md shrink-0">
               <Trophy className="w-4 h-4 sm:w-5 sm:h-5 text-amber-300 animate-bounce" />
             </div>
-            <div>
-              <div className="flex items-center space-x-1.5 sm:space-x-2">
-                <h2 className="text-sm sm:text-lg font-black tracking-tight flex items-center space-x-1.5">
-                  <span className="truncate max-w-[200px] sm:max-w-none">{milestoneTitle}</span>
-                  <span className="text-[10px] sm:text-xs bg-amber-400 text-purple-950 px-2 py-0.5 rounded-full font-black">
-                    Gün {dayNumber}
-                  </span>
+            <div className="min-w-0">
+              <div className="flex items-center space-x-1.5">
+                <h2 className="text-xs sm:text-base font-black tracking-tight truncate max-w-[130px] sm:max-w-xs">
+                  {milestoneTitle}
                 </h2>
+                <span className="text-[9px] sm:text-xs bg-amber-400 text-purple-950 px-2 py-0.5 rounded-full font-black shrink-0">
+                  Gün {dayNumber}
+                </span>
               </div>
-              <p className="text-[11px] sm:text-xs text-purple-200 line-clamp-1">
-                Chirmo Sanal Robotun ile Karşılıklı Canlı İngilizce Konuşma Odası
+              <p className="text-[10px] sm:text-xs text-purple-200 truncate">
+                Chirmo Sanal Robot ile Karşılıklı Canlı İngilizce
               </p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-1.5 sm:space-x-2">
+          {/* Sağ Kısım: Simetrik Menü & Butonlar */}
+          <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
             <button
               type="button"
               onClick={() => setShowAllTranslations(!showAllTranslations)}
-              className={`px-2.5 py-1 rounded-xl text-[11px] font-bold flex items-center space-x-1 transition-all cursor-pointer ${
+              className={`h-8 px-2 sm:px-2.5 rounded-xl text-[10px] sm:text-xs font-bold flex items-center space-x-1 transition-all cursor-pointer ${
                 showAllTranslations
                   ? 'bg-amber-400 text-purple-950 shadow-xs'
                   : 'bg-white/15 text-white hover:bg-white/25'
@@ -347,17 +337,16 @@ Görev: Bu Türkçe cevabı günlük konuşma dilinde son derece doğal, samimi 
               title="Türkçe Açıklamaları Aç / Kapat"
             >
               <Languages className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Türkçe Açıklamalar:</span>
-              <span>{showAllTranslations ? 'Açık' : 'Kapalı'}</span>
+              <span>{showAllTranslations ? 'TR Açık' : 'TR Kapalı'}</span>
             </button>
 
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 sm:p-2 rounded-full bg-white/20 hover:bg-white/30 text-white transition-all cursor-pointer"
+              className="w-8 h-8 rounded-xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all cursor-pointer shrink-0"
               title="Kapat"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -366,10 +355,10 @@ Görev: Bu Türkçe cevabı günlük konuşma dilinde son derece doğal, samimi 
         <div className="flex-1 flex flex-col md:flex-row overflow-hidden bg-slate-50 dark:bg-slate-900/50">
           
           {/* Sol Panel: 3D Sanal Robot Chirmo Avatarı (Mobil için kompakt, masaüstü için dikey) */}
-          <div className="w-full md:w-64 bg-gradient-to-b from-indigo-50/80 via-white to-purple-50/60 dark:from-slate-900 dark:via-slate-950 dark:to-purple-950/30 p-2.5 sm:p-4 flex flex-row md:flex-col items-center justify-between border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-800 shrink-0 gap-2 sm:gap-3">
+          <div className="w-full md:w-64 bg-gradient-to-b from-indigo-50/80 via-white to-purple-50/60 dark:from-slate-900 dark:via-slate-950 dark:to-purple-950/30 p-2 sm:p-3.5 flex flex-row md:flex-col items-center justify-between border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-800 shrink-0 gap-2 sm:gap-3">
             
             {/* Avatar Bölümü */}
-            <div className="flex items-center space-x-2 md:space-x-0 md:flex-col text-center">
+            <div className="flex items-center space-x-2 md:space-x-0 md:flex-col text-center shrink-0">
               <ChirmoTalkingRobotAvatar
                 state={avatarState}
                 size="sm"
@@ -377,7 +366,7 @@ Görev: Bu Türkçe cevabı günlük konuşma dilinde son derece doğal, samimi 
                 onClick={() => LearningStorageService.speak("Hello friend! Let's talk together!")}
               />
               <div className="text-left md:text-center mt-0 md:mt-2">
-                <span className="text-[10px] font-black uppercase tracking-wider text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-950 px-2 py-0.5 rounded-full inline-block mb-0.5">
+                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-950 px-2 py-0.5 rounded-full inline-block mb-0.5">
                   Sanal Asistan
                 </span>
                 <h3 className="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white leading-tight">
@@ -387,24 +376,24 @@ Görev: Bu Türkçe cevabı günlük konuşma dilinde son derece doğal, samimi 
             </div>
 
             {/* İstatistik & Takıldım Butonu */}
-            <div className="flex-1 md:w-full space-y-1.5 md:space-y-2">
+            <div className="flex-1 md:w-full space-y-1.5">
               <button
                 type="button"
                 onClick={handleVoiceWhisperHint}
-                className="w-full py-2 px-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-purple-950 font-black text-xs flex items-center justify-center space-x-1.5 shadow-sm transition-all cursor-pointer active:scale-95"
+                className="w-full h-8 sm:h-9 px-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-purple-950 font-black text-xs flex items-center justify-center space-x-1.5 shadow-xs transition-all cursor-pointer active:scale-95"
               >
                 <Lightbulb className="w-3.5 h-3.5 fill-purple-950 shrink-0" />
                 <span className="truncate">💡 Takıldım / İpucu Ver</span>
               </button>
 
-              <div className="flex items-center justify-around text-center py-1.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-400">
+              <div className="flex items-center justify-around text-center py-1 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-400">
                 <div>
                   <span className="block text-indigo-600 dark:text-indigo-400 text-xs sm:text-sm font-black">
                     {completedTurns}
                   </span>
                   <span>Tur</span>
                 </div>
-                <div className="w-px h-5 bg-slate-200 dark:bg-slate-800" />
+                <div className="w-px h-4 bg-slate-200 dark:bg-slate-800" />
                 <div>
                   <span className="block text-emerald-600 dark:text-emerald-400 text-xs sm:text-sm font-black">
                     %{speakingScore}
@@ -572,31 +561,31 @@ Görev: Bu Türkçe cevabı günlük konuşma dilinde son derece doğal, samimi 
               </div>
 
               {/* ==================== TÜRKÇE DÜŞÜN, İNGİLİZCE KONUŞ KÖPRÜSÜ ==================== */}
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <button
                   type="button"
                   onClick={() => setIsTurkishBridgeOpen(!isTurkishBridgeOpen)}
-                  className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500/15 via-purple-500/15 to-indigo-500/15 hover:from-amber-500/25 hover:to-indigo-500/25 border border-amber-400/50 dark:border-amber-600/50 text-xs font-black text-amber-900 dark:text-amber-200 flex items-center justify-between transition-all cursor-pointer shadow-2xs"
+                  className="w-full py-2 px-2.5 sm:px-3 rounded-xl bg-gradient-to-r from-amber-500/15 via-purple-500/15 to-indigo-500/15 hover:from-amber-500/25 hover:to-indigo-500/25 border border-amber-400/50 dark:border-amber-600/50 text-xs font-black text-amber-900 dark:text-amber-200 flex items-center justify-between transition-all cursor-pointer shadow-2xs gap-1.5"
                 >
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm">🇹🇷 ➔ 🇬🇧</span>
-                    <span>Aklındaki Cevabı Türkçe Yaz → İngilizce Cevap Üret</span>
+                  <div className="flex items-center space-x-1.5 min-w-0">
+                    <span className="text-xs sm:text-sm shrink-0">🇹🇷 ➔ 🇬🇧</span>
+                    <span className="truncate">Aklındaki Cevabı Türkçe Yaz → İngilizce Cevap Üret</span>
                   </div>
-                  <span className="text-[10px] bg-amber-400 text-purple-950 px-2.5 py-0.5 rounded-full font-black">
+                  <span className="text-[10px] bg-amber-400 text-purple-950 px-2 py-0.5 rounded-full font-black shrink-0">
                     {isTurkishBridgeOpen ? 'Kapat ✕' : 'Aç & Pratik Yap ✨'}
                   </span>
                 </button>
 
                 {isTurkishBridgeOpen && (
-                  <div className="p-3 bg-gradient-to-br from-amber-50/95 to-purple-50/85 dark:from-slate-900 dark:to-purple-950/40 border-2 border-amber-300 dark:border-amber-700/60 rounded-2xl space-y-2.5 animate-fade-in shadow-xs">
+                  <div className="p-2.5 sm:p-3 bg-gradient-to-br from-amber-50/95 to-purple-50/85 dark:from-slate-900 dark:to-purple-950/40 border-2 border-amber-300 dark:border-amber-700/60 rounded-2xl space-y-2 animate-fade-in shadow-xs">
                     <div className="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-200">
-                      <span className="flex items-center space-x-1.5 text-amber-800 dark:text-amber-300">
+                      <span className="flex items-center space-x-1 text-amber-800 dark:text-amber-300 text-[11px] sm:text-xs">
                         <span>💡</span>
-                        <span>Ne söylemek istiyorsan Türkçe yaz, Chirmo anında doğal İngilizceye çevirsin:</span>
+                        <span>Ne söylemek istiyorsan Türkçe yaz, Chirmo doğal İngilizceye çevirsin:</span>
                       </span>
                     </div>
 
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center gap-1.5 sm:gap-2 w-full">
                       <input
                         type="text"
                         value={turkishInput}
@@ -604,46 +593,50 @@ Görev: Bu Türkçe cevabı günlük konuşma dilinde son derece doğal, samimi 
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') handleTranslateTurkishAnswer();
                         }}
-                        placeholder="Örn: En sevdiğim hobi hafta sonları bisiklete binmek ve müzik dinlemek..."
-                        className="flex-1 px-3 py-2 rounded-xl border border-amber-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        placeholder="Örn: En sevdiğim hobi hafta sonları bisiklete binmek..."
+                        className="flex-1 min-w-0 h-10 px-3 rounded-xl border border-amber-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-inner"
                       />
                       <button
                         type="button"
                         onClick={handleTranslateTurkishAnswer}
                         disabled={isTranslatingTurkish || !turkishInput.trim()}
-                        className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 disabled:opacity-40 text-purple-950 font-black text-xs transition-all cursor-pointer flex items-center space-x-1 shrink-0 shadow-xs"
+                        className="h-10 px-3 sm:px-4 rounded-xl bg-amber-500 hover:bg-amber-600 disabled:opacity-40 text-purple-950 font-black text-xs transition-all cursor-pointer flex items-center justify-center space-x-1 shrink-0 shadow-xs active:scale-95"
+                        title="İngilizceye Çevir"
                       >
                         {isTranslatingTurkish ? (
                           <span className="animate-spin">⏳</span>
                         ) : (
-                          <span>İngilizceye Çevir ✨</span>
+                          <span>Çevir ✨</span>
                         )}
                       </button>
                     </div>
 
                     {translatedEnglishAnswer && (
-                      <div className="p-2.5 bg-white dark:bg-slate-900 rounded-xl border border-purple-200 dark:border-purple-800 space-y-2">
+                      <div className="p-2.5 sm:p-3 bg-white dark:bg-slate-900 rounded-xl border border-purple-200 dark:border-purple-800 space-y-2 shadow-xs">
                         <div>
-                          <div className="text-[10px] font-black uppercase text-purple-600 dark:text-purple-400">
-                            Chirmo'nun Hazırladığı İngilizce Cevap:
+                          <div className="text-[10px] font-black uppercase text-purple-600 dark:text-purple-400 flex items-center justify-between">
+                            <span>Chirmo'nun Hazırladığı İngilizce Cevap:</span>
+                            <span className="text-[9px] bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 px-1.5 py-0.2 rounded font-bold">
+                              ✓ Hazır
+                            </span>
                           </div>
-                          <div className="text-xs sm:text-sm font-black text-slate-900 dark:text-white mt-0.5">
+                          <div className="text-xs sm:text-sm font-black text-slate-900 dark:text-white mt-1">
                             🇬🇧 "{translatedEnglishAnswer}"
                           </div>
-                          <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400 italic">
+                          <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400 italic mt-0.5">
                             🇹🇷 Türkçe: "{turkishInput}"
                           </div>
                         </div>
 
-                        <div className="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800">
+                        <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100 dark:border-slate-800">
                           <button
                             type="button"
                             onClick={() => LearningStorageService.speak(translatedEnglishAnswer)}
-                            className="px-2.5 py-1.5 rounded-lg bg-purple-50 dark:bg-purple-950 hover:bg-purple-100 text-purple-700 dark:text-purple-300 text-xs font-bold flex items-center space-x-1 cursor-pointer"
+                            className="h-9 px-2 rounded-xl bg-purple-50 dark:bg-purple-950 hover:bg-purple-100 dark:hover:bg-purple-900/60 text-purple-700 dark:text-purple-300 text-xs font-bold flex items-center justify-center space-x-1.5 cursor-pointer transition active:scale-95"
                             title="Telaffuzu Dinle"
                           >
-                            <Volume2 className="w-3.5 h-3.5" />
-                            <span>Sesli Dinle</span>
+                            <Volume2 className="w-3.5 h-3.5 shrink-0" />
+                            <span className="truncate">Sesli Dinle</span>
                           </button>
 
                           <button
@@ -654,9 +647,10 @@ Görev: Bu Türkçe cevabı günlük konuşma dilinde son derece doğal, samimi 
                               setTurkishInput('');
                               setIsTurkishBridgeOpen(false);
                             }}
-                            className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black flex items-center space-x-1 cursor-pointer shadow-xs"
+                            className="h-9 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black flex items-center justify-center space-x-1.5 cursor-pointer shadow-xs transition active:scale-95"
+                            title="Bu Cevabı Chirmo'ya Gönder"
                           >
-                            <span>🚀 Bu Cevabı Chirmo'ya Gönder</span>
+                            <span className="truncate">🚀 Bu Cevabı Chirmo'ya Gönder</span>
                           </button>
                         </div>
                       </div>
@@ -666,11 +660,11 @@ Görev: Bu Türkçe cevabı günlük konuşma dilinde son derece doğal, samimi 
               </div>
 
               {/* Kullanıcı Giriş & Mikrofon Barı */}
-              <div className="flex items-center space-x-2 pt-1">
+              <div className="flex items-center space-x-1.5 sm:space-x-2 pt-1">
                 <button
                   type="button"
                   onClick={handleToggleListening}
-                  className={`p-3 rounded-xl flex items-center justify-center transition-all cursor-pointer shadow-md shrink-0 ${
+                  className={`h-10 w-10 sm:h-11 sm:w-11 rounded-xl flex items-center justify-center transition-all cursor-pointer shadow-md shrink-0 active:scale-95 ${
                     isListening
                       ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse'
                       : 'bg-indigo-600 hover:bg-indigo-700 text-white'
@@ -698,14 +692,14 @@ Görev: Bu Türkçe cevabı günlük konuşma dilinde son derece doğal, samimi 
                       ? 'Chirmo seni dinliyor, İngilizce konuş...'
                       : 'İngilizce bir cümle yaz veya mikrofona basıp konuş...'
                   }
-                  className="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="flex-1 min-w-0 h-10 sm:h-11 px-3 sm:px-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-inner"
                 />
 
                 <button
                   type="button"
                   onClick={() => handleSendMessage()}
                   disabled={!inputTranscript.trim()}
-                  className="p-2.5 sm:p-3 rounded-xl bg-purple-600 hover:bg-purple-700 disabled:opacity-40 text-white transition-all cursor-pointer disabled:cursor-not-allowed shadow-md shrink-0"
+                  className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl bg-purple-600 hover:bg-purple-700 disabled:opacity-40 text-white transition-all cursor-pointer disabled:cursor-not-allowed shadow-md shrink-0 flex items-center justify-center active:scale-95"
                   title="Gönder"
                 >
                   <Send className="w-4 h-4 sm:w-5 sm:h-5" />
