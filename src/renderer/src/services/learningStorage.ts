@@ -7,6 +7,7 @@ import {
   WritingAnalysisResult,
   WritingSuggestion
 } from '../types';
+import { TargetLanguageService } from './targetLanguageService';
 
 const STORAGE_KEYS = {
   VOCABULARY: 'chirmo_vocabulary_v1',
@@ -547,14 +548,19 @@ export class LearningStorageService {
       const accentId = customAccentId || LearningStorageService.getSelectedAccent();
       const config = BUILTIN_VOICE_ACCENTS.find(a => a.id === accentId) || BUILTIN_VOICE_ACCENTS[0];
 
-      utterance.lang = config.lang;
+      const activeLang = TargetLanguageService.getTargetLanguage();
+      const targetSpeechLang = activeLang === 'de' ? 'de-DE' : config.lang;
+
+      utterance.lang = targetSpeechLang;
       utterance.pitch = config.pitch;
       utterance.rate = customRate ?? LearningStorageService.getSpeechRate();
 
       // Find best available browser voice matching the target lang
       if ('getVoices' in window.speechSynthesis) {
         const voices = window.speechSynthesis.getVoices();
-        const matchingVoice = voices.find(v => v.lang === config.lang || v.lang.startsWith(config.lang.split('-')[0]));
+        const matchingVoice = voices.find(
+          v => v.lang === targetSpeechLang || v.lang.startsWith(targetSpeechLang.split('-')[0])
+        );
         if (matchingVoice) {
           utterance.voice = matchingVoice;
         }

@@ -35,6 +35,7 @@ import {
 } from 'lucide-react';
 import { LearningStorageService } from '../../services/learningStorage';
 import { AnalyticsService } from '../../services/analyticsService';
+import { TargetLanguageService } from '../../services/targetLanguageService';
 
 export type AgeGroup = '5-7' | '8-10' | '11-13' | '14-17';
 
@@ -1489,10 +1490,10 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
               <div className="space-y-1">
                 <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-xs text-[11px] font-black uppercase tracking-wider">
                   <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                  <span>Çocuklar İçin Yeni Nesil İngilizce Dünyası</span>
+                  <span>Çocuklar İçin Yeni Nesil {TargetLanguageService.getTargetLanguage() === 'de' ? 'Almanca' : 'İngilizce'} Dünyası</span>
                 </div>
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight drop-shadow-xs">
-                  Eğlen, Oyna ve İngilizce Konuş! 🌟
+                  Eğlen, Oyna ve {TargetLanguageService.getTargetLanguage() === 'de' ? 'Almanca' : 'İngilizce'} Konuş! 🌟
                 </h1>
                 <p className="text-xs sm:text-sm text-pink-100 font-medium max-w-xl">
                   Sıkıcı gramer ve kurallar yok! Tıpkı ana dilini öğrenir gibi: Duyarak, lego gibi birleştirerek ve oyunlarla konuşuyoruz.

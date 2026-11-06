@@ -15,6 +15,7 @@ import {
 import { ChirmoTalkingRobotAvatar, ChirmoAvatarState } from '../avatar/ChirmoTalkingRobotAvatar';
 import { GeminiAiTeacherService, ChatMessage } from '../../services/geminiAiTeacherService';
 import { LearningStorageService } from '../../services/learningStorage';
+import { TargetLanguageService } from '../../services/targetLanguageService';
 
 export interface DialogueMessage extends ChatMessage {
   translationTr?: string;
@@ -52,9 +53,12 @@ export const ChirmoInteractiveGraduationDialogueModal: React.FC<
   const [translatedEnglishAnswer, setTranslatedEnglishAnswer] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const targetLang = TargetLanguageService.getTargetLanguage();
+  const targetFlag = targetLang === 'de' ? '🇩🇪' : '🇬🇧';
+  const targetLangName = targetLang === 'de' ? 'Almanca' : 'İngilizce';
 
-  // Akıllı Sesli İpucu Örnekleri (Kullanıcı Takıldığında Çıkacak Seçenekler & Türkçe Açıklamaları)
-  const quickStarterSuggestions = [
+  // Akıllı Sesli İpucu Örnekleri (İngilizce & Almanca)
+  const englishStarters = [
     {
       en: 'In my experience, learning English with Chirmo every day was really exciting!',
       tr: 'Benim deneyimime göre, Chirmo ile her gün İngilizce öğrenmek gerçekten çok heyecan vericiydi!'
@@ -77,30 +81,61 @@ export const ChirmoInteractiveGraduationDialogueModal: React.FC<
     }
   ];
 
+  const germanStarters = [
+    {
+      en: 'Meiner Meinung nach macht das tägliche Deutschlernen mit Chirmo wirklich Spaß!',
+      tr: 'Benim fikrime göre, Chirmo ile her gün Almanca öğrenmek gerçekten çok eğlenceli!'
+    },
+    {
+      en: 'Ich fühle mich jetzt viel sicherer, wenn ich Deutsch spreche.',
+      tr: 'Almanca konuşurken şimdi kendimi çok daha özgüvenli hissediyorum.'
+    },
+    {
+      en: 'Mein liebstes Hobby ist Radfahren und neue Sprachen lernen.',
+      tr: 'En sevdiğim hobi bisiklete binmek ve yeni diller öğrenmek.'
+    },
+    {
+      en: 'Könntest du mir bitte eine weitere Sprechaufgabe geben?',
+      tr: 'Bana lütfen bir konuşma görevi daha verir misin?'
+    },
+    {
+      en: 'Ich verstehe dich sehr gut, aber ich möchte noch fließender antworten.',
+      tr: 'Seni çok iyi anlıyorum ama daha da akıcı yanıt vermek istiyorum.'
+    }
+  ];
+
+  const quickStarterSuggestions = targetLang === 'de' ? germanStarters : englishStarters;
+
   // İlk Açılış Kutlama Mesajı & Türkçe Açıklaması
   useEffect(() => {
     if (isOpen) {
-      const welcomeEn =
-        dayNumber >= 30
-          ? 'Congratulations! You have completed the 30-Day Speaking Camp! I am so proud of you. How do you feel about speaking English today?'
-          : `Amazing job reaching Day ${dayNumber}! Let's have a live conversation together. Tell me, how was your practice today?`;
+      const welcomeText = targetLang === 'de'
+        ? (dayNumber >= 30
+            ? 'Herzlichen Glückwunsch! Du hast das 30-Tage-Camp erfolgreich abgeschlossen! Wie fühlst du dich heute beim Deutschsprechen?'
+            : `Tolle Leistung! Tag ${dayNumber} erreicht! Lass uns live auf Deutsch sprechen. Wie war deine Praxis heute?`)
+        : (dayNumber >= 30
+            ? 'Congratulations! You have completed the 30-Day Speaking Camp! I am so proud of you. How do you feel about speaking English today?'
+            : `Amazing job reaching Day ${dayNumber}! Let's have a live conversation together. Tell me, how was your practice today?`);
 
-      const welcomeTr =
-        dayNumber >= 30
-          ? 'Tebrikler! 30 Günlük Konuşma Kampını başarıyla tamamladın! Seninle gurur duyuyorum. Bugün İngilizce konuşurken kendini nasıl hissediyorsun?'
-          : `Harika iş! ${dayNumber}. Güne ulaştın! Birlikte canlı pratik yapalım. Anlat bakalım, bugünkü konuşma pratiğin nasıldı?`;
+      const welcomeTr = targetLang === 'de'
+        ? (dayNumber >= 30
+            ? 'Tebrikler! 30 Günlük Almanca Konuşma Kampını başarıyla tamamladın! Seninle gurur duyuyorum. Bugün Almanca konuşurken kendini nasıl hissediyorsun?'
+            : `Harika iş! ${dayNumber}. Güne ulaştın! Birlikte canlı Almanca pratik yapalım. Anlat bakalım, bugünkü konuşma pratiğin nasıldı?`)
+        : (dayNumber >= 30
+            ? 'Tebrikler! 30 Günlük Konuşma Kampını başarıyla tamamladın! Seninle gurur duyuyorum. Bugün İngilizce konuşurken kendini nasıl hissediyorsun?'
+            : `Harika iş! ${dayNumber}. Güne ulaştın! Birlikte canlı pratik yapalım. Anlat bakalım, bugünkü konuşma pratiğin nasıldı?`);
 
       const initialChirmoMsg: DialogueMessage = {
         id: 'initial_chirmo',
         sender: 'chirmo',
-        text: welcomeEn,
+        text: welcomeText,
         translationTr: welcomeTr,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
 
       setMessages([initialChirmoMsg]);
       setAvatarState('speaking');
-      LearningStorageService.speak(welcomeEn);
+      LearningStorageService.speak(welcomeText);
 
       const timer = setTimeout(() => {
         setAvatarState('idle');
@@ -108,7 +143,7 @@ export const ChirmoInteractiveGraduationDialogueModal: React.FC<
 
       return () => clearTimeout(timer);
     }
-  }, [isOpen, dayNumber]);
+  }, [isOpen, dayNumber, targetLang]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -122,7 +157,9 @@ export const ChirmoInteractiveGraduationDialogueModal: React.FC<
     setActiveHint(randomHint);
 
     // Chirmo sesli olarak fısıldar
-    const whisperAudio = `Don't worry! Try saying: ${randomHint.en}`;
+    const whisperAudio = targetLang === 'de'
+      ? `Keine Sorge! Versuch zu sagen: ${randomHint.en}`
+      : `Don't worry! Try saying: ${randomHint.en}`;
     setAvatarState('speaking');
     LearningStorageService.speak(whisperAudio);
 
@@ -138,7 +175,7 @@ export const ChirmoInteractiveGraduationDialogueModal: React.FC<
     handleSendMessage(suggestion.en, suggestion.tr);
   };
 
-  // Aklındaki Cevabı Türkçe Yaz -> Doğal İngilizceye Çevir
+  // Aklındaki Cevabı Türkçe Yaz -> Doğal Hedef Dile Çevir
   const handleTranslateTurkishAnswer = async () => {
     if (!turkishInput.trim()) return;
     setIsTranslatingTurkish(true);
@@ -148,15 +185,18 @@ export const ChirmoInteractiveGraduationDialogueModal: React.FC<
         messages.filter((m) => m.sender === 'chirmo').slice(-1)[0]?.text ||
         'Can you tell me more about that?';
 
-      const englishAnswer = await GeminiAiTeacherService.translateTurkishThoughtToEnglish(
+      const targetAnswer = await GeminiAiTeacherService.translateTurkishThoughtToTargetLanguage(
         turkishInput.trim(),
-        lastChirmoQuestion
+        lastChirmoQuestion,
+        targetLang
       );
 
-      setTranslatedEnglishAnswer(englishAnswer);
+      setTranslatedEnglishAnswer(targetAnswer);
     } catch {
       // Çevrimdışı / Hızlı Yerel Sözlük Yedek Fallback
-      const sample = `I would like to say that ${turkishInput.trim()}, because it is very important and interesting to me.`;
+      const sample = targetLang === 'de'
+        ? `Ich möchte sagen, dass ${turkishInput.trim()}, weil es mir sehr wichtig ist.`
+        : `I would like to say that ${turkishInput.trim()}, because it is very important and interesting to me.`;
       setTranslatedEnglishAnswer(sample);
     } finally {
       setIsTranslatingTurkish(false);
@@ -181,7 +221,7 @@ export const ChirmoInteractiveGraduationDialogueModal: React.FC<
     if (SpeechRecognition) {
       try {
         const recognition = new SpeechRecognition();
-        recognition.lang = 'en-US';
+        recognition.lang = targetLang === 'de' ? 'de-DE' : 'en-US';
         recognition.interimResults = true;
         recognition.maxAlternatives = 1;
 
@@ -501,7 +541,7 @@ export const ChirmoInteractiveGraduationDialogueModal: React.FC<
                     </button>
                   </div>
                   <div className="text-xs sm:text-sm font-bold text-slate-800 dark:text-white">
-                    🇬🇧 "{activeHint.en}"
+                    {targetFlag} "{activeHint.en}"
                   </div>
                   <div className="text-xs font-semibold text-amber-800 dark:text-amber-300">
                     🇹🇷 Türkçe Açıklaması: "{activeHint.tr}"
@@ -529,9 +569,9 @@ export const ChirmoInteractiveGraduationDialogueModal: React.FC<
                     className="p-2 sm:p-2.5 rounded-xl bg-purple-50/80 hover:bg-purple-100 dark:bg-purple-950/40 dark:hover:bg-purple-900/50 border border-purple-200/90 dark:border-purple-800 transition-all cursor-pointer group active:scale-[0.99] flex items-center justify-between gap-2 shadow-2xs"
                   >
                     <div className="flex-1 min-w-0">
-                      {/* İngilizce Cümle */}
+                      {/* Hedef Dilde Cümle */}
                       <div className="text-xs sm:text-sm font-bold text-purple-950 dark:text-purple-100 flex items-center space-x-1.5">
-                        <span className="text-xs shrink-0">🇬🇧</span>
+                        <span className="text-xs shrink-0">{targetFlag}</span>
                         <span className="truncate">{item.en}</span>
                       </div>
                       
@@ -568,8 +608,8 @@ export const ChirmoInteractiveGraduationDialogueModal: React.FC<
                   className="w-full py-2 px-2.5 sm:px-3 rounded-xl bg-gradient-to-r from-amber-500/15 via-purple-500/15 to-indigo-500/15 hover:from-amber-500/25 hover:to-indigo-500/25 border border-amber-400/50 dark:border-amber-600/50 text-xs font-black text-amber-900 dark:text-amber-200 flex items-center justify-between transition-all cursor-pointer shadow-2xs gap-1.5"
                 >
                   <div className="flex items-center space-x-1.5 min-w-0">
-                    <span className="text-xs sm:text-sm shrink-0">🇹🇷 ➔ 🇬🇧</span>
-                    <span className="truncate">Aklındaki Cevabı Türkçe Yaz → İngilizce Cevap Üret</span>
+                    <span className="text-xs sm:text-sm shrink-0">🇹🇷 ➔ {targetFlag}</span>
+                    <span className="truncate">Aklındaki Cevabı Türkçe Yaz → {targetLangName} Cevap Üret</span>
                   </div>
                   <span className="text-[10px] bg-amber-400 text-purple-950 px-2 py-0.5 rounded-full font-black shrink-0">
                     {isTurkishBridgeOpen ? 'Kapat ✕' : 'Aç & Pratik Yap ✨'}
@@ -615,13 +655,13 @@ export const ChirmoInteractiveGraduationDialogueModal: React.FC<
                       <div className="p-2.5 sm:p-3 bg-white dark:bg-slate-900 rounded-xl border border-purple-200 dark:border-purple-800 space-y-2 shadow-xs">
                         <div>
                           <div className="text-[10px] font-black uppercase text-purple-600 dark:text-purple-400 flex items-center justify-between">
-                            <span>Chirmo'nun Hazırladığı İngilizce Cevap:</span>
+                            <span>Chirmo'nun Hazırladığı {targetLangName} Cevap:</span>
                             <span className="text-[9px] bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 px-1.5 py-0.2 rounded font-bold">
                               ✓ Hazır
                             </span>
                           </div>
                           <div className="text-xs sm:text-sm font-black text-slate-900 dark:text-white mt-1">
-                            🇬🇧 "{translatedEnglishAnswer}"
+                            {targetFlag} "{translatedEnglishAnswer}"
                           </div>
                           <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400 italic mt-0.5">
                             🇹🇷 Türkçe: "{turkishInput}"

@@ -28,11 +28,18 @@ import {
   SENTENCE_PUZZLES,
   GRAMMAR_BLUEPRINTS,
   DialogueItem,
-  PatternItem
+  PatternItem,
+  DailyLanguageData
 } from '../../services/dailyEnglishData';
 import { LearningStorageService } from '../../services/learningStorage';
+import { TargetLanguageService } from '../../services/targetLanguageService';
 
 export const DailyEnglishStudio: React.FC = () => {
+  const targetLang = TargetLanguageService.getTargetLanguage();
+  const currentDialogues = DailyLanguageData.getDialogues(targetLang);
+  const currentSentences = DailyLanguageData.getEverydaySentences(targetLang);
+  const currentPuzzles = DailyLanguageData.getSentencePuzzles(targetLang);
+
   // Aktif Alt Araç: 'dialogues' | 'puzzles' | 'listening' | 'patterns' | 'grammar'
   const [activeTool, setActiveTool] = useState<'dialogues' | 'puzzles' | 'listening' | 'patterns' | 'grammar'>('dialogues');
 
@@ -45,7 +52,7 @@ export const DailyEnglishStudio: React.FC = () => {
 
   // ==================== 2. CÜMLE KURMA BULMACASI STATE ====================
   const [puzzleIndex, setPuzzleIndex] = useState(0);
-  const currentPuzzle = SENTENCE_PUZZLES[puzzleIndex % SENTENCE_PUZZLES.length];
+  const currentPuzzle = currentPuzzles[puzzleIndex % currentPuzzles.length] || currentPuzzles[0];
   const puzzleTargetWords = currentPuzzle.en.split(' ');
   const [selectedWords, setSelectedWords] = useState<Array<{ word: string; index: number }>>([]);
   const [shuffledPool, setShuffledPool] = useState<Array<{ word: string; index: number }>>(() => {
@@ -60,14 +67,14 @@ export const DailyEnglishStudio: React.FC = () => {
   const [listenAnswered, setListenAnswered] = useState<number | null>(null);
 
   // 3 Dinleme seçeneği oluştur
-  const currentListenTarget = EVERYDAY_SENTENCES[listenRound % EVERYDAY_SENTENCES.length];
+  const currentListenTarget = currentSentences[listenRound % currentSentences.length] || currentSentences[0];
   const [listenOptions, setListenOptions] = useState<string[]>(() => generateListenOptions(listenRound));
 
   function generateListenOptions(round: number) {
-    const target = EVERYDAY_SENTENCES[round % EVERYDAY_SENTENCES.length];
+    const target = currentSentences[round % currentSentences.length] || currentSentences[0];
     const opts = [target.tr];
-    while (opts.length < 3) {
-      const rand = EVERYDAY_SENTENCES[Math.floor(Math.random() * EVERYDAY_SENTENCES.length)].tr;
+    while (opts.length < Math.min(3, currentSentences.length)) {
+      const rand = currentSentences[Math.floor(Math.random() * currentSentences.length)].tr;
       if (!opts.includes(rand)) opts.push(rand);
     }
     return opts.sort(() => Math.random() - 0.5);
@@ -140,10 +147,10 @@ export const DailyEnglishStudio: React.FC = () => {
     setListenRound(nextR);
     setListenAnswered(null);
     setListenOptions(generateListenOptions(nextR));
-    handleSpeak(EVERYDAY_SENTENCES[nextR % EVERYDAY_SENTENCES.length].en);
+    handleSpeak(currentSentences[nextR % currentSentences.length].en);
   };
 
-  const currentDialogue = DAILY_DIALOGUES[selectedDialogueIndex] || DAILY_DIALOGUES[0];
+  const currentDialogue = currentDialogues[selectedDialogueIndex] || currentDialogues[0];
 
   return (
     <div className="flex-1 flex flex-col h-full bg-slate-50 dark:bg-slate-950 overflow-hidden select-none">
@@ -153,7 +160,7 @@ export const DailyEnglishStudio: React.FC = () => {
           <div className="flex items-center space-x-2">
             <span className="text-xs font-black text-indigo-600 bg-indigo-50 dark:bg-indigo-950 dark:text-indigo-300 px-3 py-1 rounded-full flex items-center space-x-1.5">
               <Sparkles className="w-4 h-4 text-amber-500" />
-              <span>Chirmo Günlük İngilizce & Pratik Stüdyosu</span>
+              <span>Chirmo Günlük {targetLang === 'de' ? 'Almanca 🇩🇪' : 'İngilizce 🇬🇧'} & Pratik Stüdyosu</span>
             </span>
           </div>
 
@@ -168,7 +175,7 @@ export const DailyEnglishStudio: React.FC = () => {
               }`}
             >
               <span>🗣️</span>
-              <span>Diyalog & Rol Yapma ({DAILY_DIALOGUES.length})</span>
+              <span>Diyalog & Rol Yapma ({currentDialogues.length})</span>
             </button>
 
             <button
@@ -233,7 +240,7 @@ export const DailyEnglishStudio: React.FC = () => {
             <div className="space-y-4">
               {/* Diyalog Seçici Chips */}
               <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
-                {DAILY_DIALOGUES.map((d, i) => (
+                {currentDialogues.map((d, i) => (
                   <button
                     key={d.id}
                     onClick={() => {

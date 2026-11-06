@@ -36,6 +36,7 @@ import {
   ArcadeStats
 } from '../../services/englishGamesData';
 import { LearningStorageService } from '../../services/learningStorage';
+import { TargetLanguageService } from '../../services/targetLanguageService';
 
 type AudienceMode = 'kids' | 'adults';
 type GameTab = 'memory' | 'blitz' | 'rocket' | 'voice' | 'listening' | 'speaking30';
@@ -355,7 +356,7 @@ export const EnglishGameArcade: React.FC = () => {
     if (SpeechRecognition) {
       try {
         const recognition = new SpeechRecognition();
-        recognition.lang = 'en-US';
+        recognition.lang = TargetLanguageService.getTargetLanguage() === 'de' ? 'de-DE' : 'en-US';
         recognition.interimResults = false;
         recognition.maxAlternatives = 1;
 

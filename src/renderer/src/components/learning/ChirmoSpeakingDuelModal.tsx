@@ -8,6 +8,7 @@ import {
   DuelRoundResult
 } from '../../services/speakingDuelService';
 import { LearningStorageService } from '../../services/learningStorage';
+import { TargetLanguageService } from '../../services/targetLanguageService';
 
 interface ChirmoSpeakingDuelModalProps {
   isOpen: boolean;
@@ -125,7 +126,7 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
 
     try {
       const recognition = new SpeechRecognition();
-      recognition.lang = 'en-US';
+      recognition.lang = TargetLanguageService.getTargetLanguage() === 'de' ? 'de-DE' : 'en-US';
       recognition.interimResults = true;
       recognition.continuous = false;
 

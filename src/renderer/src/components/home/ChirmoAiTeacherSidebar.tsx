@@ -21,6 +21,8 @@ import {
 } from 'lucide-react';
 import { LearningStorageService } from '../../services/learningStorage';
 import { UserProfileService, UserProfile } from '../../services/userProfileService';
+import { TargetLanguageService } from '../../services/targetLanguageService';
+import { GeminiAiTeacherService } from '../../services/geminiAiTeacherService';
 import { ChirmoAiChatModal } from './ChirmoAiChatModal';
 
 interface ChirmoAiTeacherSidebarProps {
@@ -139,8 +141,82 @@ export const ChirmoAiTeacherSidebar: React.FC<ChirmoAiTeacherSidebarProps> = ({
     }
   ];
 
+  const GERMAN_FEATURED_WORDS: FeaturedWordItem[] = [
+    {
+      word: 'Verbessern',
+      level: 'B1',
+      meaningTr: 'Geliştirmek / İyileştirmek',
+      phonetic: '/fɛɐ̯ˈbɛsɐn/',
+      sentenceEn: 'Ich möchte mein Deutsch täglich verbessern.',
+      sentenceTr: 'Almancamı her gün geliştirmek istiyorum.',
+      synonyms: 'optimieren, steigern, fördern',
+      tipTr: 'Kendinizi bir konuda geliştirdiğinizi ifade etmek için en sık kullanılan fiildir.',
+      grammarNotes: '"möchte" modal fiilinden sonra "verbessern" cümlenin en sonuna mastar olarak gider.',
+      breakdown: [
+        { part: 'Ich', role: 'Özne (Ben)' },
+        { part: 'möchte', role: 'Kip fiili (İstemek)' },
+        { part: 'mein Deutsch', role: 'Nesne (Almancamı)' },
+        { part: 'täglich', role: 'Zaman zarfı (Her gün)' },
+        { part: 'verbessern', role: 'Mastar fiil (Geliştirmek)' }
+      ]
+    },
+    {
+      word: 'Selbstbewusst',
+      level: 'B1',
+      meaningTr: 'Özgüvenli / Kendinden Emin',
+      phonetic: '/ˈzɛlpstbəˌvʊst/',
+      sentenceEn: 'Ich fühle mich selbstbewusst beim Deutschsprechen.',
+      sentenceTr: 'Almanca konuşurken kendimi özgüvenli hissediyorum.',
+      synonyms: 'sicher, mutig, zuversichtlich',
+      tipTr: '"Selbst" (kendi) ve "bewusst" (farkında) kelimelerinin birleşiminden oluşur.',
+      grammarNotes: '"beim" (bei + dem) edatından sonra fiiller isimleşerek büyük harfle yazılır: beim Deutschsprechen.',
+      breakdown: [
+        { part: 'Ich', role: 'Özne (Ben)' },
+        { part: 'fühle mich', role: 'Dönüşlü fiil (Hissetmek)' },
+        { part: 'selbstbewusst', role: 'Sıfat (Özgüvenli)' },
+        { part: 'beim Deutschsprechen', role: 'Durum öbeği (Almanca konuşurken)' }
+      ]
+    },
+    {
+      word: 'Empfehlen',
+      level: 'A2',
+      meaningTr: 'Tavsiye Etmek / Önermek',
+      phonetic: '/ɛmˈp͡feːlən/',
+      sentenceEn: 'Was können Sie mir heute empfehlen?',
+      sentenceTr: 'Bugün bana ne tavsiye edebilirsiniz?',
+      synonyms: 'vorschlagen, anraten',
+      tipTr: 'Restoranda veya mağazada yardım isterken çok yaygındır.',
+      grammarNotes: '"empfehlen" fiili kime tavsiye ediliyorsa o zamiri Dativ (mir / dir / Ihnen) yapar.',
+      breakdown: [
+        { part: 'Was', role: 'Soru zamiri (Ne)' },
+        { part: 'können Sie', role: 'Kip fiili + Nezaket öznesi' },
+        { part: 'mir', role: 'Dativ zamir (Bana)' },
+        { part: 'empfehlen', role: 'Mastar fiil (Tavsiye etmek)' }
+      ]
+    },
+    {
+      word: 'Fließend',
+      level: 'B2',
+      meaningTr: 'Akıcı Bir Şekilde',
+      phonetic: '/ˈfliːsn̩t/',
+      sentenceEn: 'Sie kann fließend Deutsch und Englisch sprechen.',
+      sentenceTr: 'O, akıcı bir şekilde Almanca ve İngilizce konuşabiliyor.',
+      synonyms: 'reibungslos, mühelos',
+      tipTr: 'Bir dili duraksamadan konuştuğunuzu belirtmek için kullanılır.',
+      grammarNotes: '"fließen" (akmak) fiilinden türetilmiş bir sıfat/zarftır.',
+      breakdown: [
+        { part: 'Sie', role: 'Özne (O)' },
+        { part: 'kann', role: 'Kip fiil (Ebilmek)' },
+        { part: 'fließend', role: 'Zarf (Akıcı)' },
+        { part: 'sprechen', role: 'Mastar fiil (Konuşmak)' }
+      ]
+    }
+  ];
+
+  const targetLang = TargetLanguageService.getTargetLanguage();
+  const activeWordList = targetLang === 'de' ? GERMAN_FEATURED_WORDS : FEATURED_WORDS;
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const activeWord = FEATURED_WORDS[currentWordIndex];
+  const activeWord = activeWordList[currentWordIndex] || activeWordList[0];
 
   // Profil aboneliği
   useEffect(() => {
@@ -156,13 +232,13 @@ export const ChirmoAiTeacherSidebar: React.FC<ChirmoAiTeacherSidebarProps> = ({
   };
 
   const handleNextWord = () => {
-    setCurrentWordIndex((prev) => (prev + 1) % FEATURED_WORDS.length);
+    setCurrentWordIndex((prev) => (prev + 1) % activeWordList.length);
     setIsWordSaved(false);
     setShowWordDetails(false);
   };
 
   const handlePrevWord = () => {
-    setCurrentWordIndex((prev) => (prev > 0 ? prev - 1 : FEATURED_WORDS.length - 1));
+    setCurrentWordIndex((prev) => (prev > 0 ? prev - 1 : activeWordList.length - 1));
     setIsWordSaved(false);
     setShowWordDetails(false);
   };
@@ -183,32 +259,20 @@ export const ChirmoAiTeacherSidebar: React.FC<ChirmoAiTeacherSidebarProps> = ({
     }, 2800);
   };
 
-  const handleExecuteTranslation = () => {
+  const handleExecuteTranslation = async () => {
     const text = (translateInput || activeWord.sentenceEn).trim();
     if (!text) return;
 
-    // Basit ve zeki yerel eşleme
-    let resultTr = activeWord.sentenceTr;
-    let resultEn = activeWord.sentenceEn;
-
-    if (text.toLowerCase().includes('coffee')) {
-      resultEn = 'I would like a cup of coffee.';
-      resultTr = 'Bir fincan kahve istiyorum.';
-    } else if (text.toLowerCase().includes('water')) {
-      resultEn = 'Can I have some cold water, please?';
-      resultTr = 'Biraz soğuk su alabilir miyim lütfen?';
-    } else if (text.toLowerCase().includes('hello') || text.toLowerCase().includes('merhaba')) {
-      resultEn = 'Hello, how are you today?';
-      resultTr = 'Merhaba, bugün nasılsın?';
-    } else if (text.toLowerCase() === activeWord.word.toLowerCase()) {
-      resultEn = activeWord.word;
-      resultTr = activeWord.meaningTr;
-    } else {
-      resultEn = text;
-      resultTr = activeWord.sentenceTr;
+    try {
+      const translated = await GeminiAiTeacherService.translateTurkishThoughtToTargetLanguage(
+        text,
+        '',
+        targetLang
+      );
+      setTranslateOutput({ en: translated, tr: text });
+    } catch {
+      setTranslateOutput({ en: text, tr: activeWord.sentenceTr });
     }
-
-    setTranslateOutput({ en: resultEn, tr: resultTr });
   };
 
   const handleAskQuickQuestion = () => {

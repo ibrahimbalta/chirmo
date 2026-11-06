@@ -20,8 +20,10 @@ import {
   DayMission,
   THIRTY_DAY_MISSIONS,
   CampStorageService,
+  CurriculumService,
   StudentCampProgress
 } from '../../services/curriculumData';
+import { TargetLanguageService } from '../../services/targetLanguageService';
 import { LearningStorageService } from '../../services/learningStorage';
 import { UserProfileService, UserProfile } from '../../services/userProfileService';
 import { CampComparisonModal } from '../learning/CampComparisonModal';
@@ -54,8 +56,10 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
   } | null>(null);
   const [isCompletedForToday, setIsCompletedForToday] = useState(false);
 
+  const targetLang = TargetLanguageService.getTargetLanguage();
+  const activeMissions = CurriculumService.getDayMissions(targetLang);
   const selectedMission: DayMission =
-    THIRTY_DAY_MISSIONS.find((m) => m.day === selectedDayNumber) || THIRTY_DAY_MISSIONS[0];
+    activeMissions.find((m) => m.day === selectedDayNumber) || activeMissions[0];
 
   useEffect(() => {
     setUserSpokenText('');
@@ -83,7 +87,7 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
     if (SpeechRecognition) {
       try {
         const recognition = new SpeechRecognition();
-        recognition.lang = 'en-US';
+        recognition.lang = targetLang === 'de' ? 'de-DE' : 'en-US';
         recognition.interimResults = false;
         recognition.maxAlternatives = 1;
 

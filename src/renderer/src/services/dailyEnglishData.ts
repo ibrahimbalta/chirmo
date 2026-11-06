@@ -618,3 +618,68 @@ export const GRAMMAR_BLUEPRINTS: GrammarRule[] = [
     ]
   }
 ];
+
+// ==================== ALMANCA GÜNLÜK VERİ HAVUZU (DEUTSCH) ====================
+export const GERMAN_EVERYDAY_SENTENCES: SentenceItem[] = [
+  { en: 'Wie geht es dir?', tr: 'Nasılsın?' },
+  { en: 'Freut mich, dich kennenzulernen.', tr: 'Tanıştığımıza memnun oldum.' },
+  { en: 'Wie heißt du?', tr: 'Adın ne?' },
+  { en: 'Ich verstehe nicht.', tr: 'Anlamıyorum.' },
+  { en: 'Könnten Sie bitte langsamer sprechen?', tr: 'Daha yavaş konuşabilir misiniz?' },
+  { en: 'Wo ist die Toilette?', tr: 'Tuvalet nerede?' },
+  { en: 'Wie viel kostet das?', tr: 'Bu ne kadar?' },
+  { en: 'Ich hätte gerne einen Kaffee, bitte.', tr: 'Bir kahve istiyorum, lütfen.' },
+  { en: 'Könnte ich bitte die Rechnung haben?', tr: 'Hesabı alabilir miyim?' },
+  { en: 'Wie spät ist es?', tr: 'Saat kaç?' },
+  { en: 'Ich habe mich verlaufen.', tr: 'Kayboldum.' },
+  { en: 'Können Sie mir helfen?', tr: 'Bana yardım edebilir misiniz?' },
+  { en: 'Bis morgen!', tr: 'Yarın görüşürüz.' },
+  { en: 'Guten Morgen! Wie hast du geschlafen?', tr: 'Günaydın! Nasıl uyudun?' }
+];
+
+export const GERMAN_DIALOGUES: DialogueItem[] = [
+  {
+    id: 'de-cafe-order',
+    title: 'Im Café (Kafede Sipariş)',
+    category: 'Sipariş & Kafe',
+    lines: [
+      { speaker: 'A', en: 'Guten Tag! Was möchten Sie bestellen?', tr: 'İyi günler! Ne sipariş etmek istersiniz?' },
+      { speaker: 'B', en: 'Guten Tag! Ich hätte gerne einen Cappuccino mit Hafermilch.', tr: 'İyi günler! Yulaf sütlü bir kapuçino rica ediyorum.' },
+      { speaker: 'A', en: 'Sehr gerne. Möchten Sie auch ein Stück Kuchen dazu?', tr: 'Memnuniyetle. Yanında bir dilim pasta da ister misiniz?' },
+      { speaker: 'B', en: 'Ja bitte, den Apfelstrudel.', tr: 'Evet lütfen, elmalı strudel olsun.' },
+      { speaker: 'A', en: 'Kommt sofort! Zusammen oder getrennt?', tr: 'Hemen geliyor! Birlikte mi ayrı mı?' },
+      { speaker: 'B', en: 'Ich zahle mit Karte, bitte.', tr: 'Kartla ödüyorum, lütfen.' }
+    ]
+  },
+  {
+    id: 'de-directions',
+    title: 'Nach dem Weg fragen (Yol Tarifi)',
+    category: 'Şehir & Yol',
+    lines: [
+      { speaker: 'A', en: 'Entschuldigung, wie komme ich zum Hauptbahnhof?', tr: 'Afedersiniz, merkez tren garına nasıl gidebilirim?' },
+      { speaker: 'B', en: 'Gehen Sie geradeaus und dann die zweite Straße links.', tr: 'Düz gidin ve ardından ikinci sokaktan sola dönün.' },
+      { speaker: 'A', en: 'Ist es weit von hier?', tr: 'Buradan uzak mı?' },
+      { speaker: 'B', en: 'Nein, nur fünf Minuten zu Fuß.', tr: 'Hayır, yürüyerek sadece 5 dakika.' },
+      { speaker: 'A', en: 'Vielen herzlichen Dank!', tr: 'Çok teşekkür ederim!' }
+    ]
+  }
+];
+
+export const GERMAN_SENTENCE_PUZZLES: SentencePuzzle[] = [
+  { id: 'de-puz-1', en: 'Ich hätte gerne einen Kaffee', tr: 'Bir kahve rica ediyorum' },
+  { id: 'de-puz-2', en: 'Wie geht es dir heute', tr: 'Bugün nasılsın' },
+  { id: 'de-puz-3', en: 'Wo ist der Bahnhof bitte', tr: 'Tren garı nerede lütfen' },
+  { id: 'de-puz-4', en: 'Ich lerne jeden Tag Deutsch', tr: 'Her gün Almanca öğreniyorum' }
+];
+
+export const DailyLanguageData = {
+  getEverydaySentences(lang: 'en' | 'de' = 'en'): SentenceItem[] {
+    return lang === 'de' ? GERMAN_EVERYDAY_SENTENCES : EVERYDAY_SENTENCES;
+  },
+  getDialogues(lang: 'en' | 'de' = 'en'): DialogueItem[] {
+    return lang === 'de' ? GERMAN_DIALOGUES : DIALOGUES;
+  },
+  getSentencePuzzles(lang: 'en' | 'de' = 'en'): SentencePuzzle[] {
+    return lang === 'de' ? GERMAN_SENTENCE_PUZZLES : SENTENCE_PUZZLES;
+  }
+};

@@ -14,12 +14,14 @@ import {
   Lightbulb,
   Award
 } from 'lucide-react';
-import { REAL_LIFE_SCENARIOS, RealLifeScenario } from '../../services/curriculumData';
+import { CurriculumService, RealLifeScenario } from '../../services/curriculumData';
+import { TargetLanguageService } from '../../services/targetLanguageService';
 import { LearningStorageService } from '../../services/learningStorage';
 import { AnalyticsService } from '../../services/analyticsService';
 
 export const RealLifeSimulatorStudio: React.FC = () => {
-  const [selectedScenario, setSelectedScenario] = useState<RealLifeScenario>(REAL_LIFE_SCENARIOS[0]);
+  const activeScenarios = CurriculumService.getScenarios();
+  const [selectedScenario, setSelectedScenario] = useState<RealLifeScenario>(activeScenarios[0]);
   const [userSpeechInput, setUserSpeechInput] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [feedback, setFeedback] = useState<{
@@ -41,7 +43,7 @@ export const RealLifeSimulatorStudio: React.FC = () => {
     if (SpeechRecognition) {
       try {
         const recognition = new SpeechRecognition();
-        recognition.lang = 'en-US';
+        recognition.lang = TargetLanguageService.getTargetLanguage() === 'de' ? 'de-DE' : 'en-US';
         recognition.interimResults = false;
         recognition.maxAlternatives = 1;
 
@@ -117,7 +119,7 @@ export const RealLifeSimulatorStudio: React.FC = () => {
             🎭 Simülasyon Sahnesini Seç:
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-            {REAL_LIFE_SCENARIOS.map((sc) => (
+            {activeScenarios.map((sc) => (
               <button
                 key={sc.id}
                 type="button"

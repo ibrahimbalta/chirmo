@@ -44,6 +44,7 @@ import { LearningStorageService } from './services/learningStorage';
 import { UserProfileService, UserProfile } from './services/userProfileService';
 import { PrivacyAuthService, SafeUserSession } from './services/privacyAuthService';
 import { ChirmoAuthModal } from './components/auth/ChirmoAuthModal';
+import { TargetLanguageService, SupportedLanguage } from './services/targetLanguageService';
 import { Tab, CEFRLevel, DailyGoalProgress } from './types';
 import { CampStorageService, StudentCampProgress } from './services/curriculumData';
 
@@ -92,12 +93,20 @@ export const App: React.FC = () => {
   );
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
+  // Aktif Hedef Çalışma Dili (İngilizce 🇬🇧 / Almanca 🇩🇪)
+  const [targetLanguage, setTargetLanguage] = useState<SupportedLanguage>(() =>
+    TargetLanguageService.getTargetLanguage()
+  );
+
   useEffect(() => {
     const unsubAuth = PrivacyAuthService.onAuthStateChanged((u) => {
       setCurrentUser(u);
     });
     const unsubProfile = UserProfileService.subscribe((updated) => {
       setUserProfile(updated);
+    });
+    const unsubLang = TargetLanguageService.subscribe((lang) => {
+      setTargetLanguage(lang);
     });
 
     const handleHash = () => {
@@ -111,6 +120,7 @@ export const App: React.FC = () => {
     return () => {
       unsubAuth();
       unsubProfile();
+      unsubLang();
       window.removeEventListener('hashchange', handleHash);
     };
   }, []);
@@ -282,6 +292,39 @@ export const App: React.FC = () => {
             {/* Açılan Menü (2. Görseldeki 7 Modülün Tümü) */}
             {isMobileNavOpen && (
               <div className="absolute left-0 top-9.5 z-50 w-56 p-1.5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl shadow-xl border border-slate-200/90 dark:border-slate-800 space-y-1 animate-in fade-in zoom-in-95 duration-150">
+                {/* Dil Seçimi (İngilizce 🇬🇧 / Almanca 🇩🇪) */}
+                <div className="p-1 bg-slate-100/80 dark:bg-slate-800/60 rounded-xl flex items-center justify-between text-xs font-bold">
+                  <span className="text-slate-500 dark:text-slate-400 pl-1 text-[11px]">Hedef Dil:</span>
+                  <div className="flex items-center space-x-1">
+                    <button
+                      onClick={() => {
+                        TargetLanguageService.setTargetLanguage('en');
+                        setIsMobileNavOpen(false);
+                      }}
+                      className={`px-2 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        targetLanguage === 'en'
+                          ? 'bg-white dark:bg-slate-900 text-indigo-600 shadow-xs font-black'
+                          : 'text-slate-600 dark:text-slate-400'
+                      }`}
+                    >
+                      🇬🇧 EN
+                    </button>
+                    <button
+                      onClick={() => {
+                        TargetLanguageService.setTargetLanguage('de');
+                        setIsMobileNavOpen(false);
+                      }}
+                      className={`px-2 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        targetLanguage === 'de'
+                          ? 'bg-white dark:bg-slate-900 text-indigo-600 shadow-xs font-black'
+                          : 'text-slate-600 dark:text-slate-400'
+                      }`}
+                    >
+                      🇩🇪 DE
+                    </button>
+                  </div>
+                </div>
+
                 {/* 1. Film */}
                 <button
                   onClick={() => {
@@ -601,6 +644,35 @@ export const App: React.FC = () => {
               <span>{campProgress.totalXp}</span>
               <span className="hidden xl:inline text-[10px] font-semibold text-slate-500 dark:text-slate-400">XP</span>
             </div>
+          </div>
+
+          {/* Hedef Dil Seçici (🇬🇧 İngilizce / 🇩🇪 Almanca) */}
+          <div
+            className="h-8 p-0.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 flex items-center shrink-0 shadow-2xs"
+            title="Çalışmak istediğiniz hedef dili seçin (İngilizce / Almanca)"
+          >
+            <button
+              onClick={() => TargetLanguageService.setTargetLanguage('en')}
+              className={`h-7 px-2 rounded-lg text-xs font-bold transition-all flex items-center space-x-1 cursor-pointer ${
+                targetLanguage === 'en'
+                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 font-black shadow-xs ring-1 ring-slate-200 dark:ring-slate-700'
+                  : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+              }`}
+            >
+              <span>🇬🇧</span>
+              <span className="hidden sm:inline">EN</span>
+            </button>
+            <button
+              onClick={() => TargetLanguageService.setTargetLanguage('de')}
+              className={`h-7 px-2 rounded-lg text-xs font-bold transition-all flex items-center space-x-1 cursor-pointer ${
+                targetLanguage === 'de'
+                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 font-black shadow-xs ring-1 ring-slate-200 dark:ring-slate-700'
+                  : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+              }`}
+            >
+              <span>🇩🇪</span>
+              <span className="hidden sm:inline">DE</span>
+            </button>
           </div>
 
           {/* Kişiye Özel Profil Çipi */}

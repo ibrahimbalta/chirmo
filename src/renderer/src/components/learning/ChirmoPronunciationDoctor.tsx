@@ -14,6 +14,7 @@ import {
   Award
 } from 'lucide-react';
 import { LearningStorageService } from '../../services/learningStorage';
+import { TargetLanguageService } from '../../services/targetLanguageService';
 
 export interface EvaluatedWord {
   word: string;
@@ -155,7 +156,7 @@ export const ChirmoPronunciationDoctor: React.FC<ChirmoPronunciationDoctorProps>
     if (SpeechRecognition) {
       try {
         const recognition = new SpeechRecognition();
-        recognition.lang = 'en-US';
+        recognition.lang = TargetLanguageService.getTargetLanguage() === 'de' ? 'de-DE' : 'en-US';
         recognition.interimResults = false;
         recognition.maxAlternatives = 1;
 

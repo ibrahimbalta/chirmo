@@ -1,6 +1,9 @@
 // Chirmo 30 Günde Sıfırdan Konuşma Metodu (Chirmo Fluent Reflex Method)
 // 20 Yıllık Öğretmenlik Tecrübesiyle: Gramer Ezberi Yok, Konuşma ve Refleks Var!
 
+import { TargetLanguageService, SupportedLanguage } from './targetLanguageService';
+import { GERMAN_REAL_LIFE_SCENARIOS, GERMAN_DAY_MISSIONS } from './germanCurriculumData';
+
 export interface RealLifeScenario {
   id: string;
   category: string;
@@ -915,5 +918,17 @@ export const CampStorageService = {
     const updated = { ...current, selectedCategory: cat };
     this.saveProgress(updated);
     return updated;
+  },
+
+  getScenarios(lang?: SupportedLanguage): RealLifeScenario[] {
+    const code = lang || TargetLanguageService.getTargetLanguage();
+    return code === 'de' ? GERMAN_REAL_LIFE_SCENARIOS : REAL_LIFE_SCENARIOS;
+  },
+
+  getDayMissions(lang?: SupportedLanguage): DayMission[] {
+    const code = lang || TargetLanguageService.getTargetLanguage();
+    return code === 'de' ? GERMAN_DAY_MISSIONS : DAY_MISSIONS;
   }
 };
+
+export const CurriculumService = CampStorageService;

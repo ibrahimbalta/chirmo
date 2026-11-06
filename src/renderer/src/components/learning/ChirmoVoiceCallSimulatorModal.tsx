@@ -19,6 +19,7 @@ import {
 import { LearningStorageService } from '../../services/learningStorage';
 import { CampStorageService } from '../../services/curriculumData';
 import { GeminiAiTeacherService } from '../../services/geminiAiTeacherService';
+import { TargetLanguageService } from '../../services/targetLanguageService';
 
 export type CallScreenState = 'ringing' | 'in-call' | 'summary';
 
@@ -46,8 +47,10 @@ export const ChirmoVoiceCallSimulatorModal: React.FC<ChirmoVoiceCallSimulatorMod
   const [showSubtitle, setShowSubtitle] = useState<boolean>(true);
   const [isChirmoSpeaking, setIsChirmoSpeaking] = useState<boolean>(false);
 
-  // Telefon Çağrısı Başlangıç Mesajları
-  const initialCallScenarios = [
+  const targetLang = TargetLanguageService.getTargetLanguage();
+
+  // Telefon Çağrısı Başlangıç Mesajları (İngilizce & Almanca)
+  const englishCallScenarios = [
     {
       en: "Hey friend! It's Chirmo. I have just two quick minutes during my coffee break. How is your day going so far?",
       tr: 'Selam arkadaşım! Ben Chirmo. Kahve molamda sana hızlıca 2 dakika ayırdım. Bugünün nasıl geçiyor?'
@@ -58,7 +61,20 @@ export const ChirmoVoiceCallSimulatorModal: React.FC<ChirmoVoiceCallSimulatorMod
     }
   ];
 
-  const quickCallReplySuggestions = [
+  const germanCallScenarios = [
+    {
+      en: "Hallo mein Freund! Hier ist Chirmo. Ich habe kurz zwei Minuten Pause. Wie läuft dein Tag bis jetzt?",
+      tr: 'Selam arkadaşım! Ben Chirmo. İki dakika molam var. Günün şu ana kadar nasıl geçiyor?'
+    },
+    {
+      en: "Guten Tag! Chirmo ruft für unsere tägliche Deutschpraxis an. Was hast du heute Schönes gemacht?",
+      tr: 'İyi günler! Günlük Almanca pratiğimiz için Chirmo arıyor. Bugün güzel ne yaptın?'
+    }
+  ];
+
+  const initialCallScenarios = targetLang === 'de' ? germanCallScenarios : englishCallScenarios;
+
+  const englishReplySuggestions = [
     {
       en: 'My day is going great, thank you! I just had some coffee.',
       tr: 'Günüm harika geçiyor, teşekkürler! Ben de biraz kahve içtim.'
@@ -72,6 +88,23 @@ export const ChirmoVoiceCallSimulatorModal: React.FC<ChirmoVoiceCallSimulatorMod
       tr: 'Bu sabah yürüyüşe çıktım ve hava çok güzeldi.'
     }
   ];
+
+  const germanReplySuggestions = [
+    {
+      en: 'Mein Tag läuft super, danke! Ich trinke gerade Kaffee.',
+      tr: 'Günüm harika geçiyor, teşekkürler! Şu an kahve içiyorum.'
+    },
+    {
+      en: 'Ich bin etwas beschäftigt, aber ich freue mich sehr, mit dir Deutsch zu sprechen!',
+      tr: 'Biraz meşgulüm ama seninle Almanca konuşmaktan çok mutluyum!'
+    },
+    {
+      en: 'Ich war heute Morgen spazieren und das Wetter war wunderschön.',
+      tr: 'Bu sabah yürüyüşe çıktım ve hava çok güzeldi.'
+    }
+  ];
+
+  const quickCallReplySuggestions = targetLang === 'de' ? germanReplySuggestions : englishReplySuggestions;
 
   // Zil Çalma & Sayaç Döngüsü
   useEffect(() => {
@@ -125,7 +158,7 @@ export const ChirmoVoiceCallSimulatorModal: React.FC<ChirmoVoiceCallSimulatorMod
     if (SpeechRecognition) {
       try {
         const recognition = new SpeechRecognition();
-        recognition.lang = 'en-US';
+        recognition.lang = targetLang === 'de' ? 'de-DE' : 'en-US';
         recognition.interimResults = false;
         recognition.maxAlternatives = 1;
 
