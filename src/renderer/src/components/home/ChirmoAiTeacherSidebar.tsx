@@ -213,7 +213,12 @@ export const ChirmoAiTeacherSidebar: React.FC<ChirmoAiTeacherSidebarProps> = ({
     }
   ];
 
-  const targetLang = TargetLanguageService.getTargetLanguage();
+  const [targetLang, setTargetLang] = useState(() => TargetLanguageService.getTargetLanguage());
+
+  useEffect(() => {
+    return TargetLanguageService.subscribe((lang) => setTargetLang(lang));
+  }, []);
+
   const activeWordList = targetLang === 'de' ? GERMAN_FEATURED_WORDS : FEATURED_WORDS;
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const activeWord = activeWordList[currentWordIndex] || activeWordList[0];
@@ -282,12 +287,24 @@ export const ChirmoAiTeacherSidebar: React.FC<ChirmoAiTeacherSidebarProps> = ({
     setIsAnswering(true);
     setTimeout(() => {
       setIsAnswering(false);
-      if (q.toLowerCase().includes('nasıl') || q.toLowerCase().includes('how')) {
-        setQuickAnswerOutput('İngilizcede bir şeyi nasıl yapacağını sorarken "How can I...?" veya "How do you...?" kalıbını kullanabilirsin!');
-      } else if (q.toLowerCase().includes('geçmiş') || q.toLowerCase().includes('past')) {
-        setQuickAnswerOutput('Geçmiş zamanda düzenli fiillerin sonuna "-ed" gelir: "I worked", "I played". Düzensizlerde ise fiil değişir: "I went".');
+      if (q.toLowerCase().includes('nasıl') || q.toLowerCase().includes('how') || q.toLowerCase().includes('wie')) {
+        setQuickAnswerOutput(
+          targetLang === 'de'
+            ? 'Almancada bir şeyi nasıl yapacağını sorarken "Wie kann ich...?" kalıbını kullanabilirsin!'
+            : 'İngilizcede bir şeyi nasıl yapacağını sorarken "How can I...?" veya "How do you...?" kalıbını kullanabilirsin!'
+        );
+      } else if (q.toLowerCase().includes('geçmiş') || q.toLowerCase().includes('past') || q.toLowerCase().includes('perfekt')) {
+        setQuickAnswerOutput(
+          targetLang === 'de'
+            ? 'Almancada geçmiş zaman (Perfekt) için genellikle "haben/sein + Partizip II" kullanılır: "Ich habe gelernt", "Ich bin gegangen".'
+            : 'Geçmiş zamanda düzenli fiillerin sonuna "-ed" gelir: "I worked", "I played". Düzensizlerde ise fiil değişir: "I went".'
+        );
       } else {
-        setQuickAnswerOutput(`Harika bir soru! "${q}" hakkında en pratik kural: Günlük konuşmada önce özneyi (I/You), hemen ardından fiili getirerek konuşmaya başlamaktır.`);
+        setQuickAnswerOutput(
+          targetLang === 'de'
+            ? `Harika bir soru! "${q}" hakkında en pratik Almanca kuralı: Düz cümlelerde fiil her zaman ikinci sırada yer alır (Verb auf Position 2).`
+            : `Harika bir soru! "${q}" hakkında en pratik kural: Günlük konuşmada önce özneyi (I/You), hemen ardından fiili getirerek konuşmaya başlamaktır.`
+        );
       }
     }, 700);
   };
@@ -302,7 +319,11 @@ export const ChirmoAiTeacherSidebar: React.FC<ChirmoAiTeacherSidebarProps> = ({
         <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
           <div
             onClick={() => {
-              setChatInitialPrompt('Merhaba Chirmo! İngilizce konuşma hakkında bir soru sormak istiyorum.');
+              setChatInitialPrompt(
+                targetLang === 'de'
+                  ? 'Hallo Chirmo! Ich möchte Deutsch üben.'
+                  : 'Merhaba Chirmo! İngilizce konuşma hakkında bir soru sormak istiyorum.'
+              );
               setIsChatModalOpen(true);
             }}
             className="flex items-center space-x-2 cursor-pointer group"
@@ -346,14 +367,18 @@ export const ChirmoAiTeacherSidebar: React.FC<ChirmoAiTeacherSidebarProps> = ({
         {/* ==================== KARŞILAMA VE SOHBET BALONU (KİŞİYE ÖZEL) ==================== */}
         <div
           onClick={() => {
-            setChatInitialPrompt('Bugün restoranda nasıl sipariş verileceğini öğrenelim mi?');
+            setChatInitialPrompt(
+              targetLang === 'de'
+                ? 'Sollen wir heute lernen, wie man im Restaurant bestellt?'
+                : 'Bugün restoranda nasıl sipariş verileceğini öğrenelim mi?'
+            );
             setIsChatModalOpen(true);
           }}
           className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 hover:bg-purple-50/50 dark:hover:bg-slate-800 border border-slate-200/70 dark:border-slate-700/60 text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-medium relative cursor-pointer transition-colors group shadow-2xs"
           title="Tıkla ve Chirmo ile Canlı Konuşmaya Başla"
         >
           <span>
-            Merhaba {profile.hasCustomName ? profile.name : 'Arkadaşım'}! 👋 İngilizceni geliştirmek için buradayım. Bugün sana nasıl yardımcı olabilirim?
+            Merhaba {profile.hasCustomName ? profile.name : 'Arkadaşım'}! 👋 {targetLang === 'de' ? 'Almancanı' : 'İngilizceni'} geliştirmek için buradayım. Bugün sana nasıl yardımcı olabilirim?
           </span>
           <span className="block mt-1.5 text-[10px] font-black text-purple-600 dark:text-purple-400 group-hover:underline">
             Sohbeti Başlat 💬 →
@@ -659,7 +684,12 @@ export const ChirmoAiTeacherSidebar: React.FC<ChirmoAiTeacherSidebarProps> = ({
             <button
               type="button"
               onClick={() => {
-                setChatInitialPrompt(quickQuestionInput || 'İngilizce bir soru sormak istiyorum.');
+                setChatInitialPrompt(
+                  quickQuestionInput ||
+                    (targetLang === 'de'
+                      ? 'Almanca bir soru sormak istiyorum.'
+                      : 'İngilizce bir soru sormak istiyorum.')
+                );
                 setIsChatModalOpen(true);
               }}
               className="w-full py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px] text-center cursor-pointer shadow-2xs"

@@ -166,7 +166,7 @@ export const ChirmoAuthModal: React.FC<ChirmoAuthModalProps> = ({
                 Chirmo'ya Hoş Geldiniz 👋
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Konuşma garantili İngilizce dünyasına adım atın
+                Konuşma garantili İngilizce & Almanca dünyasına adım atın
               </p>
             </div>
           </div>

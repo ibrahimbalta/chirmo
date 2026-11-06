@@ -621,7 +621,7 @@ export const ChirmoInteractiveGraduationDialogueModal: React.FC<
                     <div className="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-200">
                       <span className="flex items-center space-x-1 text-amber-800 dark:text-amber-300 text-[11px] sm:text-xs">
                         <span>💡</span>
-                        <span>Ne söylemek istiyorsan Türkçe yaz, Chirmo doğal İngilizceye çevirsin:</span>
+                        <span>Ne söylemek istiyorsan Türkçe yaz, Chirmo doğal {targetLang === 'de' ? 'Almancaya' : 'İngilizceye'} çevirsin:</span>
                       </span>
                     </div>
 
@@ -641,7 +641,7 @@ export const ChirmoInteractiveGraduationDialogueModal: React.FC<
                         onClick={handleTranslateTurkishAnswer}
                         disabled={isTranslatingTurkish || !turkishInput.trim()}
                         className="h-10 px-3 sm:px-4 rounded-xl bg-amber-500 hover:bg-amber-600 disabled:opacity-40 text-purple-950 font-black text-xs transition-all cursor-pointer flex items-center justify-center space-x-1 shrink-0 shadow-xs active:scale-95"
-                        title="İngilizceye Çevir"
+                        title={targetLang === 'de' ? 'Almancaya Çevir' : 'İngilizceye Çevir'}
                       >
                         {isTranslatingTurkish ? (
                           <span className="animate-spin">⏳</span>
@@ -729,8 +729,8 @@ export const ChirmoInteractiveGraduationDialogueModal: React.FC<
                   }}
                   placeholder={
                     isListening
-                      ? 'Chirmo seni dinliyor, İngilizce konuş...'
-                      : 'İngilizce bir cümle yaz veya mikrofona basıp konuş...'
+                      ? `Chirmo seni dinliyor, ${targetLangName} konuş...`
+                      : `${targetLangName} bir cümle yaz veya mikrofona basıp konuş...`
                   }
                   className="flex-1 min-w-0 h-10 sm:h-11 px-3 sm:px-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-inner"
                 />

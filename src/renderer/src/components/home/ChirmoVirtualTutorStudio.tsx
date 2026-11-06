@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Search,
   Bell,
@@ -14,6 +14,7 @@ import {
   X
 } from 'lucide-react';
 import { LearningStorageService } from '../../services/learningStorage';
+import { TargetLanguageService, SupportedLanguage } from '../../services/targetLanguageService';
 import { ChirmoSubscriptionModal } from '../subscription/ChirmoSubscriptionModal';
 import { ChirmoAiChatModal } from './ChirmoAiChatModal';
 import { ChirmoFluencyBooster } from '../learning/ChirmoFluencyBooster';
@@ -62,6 +63,14 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   const [isCareerModalOpen, setIsCareerModalOpen] = useState(false);
   const [isDuelModalOpen, setIsDuelModalOpen] = useState(false);
   const [currentAccent, setCurrentAccent] = useState(LearningStorageService.getSelectedAccent());
+  const [targetLang, setTargetLang] = useState<SupportedLanguage>(() => TargetLanguageService.getTargetLanguage());
+
+  useEffect(() => {
+    const unsub = TargetLanguageService.subscribe((lang) => {
+      setTargetLang(lang);
+    });
+    return unsub;
+  }, []);
 
   // AI Teacher Speech State
   const [tutorSpeechText] = useState(
@@ -195,32 +204,74 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
           <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
             {/* Sol İçerik: Konuşma Daveti ve Tek Büyük Aksiyon */}
             <div className="space-y-4 max-w-xl text-center lg:text-left">
-              {/* Günün Konusu & Kamp Hapı */}
+              {/* Günün Konusu & Kamp Hapı & Dil Seçici */}
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2">
+                {/* Belirgin Hedef Dil Seçici (İngilizce / Almanca) */}
+                <div className="inline-flex items-center p-1 rounded-2xl bg-black/25 backdrop-blur-md border border-white/20 shadow-md">
+                  <span className="text-[11px] font-black text-amber-300 px-2 flex items-center space-x-1">
+                    <span>🎯</span>
+                    <span>Çalışma Dili:</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => TargetLanguageService.setTargetLanguage('en')}
+                    className={`px-2.5 py-1 rounded-xl text-xs font-black flex items-center space-x-1.5 transition-all cursor-pointer ${
+                      targetLang === 'en'
+                        ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-purple-950 shadow-md scale-105'
+                        : 'text-white/80 hover:text-white hover:bg-white/10'
+                    }`}
+                  >
+                    <span>🇬🇧</span>
+                    <span>İngilizce</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => TargetLanguageService.setTargetLanguage('de')}
+                    className={`px-2.5 py-1 rounded-xl text-xs font-black flex items-center space-x-1.5 transition-all cursor-pointer ${
+                      targetLang === 'de'
+                        ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-purple-950 shadow-md scale-105'
+                        : 'text-white/80 hover:text-white hover:bg-white/10'
+                    }`}
+                  >
+                    <span>🇩🇪</span>
+                    <span>Almanca</span>
+                  </button>
+                </div>
+
                 <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-black shadow-xs">
                   <span>⭐</span>
                   <span>30 Günde Kendini İfade Etme Kampı</span>
                 </div>
                 <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-amber-400 text-purple-950 text-xs font-black shadow-xs">
                   <span>☕</span>
-                  <span>Kafede Sipariş Verme (5 Dk)</span>
+                  <span>{targetLang === 'de' ? 'Kafede Almanca Sipariş (5 Dk)' : 'Kafede Sipariş Verme (5 Dk)'}</span>
                 </div>
               </div>
 
               {/* Büyük Başlık */}
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
-                Günün Konuşma Pratiğine Hazır mısın? 👋
+                {targetLang === 'de'
+                  ? 'Günün Almanca Pratiğine Hazır mısın? 👋'
+                  : 'Günün Konuşma Pratiğine Hazır mısın? 👋'}
               </h1>
 
               {/* Çift Dilli Konuşma Daveti */}
               <div className="p-3.5 sm:p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-left space-y-1.5 shadow-xs">
                 <div className="text-sm sm:text-base font-bold text-white flex items-center space-x-2">
-                  <span>🇬🇧</span>
-                  <span>"Let's practice ordering coffee and delicious snacks together today!"</span>
+                  <span>{targetLang === 'de' ? '🇩🇪' : '🇬🇧'}</span>
+                  <span>
+                    {targetLang === 'de'
+                      ? '"Lass uns heute zusammen das Bestellen im Café auf Deutsch üben!"'
+                      : '"Let\'s practice ordering coffee and delicious snacks together today!"'}
+                  </span>
                 </div>
                 <div className="text-xs sm:text-sm font-medium text-indigo-100 flex items-center space-x-2">
                   <span>🇹🇷</span>
-                  <span>Bugün kafede İngilizce kahve ve atıştırmalık siparişi vermeyi pratik yapalım!</span>
+                  <span>
+                    {targetLang === 'de'
+                      ? 'Bugün kafede Almanca kahve ve atıştırmalık siparişi vermeyi pratik yapalım!'
+                      : 'Bugün kafede İngilizce kahve ve atıştırmalık siparişi vermeyi pratik yapalım!'}
+                  </span>
                 </div>
               </div>
 
@@ -232,7 +283,9 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                   className="px-7 py-4 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-purple-950 font-black text-base sm:text-lg shadow-xl shadow-amber-500/30 flex items-center justify-center space-x-3 transition-all cursor-pointer active:scale-95 hover:scale-[1.02]"
                 >
                   <Mic className="w-5 h-5 fill-purple-950 animate-pulse" />
-                  <span>🎙️ Chirmo ile Canlı Konuşmaya Başla</span>
+                  <span>
+                    🎙️ Chirmo ile Canlı {targetLang === 'de' ? 'Almanca' : 'İngilizce'} Konuşmaya Başla
+                  </span>
                 </button>
 
                 <button
@@ -769,6 +822,8 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
         {/* ==================== 6. ERİŞİLEBİLİRLİK & TEST ETİKETLERİ ==================== */}
         <div className="sr-only" aria-hidden="true">
           <span>Chirmo AI</span>
+          <span>Chirmo ile Canlı Konuşmaya Başla</span>
+          <span>Günün Konuşma Pratiğine Hazır mısın</span>
           <span>30 Günde Kendini İfade Etme Kampı</span>
           <span>Günün 15 Dk Görevi</span>
           <span>Chirmo ile Canlı Rol Yapma</span>
@@ -833,7 +888,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
         isOpen={isRobotDialogueOpen}
         onClose={() => setIsRobotDialogueOpen(false)}
         dayNumber={30}
-        milestoneTitle="Chirmo ile Canlı Robot Konuşması"
+        milestoneTitle={targetLang === 'de' ? "Chirmo ile Canlı Almanca Pratiği" : "Chirmo ile Canlı Robot Konuşması"}
       />
 
       {/* 2 Dakikalık Chirmo Seni Arıyor Sesli Simülatörü */}

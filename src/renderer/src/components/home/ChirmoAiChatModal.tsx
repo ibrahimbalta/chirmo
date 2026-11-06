@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { GeminiAiTeacherService, ChatMessage } from '../../services/geminiAiTeacherService';
 import { LearningStorageService } from '../../services/learningStorage';
+import { TargetLanguageService, SupportedLanguage } from '../../services/targetLanguageService';
 
 interface ChirmoAiChatModalProps {
   isOpen: boolean;
@@ -22,13 +23,25 @@ interface ChirmoAiChatModalProps {
 export const ChirmoAiChatModal: React.FC<ChirmoAiChatModalProps> = ({
   isOpen,
   onClose,
-  initialMessage = 'Bugün restoranda nasıl sipariş verileceğini öğrenelim mi?'
+  initialMessage
 }) => {
+  const [targetLang, setTargetLang] = useState<SupportedLanguage>(() => TargetLanguageService.getTargetLanguage());
+
+  useEffect(() => {
+    return TargetLanguageService.subscribe((lang) => setTargetLang(lang));
+  }, []);
+
+  const defaultGreeting = initialMessage || (
+    targetLang === 'de'
+      ? 'Sollen wir heute lernen, wie man im Restaurant bestellt? 🍽️'
+      : 'Bugün restoranda nasıl sipariş verileceğini öğrenelim mi? 🍽️'
+  );
+
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'm1',
       sender: 'chirmo',
-      text: initialMessage,
+      text: defaultGreeting,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -123,7 +136,7 @@ export const ChirmoAiChatModal: React.FC<ChirmoAiChatModalProps> = ({
                 </span>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                Sesli, cesaretlendirici ve seviyene özel akıllı İngilizce konuşma arkadaşın
+                Sesli, cesaretlendirici ve seviyene özel akıllı {targetLang === 'de' ? 'Almanca' : 'İngilizce'} konuşma arkadaşın
               </p>
             </div>
           </div>
@@ -295,7 +308,11 @@ export const ChirmoAiChatModal: React.FC<ChirmoAiChatModalProps> = ({
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-            placeholder="İngilizce veya Türkçe bir şey yazın (örn: I want a coffee)..."
+            placeholder={
+              targetLang === 'de'
+                ? "Almanca veya Türkçe bir şey yazın (örn: Ich möchte einen Kaffee)..."
+                : "İngilizce veya Türkçe bir şey yazın (örn: I want a coffee)..."
+            }
             className="flex-1 py-3 px-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all"
           />
 

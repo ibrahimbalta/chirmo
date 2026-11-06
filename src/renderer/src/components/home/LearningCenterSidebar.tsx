@@ -13,6 +13,7 @@ import {
   Award
 } from 'lucide-react';
 import { UserProfileService, UserProfile } from '../../services/userProfileService';
+import { TargetLanguageService, SupportedLanguage } from '../../services/targetLanguageService';
 import { ProfileEditModal } from '../common/ProfileEditModal';
 import { ChirmoSubscriptionModal } from '../subscription/ChirmoSubscriptionModal';
 
@@ -31,13 +32,19 @@ export const LearningCenterSidebar: React.FC<LearningCenterSidebarProps> = ({
 }) => {
   const [selected, setSelected] = useState(activeItem);
   const [profile, setProfile] = useState<UserProfile>(() => UserProfileService.getProfile());
+  const [targetLang, setTargetLang] = useState<SupportedLanguage>(() => TargetLanguageService.getTargetLanguage());
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
 
   React.useEffect(() => {
-    return UserProfileService.subscribe((updated) => {
+    const unsubLang = TargetLanguageService.subscribe((lang) => setTargetLang(lang));
+    const unsubProfile = UserProfileService.subscribe((updated) => {
       setProfile(updated);
     });
+    return () => {
+      unsubLang();
+      unsubProfile();
+    };
   }, []);
 
   const handleItemClick = (id: string) => {
@@ -62,7 +69,7 @@ export const LearningCenterSidebar: React.FC<LearningCenterSidebarProps> = ({
                 Chirmo
               </div>
               <div className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold tracking-wide">
-                AI İngilizce Konuşma Robotu
+                AI {targetLang === 'de' ? 'Almanca' : 'İngilizce'} Konuşma Robotu
               </div>
             </div>
           </div>
@@ -80,6 +87,7 @@ export const LearningCenterSidebar: React.FC<LearningCenterSidebarProps> = ({
 
         {/* Gizli / Erişilebilirlik Test Verileri (Geriye Uyumluluk) */}
         <div className="sr-only" aria-hidden="true">
+          <span>AI İngilizce Konuşma Robotu</span>
           <span>Öğrenme Merkezi</span>
           <span>Merhaba {profile.name}</span>
           <span>İngilizce Derslerim</span>

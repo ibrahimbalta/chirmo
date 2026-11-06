@@ -293,34 +293,36 @@ export const App: React.FC = () => {
             {isMobileNavOpen && (
               <div className="absolute left-0 top-9.5 z-50 w-56 p-1.5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl shadow-xl border border-slate-200/90 dark:border-slate-800 space-y-1 animate-in fade-in zoom-in-95 duration-150">
                 {/* Dil Seçimi (İngilizce 🇬🇧 / Almanca 🇩🇪) */}
-                <div className="p-1 bg-slate-100/80 dark:bg-slate-800/60 rounded-xl flex items-center justify-between text-xs font-bold">
-                  <span className="text-slate-500 dark:text-slate-400 pl-1 text-[11px]">Hedef Dil:</span>
+                <div className="p-1.5 bg-gradient-to-r from-indigo-50/80 to-purple-50/80 dark:bg-slate-800/80 rounded-xl flex items-center justify-between text-xs font-bold border border-indigo-100 dark:border-slate-700">
+                  <span className="text-slate-600 dark:text-slate-300 pl-1 text-[11px] font-black">🎯 Dil:</span>
                   <div className="flex items-center space-x-1">
                     <button
                       onClick={() => {
                         TargetLanguageService.setTargetLanguage('en');
                         setIsMobileNavOpen(false);
                       }}
-                      className={`px-2 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all cursor-pointer flex items-center space-x-1 ${
                         targetLanguage === 'en'
-                          ? 'bg-white dark:bg-slate-900 text-indigo-600 shadow-xs font-black'
-                          : 'text-slate-600 dark:text-slate-400'
+                          ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-xs'
+                          : 'text-slate-600 dark:text-slate-400 hover:bg-white/60 dark:hover:bg-slate-700'
                       }`}
                     >
-                      🇬🇧 EN
+                      <span>🇬🇧</span>
+                      <span>İngilizce</span>
                     </button>
                     <button
                       onClick={() => {
                         TargetLanguageService.setTargetLanguage('de');
                         setIsMobileNavOpen(false);
                       }}
-                      className={`px-2 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all cursor-pointer flex items-center space-x-1 ${
                         targetLanguage === 'de'
-                          ? 'bg-white dark:bg-slate-900 text-indigo-600 shadow-xs font-black'
-                          : 'text-slate-600 dark:text-slate-400'
+                          ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-purple-950 shadow-xs'
+                          : 'text-slate-600 dark:text-slate-400 hover:bg-white/60 dark:hover:bg-slate-700'
                       }`}
                     >
-                      🇩🇪 DE
+                      <span>🇩🇪</span>
+                      <span>Almanca</span>
                     </button>
                   </div>
                 </div>
@@ -648,30 +650,30 @@ export const App: React.FC = () => {
 
           {/* Hedef Dil Seçici (🇬🇧 İngilizce / 🇩🇪 Almanca) */}
           <div
-            className="h-8 p-0.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 flex items-center shrink-0 shadow-2xs"
-            title="Çalışmak istediğiniz hedef dili seçin (İngilizce / Almanca)"
+            className="h-8.5 p-0.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700 flex items-center shrink-0 shadow-2xs"
+            title="Çalışmak istediğiniz dili seçin (İngilizce / Almanca)"
           >
             <button
               onClick={() => TargetLanguageService.setTargetLanguage('en')}
-              className={`h-7 px-2 rounded-lg text-xs font-bold transition-all flex items-center space-x-1 cursor-pointer ${
+              className={`h-7 px-2.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer ${
                 targetLanguage === 'en'
-                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 font-black shadow-xs ring-1 ring-slate-200 dark:ring-slate-700'
-                  : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-black shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
               }`}
             >
               <span>🇬🇧</span>
-              <span className="hidden sm:inline">EN</span>
+              <span className="hidden sm:inline">İngilizce</span>
             </button>
             <button
               onClick={() => TargetLanguageService.setTargetLanguage('de')}
-              className={`h-7 px-2 rounded-lg text-xs font-bold transition-all flex items-center space-x-1 cursor-pointer ${
+              className={`h-7 px-2.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer ${
                 targetLanguage === 'de'
-                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 font-black shadow-xs ring-1 ring-slate-200 dark:ring-slate-700'
-                  : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                  ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-purple-950 font-black shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
               }`}
             >
               <span>🇩🇪</span>
-              <span className="hidden sm:inline">DE</span>
+              <span className="hidden sm:inline">Almanca</span>
             </button>
           </div>
 
