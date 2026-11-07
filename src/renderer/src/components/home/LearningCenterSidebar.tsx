@@ -68,9 +68,6 @@ export const LearningCenterSidebar: React.FC<LearningCenterSidebarProps> = ({
               <div className="font-black text-slate-900 dark:text-white text-base leading-tight tracking-tight">
                 Chirmo
               </div>
-              <div className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold tracking-wide">
-                AI {targetLang === 'de' ? 'Almanca' : 'İngilizce'} Konuşma Robotu
-              </div>
             </div>
           </div>
 
