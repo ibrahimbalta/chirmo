@@ -188,86 +188,69 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
     <div className="flex-1 flex flex-col h-full bg-slate-50 dark:bg-slate-950 overflow-y-auto select-none p-3 sm:p-6 pb-28 sm:pb-8">
       <div className="max-w-5xl mx-auto w-full space-y-4 sm:space-y-6">
         {/* ==================== 20 YILLIK ÖĞRETMEN FORMÜLÜ & MOTİVASYON BARI ==================== */}
-        <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-violet-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 text-white shadow-lg relative overflow-hidden">
-          <div className="absolute right-0 top-0 translate-x-12 -translate-y-12 w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-
-          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+        <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-violet-800 rounded-2xl p-3 sm:p-4 text-white shadow-md relative overflow-hidden">
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div>
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-black text-amber-300 mb-2">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>
-                  20 Yıllık Öğretmen Metodu • Sıfırdan 30 Günde {targetLang === 'de' ? 'Almanca ' : ''}Konuşma Devrimi
-                </span>
+              <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-[10px] font-black text-amber-300">
+                <Sparkles className="w-3 h-3" />
+                <span>20 Yıllık Öğretmen Metodu • 30 Günde {targetLang === 'de' ? 'Almanca ' : ''}Konuşma Devrimi</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
+              <h1 className="text-base sm:text-lg font-black tracking-tight mt-0.5">
                 Gramer Ezberini Unut! Günde 5 Dakika {targetLang === 'de' ? 'Almanca ' : ''}Konuşarak Dili Sök 🚀
               </h1>
-              <p className="text-xs sm:text-sm text-blue-100 max-w-xl mt-1.5 leading-relaxed">
-                {targetLang === 'de'
-                  ? 'Almanca konuşmanın en etkili yolu her gün düzenli olarak sesli pratik yapmaktır. Chirmo ile her gün sesli bir görev yap, 30. günün sonunda dünyayla özgüvenle Almanca sohbet et!'
-                  : 'İngilizce konuşmanın en etkili yolu her gün düzenli olarak sesli pratik yapmaktır. Chirmo ile her gün sesli bir görev yap, 30. günün sonunda dünyayla özgüvenle sohbet et!'}
-              </p>
             </div>
 
             {/* İstatistik Rozetleri & Karne Butonu */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0">
+            <div className="flex items-center flex-wrap gap-2 shrink-0">
               <button
                 type="button"
                 onClick={() => setIsGraduationDialogueOpen(true)}
-                className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-purple-950 font-black text-xs transition-all shadow-md flex items-center space-x-1.5 cursor-pointer"
+                className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-purple-950 font-black text-xs transition-all shadow-xs flex items-center space-x-1 cursor-pointer"
               >
-                <Sparkles className="w-3.5 h-3.5 fill-purple-950" />
-                <span>🤖 Chirmo Canlı Mezuniyet Sohbeti</span>
+                <Sparkles className="w-3 h-3 fill-purple-950" />
+                <span>🤖 Mezuniyet Sohbeti</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setIsReportOpen(true)}
-                className="px-4 py-2.5 rounded-2xl bg-white/20 hover:bg-white/30 border border-white/30 text-white font-black text-xs transition-all shadow-md flex items-center space-x-1.5 cursor-pointer backdrop-blur-md"
+                className="px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 border border-white/30 text-white font-black text-xs transition-all shadow-xs flex items-center space-x-1 cursor-pointer"
               >
-                <span>📊 Gelişim Karnemi Gör</span>
+                <span>📊 Gelişim Karnem</span>
               </button>
 
-              <div className="flex items-center space-x-2">
-                <div className="bg-white/15 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-white/20 flex items-center space-x-2">
-                  <Flame className="w-5 h-5 text-amber-400" />
-                  <div>
-                    <div className="text-[10px] text-blue-200 font-bold uppercase">Seri</div>
-                    <div className="text-base font-black">{progress.streakDays} Gün 🔥</div>
-                  </div>
-                </div>
+              <div className="bg-white/15 px-2.5 py-1 rounded-xl border border-white/20 flex items-center space-x-1.5 text-xs font-black">
+                <Flame className="w-3.5 h-3.5 text-amber-400" />
+                <span>{progress.streakDays} Gün Seri</span>
+              </div>
 
-                <div className="bg-white/15 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-white/20 flex items-center space-x-2">
-                  <Award className="w-5 h-5 text-yellow-300" />
-                  <div>
-                    <div className="text-[10px] text-blue-200 font-bold uppercase">Puan</div>
-                    <div className="text-base font-black">{progress.totalXp} XP ⭐</div>
-                  </div>
-                </div>
+              <div className="bg-white/15 px-2.5 py-1 rounded-xl border border-white/20 flex items-center space-x-1.5 text-xs font-black">
+                <Award className="w-3.5 h-3.5 text-yellow-300" />
+                <span>{progress.totalXp} XP</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* ==================== 30 GÜNLÜK YOL HARİTASI (GRID) ==================== */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 border border-slate-200 dark:border-slate-800 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-black text-slate-800 dark:text-slate-100 flex items-center space-x-2">
-              <Zap className="w-4 h-4 text-amber-500" />
+            <h2 className="text-xs font-black text-slate-800 dark:text-slate-100 flex items-center space-x-1.5">
+              <Zap className="w-3.5 h-3.5 text-amber-500" />
               <span>30 Günlük Dönüşüm Takvimi</span>
             </h2>
-            <div className="flex items-center space-x-2">
-              <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">
-                {progress.completedDays.length} / 30 Görev Tamamlandı
+            <div className="flex items-center space-x-1.5">
+              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">
+                {progress.completedDays.length} / 30 Görev
               </span>
-              <span className="text-xs font-bold text-emerald-600">
+              <span className="text-[11px] font-bold text-emerald-600">
                 (%{Math.round((progress.completedDays.length / 30) * 100)})
               </span>
             </div>
           </div>
 
           {/* Gün Seçim Düğmeleri */}
-          <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
+          <div className="grid grid-cols-5 sm:grid-cols-10 gap-1.5">
             {activeMissions.map((mission) => {
               const isCompleted = progress.completedDays.includes(mission.day);
               const isSelected = selectedDayNumber === mission.day;
@@ -277,9 +260,9 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
                 <button
                   key={mission.day}
                   onClick={() => setSelectedDayNumber(mission.day)}
-                  className={`relative p-2.5 rounded-2xl font-black text-xs flex flex-col items-center justify-center transition-all cursor-pointer ${
+                  className={`relative py-1.5 px-1 rounded-xl font-black text-xs flex flex-col items-center justify-center transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-blue-600 text-white shadow-md ring-2 ring-blue-400 scale-105'
+                      ? 'bg-blue-600 text-white shadow-xs ring-2 ring-blue-400 scale-102'
                       : isCompleted
                       ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
                       : isCurrent
@@ -287,10 +270,10 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
                       : 'bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200'
                   }`}
                 >
-                  <span className="text-[10px] font-bold opacity-75">{targetLang === 'de' ? 'TAG' : 'GÜN'}</span>
-                  <span className="text-base">{mission.day}</span>
+                  <span className="text-[9px] font-bold opacity-75">{targetLang === 'de' ? 'TAG' : 'GÜN'}</span>
+                  <span className="text-xs leading-none">{mission.day}</span>
                   {isCompleted && (
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 absolute -top-1 -right-1 bg-white rounded-full" />
+                    <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400 absolute -top-1 -right-1 bg-white rounded-full" />
                   )}
                 </button>
               );

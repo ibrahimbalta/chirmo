@@ -1035,21 +1035,18 @@ export const WatchingView: React.FC<WatchingViewProps> = ({
       )}
 
       {/* Top Header & Universal URL Bar */}
-      <div className="p-3 sm:p-5 border-b border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md relative sm:sticky top-0 z-20">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-2.5 sm:p-3 border-b border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md relative sm:sticky top-0 z-20">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-2.5">
           <div>
-            <div className="flex items-center space-x-2 text-red-600 dark:text-red-400 mb-1">
-              <Film className="w-5 h-5 shrink-0" />
-              <span className="text-[11px] font-black uppercase tracking-wider bg-red-50 dark:bg-red-950/60 px-2.5 py-0.5 rounded-full border border-red-200 dark:border-red-800">
+            <div className="flex items-center space-x-1.5 text-red-600 dark:text-red-400 mb-0.5">
+              <Film className="w-4 h-4 shrink-0" />
+              <span className="text-[10px] font-black uppercase tracking-wider bg-red-50 dark:bg-red-950/60 px-2 py-0.5 rounded-full border border-red-200 dark:border-red-800">
                 Chirmo Video & Film Speaking Studio
               </span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+            <h1 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
               YouTube & Film ile Konuşma ve Shadowing Stüdyosu
             </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Gerçek film sahneleri ve YouTube konuşmalarıyla dinle, mikrofona seslendir ve İngilizce konuşma özgüveni kazan.
-            </p>
           </div>
 
           {/* Quick YouTube URL Import Bar */}
@@ -1057,27 +1054,27 @@ export const WatchingView: React.FC<WatchingViewProps> = ({
             onSubmit={handleCustomUrlSubmit}
             className="flex items-center space-x-2 w-full md:w-auto"
           >
-            <div className="relative flex-1 md:w-80">
+            <div className="relative flex-1 md:w-72">
               <input
                 type="text"
                 value={customUrlInput}
                 onChange={(e) => setCustomUrlInput(e.target.value)}
-                placeholder="YouTube linki yapıştır (örn: youtube.com/watch?v=...)"
-                className="w-full pl-3.5 pr-8 py-2 rounded-2xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 font-medium"
+                placeholder="YouTube linki yapıştır..."
+                className="w-full pl-3 pr-7 py-1.5 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 font-medium"
               />
               {customUrlInput && (
                 <button
                   type="button"
                   onClick={() => setCustomUrlInput('')}
-                  className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600"
+                  className="absolute right-2 top-2 text-slate-400 hover:text-slate-600"
                 >
-                  <X className="w-3.5 h-3.5" />
+                  <X className="w-3 h-3" />
                 </button>
               )}
             </div>
             <button
               type="submit"
-              className="px-4 py-2 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-black text-xs shadow-md transition-all shrink-0 cursor-pointer"
+              className="px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-black text-xs shadow-xs transition-all shrink-0 cursor-pointer"
             >
               Videoyu Yükle
             </button>
@@ -1087,25 +1084,25 @@ export const WatchingView: React.FC<WatchingViewProps> = ({
                 setModalTab('bulk');
                 setIsCustomSubtitleOpen(true);
               }}
-              className="px-3.5 py-2 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-md transition-all shrink-0 cursor-pointer flex items-center space-x-1.5"
+              className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-xs transition-all shrink-0 cursor-pointer flex items-center space-x-1.5"
               title="YouTube konuşma metnini yapıştırıp sahnelere ayırın"
             >
-              <FileText className="w-3.5 h-3.5" />
+              <FileText className="w-3 h-3" />
               <span>Metin / Transkript</span>
             </button>
           </form>
         </div>
 
         {/* Category Pills Filter */}
-        <div className="max-w-7xl mx-auto flex items-center space-x-2 overflow-x-auto pt-3 scrollbar-none">
+        <div className="max-w-7xl mx-auto flex items-center space-x-1.5 overflow-x-auto pt-2 scrollbar-none">
           {['Hepsi', 'Film', 'TED', 'Haber', 'İş & Kariyer', 'Müzik'].map((cat) => (
             <button
               key={cat}
               type="button"
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+              className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                 selectedCategory === cat
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
+                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
               }`}
             >
@@ -1123,13 +1120,14 @@ export const WatchingView: React.FC<WatchingViewProps> = ({
               setModalTab('bulk');
               setIsCustomSubtitleOpen(true);
             }}
-            className="ml-auto text-xs font-bold text-indigo-600 dark:text-indigo-400 flex items-center space-x-1.5 hover:underline cursor-pointer whitespace-nowrap shrink-0"
+            className="ml-auto text-xs font-bold text-indigo-600 dark:text-indigo-400 flex items-center space-x-1 hover:underline cursor-pointer whitespace-nowrap shrink-0"
           >
-            <FileText className="w-3.5 h-3.5" />
-            <span>📋 YouTube Transkripti / Metin Yükle</span>
+            <FileText className="w-3 h-3" />
+            <span>Transkript Yükle</span>
           </button>
         </div>
       </div>
+
 
       {/* Main Studio Body: 2-Column Responsive Layout */}
       <div className="max-w-7xl mx-auto w-full p-2.5 sm:p-6 space-y-4 sm:space-y-6">

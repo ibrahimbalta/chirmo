@@ -104,54 +104,48 @@ export const RealLifeSimulatorStudio: React.FC = () => {
       <div className="max-w-5xl mx-auto w-full space-y-4 sm:space-y-6 min-w-0">
 
         {/* ==================== OYUN BAŞLIĞI VE OYUNCU HUD ==================== */}
-        <div className="p-4 sm:p-6 rounded-3xl bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-700 text-white shadow-xl relative overflow-hidden min-w-0">
-          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 min-w-0">
-            <div className="space-y-1.5 min-w-0 flex-1">
-              <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-xs text-xs font-black uppercase tracking-wider">
-                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+        <div className="p-3 sm:p-4 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-700 text-white shadow-md relative overflow-hidden min-w-0">
+          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 min-w-0">
+            <div className="space-y-0.5 min-w-0 flex-1">
+              <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-xs text-[10px] font-black uppercase tracking-wider">
+                <Sparkles className="w-3 h-3 text-amber-300" />
                 <span>Gerçek Yaşam Rol Yapma Oyunu 🎭</span>
               </div>
-              <h1 className="text-xl sm:text-3xl font-black tracking-tight break-words">
+              <h1 className="text-base sm:text-lg font-black tracking-tight break-words">
                 Sokakta & Seyahatte İngilizceyle Yaşa! 🌍
               </h1>
-              <p className="text-xs sm:text-sm text-emerald-100 leading-relaxed">
-                Bir sahne seç, Chirmo ile canlı rol yap! Hata yapmaktan korkma, her denemede +40 XP kazan.
+              <p className="text-xs text-emerald-100 hidden sm:block">
+                Bir sahne seç, Chirmo ile canlı rol yap! Her denemede +40 XP kazan.
               </p>
             </div>
 
             {/* Oyuncu Puan Rozeti */}
             <div className="flex items-center gap-2 shrink-0">
-              <div className="px-3.5 py-2 rounded-2xl bg-black/25 backdrop-blur-md border border-white/20 flex items-center space-x-2">
-                <Trophy className="w-4 h-4 text-amber-300" />
-                <div>
-                  <div className="text-[9px] uppercase font-black text-amber-200">Ödül</div>
-                  <div className="text-xs font-black text-white">+40 XP / Görev</div>
-                </div>
+              <div className="px-2.5 py-1 rounded-xl bg-black/25 border border-white/20 flex items-center space-x-1.5 text-xs font-black text-amber-200">
+                <Trophy className="w-3.5 h-3.5 text-amber-300" />
+                <span>+40 XP / Görev</span>
               </div>
-              <div className="px-3.5 py-2 rounded-2xl bg-black/25 backdrop-blur-md border border-white/20 flex items-center space-x-2">
-                <Flame className="w-4 h-4 text-orange-300" />
-                <div>
-                  <div className="text-[9px] uppercase font-black text-orange-200">Mod</div>
-                  <div className="text-xs font-black text-white">Canlı Diyalog</div>
-                </div>
+              <div className="px-2.5 py-1 rounded-xl bg-black/25 border border-white/20 flex items-center space-x-1.5 text-xs font-black text-white">
+                <Flame className="w-3.5 h-3.5 text-orange-300" />
+                <span>Canlı Diyalog</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* ==================== GÖREV SEÇİM PARKURU / SAHNE SEÇİCİ ==================== */}
-        <div className="space-y-2 min-w-0">
+        <div className="space-y-1.5 min-w-0">
           <div className="flex items-center justify-between px-1">
-            <h3 className="text-xs font-black uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+            <h3 className="text-[11px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
               <span>🎯</span>
               <span>Oynamak İstediğin Görev Sahnesini Seç:</span>
             </h3>
-            <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400">
+            <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400">
               {activeScenarios.length} Farklı Senaryo
             </span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 min-w-0">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 min-w-0">
             {activeScenarios.map((sc, index) => {
               const isSelected = selectedScenario.id === sc.id;
               return (
@@ -163,15 +157,15 @@ export const RealLifeSimulatorStudio: React.FC = () => {
                     setUserSpeechInput('');
                     setFeedback(null);
                   }}
-                  className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between min-w-0 relative ${
+                  className={`p-2 sm:p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between min-w-0 relative ${
                     isSelected
-                      ? 'border-emerald-500 bg-white dark:bg-slate-900 text-emerald-950 dark:text-emerald-100 shadow-md ring-2 ring-emerald-500/30 scale-[1.02]'
+                      ? 'border-emerald-500 bg-white dark:bg-slate-900 text-emerald-950 dark:text-emerald-100 shadow-sm ring-2 ring-emerald-500/30'
                       : 'border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 hover:bg-slate-50'
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xl sm:text-2xl">{sc.badge.split(' ')[0]}</span>
-                    <span className="px-1.5 py-0.5 rounded-full text-[9px] font-black bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-base sm:text-lg">{sc.badge.split(' ')[0]}</span>
+                    <span className="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                       Lvl {index + 1}
                     </span>
                   </div>
@@ -180,7 +174,7 @@ export const RealLifeSimulatorStudio: React.FC = () => {
                   </div>
                   <div className="text-[10px] text-slate-500 truncate w-full mt-0.5 flex items-center justify-between">
                     <span>{sc.category}</span>
-                    <span className="text-amber-500 font-bold">⭐⭐⭐</span>
+                    <span className="text-amber-500 text-[10px]">⭐⭐⭐</span>
                   </div>
                 </button>
               );
