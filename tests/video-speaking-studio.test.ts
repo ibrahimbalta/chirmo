@@ -109,4 +109,47 @@ describe('Video & Film English Speaking & Shadowing Studio', () => {
     expect(content).toContain('Giriş');
     expect(content).toContain('setIsAuthModalOpen');
   });
+
+  it('WatchingView supports YouTube transcript import and converts speech text into shadowing scenes', async () => {
+    const content = fs.readFileSync(watchingViewPath, 'utf-8');
+    expect(content).toContain('parseYouTubeTranscriptText');
+    expect(content).toContain('convertParsedToSubtitleLines');
+    expect(content).toContain('handleImportBulkTranscript');
+    expect(content).toContain('handleLoadDemoTranscript');
+    expect(content).toContain('bulkTranscriptText');
+    expect(content).toContain('Metin / Transkript');
+
+    // Direct import of transcript parser utils
+    const { parseYouTubeTranscriptText, convertParsedToSubtitleLines } = await import(
+      '../src/renderer/src/utils/transcriptParser'
+    );
+
+    // 1. YouTube timestamped transcript format
+    const ytTranscript = `0:05 Hello everyone, welcome back to our daily practice!
+0:15 Today we are going to explore natural spoken English.
+1:02 Repeat each phrase aloud to build muscle memory.`;
+
+    const parsedYt = parseYouTubeTranscriptText(ytTranscript);
+    expect(parsedYt.length).toBe(3);
+    expect(parsedYt[0].timeSec).toBe(5);
+    expect(parsedYt[0].timeStr).toBe('0:05');
+    expect(parsedYt[0].en).toBe('Hello everyone, welcome back to our daily practice!');
+    expect(parsedYt[1].timeSec).toBe(15);
+    expect(parsedYt[2].timeSec).toBe(62);
+
+    // Convert to SubtitleLine objects with quiz options and CEFR levels
+    const converted = convertParsedToSubtitleLines(parsedYt, 1);
+    expect(converted.length).toBe(3);
+    expect(converted[0].id).toBe(1);
+    expect(converted[0].quizOptions.length).toBeGreaterThanOrEqual(3);
+    expect(converted[0].tr).toBeDefined();
+
+    // 2. Plain raw text without timestamps
+    const rawText = `First sentence here. Second sentence goes here! Third question here?`;
+    const parsedRaw = parseYouTubeTranscriptText(rawText);
+    expect(parsedRaw.length).toBe(3);
+    expect(parsedRaw[0].en).toBe('First sentence here.');
+    expect(parsedRaw[1].en).toBe('Second sentence goes here!');
+    expect(parsedRaw[2].en).toBe('Third question here?');
+  });
 });

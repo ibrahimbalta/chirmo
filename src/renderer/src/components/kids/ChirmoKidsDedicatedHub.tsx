@@ -35,7 +35,22 @@ import {
 } from 'lucide-react';
 import { LearningStorageService } from '../../services/learningStorage';
 import { AnalyticsService } from '../../services/analyticsService';
-import { TargetLanguageService } from '../../services/targetLanguageService';
+import { TargetLanguageService, SupportedLanguage } from '../../services/targetLanguageService';
+import {
+  GERMAN_AGE_VOCABULARY,
+  GERMAN_LISTENING_QUIZZES,
+  GERMAN_PUZZLE_CHALLENGES,
+  GERMAN_VOICE_CHALLENGES,
+  GERMAN_TPR_SIMON_ACTIONS,
+  GERMAN_STORYBOOK_SCENES,
+  GERMAN_KIDS_SONGS,
+  GERMAN_SAFARI_ANIMALS,
+  GERMAN_MAGIC_COLORS,
+  GERMAN_KIDS_CHAT_STEPS,
+  GERMAN_FACTORY_OPTIONS,
+  GERMAN_AGE_SPEAKING_CHALLENGES,
+  GERMAN_PATTERN_OPTIONS
+} from '../../services/germanKidsData';
 
 export type AgeGroup = '5-7' | '8-10' | '11-13' | '14-17';
 
@@ -84,30 +99,49 @@ export interface ChirmoKidsDedicatedHubProps {
 export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ onBackToMain }) => {
   // Navigation & Age State
   const [selectedAge, setSelectedAge] = useState<AgeGroup>('5-7');
+  const [targetLang, setTargetLang] = useState<SupportedLanguage>(() => TargetLanguageService.getTargetLanguage());
   const [activeTab, setActiveTab] = useState<
     'games' | 'cards' | 'simon' | 'stories' | 'patterns' | 'animals' | 'colors' | 'chat' | 'stickers' | 'songs'
   >('games');
   const [categoryFilter, setCategoryFilter] = useState<string>('Tümü');
+
+  useEffect(() => {
+    return TargetLanguageService.subscribe((lang) => {
+      setTargetLang(lang);
+    });
+  }, []);
 
   // TPR Simon Says (Chirmo Diyor ki!) State
   const [simonIndex, setSimonIndex] = useState<number>(0);
   const [simonCompletedActions, setSimonCompletedActions] = useState<string[]>([]);
 
   // Interactive Storybooks State
-  const [activeStorySceneId, setActiveStorySceneId] = useState<string>('forest');
+  const [activeStorySceneId, setActiveStorySceneId] = useState<string>(() =>
+    TargetLanguageService.getTargetLanguage() === 'de' ? 'de-forest' : 'forest'
+  );
   const [selectedStoryItemId, setSelectedStoryItemId] = useState<string | null>(null);
 
   // 4-Block Sentence Factory 2.0 State
-  const [factorySubject, setFactorySubject] = useState<string>('My friendly dog');
-  const [factoryAction, setFactoryAction] = useState<string>('is playing with');
-  const [factoryObject, setFactoryObject] = useState<string>('a colorful ball');
-  const [factoryContext, setFactoryContext] = useState<string>('in the sunny park');
+  const [factorySubject, setFactorySubject] = useState<string>(() =>
+    TargetLanguageService.getTargetLanguage() === 'de' ? 'Mein freundlicher Hund' : 'My friendly dog'
+  );
+  const [factoryAction, setFactoryAction] = useState<string>(() =>
+    TargetLanguageService.getTargetLanguage() === 'de' ? 'spielt gerne mit' : 'is playing with'
+  );
+  const [factoryObject, setFactoryObject] = useState<string>(() =>
+    TargetLanguageService.getTargetLanguage() === 'de' ? 'einem bunten Ball' : 'a colorful ball'
+  );
+  const [factoryContext, setFactoryContext] = useState<string>(() =>
+    TargetLanguageService.getTargetLanguage() === 'de' ? 'im sonnigen Park' : 'in the sunny park'
+  );
 
   // Kids Safari Animals State
   const [selectedAnimalId, setSelectedAnimalId] = useState<string | null>(null);
 
   // Kids Magic Colors State
-  const [activeColorId, setActiveColorId] = useState<string>('c-red');
+  const [activeColorId, setActiveColorId] = useState<string>(() =>
+    TargetLanguageService.getTargetLanguage() === 'de' ? 'de-c-red' : 'c-red'
+  );
 
   // Kids Cartoon Chat State
   const [chatStepIndex, setChatStepIndex] = useState<number>(0);
@@ -137,9 +171,15 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
   const [voiceScore, setVoiceScore] = useState<number | null>(null);
 
   // Pattern Builder for Kids State
-  const [builderPrefix, setBuilderPrefix] = useState<string>('I want');
-  const [builderObject, setBuilderObject] = useState<string>('water');
-  const [builderSuffix, setBuilderSuffix] = useState<string>('please');
+  const [builderPrefix, setBuilderPrefix] = useState<string>(() =>
+    TargetLanguageService.getTargetLanguage() === 'de' ? 'Ich möchte' : 'I want'
+  );
+  const [builderObject, setBuilderObject] = useState<string>(() =>
+    TargetLanguageService.getTargetLanguage() === 'de' ? 'Wasser' : 'water'
+  );
+  const [builderSuffix, setBuilderSuffix] = useState<string>(() =>
+    TargetLanguageService.getTargetLanguage() === 'de' ? 'bitte' : 'please'
+  );
 
   // Songs & Karaoke State
   const [playingSongId, setPlayingSongId] = useState<string | null>(null);
@@ -786,14 +826,14 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
   ];
 
   // ==================== KELİME KATEGORİ LİSTESİ ====================
-  const allCurrentVocab = AGE_VOCABULARY[selectedAge] || [];
+  const allCurrentVocab = (targetLang === 'de' ? GERMAN_AGE_VOCABULARY[selectedAge] : AGE_VOCABULARY[selectedAge]) || [];
   const uniqueCategories = ['Tümü', ...Array.from(new Set(allCurrentVocab.map((v) => v.category)))];
   const filteredVocab = categoryFilter === 'Tümü'
     ? allCurrentVocab
     : allCurrentVocab.filter((v) => v.category === categoryFilter);
 
   // Mini-Game 1 Handlers
-  const currentQuizzes = LISTENING_QUIZZES[selectedAge] || LISTENING_QUIZZES['5-7'];
+  const currentQuizzes = (targetLang === 'de' ? GERMAN_LISTENING_QUIZZES[selectedAge] : LISTENING_QUIZZES[selectedAge]) || (targetLang === 'de' ? GERMAN_LISTENING_QUIZZES['5-7'] : LISTENING_QUIZZES['5-7']);
   const activeQuiz = currentQuizzes[quizIndex % currentQuizzes.length];
 
   const handleSelectQuizOption = (optId: string, isCorrect: boolean) => {
@@ -809,7 +849,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
       }, 2000);
     } else {
       setQuizAnswerState('wrong');
-      handleSpeak('Try again friend! Bir kez daha dene!');
+      handleSpeak(targetLang === 'de' ? 'Versuche es noch einmal! Bir kez daha dene!' : 'Try again friend! Bir kez daha dene!');
       setTimeout(() => {
         setQuizAnswerState('idle');
         setSelectedOptionId(null);
@@ -818,7 +858,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
   };
 
   // Mini-Game 2 Handlers
-  const currentPuzzles = PUZZLE_CHALLENGES[selectedAge] || PUZZLE_CHALLENGES['5-7'];
+  const currentPuzzles = (targetLang === 'de' ? GERMAN_PUZZLE_CHALLENGES[selectedAge] : PUZZLE_CHALLENGES[selectedAge]) || (targetLang === 'de' ? GERMAN_PUZZLE_CHALLENGES['5-7'] : PUZZLE_CHALLENGES['5-7']);
   const activePuzzle = currentPuzzles[puzzleIndex % currentPuzzles.length];
 
   const handleTogglePuzzleWord = (word: string) => {
@@ -831,7 +871,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
       if (builtSentence === activePuzzle.targetEn) {
         setPuzzleSuccess(true);
         handleAwardStars(15, 'Cümleyi Doğru Kurdun!');
-        handleSpeak(`Awesome! ${activePuzzle.targetEn}`);
+        handleSpeak(targetLang === 'de' ? `Wunderbar! ${activePuzzle.targetEn}` : `Awesome! ${activePuzzle.targetEn}`);
         setTimeout(() => {
           setPuzzleSuccess(false);
           setSelectedPuzzleWords([]);
@@ -847,7 +887,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
   };
 
   // Mini-Game 3 Handlers (Pronunciation Coach)
-  const currentVoices = VOICE_CHALLENGES[selectedAge] || VOICE_CHALLENGES['5-7'];
+  const currentVoices = (targetLang === 'de' ? GERMAN_VOICE_CHALLENGES[selectedAge] : VOICE_CHALLENGES[selectedAge]) || (targetLang === 'de' ? GERMAN_VOICE_CHALLENGES['5-7'] : VOICE_CHALLENGES['5-7']);
   const activeVoice = currentVoices[voiceIndex % currentVoices.length];
 
   const handleSimulateVoiceRecording = () => {
@@ -856,7 +896,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
       setVoiceStatus('scored');
       setVoiceScore(96);
       handleAwardStars(20, 'Harika Telaffuz!');
-      handleSpeak(`Very good pronunciation! ${activeVoice.en}`);
+      handleSpeak(targetLang === 'de' ? `Sehr gute Aussprache! ${activeVoice.en}` : `Very good pronunciation! ${activeVoice.en}`);
     }, 1800);
   };
 
@@ -1420,7 +1460,95 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
     'in global summit discussions': 'küresel zirve tartışmalarında',
     'to empower marginalized communities': 'toplulukları güçlendirmek amacıyla',
     'through cutting-edge digital media': 'en ileri dijital medya kanallarıyla',
-    'for long-term worldwide impact': 'uzun vadeli küresel etki için'
+    'for long-term worldwide impact': 'uzun vadeli küresel etki için',
+
+    // Almanca 5-7
+    'Mein freundlicher Hund': 'Benim sevimli köpeğim',
+    'Der smarte Roboter': 'Akıllı robot',
+    'Der kleine Hase': 'Küçük tavşan',
+    'Mein bester Freund': 'Benim en iyi arkadaşım',
+    'Ein mutiger Astronaut': 'Cesur bir astronot',
+    'spielt gerne mit': 'ile oynamayı çok sever',
+    'isst am liebsten': 'en çok yemeyi sever',
+    'möchte entdecken': 'keşfetmek istiyor',
+    'sieht fröhlich': 'neşeyle görüyor',
+    'tanzt lustig mit': 'ile komik dans ediyor',
+    'einem bunten Ball': 'renkli bir topla',
+    'einem süßen Apfel': 'tatlı bir elmayla',
+    'einem großen Regenbogen': 'büyük bir gökkuşağıyla',
+    'einer schnellen Rakete': 'hızlı bir roketle',
+    'einem leckeren Keks': 'lezzetli bir kurabiyeyle',
+    'im sonnigen Park': 'güneşli parkta',
+    'jeden schönen Morgen': 'her güzel sabah',
+    'unter dem großen Baum': 'büyük ağacın altında',
+    'im gemütlichen Zimmer': 'rahat odasında',
+    'mit einem breiten Lächeln': 'kocaman bir gülümsemeyle',
+
+    // Almanca 8-10
+    'Unser Schul-Fußballteam': 'Okul futbol takımımız',
+    'Die neugierige Schülerin': 'Meraklı öğrenci',
+    'Mein kreativer Kunstlehrer': 'Yaratıcı resim öğretmenim',
+    'Ein talentierter Musiker': 'Yetenekli bir müzisyen',
+    'Der junge Programmierer': 'Genç programcı',
+    'trainiert täglich für': 'için her gün antrenman yapıyor',
+    'gewann eine goldene Trophäe für': 'için altın kupa kazandı',
+    'teilt tolle Ideen über': 'hakkında harika fikirler paylaşıyor',
+    'entwickelt ein Projekt mit': 'ile proje geliştiriyor',
+    'erzielte ein fantastisches Tor in': 'içinde muhteşem bir gol attı',
+    'das Meisterschaftsspiel': 'şampiyonluk maçı',
+    'ein brandneues Teleskop': 'yepyeni bir teleskop',
+    'die Schul-Wissenschaftsmesse': 'okul fen fuarı',
+    'ein fröhliches Lied': 'neşeli bir şarkı',
+    'das Robotik-Turnier': 'robotik turnuvası',
+    'im Sportzentrum der Stadt': 'şehrin spor merkezinde',
+    'während der Mittagspause': 'öğle arası boyunca',
+    'mit großer Begeisterung': 'büyük bir heyecanla',
+    'vor der gesamten Schule': 'tüm okulun önünde',
+    'jeden Samstagnachmittag': 'her cumartesi öğleden sonra',
+
+    // Almanca 11-13
+    'Der Nachwuchs-Forscherclub': 'Genç araştırmacılar kulübü',
+    'Unser internationaler Brieffreund': 'Uluslararası mektup arkadaşımız',
+    'Das Umwelt-Team': 'Çevre takımı',
+    'Eine geniale junge Erfinderin': 'Dahi genç bir mucit',
+    'Mein Debattierpartner': 'Münazara partnerim',
+    'forscht intensiv über': 'üzerine yoğun araştırmalar yapıyor',
+    'empfiehlt das Entdecken von': 'keşfedilmesini tavsiye ediyor',
+    'organisiert ein Event über': 'hakkında bir etkinlik düzenliyor',
+    'entwickelte ein Modell für': 'için bir model geliştirdi',
+    'diskutiert Lösungen für': 'için çözümleri tartışıyor',
+    'saubere erneuerbare Energie': 'temiz yenilenebilir enerji',
+    'den Schutz der Ozeane': 'okyanusların korunması',
+    'interaktive Lern-Apps': 'interaktif öğrenme uygulamaları',
+    'planetare Navigationsmethoden': 'gezegenler arası navigasyon yöntemleri',
+    'moderne Bibliotheksressourcen': 'modern kütüphane kaynakları',
+    'auf der Wissenschaftskonferenz': 'bilim konferansında',
+    'über digitale Lernplattformen': 'dijital öğrenme platformları üzerinden',
+    'mit engagierten Mentoren': 'özverili mentorlarla',
+    'in verschiedenen europäischen Städten': 'çeşitli Avrupa şehirlerinde',
+    'mit inspirierender Zuversicht': 'ilham verici bir özgüvenle',
+
+    // Almanca 14-17
+    'Junge Technologie-Pioniere': 'Genç teknoloji öncüleri',
+    'Unser Schul-Debattierteam': 'Okul münazara takımımız',
+    'Zukünftige Software-Entwickler': 'Geleceğin yazılım geliştiricileri',
+    'Globale Klima-Aktivisten': 'Küresel iklim aktivistleri',
+    'Innovative Content-Schöpfer': 'Yenilikçi içerik üreticileri',
+    'arbeiten aktiv an': 'üzerinde aktif olarak çalışıyor',
+    'präsentieren wirkungsvoll über': 'hakkında etkili sunumlar yapıyor',
+    'analysieren kritisch Argumente für': 'argümanlarını eleştirel biçimde inceliyor',
+    'entwerfen skalierbare Lösungen für': 'için ölçeklenebilir çözümler tasarlıyor',
+    'begeistern internationales Publikum mit': 'ile uluslararası dinleyicileri büyülüyor',
+    'ethische künstliche Intelligenz': 'etik yapay zeka',
+    'zukunftsweisende Web-Architektur': 'gelecek nesil web mimarisi',
+    'weltweite Bildungsgerechtigkeit': 'küresel eğitim adaleti',
+    'nachhaltige Stadtökosysteme': 'sürdürülebilir kentsel ekosistemler',
+    'interkulturelle Sprachgewandtheit': 'kültürlerarası akıcı iletişim',
+    'bei internationalen Hackathons': 'uluslararası hackathonlarda',
+    'in weltweiten Gipfeltreffen': 'dünya çapındaki zirve toplantılarında',
+    'zur Stärkung von Gemeinschaften': 'toplulukları güçlendirmek amacıyla',
+    'durch moderne digitale Medien': 'modern dijital medya aracılığıyla',
+    'mit langfristiger globaler Wirkung': 'uzun vadeli küresel etkiyle'
   };
 
   const getFactoryFullTr = () => {
@@ -1450,23 +1578,62 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
     setChildAnswerText(null);
 
     // Cümle Legosu varsayılanlarını yeni yaşa uyarla
-    const patternOpts = PATTERN_OPTIONS[newAge] || PATTERN_OPTIONS['5-7'];
+    const patternOpts = (targetLang === 'de' ? GERMAN_PATTERN_OPTIONS[newAge] : PATTERN_OPTIONS[newAge]) || (targetLang === 'de' ? GERMAN_PATTERN_OPTIONS['5-7'] : PATTERN_OPTIONS['5-7']);
     setBuilderPrefix(patternOpts.prefixes[0]);
     setBuilderObject(patternOpts.objects[0]);
     setBuilderSuffix(patternOpts.suffixes[0]);
 
     // Cümle Fabrikası varsayılanlarını yeni yaşa uyarla
-    const factoryOpts = FACTORY_OPTIONS[newAge] || FACTORY_OPTIONS['5-7'];
+    const factoryOpts = (targetLang === 'de' ? GERMAN_FACTORY_OPTIONS[newAge] : FACTORY_OPTIONS[newAge]) || (targetLang === 'de' ? GERMAN_FACTORY_OPTIONS['5-7'] : FACTORY_OPTIONS['5-7']);
     setFactorySubject(factoryOpts.subjects[0]);
     setFactoryAction(factoryOpts.actions[0]);
     setFactoryObject(factoryOpts.objects[0]);
     setFactoryContext(factoryOpts.contexts[0]);
 
     // Hikaye sahnesi varsayılanını yeni yaşa uyarla
-    const scenes = STORYBOOK_SCENES[newAge] || STORYBOOK_SCENES['5-7'];
+    const scenes = (targetLang === 'de' ? GERMAN_STORYBOOK_SCENES[newAge] : STORYBOOK_SCENES[newAge]) || (targetLang === 'de' ? GERMAN_STORYBOOK_SCENES['5-7'] : STORYBOOK_SCENES['5-7']);
     if (scenes && scenes.length > 0) {
       setActiveStorySceneId(scenes[0].id);
     }
+  };
+
+  // ==================== DİL DEĞİŞTİRME (İNGİLİZCE / ALMANCA) ====================
+  const handleSwitchLanguage = (lang: SupportedLanguage) => {
+    TargetLanguageService.setTargetLanguage(lang);
+    setTargetLang(lang);
+    setCategoryFilter('Tümü');
+    setQuizIndex(0);
+    setQuizAnswerState('idle');
+    setSelectedOptionId(null);
+    setPuzzleIndex(0);
+    setSelectedPuzzleWords([]);
+    setPuzzleSuccess(false);
+    setVoiceIndex(0);
+    setVoiceStatus('idle');
+    setVoiceScore(null);
+    setSimonIndex(0);
+    setSelectedStoryItemId(null);
+    setChatStepIndex(0);
+    setChildAnswerText(null);
+
+    const patternOpts = (lang === 'de' ? GERMAN_PATTERN_OPTIONS[selectedAge] : PATTERN_OPTIONS[selectedAge]) || (lang === 'de' ? GERMAN_PATTERN_OPTIONS['5-7'] : PATTERN_OPTIONS['5-7']);
+    setBuilderPrefix(patternOpts.prefixes[0]);
+    setBuilderObject(patternOpts.objects[0]);
+    setBuilderSuffix(patternOpts.suffixes[0]);
+
+    const factoryOpts = (lang === 'de' ? GERMAN_FACTORY_OPTIONS[selectedAge] : FACTORY_OPTIONS[selectedAge]) || (lang === 'de' ? GERMAN_FACTORY_OPTIONS['5-7'] : FACTORY_OPTIONS['5-7']);
+    setFactorySubject(factoryOpts.subjects[0]);
+    setFactoryAction(factoryOpts.actions[0]);
+    setFactoryObject(factoryOpts.objects[0]);
+    setFactoryContext(factoryOpts.contexts[0]);
+
+    const scenes = (lang === 'de' ? GERMAN_STORYBOOK_SCENES[selectedAge] : STORYBOOK_SCENES[selectedAge]) || (lang === 'de' ? GERMAN_STORYBOOK_SCENES['5-7'] : STORYBOOK_SCENES['5-7']);
+    if (scenes && scenes.length > 0) {
+      setActiveStorySceneId(scenes[0].id);
+    }
+
+    setActiveColorId(lang === 'de' ? 'de-c-red' : 'c-red');
+    setSelectedAnimalId(null);
   };
 
   return (
@@ -1490,10 +1657,10 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
               <div className="space-y-1">
                 <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-xs text-[11px] font-black uppercase tracking-wider">
                   <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                  <span>Çocuklar İçin Yeni Nesil {TargetLanguageService.getTargetLanguage() === 'de' ? 'Almanca' : 'İngilizce'} Dünyası</span>
+                  <span>Çocuklar İçin Yeni Nesil {targetLang === 'de' ? 'Almanca' : 'İngilizce'} Dünyası</span>
                 </div>
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight drop-shadow-xs">
-                  Eğlen, Oyna ve {TargetLanguageService.getTargetLanguage() === 'de' ? 'Almanca' : 'İngilizce'} Konuş! 🌟
+                  Eğlen, Oyna ve {targetLang === 'de' ? 'Almanca' : 'İngilizce'} Konuş! 🌟
                 </h1>
                 <p className="text-xs sm:text-sm text-pink-100 font-medium max-w-xl">
                   Sıkıcı gramer ve kurallar yok! Tıpkı ana dilini öğrenir gibi: Duyarak, lego gibi birleştirerek ve oyunlarla konuşuyoruz.
@@ -1501,8 +1668,36 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
               </div>
             </div>
 
-            {/* Sağ: Yıldızlar, Seri ve Geri Dön Butonu */}
+            {/* Sağ: Dil Seçimi, Yıldızlar, Seri ve Geri Dön Butonu */}
             <div className="flex flex-wrap items-center gap-2.5 self-start md:self-auto">
+              {/* Çocuk Dostu Dil Seçici (🇬🇧 İngilizce / 🇩🇪 Almanca) */}
+              <div className="flex items-center bg-black/25 p-1 rounded-2xl backdrop-blur-md border border-white/20 shadow-md">
+                <button
+                  type="button"
+                  onClick={() => handleSwitchLanguage('en')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all flex items-center space-x-1.5 cursor-pointer ${
+                    targetLang === 'en'
+                      ? 'bg-amber-400 text-slate-950 shadow-md scale-105'
+                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  <span className="text-base">🇬🇧</span>
+                  <span>İngilizce</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSwitchLanguage('de')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all flex items-center space-x-1.5 cursor-pointer ${
+                    targetLang === 'de'
+                      ? 'bg-amber-400 text-slate-950 shadow-md scale-105'
+                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  <span className="text-base">🇩🇪</span>
+                  <span>Almanca</span>
+                </button>
+              </div>
+
               {onBackToMain && (
                 <button
                   type="button"
@@ -1610,7 +1805,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
         {/* ==================== GÜNÜN SESLİ KONUŞMA MEYDAN OKUMASI (DAILY SPEAKING CHALLENGE) ==================== */}
         {(() => {
-          const dailyChallenge = AGE_SPEAKING_CHALLENGES[selectedAge] || AGE_SPEAKING_CHALLENGES['5-7'];
+          const dailyChallenge = (targetLang === 'de' ? GERMAN_AGE_SPEAKING_CHALLENGES[selectedAge] : AGE_SPEAKING_CHALLENGES[selectedAge]) || (targetLang === 'de' ? GERMAN_AGE_SPEAKING_CHALLENGES['5-7'] : AGE_SPEAKING_CHALLENGES['5-7']);
           return (
             <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-purple-700 via-indigo-700 to-pink-600 text-white shadow-xl border border-white/20 relative overflow-hidden space-y-3">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/20 pb-2.5">
@@ -1630,7 +1825,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
                 <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/20 text-[11px] font-bold text-pink-100 self-start sm:self-auto">
                   <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                  <span>İngilizce Konuşma Odaklı Özel İçerik</span>
+                  <span>{targetLang === 'de' ? 'Almanca Konuşma Odaklı Özel İçerik' : 'İngilizce Konuşma Odaklı Özel İçerik'}</span>
                 </div>
               </div>
 
@@ -2039,7 +2234,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
         {/* ==================== TAB: 🏃‍♂️ CHIRMO DİYOR Kİ! (TPR ACTION LAB) ==================== */}
         {activeTab === 'simon' && (() => {
-          const simonActions = TPR_SIMON_ACTIONS[selectedAge] || TPR_SIMON_ACTIONS['5-7'];
+          const simonActions = (targetLang === 'de' ? GERMAN_TPR_SIMON_ACTIONS[selectedAge] : TPR_SIMON_ACTIONS[selectedAge]) || (targetLang === 'de' ? GERMAN_TPR_SIMON_ACTIONS['5-7'] : TPR_SIMON_ACTIONS['5-7']);
           const currentAction = simonActions[simonIndex % simonActions.length];
           const isCompleted = simonCompletedActions.includes(currentAction.id);
 
@@ -2052,10 +2247,10 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                     <span>TPR Eylem & Konuşma Laboratuvarı • {selectedAge} Yaş</span>
                   </div>
                   <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
-                    Chirmo Diyor ki! (Simon Says) 🏃‍♂️
+                    {targetLang === 'de' ? 'Chirmo sagt! (Simon Says) 🏃‍♂️' : 'Chirmo Diyor ki! (Simon Says) 🏃‍♂️'}
                   </h2>
                   <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                    Duyduğun eylemi tüm bedeninle canlandır ve Chirmo ile birlikte yüksek sesle İngilizce konuş!
+                    Duyduğun eylemi tüm bedeninle canlandır ve Chirmo ile birlikte yüksek sesle {targetLang === 'de' ? 'Almanca' : 'İngilizce'} konuş!
                   </p>
                 </div>
                 <div className="text-right">
@@ -2135,9 +2330,9 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                       type="button"
                       onClick={() => {
                         if (!isCompleted) {
-                          setSimonCompletedActions((prev) => [...prev, currentAction.id]);
+                          setsimonCompletedActions((prev) => [...prev, currentAction.id]);
                           handleAwardStars(10, 'Chirmo Diyor ki Görevini Yaptın!');
-                          handleSpeak(`Well done! You did it! ${currentAction.replyEn}`);
+                          handleSpeak(targetLang === 'de' ? `Gut gemacht! Fantastisch! ${currentAction.replyEn}` : `Well done! You did it! ${currentAction.replyEn}`);
                         }
                         setSimonIndex((prev) => (prev + 1) % simonActions.length);
                       }}
@@ -2159,7 +2354,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
         {/* ==================== TAB: 📖 SİHİRLİ KONUŞAN HİKAYELER ==================== */}
         {activeTab === 'stories' && (() => {
-          const currentScenes = STORYBOOK_SCENES[selectedAge] || STORYBOOK_SCENES['5-7'];
+          const currentScenes = (targetLang === 'de' ? GERMAN_STORYBOOK_SCENES[selectedAge] : STORYBOOK_SCENES[selectedAge]) || (targetLang === 'de' ? GERMAN_STORYBOOK_SCENES['5-7'] : STORYBOOK_SCENES['5-7']);
           const currentScene = currentScenes.find((s) => s.id === activeStorySceneId) || currentScenes[0];
           const activeItem = currentScene.hotspots.find((h) => h.id === selectedStoryItemId) || currentScene.hotspots[0];
 
@@ -2175,7 +2370,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                     Sihirli Konuşan Hikayeler (Interactive Storybooks) 📖
                   </h2>
                   <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                    Bir sahne seç, nesnelerin ve karakterlerin üzerine tıkla; canlı İngilizce hikayeyi dinle!
+                    Bir sahne seç, nesnelerin ve karakterlerin üzerine tıkla; canlı {targetLang === 'de' ? 'Almanca' : 'İngilizce'} hikayeyi dinle!
                   </p>
                 </div>
               </div>
@@ -2288,8 +2483,8 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
         {/* ==================== TAB 3: 🧩 KALIP BİRLEŞTİRME ATÖLYESİ (KIDS PATTERN LEGO) ==================== */}
         {activeTab === 'patterns' && (() => {
-          const currentPatternOpts = PATTERN_OPTIONS[selectedAge] || PATTERN_OPTIONS['5-7'];
-          const currentFactoryOpts = FACTORY_OPTIONS[selectedAge] || FACTORY_OPTIONS['5-7'];
+          const currentPatternOpts = (targetLang === 'de' ? GERMAN_PATTERN_OPTIONS[selectedAge] : PATTERN_OPTIONS[selectedAge]) || (targetLang === 'de' ? GERMAN_PATTERN_OPTIONS['5-7'] : PATTERN_OPTIONS['5-7']);
+          const currentFactoryOpts = (targetLang === 'de' ? GERMAN_FACTORY_OPTIONS[selectedAge] : FACTORY_OPTIONS[selectedAge]) || (targetLang === 'de' ? GERMAN_FACTORY_OPTIONS['5-7'] : FACTORY_OPTIONS['5-7']);
 
           return (
             <div className="p-5 sm:p-7 rounded-3xl bg-white dark:bg-slate-900 border-2 border-purple-200 dark:border-slate-800 shadow-lg space-y-8">
@@ -2301,7 +2496,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                   </span>
                 </h2>
                 <p className="text-xs text-slate-500">
-                  Türkçe ile İngilizce arasındaki farkı çöz: Cümleleri kalıp bloklarını yan yana getirerek oluşturuyoruz.
+                  Türkçe ile {targetLang === 'de' ? 'Almanca' : 'İngilizce'} arasındaki farkı çöz: Cümleleri kalıp bloklarını yan yana getirerek oluşturuyoruz.
                 </p>
               </div>
 
@@ -2374,7 +2569,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
               {/* Canlı Üretilen Cümle Vitrini */}
               <div className="p-5 rounded-2xl bg-gradient-to-r from-purple-900 to-indigo-950 text-white shadow-lg space-y-3">
                 <div className="text-[10px] font-black uppercase tracking-wider text-amber-300">
-                  ⚡ Canlı Oluşturulan İngilizce Cümlen:
+                  ⚡ Canlı Oluşturulan {targetLang === 'de' ? 'Almanca' : 'İngilizce'} Cümlen:
                 </div>
                 <div className="text-xl sm:text-2xl font-black text-white">
                   "{constructedKidsSentence}."
@@ -2406,7 +2601,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                       </span>
                     </h3>
                     <p className="text-xs text-slate-500 dark:text-slate-400">
-                      Özne, Eylem, Nesne ve Zaman/Yer bloklarını seçerek sınırsız sayıda İngilizce cümle üret!
+                      Özne, Eylem, Nesne ve Zaman/Yer bloklarını seçerek sınırsız sayıda {targetLang === 'de' ? 'Almanca' : 'İngilizce'} cümle üret!
                     </p>
                   </div>
 
@@ -2582,136 +2777,139 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
         })()}
 
         {/* ==================== TAB: 🦁 KONUŞAN HAYVANAT BAHÇESİ ==================== */}
-        {activeTab === 'animals' && (
-          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border-2 border-emerald-200 dark:border-slate-800 shadow-xl space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
-              <div>
-                <span className="text-[11px] font-black uppercase text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-2.5 py-1 rounded-full">
-                  🦁 İnteraktif Safarimiz
-                </span>
-                <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
-                  Chirmo'nun Konuşan Hayvanat Bahçesi
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-500">
-                  Bir hayvana tıkla! Hem neşeli sesini duy hem de İngilizce kendini nasıl tanıttığını dinle.
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {SAFARI_ANIMALS.map((animal) => {
-                const isSelected = selectedAnimalId === animal.id;
-                return (
-                  <button
-                    key={animal.id}
-                    type="button"
-                    onClick={() => {
-                      setSelectedAnimalId(animal.id);
-                      handleSpeak(animal.soundText);
-                      handleAwardStars(5, `${animal.nameEn} sesini dinledin!`);
-                    }}
-                    className={`p-5 rounded-3xl border-2 transition-all cursor-pointer flex flex-col items-center justify-center space-y-2 text-center group hover:scale-105 active:scale-95 ${
-                      isSelected
-                        ? 'bg-emerald-50 dark:bg-emerald-950/50 border-emerald-500 ring-4 ring-emerald-300'
-                        : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 hover:border-emerald-400'
-                    }`}
-                  >
-                    <span className="text-5xl group-hover:scale-120 transition-transform">
-                      {animal.emoji}
-                    </span>
-                    <span className="text-base font-black text-slate-900 dark:text-white">
-                      {animal.nameEn}
-                    </span>
-                    <span className="text-xs font-bold text-emerald-600">
-                      {animal.nameTr}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {selectedAnimalId && (
-              <div className="p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 flex items-start space-x-3 text-xs sm:text-sm text-emerald-950 dark:text-emerald-200 animate-fade-in">
-                <span className="text-3xl">🗣️</span>
+        {activeTab === 'animals' && (() => {
+          const currentAnimals = targetLang === 'de' ? GERMAN_SAFARI_ANIMALS : SAFARI_ANIMALS;
+          return (
+            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border-2 border-emerald-200 dark:border-slate-800 shadow-xl space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
                 <div>
-                  <div className="font-black text-base">
-                    "{SAFARI_ANIMALS.find((a) => a.id === selectedAnimalId)?.soundText}"
-                  </div>
-                  <div className="text-xs font-medium text-emerald-800 dark:text-emerald-300 mt-1">
-                    {SAFARI_ANIMALS.find((a) => a.id === selectedAnimalId)?.funTr}
-                  </div>
+                  <span className="text-[11px] font-black uppercase text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-2.5 py-1 rounded-full">
+                    🦁 İnteraktif Safarimiz
+                  </span>
+                  <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
+                    Chirmo'nun Konuşan Hayvanat Bahçesi
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-500">
+                    Bir hayvana tıkla! Hem neşeli sesini duy hem de {targetLang === 'de' ? 'Almanca' : 'İngilizce'} kendini nasıl tanıttığını dinle.
+                  </p>
                 </div>
               </div>
-            )}
-          </div>
-        )}
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {currentAnimals.map((animal) => {
+                  const isSelected = selectedAnimalId === animal.id;
+                  return (
+                    <button
+                      key={animal.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedAnimalId(animal.id);
+                        handleSpeak(animal.soundText);
+                        handleAwardStars(5, `${animal.nameEn} sesini dinledin!`);
+                      }}
+                      className={`p-5 rounded-3xl border-2 transition-all cursor-pointer flex flex-col items-center justify-center space-y-2 text-center group hover:scale-105 active:scale-95 ${
+                        isSelected
+                          ? 'bg-emerald-50 dark:bg-emerald-950/50 border-emerald-500 ring-4 ring-emerald-300'
+                          : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 hover:border-emerald-400'
+                      }`}
+                    >
+                      <span className="text-5xl group-hover:scale-120 transition-transform">
+                        {animal.emoji}
+                      </span>
+                      <span className="text-base font-black text-slate-900 dark:text-white">
+                        {animal.nameEn}
+                      </span>
+                      <span className="text-xs font-bold text-emerald-600">
+                        {animal.nameTr}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {selectedAnimalId && (
+                <div className="p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 flex items-start space-x-3 text-xs sm:text-sm text-emerald-950 dark:text-emerald-200 animate-fade-in">
+                  <span className="text-3xl">🗣️</span>
+                  <div>
+                    <div className="font-black text-base">
+                      "{currentAnimals.find((a) => a.id === selectedAnimalId)?.soundText}"
+                    </div>
+                    <div className="text-xs font-medium text-emerald-800 dark:text-emerald-300 mt-1">
+                      {currentAnimals.find((a) => a.id === selectedAnimalId)?.funTr}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })()}
 
         {/* ==================== TAB: 🎨 SİHİRLİ BOYA & KONUŞ ==================== */}
-        {activeTab === 'colors' && (
-          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border-2 border-rose-200 dark:border-slate-800 shadow-xl space-y-6">
-            <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
-              <span className="text-[11px] font-black uppercase text-rose-600 bg-rose-50 dark:bg-rose-950 px-2.5 py-1 rounded-full">
-                🎨 Renkler & Nesneler
-              </span>
-              <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
-                Sihirli Boya & Konuş Laboratuvarı
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-500">
-                Rengi seç, sihirli fırçayla boya ve nesnenin İngilizce cümlesini tekrar et!
-              </p>
-            </div>
+        {activeTab === 'colors' && (() => {
+          const currentColors = targetLang === 'de' ? GERMAN_MAGIC_COLORS : MAGIC_COLORS;
+          const activeColor = currentColors.find((c) => c.id === activeColorId) || currentColors[0];
 
-            {/* Renk Seçim Paleti */}
-            <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
-              {MAGIC_COLORS.map((col) => {
-                const isActive = activeColorId === col.id;
-                return (
-                  <button
-                    key={col.id}
-                    type="button"
-                    onClick={() => {
-                      setActiveColorId(col.id);
-                      handleSpeak(col.sample);
-                      handleAwardStars(5, `${col.nameEn} rengini boyadın!`);
-                    }}
-                    className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex flex-col items-center justify-center space-y-1 ${
-                      isActive ? 'border-slate-900 scale-105 shadow-md ring-2 ring-rose-400' : 'border-transparent'
-                    } bg-gradient-to-tr ${col.bgClass} text-white font-black`}
-                  >
-                    <span className="text-2xl">{col.emoji}</span>
-                    <span className="text-xs">{col.nameEn}</span>
-                    <span className="text-[10px] opacity-80">{col.nameTr}</span>
-                  </button>
-                );
-              })}
-            </div>
+          return (
+            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border-2 border-rose-200 dark:border-slate-800 shadow-xl space-y-6">
+              <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
+                <span className="text-[11px] font-black uppercase text-rose-600 bg-rose-50 dark:bg-rose-950 px-2.5 py-1 rounded-full">
+                  🎨 Renkler & Nesneler
+                </span>
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
+                  Sihirli Boya & Konuş Laboratuvarı
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500">
+                  Rengi seç, sihirli fırçayla boya ve nesnenin {targetLang === 'de' ? 'Almanca' : 'İngilizce'} cümlesini tekrar et!
+                </p>
+              </div>
 
-            {/* Renk Vitrini */}
-            {(() => {
-              const activeColor = MAGIC_COLORS.find((c) => c.id === activeColorId) || MAGIC_COLORS[0];
-              return (
-                <div className={`p-6 rounded-3xl bg-gradient-to-tr ${activeColor.bgClass} text-white shadow-lg text-center space-y-3 animate-fade-in`}>
-                  <div className="text-6xl animate-bounce">{activeColor.emoji}</div>
-                  <div className="text-2xl sm:text-3xl font-black">
-                    "{activeColor.sample}"
-                  </div>
-                  <div className="text-sm font-bold text-white/90">
-                    {activeColor.objectTr} • {activeColor.nameTr}
-                  </div>
-                  <div>
+              {/* Renk Seçim Paleti */}
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+                {currentColors.map((col) => {
+                  const isActive = activeColor.id === col.id;
+                  return (
                     <button
+                      key={col.id}
                       type="button"
-                      onClick={() => handleSpeak(activeColor.sample)}
-                      className="px-5 py-2.5 rounded-xl bg-white text-slate-900 font-black text-xs shadow-md cursor-pointer hover:bg-slate-100"
+                      onClick={() => {
+                        setActiveColorId(col.id);
+                        handleSpeak(col.sample);
+                        handleAwardStars(5, `${col.nameEn} rengini boyadın!`);
+                      }}
+                      className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex flex-col items-center justify-center space-y-1 ${
+                        isActive ? 'border-slate-900 scale-105 shadow-md ring-2 ring-rose-400' : 'border-transparent'
+                      } bg-gradient-to-tr ${col.bgClass} text-white font-black`}
                     >
-                      🔊 Chirmo ile Dinle & Tekrar Et
+                      <span className="text-2xl">{col.emoji}</span>
+                      <span className="text-xs">{col.nameEn}</span>
+                      <span className="text-[10px] opacity-80">{col.nameTr}</span>
                     </button>
-                  </div>
+                  );
+                })}
+              </div>
+
+              {/* Renk Vitrini */}
+              <div className={`p-6 rounded-3xl bg-gradient-to-tr ${activeColor.bgClass} text-white shadow-lg text-center space-y-3 animate-fade-in`}>
+                <div className="text-6xl animate-bounce">{activeColor.emoji}</div>
+                <div className="text-2xl sm:text-3xl font-black">
+                  "{activeColor.sample}"
                 </div>
-              );
-            })()}
-          </div>
-        )}
+                <div className="text-sm font-bold text-white/90">
+                  {activeColor.objectTr} • {activeColor.nameTr}
+                </div>
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => handleSpeak(activeColor.sample)}
+                    className="px-5 py-2.5 rounded-xl bg-white text-slate-900 font-black text-xs shadow-md cursor-pointer hover:bg-slate-100"
+                  >
+                    🔊 Chirmo ile Dinle & Tekrar Et
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
 
         {/* ==================== TAB: 💬 ÇİZGİ KARAKTER CHIRMO SOHBETİ ==================== */}
         {activeTab === 'chat' && (
@@ -2729,7 +2927,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
             </div>
 
             {(() => {
-              const currentChatList = KIDS_CHAT_STEPS[selectedAge] || KIDS_CHAT_STEPS['5-7'];
+              const currentChatList = (targetLang === 'de' ? GERMAN_KIDS_CHAT_STEPS[selectedAge] : KIDS_CHAT_STEPS[selectedAge]) || (targetLang === 'de' ? GERMAN_KIDS_CHAT_STEPS['5-7'] : KIDS_CHAT_STEPS['5-7']);
               const currentStep = currentChatList[chatStepIndex % currentChatList.length];
               return (
                 <div className="space-y-6">
@@ -2787,7 +2985,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
                   {childAnswerText && (
                     <div className="p-3 rounded-2xl bg-blue-100 text-blue-900 text-xs font-black text-center animate-bounce">
-                      🎉 Chirmo: "Harika konuştun! Sıradaki soruya geçiyoruz..."
+                      {targetLang === 'de' ? '🎉 Chirmo: "Wunderbar gesprochen! Wir gehen zur nächsten Frage..."' : '🎉 Chirmo: "Harika konuştun! Sıradaki soruya geçiyoruz..."'}
                     </div>
                   )}
                 </div>
@@ -2847,60 +3045,63 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
         )}
 
         {/* ==================== TAB 4: 🎵 ŞARKILAR, MASALLAR & KARAOKE ==================== */}
-        {activeTab === 'songs' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {KIDS_SONGS.map((song) => {
-              const isPlaying = playingSongId === song.id;
-              return (
-                <div
-                  key={song.id}
-                  className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-pink-100 dark:border-slate-800 shadow-md hover:shadow-xl transition-all space-y-3 flex flex-col justify-between"
-                >
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-pink-100 dark:bg-pink-950 text-pink-700 dark:text-pink-300">
-                        {song.category} • {song.duration}
-                      </span>
-                      <Music className="w-4 h-4 text-pink-500" />
-                    </div>
-                    <h3 className="text-base font-black text-slate-900 dark:text-white">
-                      {song.title}
-                    </h3>
-                    <p className="text-xs text-slate-500">
-                      🎯 Öğretilen Beceri: {song.grammarFocus}
-                    </p>
-                  </div>
-
-                  {/* Karaoke Sözleri */}
-                  <div className="p-3.5 rounded-2xl bg-amber-50/70 dark:bg-slate-800/80 space-y-1 font-medium text-xs text-slate-700 dark:text-slate-300 border border-amber-100">
-                    {song.lyrics.map((line, i) => (
-                      <div key={i} className="leading-relaxed">
-                        {line}
-                      </div>
-                    ))}
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setPlayingSongId(song.id);
-                      handleSpeak(song.audioSample);
-                      handleAwardStars(5, 'Şarkı Söylendi!');
-                    }}
-                    className={`w-full py-2.5 rounded-xl font-black text-xs shadow-xs transition-all flex items-center justify-center space-x-2 cursor-pointer ${
-                      isPlaying
-                        ? 'bg-rose-500 text-white animate-pulse'
-                        : 'bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 text-white'
-                    }`}
+        {activeTab === 'songs' && (() => {
+          const currentSongs = targetLang === 'de' ? GERMAN_KIDS_SONGS : KIDS_SONGS;
+          return (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {currentSongs.map((song) => {
+                const isPlaying = playingSongId === song.id;
+                return (
+                  <div
+                    key={song.id}
+                    className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-pink-100 dark:border-slate-800 shadow-md hover:shadow-xl transition-all space-y-3 flex flex-col justify-between"
                   >
-                    <Play className="w-3.5 h-3.5" />
-                    <span>Şarkıyı Dinle & Eşlik Et (+5 ⭐)</span>
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-        )}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-pink-100 dark:bg-pink-950 text-pink-700 dark:text-pink-300">
+                          {song.category} • {song.duration}
+                        </span>
+                        <Music className="w-4 h-4 text-pink-500" />
+                      </div>
+                      <h3 className="text-base font-black text-slate-900 dark:text-white">
+                        {song.title}
+                      </h3>
+                      <p className="text-xs text-slate-500">
+                        🎯 Öğretilen Beceri: {song.grammarFocus}
+                      </p>
+                    </div>
+
+                    {/* Karaoke Sözleri */}
+                    <div className="p-3.5 rounded-2xl bg-amber-50/70 dark:bg-slate-800/80 space-y-1 font-medium text-xs text-slate-700 dark:text-slate-300 border border-amber-100">
+                      {song.lyrics.map((line, i) => (
+                        <div key={i} className="leading-relaxed">
+                          {line}
+                        </div>
+                      ))}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPlayingSongId(song.id);
+                        handleSpeak(song.audioSample);
+                        handleAwardStars(5, 'Şarkı Söylendi!');
+                      }}
+                      className={`w-full py-2.5 rounded-xl font-black text-xs shadow-xs transition-all flex items-center justify-center space-x-2 cursor-pointer ${
+                        isPlaying
+                          ? 'bg-rose-500 text-white animate-pulse'
+                          : 'bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 text-white'
+                      }`}
+                    >
+                      <Play className="w-3.5 h-3.5" />
+                      <span>Şarkıyı Dinle & Eşlik Et (+5 ⭐)</span>
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })()}
 
 
 

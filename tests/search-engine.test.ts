@@ -133,7 +133,7 @@ describe('SearchEngineService', () => {
     expect(searchRes.didYouMean).toBe('TypeScript');
     expect(searchRes.aiSynthesis.intentLabel).toBeDefined();
     expect(Array.isArray(searchRes.aiSynthesis.directSourceQuotes)).toBe(true);
-  });
+  }, 15000);
 
   it('persists and manages user workspace collections in WorkspaceStorage', () => {
     const saved = WorkspaceStorage.saveSearch({

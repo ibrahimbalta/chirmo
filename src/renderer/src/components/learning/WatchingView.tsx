@@ -19,7 +19,11 @@ import {
   Eye,
   EyeOff,
   BookOpen,
-  X
+  X,
+  FileText,
+  ListPlus,
+  Copy,
+  CheckCircle2
 } from 'lucide-react';
 import { CEFRLevel, VocabularyWord } from '../../types';
 import { LearningStorageService } from '../../services/learningStorage';
@@ -50,6 +54,20 @@ export const extractYouTubeVideoId = (input: string): string | null => {
     if (m && m[1]) return m[1];
   }
   return null;
+};
+
+import {
+  type ParsedTranscriptLine,
+  getQuickTurkishPreview,
+  parseYouTubeTranscriptText,
+  convertParsedToSubtitleLines
+} from '../../utils/transcriptParser';
+
+export {
+  type ParsedTranscriptLine,
+  getQuickTurkishPreview,
+  parseYouTubeTranscriptText,
+  convertParsedToSubtitleLines
 };
 
 export interface InteractiveLessonData {
@@ -544,6 +562,9 @@ export const WatchingView: React.FC<WatchingViewProps> = ({
 
   // Custom Subtitle Creator/Editor Modal
   const [isCustomSubtitleOpen, setIsCustomSubtitleOpen] = useState(false);
+  const [modalTab, setModalTab] = useState<'bulk' | 'single'>('bulk');
+  const [bulkTranscriptText, setBulkTranscriptText] = useState('');
+  const [bulkImportMode, setBulkImportMode] = useState<'replace' | 'append'>('replace');
   const [customEnText, setCustomEnText] = useState('');
   const [customTrText, setCustomTrText] = useState('');
 
@@ -912,6 +933,71 @@ export const WatchingView: React.FC<WatchingViewProps> = ({
     showToast('Özel diyalog cümlesi başarıyla eklendi! ✍️');
   };
 
+  const handleLoadDemoTranscript = () => {
+    setBulkTranscriptText(`0:05 Hello everyone, welcome back to our daily English speaking practice!
+0:12 In today's video, we are going to explore how to speak natural and confident English.
+0:20 Many learners ask me: What is the secret of fluent pronunciation and active shadowing?
+0:32 The answer is simple: Listen carefully to native speakers and repeat each phrase aloud.
+0:45 Don't worry about making mistakes because every mistake helps your brain grow.
+0:58 Practice shadowing with Chirmo every single day, and you will notice a huge improvement!
+1:10 Keep practicing, stay positive, and believe in your conversational journey.`);
+  };
+
+  const handleImportBulkTranscript = () => {
+    if (!bulkTranscriptText.trim()) {
+      showToast('Lütfen önce bir konuşma metni veya transkript yapıştırın.');
+      return;
+    }
+
+    const parsedLines = parseYouTubeTranscriptText(bulkTranscriptText);
+    if (parsedLines.length === 0) {
+      showToast('Metinden geçerli diyalog cümlesi çıkarılamadı.');
+      return;
+    }
+
+    const startId = bulkImportMode === 'append' ? selectedVideo.subtitles.length + 1 : 1;
+    const newSubtitles = convertParsedToSubtitleLines(parsedLines, startId);
+
+    // Extract top keywords from the transcript
+    const allWords = bulkTranscriptText
+      .toLowerCase()
+      .replace(/[^a-z\s]/g, '')
+      .split(/\s+/)
+      .filter((w) => w.length > 4);
+
+    const freqMap: Record<string, number> = {};
+    allWords.forEach((w) => {
+      freqMap[w] = (freqMap[w] || 0) + 1;
+    });
+
+    const topWords: VideoVocabularyItem[] = Object.keys(freqMap)
+      .sort((a, b) => freqMap[b] - freqMap[a])
+      .slice(0, 5)
+      .map((w) => ({
+        word: w,
+        phonetic: `/${w}/`,
+        meaning: 'Transkriptten yakalanan anahtar kelime'
+      }));
+
+    setSelectedVideo((prev) => {
+      const mergedSubs = bulkImportMode === 'append' ? [...prev.subtitles, ...newSubtitles] : newSubtitles;
+      return {
+        ...prev,
+        subtitles: mergedSubs,
+        keyVocabulary: topWords.length > 0 ? topWords : prev.keyVocabulary
+      };
+    });
+
+    setActiveSubtitleIndex(bulkImportMode === 'append' ? selectedVideo.subtitles.length : 0);
+    setBulkTranscriptText('');
+    setIsCustomSubtitleOpen(false);
+    setShadowingScore(null);
+    setSpokenTranscript('');
+    setQuizAnswered(null);
+    setIsQuizCorrect(null);
+    showToast(`🎉 Harika! Toplam ${newSubtitles.length} konuşma sahnesi yüklendi.`);
+  };
+
   const handlePrevSubtitle = () => {
     if (activeSubtitleIndex > 0) {
       setActiveSubtitleIndex(activeSubtitleIndex - 1);
@@ -995,6 +1081,18 @@ export const WatchingView: React.FC<WatchingViewProps> = ({
             >
               Videoyu Yükle
             </button>
+            <button
+              type="button"
+              onClick={() => {
+                setModalTab('bulk');
+                setIsCustomSubtitleOpen(true);
+              }}
+              className="px-3.5 py-2 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-md transition-all shrink-0 cursor-pointer flex items-center space-x-1.5"
+              title="YouTube konuşma metnini yapıştırıp sahnelere ayırın"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>Metin / Transkript</span>
+            </button>
           </form>
         </div>
 
@@ -1021,11 +1119,14 @@ export const WatchingView: React.FC<WatchingViewProps> = ({
           ))}
           <button
             type="button"
-            onClick={() => setIsCustomSubtitleOpen(true)}
-            className="ml-auto text-xs font-bold text-indigo-600 dark:text-indigo-400 flex items-center space-x-1 hover:underline cursor-pointer whitespace-nowrap shrink-0"
+            onClick={() => {
+              setModalTab('bulk');
+              setIsCustomSubtitleOpen(true);
+            }}
+            className="ml-auto text-xs font-bold text-indigo-600 dark:text-indigo-400 flex items-center space-x-1.5 hover:underline cursor-pointer whitespace-nowrap shrink-0"
           >
-            <PlusCircle className="w-3.5 h-3.5" />
-            <span>Özel Cümle / Metin Ekle</span>
+            <FileText className="w-3.5 h-3.5" />
+            <span>📋 YouTube Transkripti / Metin Yükle</span>
           </button>
         </div>
       </div>
@@ -1656,67 +1757,204 @@ export const WatchingView: React.FC<WatchingViewProps> = ({
         </div>
       </div>
 
-      {/* Custom Subtitle Dialog Modal */}
+      {/* Custom Subtitle & Bulk YouTube Transcript Modal */}
       {isCustomSubtitleOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+          <div className="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <h3 className="text-base font-black text-slate-900 dark:text-white">
-                Özel Altyazı / Diyalog Ekle
-              </h3>
+              <div className="flex items-center space-x-2">
+                <span className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400">
+                  <FileText className="w-5 h-5" />
+                </span>
+                <div>
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
+                    YouTube Konuşma Metni & Transkript Laboratuvarı
+                  </h3>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    YouTube'daki konuşulan metnin tamamını yapıştırın, otomatik sahne ve shadowing alıştırmalarına dönüştürün.
+                  </p>
+                </div>
+              </div>
               <button
                 type="button"
                 onClick={() => setIsCustomSubtitleOpen(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-600"
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="space-y-3">
-              <div>
-                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 block mb-1">
-                  İngilizce Cümle:
-                </label>
-                <input
-                  type="text"
-                  value={customEnText}
-                  onChange={(e) => setCustomEnText(e.target.value)}
-                  placeholder="örn: I have a dream that one day..."
-                  className="w-full px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 block mb-1">
-                  Türkçe Çevirisi:
-                </label>
-                <input
-                  type="text"
-                  value={customTrText}
-                  onChange={(e) => setCustomTrText(e.target.value)}
-                  placeholder="örn: Bir gün gerçekleşecek bir hayalim var..."
-                  className="w-full px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-end space-x-2 pt-2">
+            {/* Tab Selector */}
+            <div className="flex items-center space-x-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl">
               <button
                 type="button"
-                onClick={() => setIsCustomSubtitleOpen(false)}
-                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+                onClick={() => setModalTab('bulk')}
+                className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-center space-x-1.5 cursor-pointer ${
+                  modalTab === 'bulk'
+                    ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                }`}
               >
-                Vazgeç
+                <FileText className="w-4 h-4" />
+                <span>📋 Komple Transkript / Konuşma Metni Yapıştır</span>
               </button>
               <button
                 type="button"
-                onClick={handleAddCustomLine}
-                className="px-4 py-2 rounded-xl text-xs font-black bg-indigo-600 text-white hover:bg-indigo-700 shadow-xs cursor-pointer"
+                onClick={() => setModalTab('single')}
+                className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-center space-x-1.5 cursor-pointer ${
+                  modalTab === 'single'
+                    ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                }`}
               >
-                Diyaloğa Ekle
+                <PlusCircle className="w-4 h-4" />
+                <span>✍️ Tek Cümle Ekle</span>
               </button>
             </div>
+
+            {/* TAB 1: BULK TRANSCRIPT IMPORT */}
+            {modalTab === 'bulk' && (
+              <div className="space-y-4">
+                {/* Info & Demo Button Banner */}
+                <div className="p-3.5 rounded-2xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200/60 dark:border-indigo-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                  <div className="text-[11px] text-indigo-900 dark:text-indigo-200 leading-relaxed">
+                    💡 <strong>Nasıl Yapılır?</strong> YouTube'da videonun altındaki <strong>"Daha fazla / ..."</strong> butonuna tıklayıp <strong>"Transkripti göster"</strong> seçin. Açılan metni kopyalayıp buraya yapıştırın. Zaman damgalı veya sade metin fark etmez!
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleLoadDemoTranscript}
+                    className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-indigo-300 dark:border-indigo-700 text-indigo-700 dark:text-indigo-300 font-bold text-xs hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-all shrink-0 cursor-pointer"
+                  >
+                    ⚡ Örnek Metin Doldur (Demo)
+                  </button>
+                </div>
+
+                {/* Textarea */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-black text-slate-700 dark:text-slate-300">
+                      YouTube Konuşma Metni / Transkript:
+                    </label>
+                    {bulkTranscriptText.trim().length > 0 && (
+                      <span className="text-[11px] font-black text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                        ✨ {parseYouTubeTranscriptText(bulkTranscriptText).length} Sahne Algılandı
+                      </span>
+                    )}
+                  </div>
+                  <textarea
+                    rows={8}
+                    value={bulkTranscriptText}
+                    onChange={(e) => setBulkTranscriptText(e.target.value)}
+                    placeholder={`Örnek Format 1 (YouTube Transkripti):
+0:05 Hello everyone, welcome back to our channel!
+0:12 Today we are going to learn essential English phrases.
+0:20 Practice shadowing after each sentence.
+
+Veya Format 2 (Sade Düz Metin):
+Learning English with videos is fun. You listen to natural speech and repeat aloud. Chirmo gives you instant pronunciation feedback.`}
+                    className="w-full p-3.5 rounded-2xl text-xs font-mono bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 leading-relaxed"
+                  />
+                </div>
+
+                {/* Import Mode Options */}
+                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80 space-y-2">
+                  <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300 block">
+                    Yükleme Modu:
+                  </span>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-3 text-xs">
+                    <label className="flex items-center space-x-2 cursor-pointer font-medium text-slate-800 dark:text-slate-200">
+                      <input
+                        type="radio"
+                        name="bulkImportMode"
+                        checked={bulkImportMode === 'replace'}
+                        onChange={() => setBulkImportMode('replace')}
+                        className="text-indigo-600 focus:ring-indigo-500"
+                      />
+                      <span>Mevcut diyalogları değiştir (Tüm video metni)</span>
+                    </label>
+                    <label className="flex items-center space-x-2 cursor-pointer font-medium text-slate-800 dark:text-slate-200">
+                      <input
+                        type="radio"
+                        name="bulkImportMode"
+                        checked={bulkImportMode === 'append'}
+                        onChange={() => setBulkImportMode('append')}
+                        className="text-indigo-600 focus:ring-indigo-500"
+                      />
+                      <span>Mevcut listenin sonuna ekle</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Modal Actions */}
+                <div className="flex items-center justify-end space-x-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <button
+                    type="button"
+                    onClick={() => setIsCustomSubtitleOpen(false)}
+                    className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                  >
+                    Vazgeç
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleImportBulkTranscript}
+                    className="px-5 py-2.5 rounded-xl text-xs font-black bg-indigo-600 text-white hover:bg-indigo-700 shadow-md cursor-pointer flex items-center space-x-1.5 transition-all"
+                  >
+                    <span>🚀 Metni Sahnelere Dönüştür & Çalışmaya Başla</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 2: SINGLE LINE ADDITION */}
+            {modalTab === 'single' && (
+              <div className="space-y-4">
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 dark:text-slate-300 block mb-1">
+                      İngilizce Cümle:
+                    </label>
+                    <input
+                      type="text"
+                      value={customEnText}
+                      onChange={(e) => setCustomEnText(e.target.value)}
+                      placeholder="örn: I have a dream that one day..."
+                      className="w-full px-3.5 py-2.5 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 dark:text-slate-300 block mb-1">
+                      Türkçe Çevirisi:
+                    </label>
+                    <input
+                      type="text"
+                      value={customTrText}
+                      onChange={(e) => setCustomTrText(e.target.value)}
+                      placeholder="örn: Bir gün gerçekleşecek bir hayalim var..."
+                      className="w-full px-3.5 py-2.5 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end space-x-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <button
+                    type="button"
+                    onClick={() => setIsCustomSubtitleOpen(false)}
+                    className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                  >
+                    Vazgeç
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleAddCustomLine}
+                    className="px-4 py-2 rounded-xl text-xs font-black bg-indigo-600 text-white hover:bg-indigo-700 shadow-xs cursor-pointer"
+                  >
+                    Diyaloğa Ekle
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
