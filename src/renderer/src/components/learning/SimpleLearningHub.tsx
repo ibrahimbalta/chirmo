@@ -183,168 +183,311 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
         <span>30 Günlük Konuşma Kampı</span>
       </div>
 
-      {/* Sekmeler Menüsü */}
-      <div className="px-6 py-2.5 bg-slate-100 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800 shrink-0">
-        <div className="max-w-5xl mx-auto flex items-center space-x-1.5 overflow-x-auto text-xs">
-          <button
-            onClick={() => setActiveTab('camp')}
-            className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'camp'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
-            }`}
-          >
-            <Zap className="w-3.5 h-3.5 text-amber-400" />
-            <span>30 Günlük {targetLang === 'de' ? 'Almanca ' : ''}Konuşma Kampı 🚀</span>
-          </button>
+      {/* 4 Tematik Oyun Dünyası Seçici Barı (Gamified Realm Hub) */}
+      <div className="px-3 sm:px-6 py-2 sm:py-3 bg-slate-100 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 shrink-0">
+        <div className="max-w-5xl mx-auto space-y-2">
+          {/* 4 Oyun Dünyası Portalları */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {/* 1. Dünya: Macera Kampı */}
+            <button
+              type="button"
+              onClick={() => {
+                if (!['camp', 'simulations', 'studio'].includes(activeTab)) {
+                  setActiveTab('camp');
+                }
+              }}
+              className={`p-2.5 sm:p-3 rounded-2xl text-left transition-all cursor-pointer flex items-center space-x-2.5 relative border ${
+                ['camp', 'simulations', 'studio'].includes(activeTab)
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border-transparent scale-[1.02]'
+                  : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200/80 dark:border-slate-800 hover:border-slate-300 hover:bg-slate-50'
+              }`}
+            >
+              <span className="text-xl sm:text-2xl shrink-0">🚀</span>
+              <div className="min-w-0 flex-1">
+                <div className="text-xs font-black truncate">Macera Kampı</div>
+                <div className={`text-[10px] truncate ${['camp', 'simulations', 'studio'].includes(activeTab) ? 'text-white/80' : 'text-slate-400'}`}>
+                  30 Günlük Yol
+                </div>
+              </div>
+              {['camp', 'simulations', 'studio'].includes(activeTab) && (
+                <span className="w-2 h-2 rounded-full bg-amber-300 animate-pulse shrink-0" />
+              )}
+            </button>
 
-          <button
-            onClick={() => setActiveTab('video')}
-            className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'video'
-                ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-md'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
-            }`}
-          >
-            <span>🎬</span>
-            <span>YouTube & Film ile Konuş (Shadowing) ⭐</span>
-          </button>
+            {/* 2. Dünya: Sinema & Gölgeleme */}
+            <button
+              type="button"
+              onClick={() => {
+                if (!['video', 'stories', 'booster'].includes(activeTab)) {
+                  setActiveTab('video');
+                }
+              }}
+              className={`p-2.5 sm:p-3 rounded-2xl text-left transition-all cursor-pointer flex items-center space-x-2.5 relative border ${
+                ['video', 'stories', 'booster'].includes(activeTab)
+                  ? 'bg-gradient-to-r from-rose-600 to-red-600 text-white shadow-md border-transparent scale-[1.02]'
+                  : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200/80 dark:border-slate-800 hover:border-slate-300 hover:bg-slate-50'
+              }`}
+            >
+              <span className="text-xl sm:text-2xl shrink-0">🍿</span>
+              <div className="min-w-0 flex-1">
+                <div className="text-xs font-black truncate">Sinema & Rol</div>
+                <div className={`text-[10px] truncate ${['video', 'stories', 'booster'].includes(activeTab) ? 'text-white/80' : 'text-slate-400'}`}>
+                  Sıfır Çeviri
+                </div>
+              </div>
+              {['video', 'stories', 'booster'].includes(activeTab) && (
+                <span className="w-2 h-2 rounded-full bg-amber-300 animate-pulse shrink-0" />
+              )}
+            </button>
 
-          <button
-            onClick={() => setActiveTab('stories')}
-            className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'stories'
-                ? 'bg-gradient-to-r from-orange-500 to-rose-600 text-white shadow-md'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
-            }`}
-          >
-            <BookOpen className="w-3.5 h-3.5 text-amber-300" />
-            <span>📖 İnteraktif Diyalog Hikayeleri 🎭</span>
-          </button>
+            {/* 3. Dünya: Cümle & Oyun Parkı */}
+            <button
+              type="button"
+              onClick={() => {
+                if (!['builder', 'games', 'kids'].includes(activeTab)) {
+                  setActiveTab('builder');
+                }
+              }}
+              className={`p-2.5 sm:p-3 rounded-2xl text-left transition-all cursor-pointer flex items-center space-x-2.5 relative border ${
+                ['builder', 'games', 'kids'].includes(activeTab)
+                  ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-md border-transparent scale-[1.02]'
+                  : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200/80 dark:border-slate-800 hover:border-slate-300 hover:bg-slate-50'
+              }`}
+            >
+              <span className="text-xl sm:text-2xl shrink-0">🧩</span>
+              <div className="min-w-0 flex-1">
+                <div className="text-xs font-black truncate">Cümle & Oyun</div>
+                <div className={`text-[10px] truncate ${['builder', 'games', 'kids'].includes(activeTab) ? 'text-white/80' : 'text-slate-400'}`}>
+                  Lego & Arcade
+                </div>
+              </div>
+              {['builder', 'games', 'kids'].includes(activeTab) && (
+                <span className="w-2 h-2 rounded-full bg-amber-300 animate-pulse shrink-0" />
+              )}
+            </button>
 
-          <button
-            onClick={() => setActiveTab('booster')}
-            className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'booster'
-                ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
-            }`}
-          >
-            <Zap className="w-3.5 h-3.5 text-amber-300" />
-            <span>⚡ 3x Hızlı Akıcılık (Shadowing & Refleks)</span>
-          </button>
+            {/* 4. Dünya: Kelime & Zeka Sandığı */}
+            <button
+              type="button"
+              onClick={() => {
+                if (!['vault', 'flashcards', 'quiz', 'grade'].includes(activeTab)) {
+                  setActiveTab('vault');
+                }
+              }}
+              className={`p-2.5 sm:p-3 rounded-2xl text-left transition-all cursor-pointer flex items-center space-x-2.5 relative border ${
+                ['vault', 'flashcards', 'quiz', 'grade'].includes(activeTab)
+                  ? 'bg-gradient-to-r from-purple-600 to-violet-700 text-white shadow-md border-transparent scale-[1.02]'
+                  : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200/80 dark:border-slate-800 hover:border-slate-300 hover:bg-slate-50'
+              }`}
+            >
+              <span className="text-xl sm:text-2xl shrink-0">💎</span>
+              <div className="min-w-0 flex-1">
+                <div className="text-xs font-black truncate">Kelime Sandığı</div>
+                <div className={`text-[10px] truncate ${['vault', 'flashcards', 'quiz', 'grade'].includes(activeTab) ? 'text-white/80' : 'text-slate-400'}`}>
+                  Hafıza & Test
+                </div>
+              </div>
+              {['vault', 'flashcards', 'quiz', 'grade'].includes(activeTab) && (
+                <span className="w-2 h-2 rounded-full bg-amber-300 animate-pulse shrink-0" />
+              )}
+            </button>
+          </div>
 
-          <button
-            onClick={() => setActiveTab('builder')}
-            className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'builder'
-                ? 'bg-indigo-600 text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
-            }`}
-          >
-            <span>🧱</span>
-            <span>Cümle Üretim Laboratuvarı ⭐</span>
-          </button>
+          {/* Aktif Dünyanın Basit & Seviye Alt Aşamaları (İstasyonları) */}
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+            {/* 1. Macera Kampı Alt Butonları */}
+            {['camp', 'simulations', 'studio'].includes(activeTab) && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('camp')}
+                  className={`py-1.5 px-3 rounded-xl font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                    activeTab === 'camp'
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                  }`}
+                >
+                  <Zap className="w-3.5 h-3.5 text-amber-400" />
+                  <span>30 Günlük {targetLang === 'de' ? 'Almanca ' : ''}Konuşma Kampı 🚀</span>
+                </button>
 
-          <button
-            onClick={() => setActiveTab('simulations')}
-            className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'simulations'
-                ? 'bg-emerald-600 text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
-            }`}
-          >
-            <Compass className="w-3.5 h-3.5 text-emerald-300" />
-            <span>Gerçek Yaşam Simülatörü 🎭</span>
-          </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('simulations')}
+                  className={`py-1.5 px-3 rounded-xl font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                    activeTab === 'simulations'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                  }`}
+                >
+                  <Compass className="w-3.5 h-3.5 text-emerald-300" />
+                  <span>Gerçek Yaşam Simülatörü 🎭</span>
+                </button>
 
-          <button
-            onClick={() => setActiveTab('kids')}
-            className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'kids'
-                ? 'bg-pink-600 text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
-            }`}
-          >
-            <Smile className="w-3.5 h-3.5 text-amber-300" />
-            <span>Chirmo Kids (5-17 Yaş) 🎈</span>
-          </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('studio')}
+                  className={`py-1.5 px-3 rounded-xl font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                    activeTab === 'studio'
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                  }`}
+                >
+                  <span>🗣️</span>
+                  <span>Pratik Stüdyosu (Rol Yap & Cümle Kur) ⭐</span>
+                </button>
+              </>
+            )}
 
-          <button
-            onClick={() => setActiveTab('games')}
-            className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'games'
-                ? 'bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600 text-white shadow-md'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
-            }`}
-          >
-            <Gamepad2 className="w-3.5 h-3.5 text-amber-300" />
-            <span>🎮 Oyun Alanı (6 Oyun) ⭐</span>
-          </button>
+            {/* 2. Sinema & Gölgeleme Alt Butonları */}
+            {['video', 'stories', 'booster'].includes(activeTab) && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('video')}
+                  className={`py-1.5 px-3 rounded-xl font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                    activeTab === 'video'
+                      ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-md'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                  }`}
+                >
+                  <span>🎬</span>
+                  <span>YouTube & Film ile Konuş (Shadowing) ⭐</span>
+                </button>
 
-          <button
-            onClick={() => setActiveTab('studio')}
-            className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'studio'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
-            }`}
-          >
-            <span>🗣️</span>
-            <span>Pratik Stüdyosu (Rol Yap & Cümle Kur) ⭐</span>
-          </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('stories')}
+                  className={`py-1.5 px-3 rounded-xl font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                    activeTab === 'stories'
+                      ? 'bg-gradient-to-r from-orange-500 to-rose-600 text-white shadow-md'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                  }`}
+                >
+                  <BookOpen className="w-3.5 h-3.5 text-amber-300" />
+                  <span>📖 İnteraktif Diyalog Hikayeleri 🎭</span>
+                </button>
 
-          <button
-            onClick={() => setActiveTab('grade')}
-            className={`py-2 px-3.5 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'grade'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
-            }`}
-          >
-            <Compass className="w-3.5 h-3.5" />
-            <span>Hayat Kurtaran Kalıplar (8 Durum) 🗺️</span>
-          </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('booster')}
+                  className={`py-1.5 px-3 rounded-xl font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                    activeTab === 'booster'
+                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                  }`}
+                >
+                  <Zap className="w-3.5 h-3.5 text-amber-300" />
+                  <span>⚡ 3x Hızlı Akıcılık (Shadowing & Refleks)</span>
+                </button>
+              </>
+            )}
 
-          <button
-            onClick={() => setActiveTab('vault')}
-            className={`py-2 px-3 rounded-xl font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'vault'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
-            }`}
-          >
-            <Bookmark className="w-3.5 h-3.5" />
-            <span>Kişisel Defterim ({words.length})</span>
-          </button>
+            {/* 3. Cümle & Oyun Parkı Alt Butonları */}
+            {['builder', 'games', 'kids'].includes(activeTab) && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('builder')}
+                  className={`py-1.5 px-3 rounded-xl font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                    activeTab === 'builder'
+                      ? 'bg-indigo-600 text-white shadow-xs'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                  }`}
+                >
+                  <span>🧱</span>
+                  <span>Cümle Üretim Laboratuvarı ⭐</span>
+                </button>
 
-          <button
-            onClick={() => {
-              setActiveTab('flashcards');
-              setShowAnswer(false);
-              setCardIndex(0);
-            }}
-            className={`py-2 px-3 rounded-xl font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'flashcards'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
-            }`}
-          >
-            <Layers className="w-3.5 h-3.5" />
-            <span>Kart Çevirmece</span>
-          </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('games')}
+                  className={`py-1.5 px-3 rounded-xl font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                    activeTab === 'games'
+                      ? 'bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600 text-white shadow-md'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                  }`}
+                >
+                  <Gamepad2 className="w-3.5 h-3.5 text-amber-300" />
+                  <span>🎮 Oyun Alanı (6 Oyun) ⭐</span>
+                </button>
 
-          <button
-            onClick={() => setActiveTab('quiz')}
-            className={`py-2 px-3 rounded-xl font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'quiz'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 hover:bg-white/80'
-            }`}
-          >
-            <Award className="w-3.5 h-3.5" />
-            <span>Refleks Testi</span>
-          </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('kids')}
+                  className={`py-1.5 px-3 rounded-xl font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                    activeTab === 'kids'
+                      ? 'bg-pink-600 text-white shadow-xs'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                  }`}
+                >
+                  <Smile className="w-3.5 h-3.5 text-amber-300" />
+                  <span>Chirmo Kids (5-17 Yaş) 🎈</span>
+                </button>
+              </>
+            )}
+
+            {/* 4. Kelime & Zeka Sandığı Alt Butonları */}
+            {['vault', 'flashcards', 'quiz', 'grade'].includes(activeTab) && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('vault')}
+                  className={`py-1.5 px-3 rounded-xl font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                    activeTab === 'vault'
+                      ? 'bg-purple-600 text-white shadow-xs'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                  }`}
+                >
+                  <Bookmark className="w-3.5 h-3.5" />
+                  <span>Kişisel Defterim ({words.length})</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('flashcards');
+                    setShowAnswer(false);
+                    setCardIndex(0);
+                  }}
+                  className={`py-1.5 px-3 rounded-xl font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                    activeTab === 'flashcards'
+                      ? 'bg-purple-600 text-white shadow-xs'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                  }`}
+                >
+                  <Layers className="w-3.5 h-3.5" />
+                  <span>Kart Çevirmece</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('quiz')}
+                  className={`py-1.5 px-3 rounded-xl font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                    activeTab === 'quiz'
+                      ? 'bg-purple-600 text-white shadow-xs'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                  }`}
+                >
+                  <Award className="w-3.5 h-3.5" />
+                  <span>Refleks Testi</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('grade')}
+                  className={`py-1.5 px-3 rounded-xl font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                    activeTab === 'grade'
+                      ? 'bg-purple-600 text-white shadow-xs'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                  }`}
+                >
+                  <Compass className="w-3.5 h-3.5" />
+                  <span>Hayat Kurtaran Kalıplar (8 Durum) 🗺️</span>
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
