@@ -46,7 +46,6 @@ import { LifePhraseBankView } from './components/learning/LifePhraseBankView';
 import { LearningStorageService } from './services/learningStorage';
 import { UserProfileService, UserProfile } from './services/userProfileService';
 import { PrivacyAuthService, SafeUserSession } from './services/privacyAuthService';
-import { ChirmoAuthModal } from './components/auth/ChirmoAuthModal';
 import { TargetLanguageService, SupportedLanguage } from './services/targetLanguageService';
 import { Tab, CEFRLevel, DailyGoalProgress } from './types';
 import { CampStorageService, StudentCampProgress } from './services/curriculumData';
@@ -96,7 +95,6 @@ export const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<SafeUserSession | null>(() =>
     PrivacyAuthService.getCurrentUser()
   );
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   // Aktif Hedef Çalışma Dili (İngilizce 🇬🇧 / Almanca 🇩🇪)
   const [targetLanguage, setTargetLanguage] = useState<SupportedLanguage>(() =>
@@ -577,29 +575,6 @@ export const App: React.FC = () => {
                   </div>
                   {activeTab === 'tasks' && <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />}
                 </button>
-
-                {/* 8. Giriş Yap / Hesap (Mobilde Kolayca Erişilebilir) */}
-                <div className="pt-1 mt-1 border-t border-slate-100 dark:border-slate-800">
-                  <button
-                    onClick={() => {
-                      setIsAuthModalOpen(true);
-                      setIsMobileNavOpen(false);
-                    }}
-                    className="w-full flex items-center space-x-2.5 px-2.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/50"
-                  >
-                    <div className="w-7 h-7 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center shrink-0 text-sm">
-                      🛡️
-                    </div>
-                    <div className="text-left flex-1 min-w-0">
-                      <div className="font-extrabold truncate">
-                        {currentUser ? `@${currentUser.username} (Hesabım)` : 'Giriş Yap / Kayıt Ol'}
-                      </div>
-                      <div className="text-[10px] text-slate-400 font-normal truncate">
-                        {currentUser ? 'Hesap & Abonelik Detayları' : 'Sıfır Kişisel Veri ile Giriş'}
-                      </div>
-                    </div>
-                  </button>
-                </div>
               </div>
             )}
           </div>
@@ -808,22 +783,13 @@ export const App: React.FC = () => {
             <span className="text-[10px] text-slate-400 font-normal">⇄</span>
           </button>
 
-          {/* Giriş Yapılmışsa: Kullanıcı Rozeti & Çıkış | Giriş Yapılmamışsa: Tek Şık Giriş Butonu */}
-          {!currentUser ? (
-            <button
-              onClick={() => setIsAuthModalOpen(true)}
-              className="h-8 px-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white text-xs font-extrabold shadow-xs cursor-pointer transition-all inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap active:scale-95"
-              title="Sıfır Kişisel Veri ile Giriş Yap veya Kayıt Ol"
-            >
-              <span>🛡️</span>
-              <span>Giriş Yap</span>
-            </button>
-          ) : (
+          {/* Giriş yapılmışsa profil göstergesi; panelde ayrı giriş butonu gösterilmez (tek giriş portalda) */}
+          {currentUser && (
             <div className="flex items-center space-x-1 shrink-0">
               <button
-                onClick={() => setIsAuthModalOpen(true)}
+                onClick={() => setActiveTab('portal')}
                 className="h-8 px-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-extrabold cursor-pointer hover:bg-indigo-100 transition-colors inline-flex items-center space-x-1.5 whitespace-nowrap"
-                title={`Hesap Detayları: @${currentUser.username}`}
+                title={`Kullanıcı Sayfası ve Profil Detayları: @${currentUser.username}`}
               >
                 <span>{userProfile.avatarEmoji || '👤'}</span>
                 <span className="max-w-[70px] truncate">@{currentUser.username}</span>
@@ -1154,13 +1120,6 @@ export const App: React.FC = () => {
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
         onProfileUpdated={(updated) => setUserProfile(updated)}
-      />
-
-      {/* Sıfır Kişisel Veri SaaS Kimlik & Hesap Modalı */}
-      <ChirmoAuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        onSuccess={(u) => setCurrentUser(u)}
       />
 
       {/* ==================== MOBİL ALT MENÜ (SMARTPHONE BOTTOM NAV - 7 TEMEL BÖLÜM) ==================== */}

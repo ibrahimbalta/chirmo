@@ -103,10 +103,11 @@ describe('Video & Film English Speaking & Shadowing Studio', () => {
     expect(content).toContain('videostudio');
   });
 
-  it('App header ensures Giriş / Kayıt button is responsive and visible on mobile screens', () => {
-    const content = fs.readFileSync(appPath, 'utf-8');
+  it('Landing Portal header ensures Giriş / Kayıt button is responsive and visible on mobile screens without panel duplicate', () => {
+    const portalPath = path.resolve(__dirname, '../src/renderer/src/components/landing/ChirmoHeroLandingPortal.tsx');
+    const content = fs.readFileSync(portalPath, 'utf-8');
     // Verify responsive compact styling on mobile so auth button is never pushed off-screen
-    expect(content).toContain('Giriş');
+    expect(content).toContain('Giriş Yap');
     expect(content).toContain('setIsAuthModalOpen');
   });
 
