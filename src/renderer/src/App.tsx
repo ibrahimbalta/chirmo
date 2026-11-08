@@ -265,6 +265,9 @@ export const App: React.FC = () => {
         onEnterCamp={() => setActiveTab('learn')}
         onEnterPhraseBank={() => setActiveTab('phrases')}
         onEnterSimulator={() => setActiveTab('speak')}
+        onEnterGames={() => setActiveTab('games')}
+        onEnterTasks={() => setActiveTab('tasks')}
+        onEnterVideo={() => setActiveTab('video')}
       />
     );
   }
