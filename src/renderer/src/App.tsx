@@ -566,7 +566,7 @@ export const App: React.FC = () => {
         </div>
 
         {/* Orta: SIFIR KAFA KARIŞIKLIĞI — 4 ANA KONUŞMA SÜTUNU + DAHA FAZLA AÇILIR MENÜSÜ */}
-        <nav className="hidden md:flex items-center bg-slate-100/80 dark:bg-slate-800/80 p-1 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 gap-1 shrink-0 shadow-2xs relative">
+        <nav className="hidden md:flex items-center bg-slate-100/90 dark:bg-slate-800/90 p-1 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 gap-0.5 shrink-0 shadow-2xs relative">
           
           {/* 1. 30 Günlük Kamp */}
           <button
@@ -576,8 +576,8 @@ export const App: React.FC = () => {
             }}
             className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
               activeTab === 'learn'
-                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-black shadow-xs ring-1 ring-slate-200 dark:ring-slate-700'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/50 font-semibold'
+                ? 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
             }`}
             title="30 Günde Günlük Konuşma Kampı & Günün Görevi"
           >
@@ -593,8 +593,8 @@ export const App: React.FC = () => {
             }}
             className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
               activeTab === 'phrases'
-                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-black shadow-xs ring-1 ring-slate-200 dark:ring-slate-700'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/50 font-semibold'
+                ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
             }`}
             title="1000+ Günlük Yaşam Kalıbı & Kelime Deposu"
           >
@@ -610,8 +610,8 @@ export const App: React.FC = () => {
             }}
             className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
               activeTab === 'speak'
-                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-black shadow-xs ring-1 ring-slate-200 dark:ring-slate-700'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/50 font-semibold'
+                ? 'bg-white dark:bg-slate-900 text-purple-600 dark:text-purple-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
             }`}
             title="Gerçek Yaşam Konuşma Simülatörü"
           >
@@ -627,8 +627,8 @@ export const App: React.FC = () => {
             }}
             className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
               activeTab === 'video'
-                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-black shadow-xs ring-1 ring-slate-200 dark:ring-slate-700'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/50 font-semibold'
+                ? 'bg-white dark:bg-slate-900 text-rose-600 dark:text-rose-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
             }`}
             title="YouTube, Film ve Dizi ile Konuşma Stüdyosu"
           >
@@ -642,8 +642,8 @@ export const App: React.FC = () => {
               onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
               className={`h-8 px-2.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1 shrink-0 whitespace-nowrap ${
                 ['search', 'kids', 'games', 'tasks'].includes(activeTab)
-                  ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-black shadow-xs ring-1 ring-slate-200 dark:ring-slate-700'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/50 font-semibold'
+                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
               }`}
               title="Diğer Öğrenme Alanları"
             >
@@ -712,107 +712,75 @@ export const App: React.FC = () => {
           </div>
         </nav>
 
-        {/* Sağ: İlerleme & Modern Aksiyon Butonları (Mobilde Giriş Butonuna Tam Yer Açan Akıllı Düzen) */}
-        <div className="flex items-center space-x-1 sm:space-x-1.5 md:space-x-2 shrink-0">
-          {/* APK İndir - Sadece Tablet ve Masaüstünde Görünür, Mobilde Login Butonunu Sıkıştırmaz */}
+        {/* Sağ: İlerleme & Modern Rafine Aksiyon Butonları (Sade, Dengeli & Prestijli) */}
+        <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
+          {/* APK İndir - Zarif Ghost Buton */}
           <button
             onClick={() => setIsInstallModalOpen(true)}
-            className="hidden sm:inline-flex h-8 px-2 sm:px-3 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold shadow-xs cursor-pointer transition-all items-center space-x-1 sm:space-x-1.5 whitespace-nowrap hover:scale-[1.02] shrink-0"
+            className="hidden lg:inline-flex h-8 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/90 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 text-xs font-bold shadow-2xs cursor-pointer transition-all items-center space-x-1.5 whitespace-nowrap shrink-0"
             title="Chirmo Android APK ve PWA İndir"
           >
-            <Download className="w-3.5 h-3.5 shrink-0" />
-            <span className="hidden md:inline">APK İndir</span>
+            <Download className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+            <span>APK</span>
           </button>
 
-          {/* Gün Serisi & XP Ortak Kapsülü - Mobilde Ekranı Sıkıştırmaz, Tablet ve Masaüstünde Net Görünür */}
+          {/* Gün Serisi & XP Rozeti - Zarif & Kompakt */}
           <div
             onClick={() => setActiveTab('learn')}
-            className="hidden sm:flex h-8 px-2 sm:px-2.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 items-center space-x-1 sm:space-x-1.5 text-xs font-bold cursor-pointer hover:bg-slate-200/70 dark:hover:bg-slate-700/70 transition-all shrink-0"
+            className="hidden sm:flex h-8 px-2.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 items-center space-x-1.5 text-xs font-bold cursor-pointer hover:bg-slate-200/70 dark:hover:bg-slate-700/70 transition-all shrink-0"
             title="30 Günlük Kamp Kesintisiz Serisi ve Toplam XP"
           >
-            <div className="flex items-center space-x-0.5 sm:space-x-1 text-amber-600 dark:text-amber-400 font-black">
+            <div className="flex items-center space-x-1 text-amber-600 dark:text-amber-400 font-black">
               <span>🔥</span>
               <span>{campProgress.streakDays}</span>
-              <span className="hidden xl:inline text-[10px] font-semibold text-slate-500 dark:text-slate-400">Gün</span>
             </div>
-            <span className="text-slate-300 dark:text-slate-600 font-light">|</span>
-            <div className="flex items-center space-x-0.5 sm:space-x-1 text-purple-600 dark:text-purple-400 font-black">
+            <span className="text-slate-300 dark:text-slate-600 font-light">•</span>
+            <div className="flex items-center space-x-1 text-indigo-600 dark:text-indigo-400 font-black">
               <span>⭐</span>
-              <span>{campProgress.totalXp}</span>
-              <span className="hidden xl:inline text-[10px] font-semibold text-slate-500 dark:text-slate-400">XP</span>
+              <span>{campProgress.totalXp} XP</span>
             </div>
           </div>
 
-          {/* Hedef Dil Seçici (🇬🇧 İngilizce / 🇩🇪 Almanca) */}
-          <div
-            className="h-8.5 p-0.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700 flex items-center shrink-0 shadow-2xs"
-            title="Çalışmak istediğiniz dili seçin (İngilizce / Almanca)"
+          {/* Akıllı Dil Değiştirici Kapsülü (Tek Tıkla Hızlı Geçiş: 🇬🇧 EN / 🇩🇪 DE) */}
+          <button
+            onClick={() => TargetLanguageService.setTargetLanguage(targetLanguage === 'en' ? 'de' : 'en')}
+            className="h-8 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 text-xs font-extrabold transition-all flex items-center space-x-1.5 shrink-0 shadow-2xs cursor-pointer text-slate-800 dark:text-slate-100 active:scale-95"
+            title="Çalışma Dilini Değiştir (Tıkla: İngilizce / Almanca)"
           >
-            <button
-              onClick={() => TargetLanguageService.setTargetLanguage('en')}
-              className={`h-7 px-2.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer ${
-                targetLanguage === 'en'
-                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-black shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
-              }`}
-            >
-              <span>🇬🇧</span>
-              <span className="hidden sm:inline">İngilizce</span>
-            </button>
-            <button
-              onClick={() => TargetLanguageService.setTargetLanguage('de')}
-              className={`h-7 px-2.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer ${
-                targetLanguage === 'de'
-                  ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-purple-950 font-black shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
-              }`}
-            >
-              <span>🇩🇪</span>
-              <span className="hidden sm:inline">Almanca</span>
-            </button>
-          </div>
+            <span>{targetLanguage === 'de' ? '🇩🇪' : '🇬🇧'}</span>
+            <span>{targetLanguage === 'de' ? 'Almanca' : 'İngilizce'}</span>
+            <span className="text-[10px] text-slate-400 font-normal">⇄</span>
+          </button>
 
-          {/* Kişiye Özel Profil Çipi */}
-          <div
-            onClick={() => setIsProfileModalOpen(true)}
-            className="h-8 p-1 sm:pl-1.5 sm:pr-2.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-500 cursor-pointer transition-all shrink-0 inline-flex items-center space-x-1 sm:space-x-1.5 group"
-            title={`${userProfile.hasCustomName ? userProfile.name : 'Profilini Düzenle'} (${userProfile.level})`}
-          >
-            <div className="w-5 h-5 rounded-md bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-[11px] shadow-2xs group-hover:scale-105 transition-transform">
-              {userProfile.avatarEmoji || '🎓'}
-            </div>
-            <span className="hidden xl:inline text-xs font-bold text-slate-700 dark:text-slate-300">
-              {userProfile.hasCustomName ? userProfile.name : 'Profilim'}
-            </span>
-          </div>
-
-          {/* Sıfır Kişisel Veri SaaS Giriş / Kayıt Butonu & Oturum Rozeti (Mobilde %100 Görünür ve Asla Taşmaz) */}
+          {/* Giriş Yapılmışsa: Kullanıcı Rozeti & Çıkış | Giriş Yapılmamışsa: Tek Şık Giriş Butonu */}
           {!currentUser ? (
             <button
               onClick={() => setIsAuthModalOpen(true)}
-              className="h-8 px-2.5 sm:px-3.5 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-black shadow-xs cursor-pointer transition-all inline-flex items-center space-x-1 shrink-0 whitespace-nowrap active:scale-95"
+              className="h-8 px-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white text-xs font-extrabold shadow-xs cursor-pointer transition-all inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap active:scale-95"
               title="Sıfır Kişisel Veri ile Giriş Yap veya Kayıt Ol"
             >
               <span>🛡️</span>
               <span>Giriş Yap</span>
             </button>
           ) : (
-            <div className="flex items-center space-x-1 sm:space-x-1.5 shrink-0">
-              <div
+            <div className="flex items-center space-x-1 shrink-0">
+              <button
                 onClick={() => setIsAuthModalOpen(true)}
-                className="h-8 px-2 sm:px-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300 text-xs font-bold cursor-pointer hover:bg-indigo-500/20 transition-colors inline-flex items-center space-x-1 sm:space-x-1.5 whitespace-nowrap"
-                title={`Oturum Açık: @${currentUser.username} (${currentUser.plan.toUpperCase()})`}
+                className="h-8 px-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-extrabold cursor-pointer hover:bg-indigo-100 transition-colors inline-flex items-center space-x-1.5 whitespace-nowrap"
+                title={`Hesap Detayları: @${currentUser.username}`}
               >
-                <span>👤</span>
-                <span className="font-extrabold max-w-[55px] xs:max-w-[75px] sm:max-w-none truncate">@{currentUser.username}</span>
-                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-indigo-500/20 text-indigo-500 font-mono hidden xs:inline">
-                  {currentUser.plan === 'pro' ? '👑 PRO' : 'ÜCRETSİZ'}
-                </span>
-              </div>
+                <span>{userProfile.avatarEmoji || '👤'}</span>
+                <span className="max-w-[70px] truncate">@{currentUser.username}</span>
+                {currentUser.plan === 'pro' && (
+                  <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-indigo-600 text-white font-black">
+                    PRO
+                  </span>
+                )}
+              </button>
               <button
                 onClick={() => PrivacyAuthService.logout()}
-                className="h-8 px-2 rounded-xl bg-slate-100 hover:bg-rose-100 dark:bg-slate-800 dark:hover:bg-rose-950/50 text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 text-xs font-bold transition-colors cursor-pointer shrink-0"
-                title="Güvenli Çıkış Yap"
+                className="h-8 w-8 rounded-xl bg-slate-100 hover:bg-rose-100 dark:bg-slate-800 dark:hover:bg-rose-950/50 text-slate-400 hover:text-rose-600 text-xs font-bold transition-colors cursor-pointer flex items-center justify-center shrink-0"
+                title="Çıkış Yap"
               >
                 ✕
               </button>
