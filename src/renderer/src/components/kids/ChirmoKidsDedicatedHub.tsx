@@ -184,6 +184,188 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
   // Songs & Karaoke State
   const [playingSongId, setPlayingSongId] = useState<string | null>(null);
 
+  // Mini-Game 0: Memory Flip Match State
+  const [memoryCards, setMemoryCards] = useState<Array<{
+    uid: string;
+    pairId: string;
+    word: string;
+    tr: string;
+    emoji: string;
+    isFlipped: boolean;
+    isMatched: boolean;
+  }>>([]);
+  const [flippedUids, setFlippedUids] = useState<string[]>([]);
+  const [memoryMoves, setMemoryMoves] = useState(0);
+  const [isMemoryWon, setIsMemoryWon] = useState(false);
+
+  // Memory Game Çiftleri (4 Yaş Kademe x EN & DE)
+  const MEMORY_PAIRS: Record<AgeGroup, Record<'en' | 'de', Array<{ id: string; word: string; tr: string; emoji: string }>>> = {
+    '5-7': {
+      en: [
+        { id: 'm1', word: 'Red Apple', tr: 'Kırmızı Elma', emoji: '🍎' },
+        { id: 'm2', word: 'Cute Cat', tr: 'Sevimli Kedi', emoji: '🐱' },
+        { id: 'm3', word: 'Friendly Dog', tr: 'Dost Köpek', emoji: '🐶' },
+        { id: 'm4', word: 'Warm Sun', tr: 'Sıcak Güneş', emoji: '☀️' },
+        { id: 'm5', word: 'Brave Lion', tr: 'Cesur Aslan', emoji: '🦁' },
+        { id: 'm6', word: 'Space Rocket', tr: 'Uzay Roketi', emoji: '🚀' }
+      ],
+      de: [
+        { id: 'm1', word: 'Roter Apfel', tr: 'Kırmızı Elma', emoji: '🍎' },
+        { id: 'm2', word: 'Süße Katze', tr: 'Sevimli Kedi', emoji: '🐱' },
+        { id: 'm3', word: 'Treuer Hund', tr: 'Dost Köpek', emoji: '🐶' },
+        { id: 'm4', word: 'Warme Sonne', tr: 'Sıcak Güneş', emoji: '☀️' },
+        { id: 'm5', word: 'Mutiger Löwe', tr: 'Cesur Aslan', emoji: '🦁' },
+        { id: 'm6', word: 'Weltraumrakete', tr: 'Uzay Roketi', emoji: '🚀' }
+      ]
+    },
+    '8-10': {
+      en: [
+        { id: 'm7', word: 'Soccer Ball', tr: 'Futbol Topu', emoji: '⚽' },
+        { id: 'm8', word: 'School Backpack', tr: 'Okul Çantası', emoji: '🎒' },
+        { id: 'm9', word: 'Fast Bicycle', tr: 'Hızlı Bisiklet', emoji: '🚲' },
+        { id: 'm10', word: 'Smart Robot', tr: 'Akıllı Robot', emoji: '🤖' },
+        { id: 'm11', word: 'Tasty Sandwich', tr: 'Lezzetli Sandviç', emoji: '🥪' },
+        { id: 'm12', word: 'Night Telescope', tr: 'Gece Teleskobu', emoji: '🔭' }
+      ],
+      de: [
+        { id: 'm7', word: 'Fußball', tr: 'Futbol Topu', emoji: '⚽' },
+        { id: 'm8', word: 'Schulrucksack', tr: 'Okul Çantası', emoji: '🎒' },
+        { id: 'm9', word: 'Schnelles Fahrrad', tr: 'Hızlı Bisiklet', emoji: '🚲' },
+        { id: 'm10', word: 'Kluger Roboter', tr: 'Akıllı Robot', emoji: '🤖' },
+        { id: 'm11', word: 'Leckeres Sandwich', tr: 'Lezzetli Sandviç', emoji: '🥪' },
+        { id: 'm12', word: 'Teleskop', tr: 'Teleskop', emoji: '🔭' }
+      ]
+    },
+    '11-13': {
+      en: [
+        { id: 'm13', word: 'Science Lab', tr: 'Fen Laboratuvarı', emoji: '🔬' },
+        { id: 'm14', word: 'Saturn Planet', tr: 'Satürn Gezegeni', emoji: '🪐' },
+        { id: 'm15', word: 'Mobile Tech', tr: 'Mobil Teknoloji', emoji: '📱' },
+        { id: 'm16', word: 'Golden Trophy', tr: 'Altın Kupa', emoji: '🏆' },
+        { id: 'm17', word: 'Galaxy Stars', tr: 'Galaksi Yıldızları', emoji: '🌌' },
+        { id: 'm18', word: 'Clean Energy', tr: 'Temiz Enerji', emoji: '⚡' }
+      ],
+      de: [
+        { id: 'm13', word: 'Wissenschaftslabor', tr: 'Fen Laboratuvarı', emoji: '🔬' },
+        { id: 'm14', word: 'Planet Saturn', tr: 'Satürn Gezegeni', emoji: '🪐' },
+        { id: 'm15', word: 'Mobiltechnologie', tr: 'Mobil Teknoloji', emoji: '📱' },
+        { id: 'm16', word: 'Goldener Pokal', tr: 'Altın Kupa', emoji: '🏆' },
+        { id: 'm17', word: 'Galaxien', tr: 'Galaksiler', emoji: '🌌' },
+        { id: 'm18', word: 'Saubere Energie', tr: 'Temiz Enerji', emoji: '⚡' }
+      ]
+    },
+    '14-17': {
+      en: [
+        { id: 'm19', word: 'Artificial Intelligence', tr: 'Yapay Zeka', emoji: '🧠' },
+        { id: 'm20', word: 'Coding Algorithm', tr: 'Kod Algoritması', emoji: '💻' },
+        { id: 'm21', word: 'Creative Startup', tr: 'Girişimcilik', emoji: '💡' },
+        { id: 'm22', word: 'Future Ambition', tr: 'Gelecek Hedefi', emoji: '🌟' },
+        { id: 'm23', word: 'Audio Podcast', tr: 'Sesli Podcast', emoji: '🎧' },
+        { id: 'm24', word: 'Global Teamwork', tr: 'Takım Çalışması', emoji: '🤝' }
+      ],
+      de: [
+        { id: 'm19', word: 'Künstliche Intelligenz', tr: 'Yapay Zeka', emoji: '🧠' },
+        { id: 'm20', word: 'Programmier-Code', tr: 'Yazılım Kodu', emoji: '💻' },
+        { id: 'm21', word: 'Kreative Innovation', tr: 'Yaratıcı İnovasyon', emoji: '💡' },
+        { id: 'm22', word: 'Große Ambition', tr: 'Büyük Hedef', emoji: '🌟' },
+        { id: 'm23', word: 'Podcast Show', tr: 'Podcast', emoji: '🎧' },
+        { id: 'm24', word: 'Starkes Teamwork', tr: 'Takım Çalışması', emoji: '🤝' }
+      ]
+    }
+  };
+
+  const initMemoryGame = () => {
+    const langKey = targetLang === 'de' ? 'de' : 'en';
+    const pairs = (MEMORY_PAIRS[selectedAge] && MEMORY_PAIRS[selectedAge][langKey]) || MEMORY_PAIRS['5-7'][langKey];
+    const cards: Array<{
+      uid: string;
+      pairId: string;
+      word: string;
+      tr: string;
+      emoji: string;
+      isFlipped: boolean;
+      isMatched: boolean;
+    }> = [];
+
+    pairs.slice(0, 6).forEach((item) => {
+      cards.push({
+        uid: `${item.id}-a`,
+        pairId: item.id,
+        word: item.word,
+        tr: item.tr,
+        emoji: item.emoji,
+        isFlipped: false,
+        isMatched: false
+      });
+      cards.push({
+        uid: `${item.id}-b`,
+        pairId: item.id,
+        word: item.word,
+        tr: item.tr,
+        emoji: item.emoji,
+        isFlipped: false,
+        isMatched: false
+      });
+    });
+
+    for (let i = cards.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [cards[i], cards[j]] = [cards[j], cards[i]];
+    }
+
+    setMemoryCards(cards);
+    setFlippedUids([]);
+    setMemoryMoves(0);
+    setIsMemoryWon(false);
+  };
+
+  useEffect(() => {
+    initMemoryGame();
+  }, [selectedAge, targetLang]);
+
+  const handleCardClick = (card: typeof memoryCards[0]) => {
+    if (card.isFlipped || card.isMatched || flippedUids.length >= 2) return;
+
+    handleSpeak(card.word);
+
+    const newCards = memoryCards.map((c) => (c.uid === card.uid ? { ...c, isFlipped: true } : c));
+    setMemoryCards(newCards);
+
+    const newFlipped = [...flippedUids, card.uid];
+    setFlippedUids(newFlipped);
+
+    if (newFlipped.length === 2) {
+      setMemoryMoves((prev) => prev + 1);
+      const firstCard = newCards.find((c) => c.uid === newFlipped[0]);
+      const secondCard = newCards.find((c) => c.uid === newFlipped[1]);
+
+      if (firstCard && secondCard && firstCard.pairId === secondCard.pairId) {
+        setTimeout(() => {
+          setMemoryCards((prev) => {
+            const updated = prev.map((c) =>
+              c.pairId === firstCard.pairId ? { ...c, isMatched: true, isFlipped: true } : c
+            );
+            if (updated.every((c) => c.isMatched)) {
+              setIsMemoryWon(true);
+              handleAwardStars(25, 'Hafıza Şampiyonu! Tüm Çiftleri Buldun!');
+              handleSpeak(targetLang === 'de' ? 'Fantastisch! Du hast alle Karten gefunden!' : 'Awesome job! You found all the matching pairs!');
+            }
+            return updated;
+          });
+          setFlippedUids([]);
+          handleAwardStars(10, 'Hafıza Eşleşmesi!');
+        }, 500);
+      } else {
+        setTimeout(() => {
+          setMemoryCards((prev) =>
+            prev.map((c) => (newFlipped.includes(c.uid) ? { ...c, isFlipped: false } : c))
+          );
+          setFlippedUids([]);
+        }, 900);
+      }
+    }
+  };
+
 
   // Persistent Stars
   useEffect(() => {
@@ -1641,28 +1823,28 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
       <div className="max-w-6xl mx-auto w-full space-y-6">
 
         {/* ==================== 1. ŞENLİKLİ KAHRAMAN BAŞLIK & MASKOT BARI ==================== */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-amber-400 via-pink-500 to-purple-600 text-white shadow-xl p-5 sm:p-7 border border-white/20">
-          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-amber-400 via-pink-500 to-purple-600 text-white shadow-xl p-3.5 sm:p-4 border border-white/20">
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
             {/* Sol: Maskot ve Başlık */}
-            <div className="flex items-start sm:items-center space-x-4">
+            <div className="flex items-start sm:items-center space-x-3">
               <div className="relative shrink-0">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-white/25 backdrop-blur-md p-2 flex items-center justify-center text-4xl sm:text-5xl shadow-lg border border-white/30 animate-pulse">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/25 backdrop-blur-md p-1.5 flex items-center justify-center text-2xl sm:text-3xl shadow-md border border-white/30 animate-pulse">
                   🎈
                 </div>
-                <span className="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black shadow-xs">
+                <span className="absolute -bottom-1 -right-1 px-1.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[9px] font-black shadow-xs">
                   Chirmo Jr.
                 </span>
               </div>
 
-              <div className="space-y-1">
-                <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-xs text-[11px] font-black uppercase tracking-wider">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              <div className="space-y-0.5">
+                <div className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-xs text-[10px] font-black uppercase tracking-wider">
+                  <Sparkles className="w-3 h-3 text-amber-300" />
                   <span>Çocuklar İçin Yeni Nesil {targetLang === 'de' ? 'Almanca' : 'İngilizce'} Dünyası</span>
                 </div>
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight drop-shadow-xs">
+                <h1 className="text-xl sm:text-2xl font-black tracking-tight drop-shadow-xs">
                   Eğlen, Oyna ve {targetLang === 'de' ? 'Almanca' : 'İngilizce'} Konuş! 🌟
                 </h1>
-                <p className="text-xs sm:text-sm text-pink-100 font-medium max-w-xl">
+                <p className="text-xs text-pink-100 font-medium max-w-xl line-clamp-1 sm:line-clamp-none">
                   Sıkıcı gramer ve kurallar yok! Tıpkı ana dilini öğrenir gibi: Duyarak, lego gibi birleştirerek ve oyunlarla konuşuyoruz.
                 </p>
               </div>
@@ -1905,7 +2087,95 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
         {activeTab === 'games' && (
           <div className="space-y-6">
 
-            {/* OYUN 1: DUY VE RESMİ BUL (LISTENING DETECTIVE) */}
+            {/* OYUN 1: 🃏 HAFIZA KARTLARI (MEMORY FLIP MATCH) */}
+            <div className="p-4 sm:p-6 rounded-3xl bg-white dark:bg-slate-900 border-2 border-indigo-200 dark:border-slate-800 shadow-lg space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 rounded-2xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center text-xl shadow-xs">
+                    🃏
+                  </div>
+                  <div>
+                    <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center space-x-2">
+                      <span>Hafıza Kartları: Çiftleri Bul ve Konuş!</span>
+                      <span className="text-[10px] bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 px-2 py-0.5 rounded-full font-black">
+                        +25 Yıldız ⭐
+                      </span>
+                    </h2>
+                    <p className="text-xs text-slate-500">
+                      Kartları aç, eşini bul ve Chirmo ile sesli tekrar et! Hamle: <span className="font-bold text-indigo-600">{memoryMoves}</span> • Bulunan: <span className="font-bold text-emerald-600">{memoryCards.filter(c => c.isMatched).length / 2} / 6</span>
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={initMemoryGame}
+                  className="px-3.5 py-1.5 rounded-xl bg-indigo-50 dark:bg-slate-800 hover:bg-indigo-100 text-indigo-700 dark:text-indigo-300 font-bold text-xs flex items-center space-x-1 cursor-pointer self-start sm:self-auto transition-all"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Yeniden Başlat</span>
+                </button>
+              </div>
+
+              {/* Kazandın Kutlaması */}
+              {isMemoryWon && (
+                <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-center space-y-2 shadow-lg animate-bounce">
+                  <div className="text-2xl font-black">🎉 Harika İş Çıkardın! 🎉</div>
+                  <div className="text-xs font-bold">
+                    Tüm {targetLang === 'de' ? 'Almanca' : 'İngilizce'} kart çiftlerini buldun ve telaffuz ettin! +25 Yıldız kazandın.
+                  </div>
+                  <button
+                    type="button"
+                    onClick={initMemoryGame}
+                    className="px-4 py-1.5 rounded-xl bg-white text-emerald-800 font-black text-xs shadow-md hover:scale-105 cursor-pointer transition-all"
+                  >
+                    Yeni Tur Başlat 🔄
+                  </button>
+                </div>
+              )}
+
+              {/* Kart Izgarası (12 Kart = 6 Çift) */}
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2.5 sm:gap-3">
+                {memoryCards.map((card) => {
+                  const isRevealed = card.isFlipped || card.isMatched;
+                  return (
+                    <button
+                      key={card.uid}
+                      type="button"
+                      onClick={() => handleCardClick(card)}
+                      disabled={card.isMatched}
+                      className={`relative min-h-[105px] sm:min-h-[120px] rounded-2xl p-2 flex flex-col items-center justify-center transition-all duration-300 cursor-pointer text-center select-none ${
+                        card.isMatched
+                          ? 'bg-emerald-50 dark:bg-emerald-950/40 border-2 border-emerald-400 text-emerald-800 dark:text-emerald-200 scale-95 opacity-90'
+                          : isRevealed
+                          ? 'bg-gradient-to-br from-amber-50 to-orange-50 dark:from-slate-800 dark:to-indigo-950/60 border-2 border-indigo-400 shadow-md scale-102 ring-2 ring-indigo-300'
+                          : 'bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 hover:from-indigo-600 hover:to-pink-600 text-white border-2 border-indigo-300/40 shadow-sm hover:scale-105 active:scale-95'
+                      }`}
+                    >
+                      {isRevealed ? (
+                        <div className="flex flex-col items-center justify-center space-y-1 animate-fade-in w-full">
+                          <span className="text-3xl sm:text-4xl filter drop-shadow-xs">{card.emoji}</span>
+                          <span className="text-xs sm:text-sm font-black leading-tight text-slate-900 dark:text-white line-clamp-1">
+                            {card.word}
+                          </span>
+                          <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 line-clamp-1">
+                            {card.tr}
+                          </span>
+                          <Volume2 className="w-3 h-3 text-indigo-500 mt-0.5" />
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center space-y-1">
+                          <span className="text-2xl sm:text-3xl opacity-80 group-hover:scale-110 transition-transform">🎈</span>
+                          <span className="text-[11px] font-black uppercase tracking-wider text-white/90">Chirmo</span>
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* OYUN 2: DUY VE RESMİ BUL (LISTENING DETECTIVE) */}
             <div className="p-5 sm:p-7 rounded-3xl bg-white dark:bg-slate-900 border-2 border-amber-200 dark:border-slate-800 shadow-lg space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
                 <div className="flex items-center space-x-3">

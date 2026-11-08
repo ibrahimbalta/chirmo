@@ -578,10 +578,10 @@ export const App: React.FC = () => {
                 ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
             }`}
-            title="Chirmo Ana Sayfa"
+            title="Chirmo Stüdyo & Ana Sayfa"
           >
             <Sparkles className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'search' ? 'text-indigo-500' : 'text-slate-400'}`} />
-            <span>Ana Sayfa</span>
+            <span>Chirmo Stüdyo</span>
           </button>
 
           {/* 2. 30 Günlük Kamp */}
