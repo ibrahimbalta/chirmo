@@ -34,7 +34,7 @@ export const ChirmoLogo: React.FC<ChirmoLogoProps> = ({
     xs: 'h-6 max-h-6 w-auto',
     sm: 'h-8 max-h-8 w-auto',
     md: 'h-10 sm:h-11 md:h-12 max-h-12 w-auto',
-    lg: 'h-12 sm:h-14 max-h-14 w-auto',
+    lg: 'h-11 sm:h-12 md:h-13 max-h-13 w-auto',
     xl: 'h-20 sm:h-24 md:h-28 max-h-28 w-auto max-w-full'
   }[size];
 
@@ -68,7 +68,7 @@ export const ChirmoLogo: React.FC<ChirmoLogoProps> = ({
           alt="Chirmo"
           className={`${heightClasses} object-contain shrink-0 block`}
           style={{
-            maxHeight: size === 'md' ? '48px' : undefined
+            maxHeight: size === 'md' ? '46px' : size === 'lg' ? '50px' : undefined
           }}
           draggable={false}
         />

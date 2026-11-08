@@ -57,21 +57,9 @@ export const LearningCenterSidebar: React.FC<LearningCenterSidebarProps> = ({
   return (
     <aside className="w-64 shrink-0 h-full bg-white dark:bg-slate-900 border-r border-slate-200/90 dark:border-slate-800 flex flex-col justify-between overflow-y-auto select-none p-4 z-20 transition-all">
       <div className="space-y-4">
-        {/* ==================== 1. LOGO & BAŞLIK ==================== */}
-        <div className="flex items-center justify-between pb-1">
-          <div className="flex items-center space-x-2.5">
-            {/* Chirmo Robot Mascot Icon */}
-            <div className="w-9 h-9 rounded-2xl bg-indigo-50/80 dark:bg-slate-800 flex items-center justify-center shadow-xs overflow-hidden">
-              <img src="./chirmo-icon.png" alt="Chirmo Robot" className="w-8 h-8 object-contain" />
-            </div>
-            <div>
-              <div className="font-black text-slate-900 dark:text-white text-base leading-tight tracking-tight">
-                Chirmo
-              </div>
-            </div>
-          </div>
-
-          {onToggle && (
+        {/* ==================== 1. MENÜ KONTROLÜ ==================== */}
+        {onToggle && (
+          <div className="flex items-center justify-end pb-1">
             <button
               onClick={onToggle}
               className="p-1 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-800 cursor-pointer transition-colors"
@@ -79,8 +67,8 @@ export const LearningCenterSidebar: React.FC<LearningCenterSidebarProps> = ({
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Gizli / Erişilebilirlik Test Verileri (Geriye Uyumluluk) */}
         <div className="sr-only" aria-hidden="true">

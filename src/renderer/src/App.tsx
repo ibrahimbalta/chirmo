@@ -257,7 +257,7 @@ export const App: React.FC = () => {
             title="Chirmo Ana Sayfa - 30 Günde Konuşma Garantili Sanal Öğretmen"
             aria-label="30 Günde Konuşma Garantili Sanal Öğretmen"
           >
-            <ChirmoLogo size="md" variant="header" />
+            <ChirmoLogo size="lg" variant="header" className="drop-shadow-xs" />
           </div>
 
           {/* Mobilde 2. Görseldeki Tüm Modülleri Gösteren Açılır Menü Butonu */}
