@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { ChirmoLogo } from './components/common/ChirmoLogo';
 import { BrowserContainer, PageSentenceItem } from './components/browser/BrowserContainer';
+import { ChirmoHeroLandingPortal } from './components/landing/ChirmoHeroLandingPortal';
 import { SimpleSearchHome } from './components/home/SimpleSearchHome';
 import { SimpleLearningHub } from './components/learning/SimpleLearningHub';
 import { SimpleTaskWorkspace } from './components/tasks/SimpleTaskWorkspace';
@@ -50,11 +51,12 @@ import { TargetLanguageService, SupportedLanguage } from './services/targetLangu
 import { Tab, CEFRLevel, DailyGoalProgress } from './types';
 import { CampStorageService, StudentCampProgress } from './services/curriculumData';
 
-export type AppNavTab = 'search' | 'learn' | 'phrases' | 'kids' | 'games' | 'speak' | 'tasks' | 'video' | 'admin';
+export type AppNavTab = 'portal' | 'search' | 'learn' | 'phrases' | 'kids' | 'games' | 'speak' | 'tasks' | 'video' | 'admin';
 
 export const App: React.FC = () => {
   // Ana Sayfa ('search') varsayılan başlangıç ekranıdır
-  const [activeTab, setActiveTab] = useState<AppNavTab>('search');
+  // Açılış Vitrini ('portal') varsayılan başlangıç ekranıdır
+  const [activeTab, setActiveTab] = useState<AppNavTab>('portal');
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
 
   // Tarayıcı Durumu
@@ -113,8 +115,12 @@ export const App: React.FC = () => {
     });
 
     const handleHash = () => {
-      if (typeof window !== 'undefined' && window.location.hash === '#admin') {
-        setActiveTab('admin');
+      if (typeof window !== 'undefined') {
+        if (window.location.hash === '#admin') {
+          setActiveTab('admin');
+        } else if (window.location.hash === '#panel') {
+          setActiveTab('search');
+        }
       }
     };
     handleHash();
@@ -148,7 +154,10 @@ export const App: React.FC = () => {
   }, []);
 
   const handleLeftSidebarSelect = (itemId: string) => {
-    if (itemId === 'home') {
+    if (itemId === 'portal') {
+      setActiveTab('portal');
+      setIsBrowserNavigating(false);
+    } else if (itemId === 'home') {
       setActiveTab('search');
       setIsBrowserNavigating(false);
     } else if (itemId === 'games') {
@@ -238,7 +247,7 @@ export const App: React.FC = () => {
 
   const handleGoHome = () => {
     setIsBrowserNavigating(false);
-    setActiveTab('search');
+    setActiveTab('portal');
   };
 
   const handleLevelChange = (lvl: CEFRLevel) => {
@@ -247,6 +256,18 @@ export const App: React.FC = () => {
   };
 
   const activeTabData = tabs.find((t) => t.id === activeTabId) || null;
+
+  if (activeTab === 'portal') {
+    return (
+      <ChirmoHeroLandingPortal
+        onEnterStudentPanel={() => setActiveTab('search')}
+        onEnterKidsWorld={() => setActiveTab('kids')}
+        onEnterCamp={() => setActiveTab('learn')}
+        onEnterPhraseBank={() => setActiveTab('phrases')}
+        onEnterSimulator={() => setActiveTab('speak')}
+      />
+    );
+  }
 
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#FAF9FE] text-slate-800 select-none font-sans">
@@ -347,6 +368,23 @@ export const App: React.FC = () => {
                 <div className="px-1 py-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
                   🎯 30 Günde Konuşma Devrimi
                 </div>
+{/* 0. Açılış Vitrini */}
+                <button
+                  onClick={() => {
+                    setActiveTab('portal');
+                    setIsMobileNavOpen(false);
+                  }}
+                  className="w-full flex items-center space-x-2.5 px-2.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  title="Açılış Vitrini (Karşılama)"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center shrink-0">
+                    <Home className="w-4 h-4 text-indigo-500 shrink-0" />
+                  </div>
+                  <div className="text-left flex-1 min-w-0">
+                    <div className="font-extrabold truncate">Açılış Vitrini</div>
+                    <div className="text-[10px] text-slate-400 font-normal truncate">Ana Karşılama Sayfası</div>
+                  </div>
+                </button>
 
                 {/* 1. Ana Sayfa */}
                 <button
@@ -566,7 +604,19 @@ export const App: React.FC = () => {
 
         {/* Orta: SIFIR KAFA KARIŞIKLIĞI — ANA SAYFA + TEMEL KONUŞMA SÜTUNLARI */}
         <nav className="hidden md:flex items-center bg-slate-100/90 dark:bg-slate-800/90 p-1 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 gap-0.5 shrink-0 shadow-2xs relative">
-          
+          {/* 0. Açılış Vitrini */}
+          <button
+            onClick={() => {
+              setActiveTab('portal');
+              setIsMoreMenuOpen(false);
+            }}
+            className="h-8 px-2.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1 shrink-0 text-slate-600 hover:text-indigo-600 hover:bg-white/60 font-bold"
+            title="Chirmo Açılış Vitrinine Dön"
+          >
+            <Home className="w-3.5 h-3.5 text-slate-400" />
+            <span>Vitrin</span>
+          </button>
+
           {/* 1. Ana Sayfa */}
           <button
             onClick={() => {

@@ -10,7 +10,8 @@ import {
   ArrowRight,
   ChevronLeft,
   Target,
-  Award
+  Award,
+  Sparkles
 } from 'lucide-react';
 import { UserProfileService, UserProfile } from '../../services/userProfileService';
 import { TargetLanguageService, SupportedLanguage } from '../../services/targetLanguageService';
@@ -86,6 +87,16 @@ export const LearningCenterSidebar: React.FC<LearningCenterSidebarProps> = ({
 
         {/* ==================== 2. MENÜ LİSTESİ ==================== */}
         <nav className="space-y-1.5 text-xs font-bold">
+                    {/* 0. Açılış Vitrini */}
+          <button
+            onClick={() => handleItemClick('portal')}
+            className="w-full flex items-center space-x-3 px-3.5 py-2 rounded-2xl transition-all cursor-pointer text-slate-500 hover:text-indigo-600 hover:bg-indigo-50/70 dark:hover:bg-slate-800"
+            title="Açılış Vitrinine Dön"
+          >
+            <Sparkles className="w-4 h-4 text-purple-500 shrink-0" />
+            <span>Açılış Vitrini</span>
+          </button>
+
           {/* 1. Ana Sayfa (Aktif Buton) */}
           <button
             onClick={() => handleItemClick('home')}
