@@ -25,7 +25,16 @@ import {
   Orbit,
   Wand2,
   Stethoscope,
-  Target
+  Target,
+  Trophy,
+  Coffee,
+  Plane,
+  Building2,
+  ShoppingBag,
+  Briefcase,
+  UtensilsCrossed,
+  Award,
+  Play
 } from 'lucide-react';
 import { TargetLanguageService, SupportedLanguage } from '../../services/targetLanguageService';
 
@@ -93,6 +102,28 @@ const DEMO_SCENARIOS: DemoScenario[] = [
     de: 'Haben Sie das in einer kleineren Größe?',
     formula: 'Soru Asası: Do you have this in + [Özellik]?',
     tip: 'Mağazada ihtiyaç duyacağınız en temel ve güçlü soru şablonu.'
+  },
+  {
+    id: 'career',
+    category: 'İş & Mülakat',
+    icon: '💼',
+    title: 'Deneyim Belirtme',
+    tr: 'Proje yönetimi alanında beş yıllık deneyimim var.',
+    en: 'I have five years of experience in project management.',
+    de: 'Ich habe fünf Jahre Erfahrung im Projektmanagement.',
+    formula: 'Yetkinlik Kalkanı: I have [Süre] of experience in [Alan].',
+    tip: 'İş mülakatlarında kendini tanıtırken en prestijli ve doğrudan giriş şablonudur.'
+  },
+  {
+    id: 'restaurant',
+    category: 'Restoran',
+    icon: '🍽️',
+    title: 'Hesap İsteme',
+    tr: 'Hesabı alabilir miyiz lütfen?',
+    en: 'Could we get the check, please?',
+    de: 'Könnten wir bitte die Rechnung haben?',
+    formula: 'Nezaket Asası: Could we get the check, please?',
+    tip: 'Restorandan ayrılırken en doğal ve kibar hesap isteme refleksidir.'
   }
 ];
 
@@ -221,14 +252,14 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
   };
 
   return (
-    <div className="h-screen w-full overflow-y-auto overflow-x-hidden bg-gradient-to-b from-[#190C3E] via-[#2E115B] via-[#1B1953] via-[#2A0F48] to-[#100628] text-white flex flex-col font-sans select-none scroll-smooth relative">
+    <div className="h-screen w-full overflow-y-auto overflow-x-hidden bg-gradient-to-b from-[#180B3A] via-[#2A1054] via-[#1B1850] via-[#260D42] to-[#0E0524] text-white flex flex-col font-sans select-none scroll-smooth relative">
       {/* ==================== KOZMİK GEÇİŞLİ RENKLER, AURORA VE NEBULA IŞILTILARI ==================== */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         {/* Çok Renkli Canlı Geçiş Gradyanları (Vibrant Aurora Nebulae) */}
-        <div className="absolute top-0 left-1/4 w-[750px] h-[750px] bg-gradient-to-br from-indigo-500/35 via-purple-600/30 to-pink-500/25 rounded-full blur-[160px] animate-pulse" />
-        <div className="absolute top-1/3 right-0 w-[700px] h-[700px] bg-gradient-to-bl from-fuchsia-500/30 via-pink-600/25 to-indigo-700/20 rounded-full blur-[170px]" />
-        <div className="absolute top-2/3 left-[-100px] w-[650px] h-[650px] bg-gradient-to-tr from-cyan-500/25 via-blue-600/25 to-purple-800/20 rounded-full blur-[160px]" />
-        <div className="absolute bottom-0 right-1/4 w-[800px] h-[650px] bg-gradient-to-t from-emerald-500/20 via-teal-600/20 to-purple-900/25 rounded-full blur-[180px]" />
+        <div className="absolute top-0 left-1/4 w-[850px] h-[850px] bg-gradient-to-br from-indigo-500/35 via-purple-600/30 to-pink-500/25 rounded-full blur-[170px] animate-pulse" />
+        <div className="absolute top-1/3 right-0 w-[750px] h-[750px] bg-gradient-to-bl from-fuchsia-500/30 via-pink-600/25 to-indigo-700/20 rounded-full blur-[180px]" />
+        <div className="absolute top-2/3 left-[-100px] w-[700px] h-[700px] bg-gradient-to-tr from-cyan-500/25 via-blue-600/25 to-purple-800/20 rounded-full blur-[170px]" />
+        <div className="absolute bottom-0 right-1/4 w-[850px] h-[700px] bg-gradient-to-t from-emerald-500/20 via-teal-600/20 to-purple-900/25 rounded-full blur-[190px]" />
 
         {/* Canlı Galaksi Yıldızları */}
         <div className="absolute top-14 left-20 w-2 h-2 bg-cyan-300 rounded-full animate-ping opacity-80" />
@@ -249,15 +280,15 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
         />
       </div>
 
-      {/* ==================== 1. ŞIK VE BÜYÜTÜLMÜŞ LOGOLU KOZMİK ÜST BAR ==================== */}
-      <header className="sticky top-0 z-50 w-full bg-[#180C3D]/65 backdrop-blur-2xl border-b border-purple-400/25 shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
+      {/* ==================== 1. PRESTİJLİ VE BÜYÜTÜLMÜŞ LOGOLU KOZMİK ÜST BAR ==================== */}
+      <header className="sticky top-0 z-50 w-full bg-[#180C3D]/70 backdrop-blur-2xl border-b border-purple-400/25 shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-18 sm:h-22 flex items-center justify-between gap-3">
           
-          {/* Sol: Büyütülmüş, Yüksek Çözünürlüklü Net Chirmo Logosu */}
+          {/* Sol: Büyütülmüş, Net Chirmo Logosu */}
           <div
             onClick={onEnterStudentPanel}
             className="flex items-center cursor-pointer group shrink-0"
-            title="Chirmo"
+            title="Chirmo - Ana Ekrana Dön"
           >
             <img
               src="./chirmo-header-brand-logo.png"
@@ -272,10 +303,39 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
             />
           </div>
 
+          {/* Orta: Hızlı Gezinti Çipleri */}
+          <nav className="hidden lg:flex items-center space-x-2 text-xs font-black">
+            <button
+              onClick={onEnterCamp}
+              className="px-3.5 py-2 rounded-xl bg-indigo-950/60 hover:bg-indigo-800/60 border border-indigo-500/40 text-indigo-200 hover:text-white transition-all cursor-pointer flex items-center space-x-1.5"
+            >
+              <span>🏕️ 30 Günlük Kamp</span>
+            </button>
+            <button
+              onClick={onEnterKidsWorld}
+              className="px-3.5 py-2 rounded-xl bg-pink-950/60 hover:bg-pink-800/60 border border-pink-500/40 text-pink-200 hover:text-white transition-all cursor-pointer flex items-center space-x-1.5"
+            >
+              <span>🏰 Lingoria Kids</span>
+              <span className="text-[9px] bg-pink-500 text-white px-1.5 py-0.2 rounded-full font-bold">5-17 Yaş</span>
+            </button>
+            <button
+              onClick={onEnterSimulator}
+              className="px-3.5 py-2 rounded-xl bg-emerald-950/60 hover:bg-emerald-800/60 border border-emerald-500/40 text-emerald-200 hover:text-white transition-all cursor-pointer flex items-center space-x-1.5"
+            >
+              <span>🎙️ AI Ses Simülatörü</span>
+            </button>
+            <button
+              onClick={onEnterPhraseBank}
+              className="px-3.5 py-2 rounded-xl bg-cyan-950/60 hover:bg-cyan-800/60 border border-cyan-500/40 text-cyan-200 hover:text-white transition-all cursor-pointer flex items-center space-x-1.5"
+            >
+              <span>💬 Kalıp Deposu</span>
+            </button>
+          </nav>
+
           {/* Sağ Eylemler: Dil Seçici & Hızlı Giriş Butonu */}
           <div className="flex items-center space-x-2 sm:space-x-3">
             {/* Dil Seçici */}
-            <div className="flex items-center bg-[#23124A]/70 p-1.5 rounded-2xl border border-purple-400/30 text-xs font-black shadow-inner">
+            <div className="flex items-center bg-[#23124A]/80 p-1.5 rounded-2xl border border-purple-400/30 text-xs font-black shadow-inner">
               <button
                 onClick={() => handleLanguageToggle('en')}
                 className={`px-3 sm:px-4 py-1.5 rounded-xl transition-all cursor-pointer flex items-center space-x-1.5 ${
@@ -319,7 +379,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
       <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-20 w-full flex flex-col items-center text-center">
         
         {/* ==================== CHIRMO ORBITAL UNIVERSE (DEV 3D CHIRMO & ETRAFINDAKİ GEZEGEN KISAYOLLAR) ==================== */}
-        <div className="relative w-full max-w-5xl min-h-[580px] sm:min-h-[660px] md:min-h-[740px] flex items-center justify-center my-2">
+        <div className="relative w-full max-w-5xl min-h-[520px] sm:min-h-[620px] md:min-h-[700px] flex items-center justify-center my-2">
           
           {/* GENİŞLETİLMİŞ GALAKTİK YÖRÜNGE HALKALARI (ORBITAL RINGS) */}
           <div className="absolute w-[360px] h-[360px] sm:w-[500px] sm:h-[500px] md:w-[620px] md:h-[620px] rounded-full border border-purple-400/25 border-dashed animate-[spin_60s_linear_infinite] pointer-events-none" />
@@ -384,7 +444,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
                 Kalıp Deposu
               </span>
               <span className="text-[8px] sm:text-[9px] font-bold text-cyan-200 mt-0.5">
-                Zihinsel Formüller
+                500+ Şablon
               </span>
             </button>
           </div>
@@ -403,7 +463,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
                 AI Simülatör
               </span>
               <span className="text-[8px] sm:text-[9px] font-bold text-emerald-200 mt-0.5">
-                Canlı Görüşme
+                Canlı Arama ⚡
               </span>
             </button>
           </div>
@@ -422,7 +482,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
                 Canlı Düello
               </span>
               <span className="text-[8px] sm:text-[9px] font-bold text-rose-200 mt-0.5">
-                1v1 Speaking Arena
+                1v1 Arena
               </span>
             </button>
           </div>
@@ -517,73 +577,215 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
           </div>
         </div>
 
-        {/* ==================== MERKEZ-ALT: 2 KOZMİK ANA GEÇİŞ DÜĞMESİ ==================== */}
-        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 my-6 w-full max-w-3xl">
-          <button
-            onClick={onEnterStudentPanel}
-            className="flex-1 min-w-[260px] p-4.5 rounded-3xl bg-gradient-to-r from-indigo-700 via-purple-700 to-indigo-800 hover:from-indigo-600 hover:to-purple-600 text-white font-black shadow-[0_0_35px_rgba(99,102,241,0.5)] border-2 border-indigo-400/70 active:scale-98 transition-all flex items-center space-x-3.5 cursor-pointer group text-left"
-          >
-            <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-300 border border-indigo-400/40 flex items-center justify-center text-2xl font-bold shadow-md group-hover:scale-110 transition-transform shrink-0">
-              🏕️
-            </div>
-            <div className="flex-1 min-w-0">
-              <span className="text-[10px] text-indigo-200 font-extrabold uppercase tracking-wider block">Yetişkin & Kariyer Modu</span>
-              <div className="text-sm sm:text-base font-black text-white leading-tight">
-                Öğrenci Paneline Başla
-              </div>
-              <span className="text-[11px] text-indigo-300 font-medium truncate block">
-                30 Günde Kendini İfade Etme Kampı
-              </span>
-            </div>
-            <ArrowRight className="w-4 h-4 text-indigo-300 group-hover:translate-x-1 transition-transform shrink-0" />
-          </button>
+        {/* ==================== 3. ETKİLEYİCİ 4 ANA KOMUTA MERKEZİ (THE 4 PILLARS OF CHIRMO) ==================== */}
+        <section className="w-full max-w-6xl my-10 text-left">
+          <div className="text-center mb-8">
+            <span className="text-[11px] font-black uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-pink-400 to-cyan-300">
+              ⚡ ETKİLEŞİMLİ DİL EVRENİ
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-black text-white mt-1 tracking-tight">
+              Yapay Zekâ ile Doğrudan Konuşmaya Başlayın
+            </h2>
+            <p className="text-xs sm:text-sm text-purple-200/80 mt-1.5 max-w-xl mx-auto">
+              Geleneksel gramer ezberlerini bir kenara bırakın. 7/24 yargılamayan, anında konuşturan yaşayan odalara girin.
+            </p>
+          </div>
 
-          <button
-            onClick={onEnterKidsWorld}
-            className="flex-1 min-w-[260px] p-4.5 rounded-3xl bg-gradient-to-r from-pink-700 via-purple-700 to-pink-800 hover:from-pink-600 hover:to-purple-600 text-white font-black shadow-[0_0_35px_rgba(236,72,153,0.5)] border-2 border-pink-400/70 active:scale-98 transition-all flex items-center space-x-3.5 cursor-pointer group text-left"
-          >
-            <div className="w-12 h-12 rounded-2xl bg-pink-500/20 text-pink-300 border border-pink-400/40 flex items-center justify-center text-2xl font-bold shadow-md group-hover:scale-110 transition-transform shrink-0">
-              🏰
-            </div>
-            <div className="flex-1 min-w-0">
-              <span className="text-[10px] text-pink-200 font-extrabold uppercase tracking-wider block">5-17 Yaş Çocuk & Genç</span>
-              <div className="text-sm sm:text-base font-black text-white leading-tight">
-                Lingoria Dünyasını Aç 🎮
-              </div>
-              <span className="text-[11px] text-pink-300 font-medium truncate block">
-                Lingoria Macera Evreni
-              </span>
-            </div>
-            <ArrowRight className="w-4 h-4 text-pink-300 group-hover:translate-x-1 transition-transform shrink-0" />
-          </button>
-        </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            {/* KART 1: CANLI AI SESLİ TELEFON GÖRÜŞMESİ */}
+            <div
+              onClick={onEnterSimulator}
+              className="relative p-7 rounded-[36px] bg-gradient-to-br from-[#1C1045]/90 via-[#261362]/80 to-[#180A3D]/95 border-2 border-emerald-400/40 hover:border-emerald-400 shadow-[0_0_40px_rgba(16,185,129,0.25)] hover:shadow-[0_0_60px_rgba(16,185,129,0.5)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer group flex flex-col justify-between overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-44 h-44 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-400/60 text-emerald-300 text-[10px] font-black flex items-center space-x-1.5 shadow-sm">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                    <span>CANLI SES MOTORU • 0.2sn TEPKİ</span>
+                  </span>
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                    🎙️
+                  </div>
+                </div>
 
-        {/* ==================== 3. DAĞILMIŞ YUVARLAK ALANLAR: KOZMİK MİKROFON İSTASYONU ==================== */}
-        <div className="relative w-full max-w-3xl my-8">
-          <div className="p-7 sm:p-9 rounded-[40px] bg-gradient-to-b from-[#21114d]/90 via-[#1d0e44]/90 to-[#160b36]/95 border-2 border-cyan-400/40 shadow-[0_0_50px_rgba(6,182,212,0.3)] backdrop-blur-2xl">
+                <h3 className="text-xl sm:text-2xl font-black text-white group-hover:text-emerald-300 transition-colors">
+                  Canlı AI Sesli Görüşme & Simülatör
+                </h3>
+                <p className="text-xs text-purple-200/85 font-medium mt-2 leading-relaxed">
+                  Yapay zeka koçunuzla telefon araması gibi konuşun. Hata yapmaktan çekinmeden anlık telaffuz ve akıcılık düzeltmesi alın.
+                </p>
+
+                <div className="mt-4 flex items-center space-x-2 text-[11px] text-emerald-300 font-bold">
+                  <Zap className="w-4 h-4 text-emerald-400" />
+                  <span>Kesintisiz Ses Akışı • Anlık Fonetik Radar</span>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-emerald-500/20 flex items-center justify-between">
+                <span className="text-xs font-black text-white flex items-center space-x-1">
+                  <span>Simülatörü Başlat</span>
+                  <ArrowRight className="w-4 h-4 text-emerald-400 group-hover:translate-x-1.5 transition-transform" />
+                </span>
+                <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2.5 py-1 rounded-lg font-bold">
+                  Hemen Dene 🔊
+                </span>
+              </div>
+            </div>
+
+            {/* KART 2: LINGORIA 3D KIDS MACERA EVRENİ */}
+            <div
+              onClick={onEnterKidsWorld}
+              className="relative p-7 rounded-[36px] bg-gradient-to-br from-[#2D114A]/90 via-[#3B1566]/80 to-[#1F0A38]/95 border-2 border-pink-400/40 hover:border-pink-400 shadow-[0_0_40px_rgba(236,72,153,0.25)] hover:shadow-[0_0_60px_rgba(236,72,153,0.5)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer group flex flex-col justify-between overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-44 h-44 bg-pink-500/15 rounded-full blur-3xl pointer-events-none" />
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="px-3 py-1 rounded-full bg-pink-950/80 border border-pink-400/60 text-pink-300 text-[10px] font-black flex items-center space-x-1.5 shadow-sm">
+                    <span className="w-2 h-2 rounded-full bg-pink-400 animate-pulse" />
+                    <span>5-17 YAŞ ÇOCUK & GENÇ PEDAGOJİSİ</span>
+                  </span>
+                  <div className="w-12 h-12 rounded-2xl bg-pink-500/20 border border-pink-400/40 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                    🏰
+                  </div>
+                </div>
+
+                <h3 className="text-xl sm:text-2xl font-black text-white group-hover:text-pink-300 transition-colors">
+                  Lingoria Macera Evreni 🎮
+                </h3>
+                <p className="text-xs text-purple-200/85 font-medium mt-2 leading-relaxed">
+                  8 epik seviye haritası, efsanevi teçhizat sandıkları ve canavar savaşlarıyla çocukların severek İngilizce ve Almanca konuştuğu krallık.
+                </p>
+
+                <div className="mt-4 flex items-center space-x-2 text-[11px] text-pink-300 font-bold">
+                  <Trophy className="w-4 h-4 text-pink-400" />
+                  <span>8 Krallık Haritası • Efsane Zırh Sandığı • Sesli Büyüler</span>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-pink-500/20 flex items-center justify-between">
+                <span className="text-xs font-black text-white flex items-center space-x-1">
+                  <span>Lingoria Dünyasını Aç</span>
+                  <ArrowRight className="w-4 h-4 text-pink-400 group-hover:translate-x-1.5 transition-transform" />
+                </span>
+                <span className="text-[10px] bg-pink-500/20 text-pink-300 px-2.5 py-1 rounded-lg font-bold">
+                  Oyna & Konuş ⚔️
+                </span>
+              </div>
+            </div>
+
+            {/* KART 3: 30 GÜNDE KENDİNİ İFADE ETME KAMPI */}
+            <div
+              onClick={onEnterCamp}
+              className="relative p-7 rounded-[36px] bg-gradient-to-br from-[#18134F]/90 via-[#221B6E]/80 to-[#120D3D]/95 border-2 border-indigo-400/40 hover:border-indigo-400 shadow-[0_0_40px_rgba(99,102,241,0.25)] hover:shadow-[0_0_60px_rgba(99,102,241,0.5)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer group flex flex-col justify-between overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-44 h-44 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none" />
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="px-3 py-1 rounded-full bg-indigo-950/80 border border-indigo-400/60 text-indigo-300 text-[10px] font-black flex items-center space-x-1.5 shadow-sm">
+                    <Flame className="w-3.5 h-3.5 text-amber-400" />
+                    <span>YETİŞKİN & KARİYER HIZLANDIRICI</span>
+                  </span>
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-400/40 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                    🏕️
+                  </div>
+                </div>
+
+                <h3 className="text-xl sm:text-2xl font-black text-white group-hover:text-indigo-300 transition-colors">
+                  30 Günde Kendini İfade Etme Kampı
+                </h3>
+                <p className="text-xs text-purple-200/85 font-medium mt-2 leading-relaxed">
+                  Günde sadece 15 dakikalık mikro pratiklerle zihinsel blokları yıkın. Seyahatte, mülakatta veya toplantıda takılmadan kendinizi ifade edin.
+                </p>
+
+                <div className="mt-4 flex items-center space-x-2 text-[11px] text-indigo-300 font-bold">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <span>30 Günlük Günlük Konuşma Planı • %94 Akıcılık Artışı</span>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-indigo-500/20 flex items-center justify-between">
+                <span className="text-xs font-black text-white flex items-center space-x-1">
+                  <span>Öğrenci Paneline Başla</span>
+                  <ArrowRight className="w-4 h-4 text-indigo-400 group-hover:translate-x-1.5 transition-transform" />
+                </span>
+                <span className="text-[10px] bg-indigo-500/20 text-indigo-300 px-2.5 py-1 rounded-lg font-bold">
+                  Kampa Katıl 🚀
+                </span>
+              </div>
+            </div>
+
+            {/* KART 4: 1V1 CANLI SPEAKING DÜELLOSU */}
+            <div
+              onClick={onEnterStudentPanel}
+              className="relative p-7 rounded-[36px] bg-gradient-to-br from-[#2E1038]/90 via-[#3E144E]/80 to-[#1F0828]/95 border-2 border-amber-400/40 hover:border-amber-400 shadow-[0_0_40px_rgba(245,158,11,0.25)] hover:shadow-[0_0_60px_rgba(245,158,11,0.5)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer group flex flex-col justify-between overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-44 h-44 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="px-3 py-1 rounded-full bg-amber-950/80 border border-amber-400/60 text-amber-300 text-[10px] font-black flex items-center space-x-1.5 shadow-sm">
+                    <Award className="w-3.5 h-3.5 text-amber-400" />
+                    <span>HAFTALIK ELMAS LİGİ & PVP</span>
+                  </span>
+                  <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                    ⚔️
+                  </div>
+                </div>
+
+                <h3 className="text-xl sm:text-2xl font-black text-white group-hover:text-amber-300 transition-colors">
+                  1v1 Konuşma Düellosu & Sıralama
+                </h3>
+                <p className="text-xs text-purple-200/85 font-medium mt-2 leading-relaxed">
+                  Gerçek zamanlı konuşma düellolarına katılın. Doğru telaffuz ve hızlı reflekslerle XP toplayın, haftalık ligde zirveye tırmanın.
+                </p>
+
+                <div className="mt-4 flex items-center space-x-2 text-[11px] text-amber-300 font-bold">
+                  <Crown className="w-4 h-4 text-amber-400" />
+                  <span>Canlı Eşleşme • Elmas Kupa • Liderlik Tablosu</span>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-amber-500/20 flex items-center justify-between">
+                <span className="text-xs font-black text-white flex items-center space-x-1">
+                  <span>Düello Arenasına Gir</span>
+                  <ArrowRight className="w-4 h-4 text-amber-400 group-hover:translate-x-1.5 transition-transform" />
+                </span>
+                <span className="text-[10px] bg-amber-500/20 text-amber-300 px-2.5 py-1 rounded-lg font-bold">
+                  Meydan Oku 🏆
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        {/* ==================== 4. CANLI MİKROFON ALANI (HEMEN SESİNİ TEST ET) ==================== */}
+        <div className="relative w-full max-w-4xl my-8">
+          <div className="p-8 sm:p-10 rounded-[44px] bg-gradient-to-b from-[#1F104D]/95 via-[#180B3E]/90 to-[#120730]/95 border-2 border-cyan-400/50 shadow-[0_0_60px_rgba(6,182,212,0.35)] backdrop-blur-2xl">
             
             {/* Üst Kozmik Başlık */}
             <div className="flex flex-col sm:flex-row items-center justify-between pb-4 mb-4 border-b border-cyan-500/30 gap-2">
-              <span className="text-xs font-black uppercase tracking-wider text-cyan-300 flex items-center space-x-2">
-                <Orbit className="w-4 h-4 text-amber-300 animate-spin" />
+              <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-cyan-300 flex items-center space-x-2">
+                <Orbit className="w-5 h-5 text-amber-300 animate-spin" />
                 <span>CANLI MİKROFON ARENASI (SESİNİ TEST ET)</span>
               </span>
               <button
                 onClick={() => handleSpeak(currentSamplePhrase, selectedLanguage)}
-                className="text-xs font-bold text-slate-300 hover:text-white flex items-center space-x-1.5 cursor-pointer bg-cyan-950/70 px-3.5 py-1.5 rounded-full border border-cyan-400/40 shadow-sm"
+                className="text-xs font-bold text-slate-200 hover:text-white flex items-center space-x-1.5 cursor-pointer bg-cyan-950/80 px-4 py-2 rounded-full border border-cyan-400/40 shadow-sm transition-all hover:bg-cyan-900"
                 title="Örnek Telaffuzu Dinle"
               >
-                <Volume2 className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Örnek Cümleyi Dinle</span>
+                <Volume2 className="w-4 h-4 text-cyan-400" />
+                <span>Örnek Cümleyi Dinle 🔊</span>
               </button>
             </div>
 
             {/* Test Cümlesi */}
-            <div className="text-center mb-5">
+            <div className="text-center mb-6">
               <span className="text-xs text-slate-300 font-semibold tracking-wide">
-                Aşağıdaki yuvarlak butona basıp mikrofona söyle:
+                Aşağıdaki yuvarlak mikrofona basıp cümleyi sesli oku:
               </span>
-              <div className="text-xl sm:text-2xl font-black text-white mt-1.5 tracking-tight drop-shadow-md">
+              <div className="text-xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-200 to-pink-200 mt-2 tracking-tight drop-shadow-md">
                 "{currentSamplePhrase}"
               </div>
             </div>
@@ -593,32 +795,32 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
               <button
                 onClick={handleStartMicTest}
                 disabled={isListening}
-                className={`relative w-24 h-24 sm:w-28 sm:h-28 rounded-full font-black text-xs flex flex-col items-center justify-center transition-all duration-300 cursor-pointer shadow-2xl ${
+                className={`relative w-28 h-28 sm:w-32 sm:h-32 rounded-full font-black text-xs flex flex-col items-center justify-center transition-all duration-300 cursor-pointer shadow-2xl ${
                   isListening
-                    ? 'bg-rose-600 text-white animate-pulse shadow-[0_0_40px_rgba(244,63,94,0.8)] scale-105'
-                    : 'bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-white shadow-[0_0_35px_rgba(16,185,129,0.5)] hover:scale-110 active:scale-95'
+                    ? 'bg-rose-600 text-white animate-pulse shadow-[0_0_45px_rgba(244,63,94,0.85)] scale-105'
+                    : 'bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-white shadow-[0_0_40px_rgba(16,185,129,0.55)] hover:scale-110 active:scale-95'
                 }`}
                 title="Mikrofona Konuş"
               >
                 <div className="absolute -inset-1 rounded-full border-2 border-emerald-300/60 animate-ping opacity-50 pointer-events-none" />
-                <Mic className={`w-8 h-8 sm:w-9 sm:h-9 ${isListening ? 'animate-bounce' : ''}`} />
-                <span className="text-[10px] sm:text-[11px] font-black mt-1 leading-tight text-center px-1">
+                <Mic className={`w-9 h-9 sm:w-11 sm:h-11 ${isListening ? 'animate-bounce' : ''}`} />
+                <span className="text-[11px] sm:text-xs font-black mt-1 leading-tight text-center px-1">
                   {isListening ? 'Dinliyor...' : 'KONUŞ & TEST ET'}
                 </span>
               </button>
 
               {score !== null && (
-                <div className="mt-2 px-5 py-2.5 rounded-full bg-emerald-950/90 border border-emerald-400 text-emerald-300 text-xs font-black flex items-center space-x-2 animate-in fade-in zoom-in-95 shadow-lg">
-                  <CheckCircle2 className="w-4.5 h-4.5 text-emerald-400 shrink-0" />
-                  <span>Harika Telaffuz! Akıcılık Skoru: %{score} • +25 XP</span>
+                <div className="mt-3 px-6 py-3 rounded-full bg-emerald-950/95 border border-emerald-400 text-emerald-300 text-xs sm:text-sm font-black flex items-center space-x-2 animate-in fade-in zoom-in-95 shadow-xl">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                  <span>Harika Telaffuz! Akıcılık Skoru: %{score} • +25 XP Kazandın!</span>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        {/* ==================== 4. DAĞILMIŞ YUVARLAK ALANLAR: KALIP DOKU TESTİ GALAKSİSİ ==================== */}
-        <section className="w-full max-w-4xl my-8 text-center relative">
+        {/* ==================== 5. DAĞILMIŞ YUVARLAK ALANLAR: KALIP DOKU TESTİ GALAKSİSİ ==================== */}
+        <section className="w-full max-w-5xl my-10 text-center relative">
           
           <div className="mb-6">
             <span className="text-[11px] font-black uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-pink-400 to-cyan-300">
@@ -627,18 +829,18 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
             <h2 className="text-2xl sm:text-3xl font-black text-white mt-1">
               Kalıp Mantığını 10 Saniyede Görün
             </h2>
-            <p className="text-xs text-purple-200/90 mt-1 max-w-md mx-auto">
+            <p className="text-xs sm:text-sm text-purple-200/90 mt-1 max-w-md mx-auto">
               Ezber yok; zihinsel Lego gibi birbirine kenetlenen hazır şablonlarla anında konuşun.
             </p>
           </div>
 
-          {/* DÖRT YUVARLAK KATEGORİ UYDU GEZEGENİ */}
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-8">
+          {/* ALTI YUVARLAK KATEGORİ UYDU GEZEGENİ */}
+          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5 mb-8">
             {DEMO_SCENARIOS.map((sc) => (
               <button
                 key={sc.id}
                 onClick={() => setActiveDemo(sc)}
-                className={`relative px-4 py-2.5 rounded-full text-xs font-black transition-all duration-300 cursor-pointer flex items-center space-x-2 ${
+                className={`relative px-4 sm:px-5 py-2.5 rounded-full text-xs sm:text-sm font-black transition-all duration-300 cursor-pointer flex items-center space-x-2 ${
                   activeDemo.id === sc.id
                     ? 'bg-gradient-to-r from-pink-600 via-purple-600 to-cyan-600 text-white shadow-[0_0_25px_rgba(236,72,153,0.7)] border-2 border-white scale-105'
                     : 'bg-[#251352] text-purple-200 hover:bg-[#341b73] border border-purple-400/30'
@@ -654,7 +856,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-left">
             
             {/* KÜRE 1: KONUŞMA VE SES KÜRESİ */}
-            <div className="p-6 rounded-[32px] bg-gradient-to-b from-[#251354]/90 to-[#190d3d]/95 border-2 border-purple-400/40 shadow-xl flex flex-col justify-between">
+            <div className="p-6 sm:p-7 rounded-[32px] bg-gradient-to-b from-[#251354]/95 to-[#190d3d]/95 border-2 border-purple-400/40 shadow-xl flex flex-col justify-between">
               <div>
                 <span className="text-[10px] font-black text-pink-400 uppercase tracking-wider block mb-1">
                   1. KONUŞMA ŞABLONU
@@ -683,11 +885,11 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
             </div>
 
             {/* KÜRE 2: ZİHİNSEL KURAL & FORMÜL KÜRESİ */}
-            <div className="p-6 rounded-[32px] bg-gradient-to-b from-[#251354]/90 to-[#190d3d]/95 border-2 border-purple-400/40 shadow-xl flex flex-col justify-center">
+            <div className="p-6 sm:p-7 rounded-[32px] bg-gradient-to-b from-[#251354]/95 to-[#190d3d]/95 border-2 border-purple-400/40 shadow-xl flex flex-col justify-center">
               <span className="text-[10px] font-black text-amber-300 uppercase tracking-wider block mb-2">
                 2. ZİHİNSEL KURAL / FORMÜL
               </span>
-              <div className="p-3.5 rounded-2xl bg-purple-950/80 border border-purple-400/40 text-purple-200 font-bold text-xs leading-relaxed">
+              <div className="p-3.5 rounded-2xl bg-purple-950/80 border border-purple-400/40 text-purple-200 font-bold text-xs sm:text-sm leading-relaxed">
                 {activeDemo.formula}
               </div>
               <span className="text-[10px] text-purple-200/80 font-semibold mt-3 block">
@@ -696,11 +898,11 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
             </div>
 
             {/* KÜRE 3: PRATİK KONUŞMA PÜF NOKTASI KÜRESİ */}
-            <div className="p-6 rounded-[32px] bg-gradient-to-b from-[#251354]/90 to-[#190d3d]/95 border-2 border-cyan-400/40 shadow-xl flex flex-col justify-center">
+            <div className="p-6 sm:p-7 rounded-[32px] bg-gradient-to-b from-[#251354]/95 to-[#190d3d]/95 border-2 border-cyan-400/40 shadow-xl flex flex-col justify-center">
               <span className="text-[10px] font-black text-cyan-300 uppercase tracking-wider block mb-2">
                 3. PRATİK KONUŞMA PÜF NOKTASI
               </span>
-              <div className="p-3.5 rounded-2xl bg-cyan-950/80 border border-cyan-400/40 text-cyan-100 font-semibold text-xs leading-relaxed">
+              <div className="p-3.5 rounded-2xl bg-cyan-950/80 border border-cyan-400/40 text-cyan-100 font-semibold text-xs sm:text-sm leading-relaxed">
                 {activeDemo.tip}
               </div>
               <span className="text-[10px] text-cyan-200/80 font-semibold mt-3 block">
@@ -710,41 +912,41 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
           </div>
         </section>
 
-        {/* ==================== 5. DAĞILMIŞ YUVARLAK ALANLAR: İKİ ZIT KOZMİK YILDIZ SİSTEMİ ==================== */}
-        <section className="w-full max-w-4xl my-8 text-center">
+        {/* ==================== 6. KÖK NEDEN ÇÖZÜMÜ: ESKİ DÜNYA VS CHIRMO SÜPERNOVASI ==================== */}
+        <section className="w-full max-w-5xl my-10 text-center">
           <div className="mb-6">
             <span className="text-[10px] font-black uppercase tracking-widest text-pink-400">
               KÖK NEDEN ÇÖZÜMÜ
             </span>
-            <h3 className="text-2xl font-black text-white mt-1">
+            <h3 className="text-2xl sm:text-3xl font-black text-white mt-1">
               Neden Yıllardır Konuşamıyoruz?
             </h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-left text-xs">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left text-xs sm:text-sm">
             {/* KARA DELİK BULUTSUSU */}
-            <div className="p-6 rounded-[36px] bg-gradient-to-br from-rose-950/70 via-[#260a21]/90 to-rose-950/50 border-2 border-rose-500/50 shadow-xl text-rose-200">
-              <div className="w-10 h-10 rounded-full bg-rose-900/70 border border-rose-400/60 flex items-center justify-center text-xl mb-3">
+            <div className="p-7 rounded-[36px] bg-gradient-to-br from-rose-950/70 via-[#260a21]/90 to-rose-950/50 border-2 border-rose-500/50 shadow-xl text-rose-200">
+              <div className="w-12 h-12 rounded-2xl bg-rose-900/70 border border-rose-400/60 flex items-center justify-center text-2xl mb-3 shadow-inner">
                 ❌
               </div>
-              <div className="font-black text-sm text-rose-300 mb-1.5">
+              <div className="font-black text-base text-rose-300 mb-2">
                 Geleneksel Kurs & Kitap Çıkmazı
               </div>
-              <p className="leading-relaxed">
-                Yıllarca Tense formülleri ve kurallar ezberletilir; hata yapınca küçük düşme korkusuyla konuşma refleksi kilitlenir.
+              <p className="leading-relaxed text-rose-200/90 font-medium">
+                Yıllarca Tense formülleri ve kurallar ezberletilir; hata yapınca küçük düşme korkusuyla zihindeki konuşma refleksi kilitlenir. Yıllar geçse de cümle ağızdan dökülemez.
               </p>
             </div>
 
             {/* IŞILTILI SÜPERNOVA GALAKSİSİ */}
-            <div className="p-6 rounded-[36px] bg-gradient-to-br from-emerald-950/70 via-[#0c292c]/90 to-teal-950/50 border-2 border-emerald-400/60 shadow-xl text-emerald-200">
-              <div className="w-10 h-10 rounded-full bg-emerald-900/70 border border-emerald-400/60 flex items-center justify-center text-xl mb-3">
+            <div className="p-7 rounded-[36px] bg-gradient-to-br from-emerald-950/70 via-[#0c292c]/90 to-teal-950/50 border-2 border-emerald-400/60 shadow-xl text-emerald-200">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-900/70 border border-emerald-400/60 flex items-center justify-center text-2xl mb-3 shadow-inner">
                 ✅
               </div>
-              <div className="font-black text-sm text-emerald-300 mb-1.5">
+              <div className="font-black text-base text-emerald-300 mb-2">
                 Chirmo Zihinsel Lego & AI Koçluğu
               </div>
-              <p className="leading-relaxed">
-                Cümle Kılıcı ve Soru Asası ile zihinsel Lego kalıpları ve 7/24 yargılamayan canlı sesli AI koçluğuyla akıcı konuşma.
+              <p className="leading-relaxed text-emerald-200/90 font-medium">
+                Cümle Kılıcı ve Soru Asası ile zihinsel Lego kalıpları birleştirilir. 7/24 yargılamayan, sabırlı canlı sesli AI koçluğuyla korkusuzca, akıcı ve anında konuşulur.
               </p>
             </div>
           </div>
@@ -762,11 +964,11 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
         </div>
       </main>
 
-      {/* ==================== 6. ZARİF ALT KOZMİK FOOTER ==================== */}
-      <footer className="relative z-20 px-6 py-4 border-t border-purple-500/20 text-xs text-purple-300/70 flex flex-col sm:flex-row items-center justify-between gap-2 shrink-0 bg-[#12072e]/80 backdrop-blur-md">
+      {/* ==================== 7. ZARİF ALT KOZMİK FOOTER ==================== */}
+      <footer className="relative z-20 px-6 py-5 border-t border-purple-500/20 text-xs text-purple-300/70 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0 bg-[#12072e]/80 backdrop-blur-md">
         <div className="flex items-center space-x-2">
           <Shield className="w-4 h-4 text-emerald-400" />
-          <span>Sıfır Kişisel Veri & Tarayıcı Tabanlı Güvenli Konuşma Alanı</span>
+          <span>Sıfır Kişisel Veri Saklama • Tarayıcı Tabanlı Güvenli Konuşma Alanı</span>
         </div>
         <div>© {new Date().getFullYear()} Chirmo. Tüm hakları saklıdır.</div>
       </footer>
