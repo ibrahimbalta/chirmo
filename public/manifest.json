@@ -1,7 +1,7 @@
 {
-  "name": "Chirmo — İngilizce Öğrenen Arama Motoru & Çalışma Alanı",
+  "name": "Chirmo — AI İngilizce & Almanca Konuşma Robotu",
   "short_name": "Chirmo",
-  "description": "Gezinirken günde 5 dakika pratikle sıfırdan İngilizce konuşturan yapay zekâlı arama motoru, oyun parkı ve iş takibi.",
+  "description": "Gramer ezberi yok! 30 günde İngilizce ve Almanca konuşma refleksi kazanın. Gerçek yaşam diyalog simülatörü ve kişiye özel öğrenme parkuru.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
