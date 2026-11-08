@@ -251,15 +251,23 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
       <header className="sticky top-0 z-50 w-full bg-[#180C3D]/60 backdrop-blur-2xl border-b border-purple-400/20 shadow-[0_4px_30px_rgba(0,0,0,0.35)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-18 flex items-center justify-between gap-3">
           
-          {/* Sol: Sadece Chirmo yazısı */}
+          {/* Sol: 2. Görseldeki Chirmo Logosu */}
           <div
             onClick={onEnterStudentPanel}
             className="flex items-center cursor-pointer group shrink-0"
             title="Chirmo"
           >
-            <span className="text-2xl sm:text-3xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-pink-300 to-amber-300 hover:scale-105 transition-transform duration-200">
-              Chirmo
-            </span>
+            <img
+              src="./chirmo-header-brand-logo.png"
+              alt="Chirmo"
+              className="h-10 sm:h-12 w-auto object-contain filter drop-shadow-[0_4px_16px_rgba(168,85,247,0.4)] group-hover:scale-105 active:scale-95 transition-all duration-200"
+              onError={(e) => {
+                const target = e.currentTarget;
+                if (!target.src.endsWith('/chirmo-logo.png')) {
+                  target.src = './chirmo-logo.png';
+                }
+              }}
+            />
           </div>
 
           {/* Sağ Eylemler: Dil Seçici & Hızlı Giriş Butonu */}
