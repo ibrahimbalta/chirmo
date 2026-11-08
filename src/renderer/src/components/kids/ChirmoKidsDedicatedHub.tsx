@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
+  Crown,
+  Bell,
   Sparkles,
   Volume2,
   Heart,
@@ -150,10 +152,34 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
   // Gamification State
   const [stars, setStars] = useState<number>(() => {
     const saved = localStorage.getItem('chirmo_kids_stars');
-    return saved ? parseInt(saved, 10) : 24;
+    return saved ? parseInt(saved, 10) : 245;
   });
   const [streakDays, setStreakDays] = useState<number>(4);
   const [lastAwardMessage, setLastAwardMessage] = useState<string | null>(null);
+
+  // Lingoria Fantastic RPG State
+  const [lingoriaXp, setLingoriaXp] = useState<number>(() => {
+    const saved = localStorage.getItem('lingoria_xp');
+    return saved ? parseInt(saved, 10) : 1250;
+  });
+  const [completedQuests, setCompletedQuests] = useState<number>(() => {
+    const saved = localStorage.getItem('lingoria_completed_quests');
+    return saved ? parseInt(saved, 10) : 5;
+  });
+  const [isQuestModalOpen, setIsQuestModalOpen] = useState<boolean>(false);
+  const [questCollectedWords, setQuestCollectedWords] = useState<string[]>([]);
+  const [isQuestFinished, setIsQuestFinished] = useState<boolean>(false);
+
+  const playerLevel = Math.floor(lingoriaXp / 500) + 1;
+  const currentLevelXp = lingoriaXp % 500;
+
+  useEffect(() => {
+    localStorage.setItem('lingoria_xp', lingoriaXp.toString());
+  }, [lingoriaXp]);
+
+  useEffect(() => {
+    localStorage.setItem('lingoria_completed_quests', completedQuests.toString());
+  }, [completedQuests]);
 
   // Mini-Game 1: Listening Detective State
   const [quizIndex, setQuizIndex] = useState<number>(0);
@@ -377,9 +403,11 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
   };
 
   const handleAwardStars = (amount: number, reason: string) => {
+    const xpBonus = amount * 10;
     setStars((prev) => prev + amount);
-    AnalyticsService.logGamePlayed(amount * 10);
-    setLastAwardMessage(`🎉 +${amount} Yıldız! ${reason}`);
+    setLingoriaXp((prev) => prev + xpBonus);
+    AnalyticsService.logGamePlayed(xpBonus);
+    setLastAwardMessage(`🎉 +${amount} Yıldız & +${xpBonus} XP! ${reason}`);
     setTimeout(() => {
       setLastAwardMessage(null);
     }, 3200);
@@ -1819,104 +1847,479 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
   };
 
   return (
-    <div className="w-full h-full flex flex-col bg-gradient-to-b from-amber-50/70 via-pink-50/40 to-purple-50/70 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 overflow-y-auto p-3 sm:p-6 pb-28 select-none">
-      <div className="max-w-6xl mx-auto w-full space-y-6">
+    <div className="w-full h-full flex flex-col bg-gradient-to-b from-[#1a103c] via-[#241442] to-[#120b2e] dark:from-[#0d0722] dark:via-[#160c33] dark:to-[#080417] text-white overflow-y-auto p-2 sm:p-4 pb-28 select-none">
+      <div className="max-w-7xl mx-auto w-full space-y-5">
 
-        {/* ==================== 1. ŞENLİKLİ KAHRAMAN BAŞLIK & MASKOT BARI ==================== */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-amber-400 via-pink-500 to-purple-600 text-white shadow-xl p-3.5 sm:p-4 border border-white/20">
-          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
-            {/* Sol: Maskot ve Başlık */}
-            <div className="flex items-start sm:items-center space-x-3">
-              <div className="relative shrink-0">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/25 backdrop-blur-md p-1.5 flex items-center justify-center text-2xl sm:text-3xl shadow-md border border-white/30 animate-pulse">
-                  🎈
+        {/* ==================== 1. LINGORIA TOP NAVIGATION & BRAND BAR ==================== */}
+        <header className="rounded-3xl bg-white/10 dark:bg-black/30 backdrop-blur-xl border border-white/20 shadow-2xl px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+          {/* Sol: Lingoria by Chirmo Kids Logo */}
+          <div className="flex items-center space-x-3 cursor-pointer group" onClick={() => setActiveTab('games')}>
+            <div className="relative">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-400 via-rose-500 to-purple-600 p-0.5 shadow-lg group-hover:scale-105 transition-transform flex items-center justify-center">
+                <div className="w-full h-full bg-[#241442] rounded-[14px] flex items-center justify-center text-2xl">
+                  👑
                 </div>
-                <span className="absolute -bottom-1 -right-1 px-1.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[9px] font-black shadow-xs">
-                  Chirmo Jr.
-                </span>
               </div>
-
-              <div className="space-y-0.5">
-                <div className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-xs text-[10px] font-black uppercase tracking-wider">
-                  <Sparkles className="w-3 h-3 text-amber-300" />
-                  <span>Çocuklar İçin Yeni Nesil {targetLang === 'de' ? 'Almanca' : 'İngilizce'} Dünyası</span>
-                </div>
-                <h1 className="text-xl sm:text-2xl font-black tracking-tight drop-shadow-xs">
-                  Eğlen, Oyna ve {targetLang === 'de' ? 'Almanca' : 'İngilizce'} Konuş! 🌟
-                </h1>
-                <p className="text-xs text-pink-100 font-medium max-w-xl line-clamp-1 sm:line-clamp-none">
-                  Sıkıcı gramer ve kurallar yok! Tıpkı ana dilini öğrenir gibi: Duyarak, lego gibi birleştirerek ve oyunlarla konuşuyoruz.
-                </p>
-              </div>
+              <Sparkles className="w-4 h-4 text-amber-300 absolute -top-1 -right-1 animate-pulse" />
             </div>
 
-            {/* Sağ: Dil Seçimi, Yıldızlar, Seri ve Geri Dön Butonu */}
-            <div className="flex flex-wrap items-center gap-2.5 self-start md:self-auto">
-              {/* Çocuk Dostu Dil Seçici (🇬🇧 İngilizce / 🇩🇪 Almanca) */}
-              <div className="flex items-center bg-black/25 p-1 rounded-2xl backdrop-blur-md border border-white/20 shadow-md">
-                <button
-                  type="button"
-                  onClick={() => handleSwitchLanguage('en')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all flex items-center space-x-1.5 cursor-pointer ${
-                    targetLang === 'en'
-                      ? 'bg-amber-400 text-slate-950 shadow-md scale-105'
-                      : 'text-white/80 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  <span className="text-base">🇬🇧</span>
-                  <span>İngilizce</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleSwitchLanguage('de')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all flex items-center space-x-1.5 cursor-pointer ${
-                    targetLang === 'de'
-                      ? 'bg-amber-400 text-slate-950 shadow-md scale-105'
-                      : 'text-white/80 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  <span className="text-base">🇩🇪</span>
-                  <span>Almanca</span>
-                </button>
+            <div>
+              <div className="flex items-center space-x-1.5">
+                <span className="text-2xl sm:text-3xl font-black tracking-wider bg-gradient-to-r from-amber-300 via-yellow-200 to-pink-300 bg-clip-text text-transparent drop-shadow-md">
+                  Lingoria
+                </span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 font-extrabold border border-amber-400/30">
+                  RPG
+                </span>
               </div>
-
-              {onBackToMain && (
-                <button
-                  type="button"
-                  onClick={onBackToMain}
-                  className="px-3.5 py-2 rounded-2xl bg-white/20 hover:bg-white/30 text-white text-xs font-black transition-all flex items-center space-x-1 cursor-pointer border border-white/25 shadow-xs"
-                  title="Ana Arama & Stüdyoya Dön"
-                >
-                  <span>← Ana Stüdyo</span>
-                </button>
-              )}
-
-              <div className="flex items-center space-x-2 bg-black/25 px-4 py-2 rounded-2xl backdrop-blur-md border border-white/20">
-                <Flame className="w-5 h-5 text-amber-400 fill-amber-400 animate-bounce" />
-                <div>
-                  <div className="text-[10px] font-black uppercase text-amber-300">Günlük Seri</div>
-                  <div className="text-sm font-black text-white">{streakDays} Gün 🔥</div>
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-2 bg-amber-400/90 text-slate-950 px-4 py-2 rounded-2xl shadow-lg border border-amber-300 font-black">
-                <Star className="w-5 h-5 text-amber-900 fill-amber-900" />
-                <div>
-                  <div className="text-[10px] uppercase tracking-wider text-amber-950/80">Yıldızlarım</div>
-                  <div className="text-base font-black leading-none">{stars} ⭐</div>
-                </div>
+              <div className="text-[11px] font-black text-pink-200/90 tracking-wide flex items-center space-x-1">
+                <span>by Chirmo Kids</span>
+                <span className="text-amber-300">★</span>
+                <span className="text-white/60 font-medium">Fantastik Dil Dünyası</span>
               </div>
             </div>
           </div>
 
-          {/* Tebrik Mesajı Bildirimi (Canlı Pop-up) */}
-          {lastAwardMessage && (
-            <div className="mt-3 py-2 px-4 rounded-xl bg-white/95 text-purple-900 font-black text-xs shadow-md animate-bounce flex items-center justify-between">
-              <span>{lastAwardMessage}</span>
-              <span className="text-[10px] opacity-75">Tebrikler Şampiyon!</span>
+          {/* Orta: Fantastik Navigasyon Butonları */}
+          <nav className="flex items-center flex-wrap gap-1.5 bg-black/30 p-1 rounded-2xl border border-white/10">
+            {[
+              { id: 'games', label: 'Ana Sayfa', icon: '🏠', tab: 'games' },
+              { id: 'games', label: 'Oyunlar', icon: '🎮', tab: 'games' },
+              { id: 'stories', label: 'Hikâyeler', icon: '📖', tab: 'stories' },
+              { id: 'cards', label: 'Kelime Dünyası', icon: '⭐', tab: 'cards' },
+              { id: 'songs', label: 'Şarkılar', icon: '🎵', tab: 'songs' },
+              { id: 'stickers', label: 'Başarılar', icon: '🏆', tab: 'stickers' }
+            ].map((navItem, idx) => {
+              const isActive = activeTab === navItem.tab && (idx !== 0 || activeTab === 'games');
+              return (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setActiveTab(navItem.tab as any)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center space-x-1.5 ${
+                    isActive
+                      ? 'bg-gradient-to-r from-purple-600 to-pink-500 text-white shadow-md scale-105'
+                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  <span className="text-sm">{navItem.icon}</span>
+                  <span className="hidden md:inline">{navItem.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+
+          {/* Sağ: Oyuncu Profili & Dil & Geri Butonu */}
+          <div className="flex items-center space-x-2.5">
+            {/* Dil Seçimi (🇬🇧 İngilizce / 🇩🇪 Almanca) */}
+            <div className="flex items-center bg-black/40 p-1 rounded-2xl border border-white/15">
+              <button
+                type="button"
+                onClick={() => handleSwitchLanguage('en')}
+                className={`px-2.5 py-1 rounded-xl text-xs font-black transition-all flex items-center space-x-1 cursor-pointer ${
+                  targetLang === 'en'
+                    ? 'bg-amber-400 text-slate-950 shadow-md font-black scale-102'
+                    : 'text-white/70 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                <span>🇬🇧</span>
+                <span className="hidden sm:inline">İngilizce</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSwitchLanguage('de')}
+                className={`px-2.5 py-1 rounded-xl text-xs font-black transition-all flex items-center space-x-1 cursor-pointer ${
+                  targetLang === 'de'
+                    ? 'bg-amber-400 text-slate-950 shadow-md font-black scale-102'
+                    : 'text-white/70 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                <span>🇩🇪</span>
+                <span className="hidden sm:inline">Almanca</span>
+              </button>
             </div>
-          )}
+
+            {/* Profil Avatarı & Seviye */}
+            <div className="flex items-center space-x-2 bg-gradient-to-r from-purple-900/60 to-indigo-900/60 border border-purple-400/30 px-3 py-1.5 rounded-2xl shadow-inner">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-400 to-pink-500 p-0.5 shadow-sm">
+                <div className="w-full h-full rounded-full bg-[#1e113a] flex items-center justify-center text-sm">
+                  🧑‍🚀
+                </div>
+              </div>
+              <div className="hidden sm:block">
+                <div className="text-[10px] uppercase font-black text-amber-300 leading-none">Maceracı</div>
+                <div className="text-xs font-black text-white leading-tight">Seviye {playerLevel}</div>
+              </div>
+            </div>
+
+            {/* Yıldızlar & XP Göstergeleri */}
+            <div className="flex items-center space-x-1.5 bg-amber-400/90 text-slate-950 px-3 py-1.5 rounded-2xl shadow-md font-black text-xs">
+              <Star className="w-4 h-4 fill-amber-950 text-amber-950" />
+              <span>{stars}</span>
+            </div>
+
+            <div className="hidden md:flex items-center space-x-1.5 bg-purple-500/80 text-white px-3 py-1.5 rounded-2xl shadow-md font-black text-xs border border-purple-300/30">
+              <Zap className="w-4 h-4 text-yellow-300" />
+              <span>{lingoriaXp} XP</span>
+            </div>
+
+            {onBackToMain && (
+              <button
+                type="button"
+                onClick={onBackToMain}
+                className="px-3 py-1.5 rounded-2xl bg-white/15 hover:bg-white/25 text-white text-xs font-bold transition-all border border-white/20 cursor-pointer"
+                title="Ana Arama & Stüdyoya Dön"
+              >
+                ← Stüdyo
+              </button>
+            )}
+          </div>
+        </header>
+
+        {/* ==================== 2. FANTASTİK ADA DÜNYASI VE KEŞİF HARİTASI (WORLD MAP) ==================== */}
+        <div className="relative rounded-3xl overflow-hidden shadow-2xl border-2 border-purple-500/40 min-h-[460px] sm:min-h-[520px] flex flex-col justify-between p-4 sm:p-6 bg-cover bg-center" style={{ backgroundImage: "url('/lingoria-world-map.jpg')" }}>
+          {/* Karanlık/Renk Filtresi overlay for readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#160c33]/90 via-transparent to-[#100726]/40 pointer-events-none" />
+
+          {/* Harita Üst Barı: Karakter Baloncuğu & Günün Görevi */}
+          <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+            {/* Sol: Lingo & Zippy Karakter Rehberi Konuşma Baloncuğu */}
+            <div className="flex items-start space-x-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md text-slate-900 dark:text-white p-3.5 sm:p-4 rounded-3xl shadow-2xl border-2 border-purple-300 dark:border-purple-800 max-w-md animate-fade-in">
+              <div className="text-3xl sm:text-4xl shrink-0 animate-bounce">
+                🦊
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center space-x-1.5">
+                  <span className="text-xs font-black text-purple-600 dark:text-purple-400 uppercase tracking-wide">
+                    Lingo & Zippy Rehberiniz
+                  </span>
+                  <span className="text-amber-400">✨</span>
+                </div>
+                <div className="text-xs sm:text-sm font-black text-slate-800 dark:text-white">
+                  "Merhaba Maceracı! Haydi, Lingoria'da yeni bir görev başlatalım!"
+                </div>
+                <div className="flex items-center space-x-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => handleSpeak(targetLang === 'de' ? 'Hallo kleiner Entdecker! Willkommen in Lingoria!' : 'Hello brave adventurer! Welcome to Lingoria!')}
+                    className="px-2.5 py-1 rounded-xl bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 text-[11px] font-bold flex items-center space-x-1 hover:bg-purple-200 cursor-pointer"
+                  >
+                    <Volume2 className="w-3.5 h-3.5" />
+                    <span>Selamı Dinle</span>
+                  </button>
+                  <span className="text-[10px] text-slate-500 font-semibold">
+                    {targetLang === 'de' ? '🇩🇪 Almanca Macera' : '🇬🇧 İngilizce Macera'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Sağ Üst: Günün Görevi Yüzen Kutusu */}
+            <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md text-slate-900 dark:text-white p-4 rounded-3xl shadow-2xl border-2 border-amber-300 dark:border-amber-500/50 max-w-xs w-full space-y-2">
+              <div className="flex items-center justify-between border-b border-amber-100 dark:border-slate-800 pb-2">
+                <div className="flex items-center space-x-1.5 text-amber-600 dark:text-amber-400 text-xs font-black">
+                  <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  <span>Günün Görevi</span>
+                </div>
+                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300">
+                  +50 XP ⭐
+                </span>
+              </div>
+
+              <div className="flex items-center space-x-2.5">
+                <div className="text-3xl shrink-0">🎁</div>
+                <div>
+                  <div className="text-xs font-black text-slate-800 dark:text-white">
+                    {targetLang === 'de' ? 'Ormandaki 5 kayıp kelimeyi bul!' : 'Ormandaki 5 kayıp kelimeyi bul!'}
+                  </div>
+                  <div className="text-[10px] text-slate-500 font-medium">
+                    Doğru kartları seç, sesleri dinle ve ödülü kap!
+                  </div>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setQuestCollectedWords([]);
+                  setIsQuestFinished(false);
+                  setIsQuestModalOpen(true);
+                }}
+                className="w-full py-2 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white font-black text-xs shadow-md transition-all flex items-center justify-center space-x-1 cursor-pointer active:scale-95"
+              >
+                <span>Göreve Başla</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Harita Alt Barı: 8 Fantastik Bölge Keşif Butonları */}
+          <div className="relative z-10 pt-8 sm:pt-16 pb-2">
+            <div className="text-center mb-3">
+              <span className="px-4 py-1 rounded-full bg-black/60 text-amber-300 text-xs font-black backdrop-blur-md border border-amber-400/40 shadow-lg">
+                🗺️ Keşfetmek İstediğin Lingoria Bölgesini Seç:
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
+              {[
+                { id: 'forest', name: 'Kelime Ormanı', tab: 'cards', icon: '🍃', desc: 'Kelime Avı' },
+                { id: 'village', name: 'Konuşma Köyü', tab: 'chat', icon: '💬', desc: 'Diyalog' },
+                { id: 'castle', name: 'Gramer Kalesi', tab: 'patterns', icon: '🏰', desc: 'Cümle Legosu' },
+                { id: 'valley', name: 'Hikâye Vadisi', tab: 'stories', icon: '⭐', tabTarget: 'stories', desc: 'Masallar' },
+                { id: 'animals', name: 'Hayvanlar Adası', tab: 'animals', icon: '🐾', desc: 'Safari' },
+                { id: 'colors', name: 'Renkler Şehri', tab: 'colors', icon: '🎨', desc: 'Boya & Konuş' },
+                { id: 'time', name: 'Zaman Kulesi', tab: 'games', icon: '⏰', desc: 'Saatler' },
+                { id: 'port', name: 'Macera Limanı', tab: 'games', icon: '⚓', desc: 'Quizz & Oyun' }
+              ].map((region) => {
+                return (
+                  <button
+                    key={region.id}
+                    type="button"
+                    onClick={() => {
+                      setActiveTab(region.tab as any);
+                      handleAwardStars(5, `${region.name} Bölgesini Keşfettin!`);
+                    }}
+                    className="p-2 sm:p-2.5 rounded-2xl bg-white/90 dark:bg-slate-900/90 hover:bg-white text-slate-900 dark:text-white backdrop-blur-md border-2 border-purple-300 dark:border-purple-600 shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 flex flex-col items-center justify-center text-center space-y-1 cursor-pointer group"
+                  >
+                    <span className="text-xl sm:text-2xl group-hover:scale-115 transition-transform">{region.icon}</span>
+                    <span className="text-[11px] font-black leading-tight line-clamp-1">{region.name}</span>
+                    <span className="text-[9px] font-bold text-purple-600 dark:text-purple-400 line-clamp-1">
+                      {region.desc} ›
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
+
+        {/* ==================== 3. GÜNÜN KELİMESİ, POPÜLER OYUNLAR VE İLERLEME VİTRİNİ ==================== */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-3.5">
+          {/* Sol: 👑 Bugünün Kelimesi */}
+          <div className="md:col-span-3 rounded-3xl bg-white/95 dark:bg-slate-900/95 text-slate-900 dark:text-white p-4 shadow-xl border-2 border-purple-200 dark:border-slate-800 flex flex-col justify-between space-y-3">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+              <div className="flex items-center space-x-1.5 text-xs font-black text-amber-500">
+                <span>👑</span>
+                <span>Bugünün Kelimesi</span>
+              </div>
+              <span className="text-[10px] font-extrabold text-pink-500 bg-pink-100 dark:bg-pink-950 px-2 py-0.5 rounded-full">
+                {targetLang === 'de' ? 'Almanca' : 'İngilizce'}
+              </span>
+            </div>
+
+            <div className="flex items-center space-x-3.5 my-auto">
+              <div className="w-16 h-16 rounded-2xl bg-rose-100 dark:bg-rose-950 flex items-center justify-center text-4xl shadow-md shrink-0">
+                🍎
+              </div>
+              <div className="space-y-0.5">
+                <div className="text-xl font-black text-slate-900 dark:text-white flex items-center space-x-1.5">
+                  <span>{targetLang === 'de' ? 'Der Apfel' : 'Apple'}</span>
+                </div>
+                <div className="text-xs font-bold text-slate-400">
+                  {targetLang === 'de' ? '/ˈapfl̩/' : '/ˈæpəl/'}
+                </div>
+                <div className="text-xs font-black text-purple-600 dark:text-purple-400">
+                  Elma
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => handleSpeak(targetLang === 'de' ? 'Der Apfel ist rot und lecker' : 'The apple is red and sweet')}
+              className="w-full py-2 rounded-xl bg-purple-100 dark:bg-purple-950/80 hover:bg-purple-200 text-purple-700 dark:text-purple-300 font-black text-xs flex items-center justify-center space-x-1.5 cursor-pointer transition-all active:scale-95"
+            >
+              <Volume2 className="w-4 h-4 text-purple-600" />
+              <span>Chirmo ile Dinle & Tekrar Et</span>
+            </button>
+          </div>
+
+          {/* Orta: 🎮 Popüler Oyunlar */}
+          <div className="md:col-span-6 rounded-3xl bg-white/95 dark:bg-slate-900/95 text-slate-900 dark:text-white p-4 shadow-xl border-2 border-purple-200 dark:border-slate-800 flex flex-col justify-between space-y-3">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+              <div className="flex items-center space-x-1.5 text-xs font-black text-purple-600 dark:text-purple-400">
+                <Gamepad2 className="w-4 h-4" />
+                <span>Popüler Oyunlar</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setActiveTab('games')}
+                className="text-[11px] font-black text-pink-600 hover:text-pink-700 cursor-pointer flex items-center space-x-0.5"
+              >
+                <span>Tümünü Gör</span>
+                <span>→</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {[
+                { title: 'Kelime Avı', emoji: '🃏', color: 'from-amber-400 to-orange-500', tab: 'games' },
+                { title: 'Kayıp Kelimeler', emoji: '🧩', color: 'from-blue-400 to-indigo-500', tab: 'games' },
+                { title: 'Karakterlerle Konuş', emoji: '🐱', color: 'from-pink-400 to-rose-500', tab: 'chat' },
+                { title: 'Büyülü Cümleler', emoji: '📖', color: 'from-purple-400 to-indigo-600', tab: 'patterns' }
+              ].map((game, i) => (
+                <div
+                  key={i}
+                  className="rounded-2xl p-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-between text-center space-y-1.5 hover:border-purple-400 transition-all shadow-xs"
+                >
+                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-tr ${game.color} text-white flex items-center justify-center text-xl shadow-xs`}>
+                    {game.emoji}
+                  </div>
+                  <div className="text-[11px] font-black text-slate-800 dark:text-white line-clamp-1">
+                    {game.title}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab(game.tab as any)}
+                    className="w-full py-1 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-black text-[10px] cursor-pointer transition-transform active:scale-95"
+                  >
+                    Oyna ▶
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Sağ: 📊 İlerlemen & Seviye */}
+          <div className="md:col-span-3 rounded-3xl bg-white/95 dark:bg-slate-900/95 text-slate-900 dark:text-white p-4 shadow-xl border-2 border-purple-200 dark:border-slate-800 flex flex-col justify-between space-y-3">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+              <div className="flex items-center space-x-1.5 text-xs font-black text-indigo-600 dark:text-indigo-400">
+                <Trophy className="w-4 h-4" />
+                <span>İlerlemen</span>
+              </div>
+              <div className="w-7 h-7 rounded-xl bg-amber-400 text-slate-950 font-black text-xs flex items-center justify-center shadow-xs">
+                S{playerLevel}
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between text-xs font-black">
+                <span className="text-slate-600 dark:text-slate-400">XP Barı:</span>
+                <span className="text-purple-600 font-extrabold">{currentLevelXp} / 500 XP</span>
+              </div>
+              <div className="w-full h-3 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-500"
+                  style={{ width: `${Math.min(100, Math.max(5, (currentLevelXp / 500) * 100))}%` }}
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-2 text-xs font-bold text-slate-700 dark:text-slate-300">
+              <Award className="w-4 h-4 text-amber-500" />
+              <span>{completedQuests} / 8 Görev Tamamlandı</span>
+            </div>
+
+            <div className="p-2 rounded-xl bg-gradient-to-r from-amber-100 to-pink-100 dark:from-purple-950 dark:to-pink-950 text-purple-900 dark:text-pink-200 text-center font-black text-xs flex items-center justify-center space-x-1">
+              <span>👑</span>
+              <span>Harika gidiyorsun!</span>
+              <span>✨</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Tebrik Mesajı Bildirimi (Canlı Pop-up) */}
+        {lastAwardMessage && (
+          <div className="py-2 px-4 rounded-2xl bg-white/95 dark:bg-slate-900/95 text-purple-900 dark:text-purple-200 font-black text-xs shadow-xl border-2 border-purple-400 animate-bounce flex items-center justify-between">
+            <span>{lastAwardMessage}</span>
+            <span className="text-[10px] opacity-75">Tebrikler Maceracı Şampiyon!</span>
+          </div>
+        )}
+
+        {/* ==================== GÜNÜN GÖREVİ İNTERAKTİF MODAL ==================== */}
+        {isQuestModalOpen && (
+          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
+            <div className="max-w-lg w-full bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-2xl border-2 border-amber-400 space-y-4 text-slate-900 dark:text-white">
+              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                <div className="flex items-center space-x-2.5">
+                  <span className="text-3xl">🌲</span>
+                  <div>
+                    <h3 className="text-base sm:text-lg font-black text-purple-700 dark:text-purple-300">
+                      Ormandaki 5 Kayıp Kelimeyi Bul!
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      Kelimelere tıkla, sesini dinle ve Lingoria ormanını aydınlat!
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsQuestModalOpen(false)}
+                  className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-600 flex items-center justify-center cursor-pointer font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* 5 Kelime Kartı */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                {[
+                  { id: 'qw1', en: 'Apple', de: 'Der Apfel', tr: 'Elma', emoji: '🍎' },
+                  { id: 'qw2', en: 'Tree', de: 'Der Baum', tr: 'Ağaç', emoji: '🌳' },
+                  { id: 'qw3', en: 'Bird', de: 'Der Vogel', tr: 'Kuş', emoji: '🐦' },
+                  { id: 'qw4', en: 'Flower', de: 'Die Blume', tr: 'Çiçek', emoji: '🌸' },
+                  { id: 'qw5', en: 'Butterfly', de: 'Der Schmetterling', tr: 'Kelebek', emoji: '🦋' }
+                ].map((item) => {
+                  const isCollected = questCollectedWords.includes(item.id);
+                  const wordText = targetLang === 'de' ? item.de : item.en;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => {
+                        handleSpeak(wordText);
+                        if (!isCollected) {
+                          const updated = [...questCollectedWords, item.id];
+                          setQuestCollectedWords(updated);
+                          if (updated.length === 5) {
+                            setIsQuestFinished(true);
+                            handleAwardStars(20, 'Günün Görevi Tamamlandı! Ormanın 5 Kayıp Kelimesi Bulundu!');
+                            setLingoriaXp((prev) => prev + 50);
+                            setCompletedQuests((prev) => Math.min(8, prev + 1));
+                            handleSpeak(targetLang === 'de' ? 'Fantastisch! Du hast alle Wörter gefunden!' : 'Awesome! You found all five words!');
+                          }
+                        }
+                      }}
+                      className={`p-3.5 rounded-2xl border-2 transition-all flex flex-col items-center justify-center space-y-1 text-center cursor-pointer ${
+                        isCollected
+                          ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-500 scale-102 ring-2 ring-emerald-300'
+                          : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-purple-400 hover:scale-105'
+                      }`}
+                    >
+                      <span className="text-3xl">{item.emoji}</span>
+                      <span className="text-xs font-black">{wordText}</span>
+                      <span className="text-[10px] text-slate-500 font-bold">{item.tr}</span>
+                      {isCollected && (
+                        <span className="text-[10px] text-emerald-600 font-black">✓ Bulundu</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {isQuestFinished ? (
+                <div className="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-center space-y-1.5 animate-bounce">
+                  <div className="text-lg font-black">🎉 Görevi Başarıyla Tamamladın! 🎉</div>
+                  <div className="text-xs font-bold">
+                    Tebrikler! +50 XP & +20 Yıldız kazandın. Orman aydınlandı!
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsQuestModalOpen(false)}
+                    className="mt-2 px-5 py-1.5 rounded-xl bg-white text-emerald-800 font-black text-xs cursor-pointer shadow-md"
+                  >
+                    Tamamdır! 🚀
+                  </button>
+                </div>
+              ) : (
+                <div className="text-center text-xs text-slate-500 font-bold">
+                  Toplanan Kelimeler: {questCollectedWords.length} / 5
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* ==================== 2. YAŞ GRUBU KADEMELERİ (4 ÇOCUK DÜNYASI) ==================== */}
         <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md p-2 rounded-3xl border-2 border-pink-100 dark:border-slate-800 shadow-sm">
