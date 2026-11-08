@@ -102,6 +102,8 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
   // Navigation & Age State
   const [selectedAge, setSelectedAge] = useState<AgeGroup>('5-7');
   const [targetLang, setTargetLang] = useState<SupportedLanguage>(() => TargetLanguageService.getTargetLanguage());
+  const [activeLevelId, setActiveLevelId] = useState<string | null>(null);
+  const [subGameTab, setSubGameTab] = useState<'memory' | 'detective' | 'puzzle' | 'voice'>('memory');
   const [activeTab, setActiveTab] = useState<
     'games' | 'cards' | 'simon' | 'stories' | 'patterns' | 'animals' | 'colors' | 'chat' | 'stickers' | 'songs'
   >('games');
@@ -1883,19 +1885,26 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
           {/* Orta: Fantastik Navigasyon Butonları */}
           <nav className="flex items-center flex-wrap gap-1.5 bg-black/30 p-1 rounded-2xl border border-white/10">
             {[
-              { id: 'games', label: 'Ana Sayfa', icon: '🏠', tab: 'games' },
+              { id: 'home', label: 'Ana Sayfa', icon: '🏠', isHome: true },
               { id: 'games', label: 'Oyunlar', icon: '🎮', tab: 'games' },
               { id: 'stories', label: 'Hikâyeler', icon: '📖', tab: 'stories' },
               { id: 'cards', label: 'Kelime Dünyası', icon: '⭐', tab: 'cards' },
               { id: 'songs', label: 'Şarkılar', icon: '🎵', tab: 'songs' },
               { id: 'stickers', label: 'Başarılar', icon: '🏆', tab: 'stickers' }
             ].map((navItem, idx) => {
-              const isActive = activeTab === navItem.tab && (idx !== 0 || activeTab === 'games');
+              const isActive = navItem.isHome ? activeLevelId === null : activeLevelId === navItem.tab;
               return (
                 <button
                   key={idx}
                   type="button"
-                  onClick={() => setActiveTab(navItem.tab as any)}
+                  onClick={() => {
+                    if (navItem.isHome) {
+                      setActiveLevelId(null);
+                    } else {
+                      setActiveLevelId(navItem.tab as any);
+                      setActiveTab(navItem.tab as any);
+                    }
+                  }}
                   className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center space-x-1.5 ${
                     isActive
                       ? 'bg-gradient-to-r from-purple-600 to-pink-500 text-white shadow-md scale-105'
@@ -2063,29 +2072,30 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
               {[
-                { id: 'forest', name: 'Kelime Ormanı', tab: 'cards', icon: '🍃', desc: 'Kelime Avı' },
-                { id: 'village', name: 'Konuşma Köyü', tab: 'chat', icon: '💬', desc: 'Diyalog' },
-                { id: 'castle', name: 'Gramer Kalesi', tab: 'patterns', icon: '🏰', desc: 'Cümle Legosu' },
-                { id: 'valley', name: 'Hikâye Vadisi', tab: 'stories', icon: '⭐', tabTarget: 'stories', desc: 'Masallar' },
-                { id: 'animals', name: 'Hayvanlar Adası', tab: 'animals', icon: '🐾', desc: 'Safari' },
-                { id: 'colors', name: 'Renkler Şehri', tab: 'colors', icon: '🎨', desc: 'Boya & Konuş' },
-                { id: 'time', name: 'Zaman Kulesi', tab: 'games', icon: '⏰', desc: 'Saatler' },
-                { id: 'port', name: 'Macera Limanı', tab: 'games', icon: '⚓', desc: 'Quizz & Oyun' }
+                { level: 1, id: 'forest', name: 'Kelime Ormanı', tab: 'cards', icon: '🍃', desc: 'Kelime Avı' },
+                { level: 2, id: 'village', name: 'Konuşma Köyü', tab: 'chat', icon: '💬', desc: 'Diyalog' },
+                { level: 3, id: 'castle', name: 'Gramer Kalesi', tab: 'patterns', icon: '🏰', desc: 'Cümle Legosu' },
+                { level: 4, id: 'valley', name: 'Hikâye Vadisi', tab: 'stories', icon: '⭐', tabTarget: 'stories', desc: 'Masallar' },
+                { level: 5, id: 'animals', name: 'Hayvanlar Adası', tab: 'animals', icon: '🐾', desc: 'Safari' },
+                { level: 6, id: 'colors', name: 'Renkler Şehri', tab: 'colors', icon: '🎨', desc: 'Boya & Konuş' },
+                { level: 7, id: 'time', name: 'Zaman Kulesi', tab: 'simon', icon: '⏰', desc: 'Saat & Simon' },
+                { level: 8, id: 'port', name: 'Macera Limanı', tab: 'games', icon: '⚓', desc: 'Quizz & Arenalar' }
               ].map((region) => {
                 return (
                   <button
                     key={region.id}
                     type="button"
                     onClick={() => {
+                      setActiveLevelId(region.tab as any);
                       setActiveTab(region.tab as any);
-                      handleAwardStars(5, `${region.name} Bölgesini Keşfettin!`);
+                      handleAwardStars(5, `${region.name} Seviyesine Giriş Yaptın!`);
                     }}
-                    className="p-2 sm:p-2.5 rounded-2xl bg-white/90 dark:bg-slate-900/90 hover:bg-white text-slate-900 dark:text-white backdrop-blur-md border-2 border-purple-300 dark:border-purple-600 shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 flex flex-col items-center justify-center text-center space-y-1 cursor-pointer group"
+                    className="p-2 sm:p-2.5 rounded-2xl bg-white/95 dark:bg-slate-900/95 hover:bg-white text-slate-900 dark:text-white backdrop-blur-md border-2 border-purple-300 dark:border-purple-600 shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 flex flex-col items-center justify-center text-center space-y-1 cursor-pointer group"
                   >
                     <span className="text-xl sm:text-2xl group-hover:scale-115 transition-transform">{region.icon}</span>
                     <span className="text-[11px] font-black leading-tight line-clamp-1">{region.name}</span>
-                    <span className="text-[9px] font-bold text-purple-600 dark:text-purple-400 line-clamp-1">
-                      {region.desc} ›
+                    <span className="text-[9px] font-extrabold text-amber-500 line-clamp-1">
+                      Seviye {region.level} ▶
                     </span>
                   </button>
                 );
@@ -2154,10 +2164,10 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {[
-                { title: 'Kelime Avı', emoji: '🃏', color: 'from-amber-400 to-orange-500', tab: 'games' },
-                { title: 'Kayıp Kelimeler', emoji: '🧩', color: 'from-blue-400 to-indigo-500', tab: 'games' },
-                { title: 'Karakterlerle Konuş', emoji: '🐱', color: 'from-pink-400 to-rose-500', tab: 'chat' },
-                { title: 'Büyülü Cümleler', emoji: '📖', color: 'from-purple-400 to-indigo-600', tab: 'patterns' }
+                { title: 'Kelime Avı', emoji: '🃏', color: 'from-amber-400 to-orange-500', tab: 'games', sub: 'memory' },
+                { title: 'Kayıp Kelimeler', emoji: '🧩', color: 'from-blue-400 to-indigo-500', tab: 'games', sub: 'detective' },
+                { title: 'Karakterlerle Konuş', emoji: '🐱', color: 'from-pink-400 to-rose-500', tab: 'chat', sub: 'chat' },
+                { title: 'Büyülü Cümleler', emoji: '📖', color: 'from-purple-400 to-indigo-600', tab: 'patterns', sub: 'patterns' }
               ].map((game, i) => (
                 <div
                   key={i}
@@ -2171,7 +2181,13 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                   </div>
                   <button
                     type="button"
-                    onClick={() => setActiveTab(game.tab as any)}
+                    onClick={() => {
+                      setActiveLevelId(game.tab as any);
+                      setActiveTab(game.tab as any);
+                      if (game.tab === 'games') {
+                        setSubGameTab(game.sub as any);
+                      }
+                    }}
                     className="w-full py-1 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-black text-[10px] cursor-pointer transition-transform active:scale-95"
                   >
                     Oyna ▶
@@ -2321,7 +2337,73 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
           </div>
         )}
 
-        {/* ==================== 2. YAŞ GRUBU KADEMELERİ (4 ÇOCUK DÜNYASI) ==================== */}
+        
+        {/* ==================== 4. HARİTA VEYA LEVEL OYNAMA ALANI KONSOLU ==================== */}
+        {activeLevelId === null ? (
+          <>
+            
+        {/* ==================== LINGORIA 8 OYUN SEVİYESİ / LEVEL SEÇİM YOLU ==================== */}
+        <div className="space-y-3 pt-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 px-1">
+            <h2 className="text-base sm:text-lg font-black text-amber-300 flex items-center space-x-2">
+              <span>🗺️ Lingoria Görev ve Seviye Yolu (8 Bölüm)</span>
+              <span className="text-[10px] bg-purple-500/40 text-purple-200 border border-purple-400/30 px-2.5 py-0.5 rounded-full font-extrabold">
+                Level 1 - 8
+              </span>
+            </h2>
+            <p className="text-xs text-pink-200/80 font-medium">
+              Herhangi bir bölüme tıkla, doğrudan o seviyenin oyun alanına gir!
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {[
+              { level: 1, tab: 'cards', name: 'Kelime Ormanı', icon: '🍃', desc: 'Görsel Kelime Kartları & Kelime Avı', stars: '⭐⭐⭐', color: 'from-emerald-500 to-green-600' },
+              { level: 2, tab: 'chat', name: 'Konuşma Köyü', icon: '💬', desc: 'Çizgi Karakter Sohbeti & Canlı Diyalog', stars: '⭐⭐⭐', color: 'from-blue-500 to-indigo-600' },
+              { level: 3, tab: 'patterns', name: 'Gramer Kalesi', icon: '🏰', desc: 'Büyülü Cümle Legosu & Fabrikası', stars: '⭐⭐⭐', color: 'from-purple-500 to-indigo-600' },
+              { level: 4, tab: 'stories', name: 'Hikâye Vadisi', icon: '⭐', desc: 'Sihirli Konuşan Masal Kitapları', stars: '⭐⭐⭐', color: 'from-amber-500 to-orange-600' },
+              { level: 5, tab: 'animals', name: 'Hayvanlar Adası', icon: '🐾', desc: 'Safari Hayvanları ve Sesleri', stars: '⭐⭐⭐', color: 'from-teal-500 to-emerald-600' },
+              { level: 6, tab: 'colors', name: 'Renkler Şehri', icon: '🎨', desc: 'Sihirli Boya, Şekiller & Konuş', stars: '⭐⭐⭐', color: 'from-pink-500 to-rose-600' },
+              { level: 7, tab: 'simon', name: 'Zaman Kulesi', icon: '⏰', desc: 'Chirmo Diyor ki! (TPR Simon Says)', stars: '⭐⭐⭐', color: 'from-violet-500 to-purple-600' },
+              { level: 8, tab: 'games', name: 'Macera Limanı', icon: '⚓', desc: 'Hafıza Kartları, Dedektif & Arenalar', stars: '⭐⭐⭐', color: 'from-sky-500 to-blue-600' }
+            ].map((lvl) => (
+              <div
+                key={lvl.level}
+                className="rounded-3xl p-4 bg-white/95 dark:bg-slate-900/95 text-slate-900 dark:text-white border-2 border-purple-300 dark:border-slate-800 shadow-xl flex flex-col justify-between space-y-3 hover:border-amber-400 transition-all hover:scale-102"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 text-white flex items-center justify-center text-xl shadow-md">
+                    {lvl.icon}
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className="text-[10px] font-black uppercase text-amber-500">Seviye {lvl.level}</span>
+                    <span className="text-[10px] text-amber-400 font-bold">{lvl.stars}</span>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-black text-slate-900 dark:text-white">{lvl.name}</h3>
+                  <p className="text-[11px] text-slate-500 leading-snug line-clamp-2 mt-0.5">{lvl.desc}</p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveLevelId(lvl.tab);
+                    setActiveTab(lvl.tab as any);
+                    handleAwardStars(5, `${lvl.name} Bölümüne Giriş Yaptın!`);
+                  }}
+                  className="w-full py-2 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white font-black text-xs shadow-md transition-all flex items-center justify-center space-x-1 cursor-pointer active:scale-95"
+                >
+                  <span>Bölüme Başla</span>
+                  <Play className="w-3.5 h-3.5 fill-current" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+            {/* ==================== 2. YAŞ GRUBU KADEMELERİ (4 ÇOCUK DÜNYASI) ==================== */}
         <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md p-2 rounded-3xl border-2 border-pink-100 dark:border-slate-800 shadow-sm">
           <div className="text-[11px] font-black text-slate-500 uppercase px-3 py-1 flex items-center justify-between">
             <span>🎯 Çocuğunuzun Yaş Kademesini Seçin:</span>
@@ -2452,7 +2534,68 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
           );
         })()}
 
-        {/* ==================== 3. AKTİVİTE VE ÖĞRENME SEKMELERİ ==================== */}
+        
+          </>
+        ) : (
+          <div className="space-y-4 animate-fade-in">
+            {/* Level Arena Üst Barı */}
+            <div className="rounded-3xl bg-white/95 dark:bg-slate-900/95 text-slate-900 dark:text-white p-4 shadow-xl border-2 border-amber-400 flex flex-wrap items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={() => setActiveLevelId(null)}
+                className="px-4 py-2 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-black text-xs flex items-center space-x-1.5 shadow-md hover:scale-105 cursor-pointer transition-all active:scale-95"
+              >
+                <span>← 🏠 Haritaya Dön</span>
+              </button>
+
+              <div className="flex items-center space-x-2">
+                <span className="text-2xl">
+                  {activeLevelId === 'cards' && '🍃'}
+                  {activeLevelId === 'chat' && '💬'}
+                  {activeLevelId === 'patterns' && '🏰'}
+                  {activeLevelId === 'stories' && '⭐'}
+                  {activeLevelId === 'animals' && '🐾'}
+                  {activeLevelId === 'colors' && '🎨'}
+                  {activeLevelId === 'simon' && '⏰'}
+                  {activeLevelId === 'games' && '⚓'}
+                  {activeLevelId === 'songs' && '🎵'}
+                  {activeLevelId === 'stickers' && '🏆'}
+                </span>
+                <div>
+                  <div className="text-[10px] font-black uppercase text-amber-500">Aktif Oyun Seviyesi</div>
+                  <div className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
+                    {activeLevelId === 'cards' && 'Seviye 1: Kelime Ormanı (Kelime Avı)'}
+                    {activeLevelId === 'chat' && 'Seviye 2: Konuşma Köyü (Diyalog & Chat)'}
+                    {activeLevelId === 'patterns' && 'Seviye 3: Gramer Kalesi (Cümle Legosu & Fabrikası)'}
+                    {activeLevelId === 'stories' && 'Seviye 4: Hikâye Vadisi (Sihirli Hikayeler)'}
+                    {activeLevelId === 'animals' && 'Seviye 5: Hayvanlar Adası (Safari Sesleri)'}
+                    {activeLevelId === 'colors' && 'Seviye 6: Renkler Şehri (Sihirli Boya)'}
+                    {activeLevelId === 'simon' && 'Seviye 7: Zaman Kulesi (Chirmo Diyor ki!)'}
+                    {activeLevelId === 'games' && 'Seviye 8: Macera Limanı (Oyun Arenası)'}
+                    {activeLevelId === 'songs' && 'Bonus: Müzik Adası (Şarkılar & Karaoke)'}
+                    {activeLevelId === 'stickers' && 'Başarılar: Çıkartma Albümü'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Hızlı Seviye Atlama */}
+              <div className="flex items-center space-x-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const tabs = ['cards', 'chat', 'patterns', 'stories', 'animals', 'colors', 'simon', 'games'];
+                    const currIdx = tabs.indexOf(activeLevelId);
+                    const nextIdx = (currIdx + 1) % tabs.length;
+                    setActiveLevelId(tabs[nextIdx]);
+                    setActiveTab(tabs[nextIdx] as any);
+                  }}
+                  className="px-3.5 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs shadow-xs cursor-pointer transition-all"
+                >
+                  Sonraki Seviye ➔
+                </button>
+              </div>
+            </div>
+{/* ==================== 3. AKTİVİTE VE ÖĞRENME SEKMELERİ ==================== */}
         <div className="flex flex-wrap items-center gap-2 border-b-2 border-pink-200/60 dark:border-slate-800 pb-2">
           {[
             { id: 'games', label: '🎮 Oyunlar & Quizz', icon: Gamepad2, color: 'text-amber-500' },
@@ -2488,9 +2631,33 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
         {/* ==================== TAB 1: 🎮 OYUNLAR VE İNTERAKTİF TESTLER ==================== */}
         {activeTab === 'games' && (
-          <div className="space-y-6">
+          <div className="space-y-4">
+            {/* Tekil Oyun Seçici Sekmeler (Oyun konsolu gibi tek ekran) */}
+            <div className="flex items-center flex-wrap gap-2 p-2 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-purple-200 dark:border-slate-800 shadow-sm">
+              <span className="text-xs font-black text-slate-400 pl-2">🎮 Oyun Arenası:</span>
+              {[
+                { id: 'memory', label: '🃏 Hafıza Kartları' },
+                { id: 'detective', label: '🔍 Dedektif Chirmo' },
+                { id: 'puzzle', label: '🧩 Cümle Yapbozu' },
+                { id: 'voice', label: '🎤 Süper Telaffuz Arenası' }
+              ].map((g) => (
+                <button
+                  key={g.id}
+                  type="button"
+                  onClick={() => setSubGameTab(g.id as any)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                    subGameTab === g.id
+                      ? 'bg-purple-600 text-white shadow-md scale-105'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-purple-50'
+                  }`}
+                >
+                  {g.label}
+                </button>
+              ))}
+            </div>
 
             {/* OYUN 1: 🃏 HAFIZA KARTLARI (MEMORY FLIP MATCH) */}
+            {subGameTab === 'memory' && (
             <div className="p-4 sm:p-6 rounded-3xl bg-white dark:bg-slate-900 border-2 border-indigo-200 dark:border-slate-800 shadow-lg space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
                 <div className="flex items-center space-x-3">
@@ -2578,7 +2745,10 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
               </div>
             </div>
 
+            )}
+
             {/* OYUN 2: DUY VE RESMİ BUL (LISTENING DETECTIVE) */}
+            {subGameTab === 'detective' && (
             <div className="p-5 sm:p-7 rounded-3xl bg-white dark:bg-slate-900 border-2 border-amber-200 dark:border-slate-800 shadow-lg space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
                 <div className="flex items-center space-x-3">
@@ -2650,7 +2820,10 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
               )}
             </div>
 
+            )}
+
             {/* OYUN 2: CÜMLE YAPBOZU (SENTENCE PUZZLE LEGO) */}
+            {subGameTab === 'puzzle' && (
             <div className="p-5 sm:p-7 rounded-3xl bg-white dark:bg-slate-900 border-2 border-purple-200 dark:border-slate-800 shadow-lg space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
                 <div className="flex items-center space-x-3">
@@ -2745,7 +2918,10 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
               )}
             </div>
 
+            )}
+
             {/* OYUN 3: SÜPER TELAFFUZ ARENASI (VOICE COACH) */}
+            {subGameTab === 'voice' && (
             <div className="p-5 sm:p-7 rounded-3xl bg-white dark:bg-slate-900 border-2 border-pink-200 dark:border-slate-800 shadow-lg space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
                 <div className="flex items-center space-x-3">
@@ -2817,6 +2993,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                 </div>
               )}
             </div>
+            )}
 
           </div>
         )}
@@ -3777,6 +3954,9 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
         })()}
 
 
+
+          </div>
+        )}
 
       </div>
     </div>
