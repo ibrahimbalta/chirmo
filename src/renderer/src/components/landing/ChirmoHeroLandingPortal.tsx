@@ -34,9 +34,20 @@ import {
   Briefcase,
   UtensilsCrossed,
   Award,
-  Play
+  Play,
+  LogIn,
+  LogOut,
+  User,
+  Settings,
+  X,
+  Calendar,
+  TrendingUp,
+  CheckCircle
 } from 'lucide-react';
 import { TargetLanguageService, SupportedLanguage } from '../../services/targetLanguageService';
+import { PrivacyAuthService, SafeUserSession } from '../../services/privacyAuthService';
+import { UserProfileService, UserProfile, CEFRLevelSimple } from '../../services/userProfileService';
+import { ChirmoAuthModal } from '../auth/ChirmoAuthModal';
 
 export interface ChirmoHeroLandingPortalProps {
   onEnterStudentPanel: () => void;
@@ -143,6 +154,14 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
   const [selectedLanguage, setSelectedLanguage] = useState<SupportedLanguage>(() =>
     TargetLanguageService.getTargetLanguage()
   );
+  const [currentUser, setCurrentUser] = useState<SafeUserSession | null>(() =>
+    PrivacyAuthService.getCurrentUser()
+  );
+  const [userProfile, setUserProfile] = useState<UserProfile>(() =>
+    UserProfileService.getProfile()
+  );
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [speechResult, setSpeechResult] = useState<string | null>(null);
@@ -160,10 +179,21 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
   const currentSamplePhrase = selectedLanguage === 'de' ? samplePhraseDe : samplePhraseEn;
 
   useEffect(() => {
-    const unsub = TargetLanguageService.subscribe((lang) => {
+    const unsubLang = TargetLanguageService.subscribe((lang) => {
       setSelectedLanguage(lang);
     });
-    return () => unsub();
+    const unsubAuth = PrivacyAuthService.onAuthStateChanged((user) => {
+      setCurrentUser(user);
+    });
+    const unsubProfile = UserProfileService.subscribe((profile) => {
+      setUserProfile(profile);
+    });
+
+    return () => {
+      unsubLang();
+      unsubAuth();
+      unsubProfile();
+    };
   }, []);
 
   // Karakter sesli konuşma fonksiyonu
@@ -334,7 +364,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
             </button>
           </nav>
 
-          {/* Sağ Eylemler: Dil Seçici & Hızlı Giriş Butonu */}
+          {/* Sağ Eylemler: Dil Seçici, Giriş/Kullanıcı Sayfası & Hızlı Panel Butonu */}
           <div className="flex items-center space-x-2 sm:space-x-3">
             {/* Dil Seçici */}
             <div className="flex items-center bg-[#23124A]/80 p-1 rounded-2xl border border-purple-400/30 text-xs font-black shadow-inner">
@@ -364,13 +394,43 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
               </button>
             </div>
 
+            {/* Giriş Yap / Kullanıcı Sayfası Butonu */}
+            {!currentUser ? (
+              <button
+                onClick={() => setIsAuthModalOpen(true)}
+                className="h-10 sm:h-11 px-3 sm:px-4 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm flex items-center space-x-1.5 sm:space-x-2 border border-purple-300/50 shadow-[0_0_20px_rgba(168,85,247,0.4)] active:scale-95 transition-all cursor-pointer"
+                title="Giriş Yap veya Ücretsiz Hesap Aç"
+              >
+                <LogIn className="w-4 h-4 text-cyan-300" />
+                <span>Giriş Yap</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => setIsProfileModalOpen(true)}
+                className="h-10 sm:h-11 px-2.5 sm:px-3.5 rounded-2xl bg-gradient-to-r from-emerald-950/80 via-purple-950/80 to-indigo-950/80 hover:from-emerald-900/90 hover:to-indigo-900/90 text-white font-bold text-xs sm:text-sm flex items-center space-x-2 border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all cursor-pointer active:scale-95 group"
+                title="Kullanıcı Sayfası ve Profil Detayları"
+              >
+                <span className="text-base sm:text-lg">{userProfile.avatarEmoji || '🎓'}</span>
+                <div className="flex flex-col text-left">
+                  <span className="text-xs font-black text-emerald-300 group-hover:text-white transition-colors truncate max-w-[70px] sm:max-w-[110px]">
+                    {currentUser.username}
+                  </span>
+                  <span className="text-[10px] text-purple-300 font-semibold leading-none">
+                    {userProfile.level} • Profilim
+                  </span>
+                </div>
+                <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse hidden sm:inline ml-0.5" />
+              </button>
+            )}
+
             {/* Öğrenci Paneline Gir Butonu */}
             <button
               onClick={onEnterStudentPanel}
-              className="h-10 sm:h-11 px-3.5 sm:px-5 rounded-2xl bg-gradient-to-r from-cyan-500 via-indigo-600 to-pink-600 hover:from-cyan-400 hover:to-pink-500 text-white font-black text-xs sm:text-sm flex items-center space-x-2 shadow-[0_0_25px_rgba(99,102,241,0.5)] active:scale-95 transition-all cursor-pointer border border-cyan-300/40"
+              className="h-10 sm:h-11 px-3 sm:px-5 rounded-2xl bg-gradient-to-r from-cyan-500 via-indigo-600 to-pink-600 hover:from-cyan-400 hover:to-pink-500 text-white font-black text-xs sm:text-sm flex items-center space-x-1.5 sm:space-x-2 shadow-[0_0_25px_rgba(99,102,241,0.5)] active:scale-95 transition-all cursor-pointer border border-cyan-300/40"
             >
               <Crown className="w-4 h-4 text-amber-300" />
-              <span>Öğrenci Paneline Gir</span>
+              <span className="hidden sm:inline">Öğrenci Paneline Gir</span>
+              <span className="sm:hidden">Panel</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
@@ -944,6 +1004,193 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
         </div>
         <div>© {new Date().getFullYear()} Chirmo. Tüm hakları saklıdır.</div>
       </footer>
+
+      {/* ==================== 8. KULLANICI SAYFASI & ÖĞRENCİ PROFİLİ MODALI ==================== */}
+      {isProfileModalOpen && currentUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-in fade-in duration-200">
+          <div className="relative w-full max-w-2xl bg-gradient-to-b from-[#210f47] via-[#1a0a38] to-[#120529] rounded-3xl border-2 border-purple-400/40 shadow-[0_0_60px_rgba(168,85,247,0.35)] overflow-hidden text-white">
+            {/* Üst Kozmik Başlık & Kapat Butonu */}
+            <div className="relative p-6 sm:p-7 border-b border-purple-400/20 bg-gradient-to-r from-purple-900/60 via-indigo-900/40 to-pink-900/40 flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 rounded-2xl bg-purple-500/20 border border-purple-400/40 flex items-center justify-center text-2xl shadow-inner">
+                  {userProfile.avatarEmoji || '🎓'}
+                </div>
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <h2 className="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100 to-cyan-300">
+                      {currentUser.username}
+                    </h2>
+                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/40">
+                      {currentUser.plan === 'lifetime' ? 'Ömür Boyu VIP' : currentUser.plan === 'pro' ? 'Pro Plan' : 'Öğrenci Hesabı'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-purple-300/80 font-medium">
+                    Chirmo Özel Kullanıcı Sayfası & Kişisel Gelişim Panosu
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsProfileModalOpen(false)}
+                className="w-9 h-9 rounded-xl bg-purple-900/50 hover:bg-purple-800/80 border border-purple-400/30 flex items-center justify-center text-purple-300 hover:text-white transition-all cursor-pointer"
+                title="Kapat"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6 sm:p-7 space-y-6 max-h-[75vh] overflow-y-auto">
+              {/* Avatar Değiştirme */}
+              <div>
+                <label className="text-xs font-bold text-purple-300 mb-2 block">
+                  Avatar Emojinizi Seçin:
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {['🎓', '🚀', '🦁', '👑', '⚡', '🌟', '🎯', '🦉', '🔥', '💎'].map((emoji) => (
+                    <button
+                      key={emoji}
+                      onClick={() => {
+                        const updated = UserProfileService.saveProfile({ avatarEmoji: emoji });
+                        setUserProfile(updated);
+                      }}
+                      className={`w-10 h-10 rounded-xl text-xl flex items-center justify-center transition-all cursor-pointer border ${
+                        userProfile.avatarEmoji === emoji
+                          ? 'bg-purple-600/80 border-cyan-400 scale-110 shadow-[0_0_15px_rgba(34,211,238,0.5)]'
+                          : 'bg-purple-950/40 border-purple-400/20 hover:bg-purple-800/50 hover:border-purple-300'
+                      }`}
+                    >
+                      {emoji}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* İstatistikler Kartları */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {/* Seviye */}
+                <div className="p-3.5 rounded-2xl bg-purple-950/50 border border-purple-400/30 text-center">
+                  <span className="text-xs text-purple-300 font-semibold block mb-1">Seviyeniz</span>
+                  <span className="text-xl sm:text-2xl font-black text-cyan-300">{userProfile.level}</span>
+                </div>
+
+                {/* Günlük Seri */}
+                <div className="p-3.5 rounded-2xl bg-amber-950/40 border border-amber-500/30 text-center">
+                  <span className="text-xs text-amber-300 font-semibold block mb-1">Seri</span>
+                  <span className="text-xl sm:text-2xl font-black text-amber-400">🔥 {userProfile.streakDays} Gün</span>
+                </div>
+
+                {/* Günlük Hedef */}
+                <div className="p-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-center">
+                  <span className="text-xs text-emerald-300 font-semibold block mb-1">Günlük Hedef</span>
+                  <span className="text-lg sm:text-xl font-black text-emerald-400">
+                    {userProfile.completedWordsToday}/{userProfile.dailyGoal}
+                  </span>
+                </div>
+
+                {/* Dil */}
+                <div className="p-3.5 rounded-2xl bg-indigo-950/50 border border-indigo-400/30 text-center">
+                  <span className="text-xs text-indigo-300 font-semibold block mb-1">Hedef Dil</span>
+                  <span className="text-lg sm:text-xl font-black text-indigo-300">
+                    {selectedLanguage === 'de' ? '🇩🇪 Almanca' : '🇬🇧 İngilizce'}
+                  </span>
+                </div>
+              </div>
+
+              {/* CEFR Seviye Değiştirici */}
+              <div className="p-4 rounded-2xl bg-purple-950/40 border border-purple-400/20">
+                <label className="text-xs font-bold text-purple-200 mb-2.5 block">
+                  Hedef Konuşma Seviyenizi Belirleyin:
+                </label>
+                <div className="grid grid-cols-5 gap-2">
+                  {(['A1', 'A2', 'B1', 'B2', 'C1'] as CEFRLevelSimple[]).map((lvl) => (
+                    <button
+                      key={lvl}
+                      onClick={() => {
+                        const updated = UserProfileService.saveProfile({ level: lvl });
+                        setUserProfile(updated);
+                      }}
+                      className={`py-2 rounded-xl font-black text-xs transition-all cursor-pointer border ${
+                        userProfile.level === lvl
+                          ? 'bg-gradient-to-r from-cyan-500 to-indigo-600 text-white border-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.5)]'
+                          : 'bg-purple-900/30 text-purple-300 border-purple-400/20 hover:bg-purple-800/40 hover:text-white'
+                      }`}
+                    >
+                      {lvl}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Günlük Kelime İlerleme Çubuğu */}
+              <div className="p-4 rounded-2xl bg-purple-950/40 border border-purple-400/20 space-y-2">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="font-bold text-purple-200">Bugünkü Konuşma & Kalıp İlerlemesi</span>
+                  <span className="font-black text-emerald-400">
+                    %{Math.min(100, Math.round((userProfile.completedWordsToday / Math.max(1, userProfile.dailyGoal)) * 100))}
+                  </span>
+                </div>
+                <div className="w-full h-3 rounded-full bg-purple-950 border border-purple-500/30 overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-emerald-500 via-cyan-400 to-indigo-500 transition-all duration-500 rounded-full"
+                    style={{
+                      width: `${Math.min(100, Math.round((userProfile.completedWordsToday / Math.max(1, userProfile.dailyGoal)) * 100))}%`
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Eylem Butonları */}
+              <div className="pt-2 flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => {
+                    setIsProfileModalOpen(false);
+                    onEnterStudentPanel();
+                  }}
+                  className="flex-1 py-3.5 px-5 rounded-2xl bg-gradient-to-r from-cyan-500 via-indigo-600 to-pink-600 hover:from-cyan-400 hover:to-pink-500 text-white font-black text-sm flex items-center justify-center space-x-2 shadow-[0_0_25px_rgba(99,102,241,0.5)] active:scale-95 transition-all cursor-pointer border border-cyan-300/40"
+                >
+                  <Crown className="w-4 h-4 text-amber-300" />
+                  <span>Öğrenci Paneline Devam Et</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+
+                <button
+                  onClick={() => {
+                    setIsProfileModalOpen(false);
+                    onEnterCamp();
+                  }}
+                  className="py-3.5 px-4 rounded-2xl bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-400/40 text-indigo-200 hover:text-white font-bold text-xs sm:text-sm flex items-center justify-center space-x-2 transition-all cursor-pointer"
+                >
+                  <span>🏕️ 30 Günlük Kamp</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    PrivacyAuthService.logout();
+                    setCurrentUser(null);
+                    setIsProfileModalOpen(false);
+                  }}
+                  className="py-3.5 px-4 rounded-2xl bg-rose-950/60 hover:bg-rose-900/80 border border-rose-500/40 text-rose-300 hover:text-white font-bold text-xs sm:text-sm flex items-center justify-center space-x-1.5 transition-all cursor-pointer"
+                  title="Oturumu Güvenli Kapat"
+                >
+                  <LogOut className="w-4 h-4 text-rose-400" />
+                  <span>Güvenli Çıkış</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ==================== 9. GİRİŞ / KAYIT AUTH MODALI ==================== */}
+      <ChirmoAuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onSuccess={(user) => {
+          setCurrentUser(user);
+          setIsAuthModalOpen(false);
+          // Giriş yapan kullanıcı doğrudan panele yönlendirilir
+          onEnterStudentPanel();
+        }}
+      />
     </div>
   );
 };

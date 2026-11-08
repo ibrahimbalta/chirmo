@@ -51,4 +51,24 @@ describe('Chirmo Hero Landing Portal (Açılış Vitrini)', () => {
     expect(content).toContain('onEnterStudentPanel');
     expect(content).toContain('title="Chirmo Açılış Vitrinine Dön"');
   });
+
+  it('provides header login entry, auth modal and dedicated user profile dashboard page', () => {
+    const content = fs.readFileSync(landingPath, 'utf-8');
+
+    // Login butonu ve Modal Entegrasyonu
+    expect(content).toContain('ChirmoAuthModal');
+    expect(content).toContain('Giriş Yap');
+    expect(content).toContain('isAuthModalOpen');
+    expect(content).toContain('PrivacyAuthService');
+
+    // Giriş yapınca doğrudan panele girme
+    expect(content).toContain('onEnterStudentPanel()');
+
+    // Kullanıcı Sayfası ve Profil Pano
+    expect(content).toContain('Kullanıcı Sayfası');
+    expect(content).toContain('isProfileModalOpen');
+    expect(content).toContain('UserProfileService');
+    expect(content).toContain('Öğrenci Paneline Devam Et');
+    expect(content).toContain('Güvenli Çıkış');
+  });
 });
