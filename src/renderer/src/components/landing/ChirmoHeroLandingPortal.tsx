@@ -251,24 +251,15 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
       <header className="sticky top-0 z-50 w-full bg-[#180C3D]/60 backdrop-blur-2xl border-b border-purple-400/20 shadow-[0_4px_30px_rgba(0,0,0,0.35)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-18 flex items-center justify-between gap-3">
           
-          {/* Sol: Logo olmadan sade ve prestijli galaktik başlık */}
+          {/* Sol: Sadece Chirmo yazısı */}
           <div
             onClick={onEnterStudentPanel}
-            className="flex items-center space-x-2.5 cursor-pointer group shrink-0"
-            title="Öğrenci Paneline Başla"
+            className="flex items-center cursor-pointer group shrink-0"
+            title="Chirmo"
           >
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-tr from-purple-500/30 to-pink-500/30 border border-purple-400/40 text-base shadow-sm group-hover:scale-105 transition-transform">
-              🪐
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs sm:text-sm font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-pink-300 to-amber-300 uppercase">
-                YAPAY ZEKÂ DİL GALAKSİSİ
-              </span>
-              <div className="flex items-center space-x-1.5 text-[10px] text-emerald-400 font-extrabold">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                <span>1.480 Aktif Öğrenci • Canlı Galaktik Sunucu</span>
-              </div>
-            </div>
+            <span className="text-2xl sm:text-3xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-pink-300 to-amber-300 hover:scale-105 transition-transform duration-200">
+              Chirmo
+            </span>
           </div>
 
           {/* Sağ Eylemler: Dil Seçici & Hızlı Giriş Butonu */}
