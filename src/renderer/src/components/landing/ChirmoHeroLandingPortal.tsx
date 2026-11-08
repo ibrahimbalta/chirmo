@@ -25,7 +25,6 @@ import {
   Orbit,
   Wand2
 } from 'lucide-react';
-import { ChirmoLogo } from '../common/ChirmoLogo';
 import { TargetLanguageService, SupportedLanguage } from '../../services/targetLanguageService';
 
 export interface ChirmoHeroLandingPortalProps {
@@ -220,54 +219,49 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
   };
 
   return (
-    <div className="h-screen w-full overflow-y-auto overflow-x-hidden bg-[#060413] text-white flex flex-col font-sans select-none scroll-smooth relative">
-      {/* ==================== KOZMİK UZAY GALAKSİSİ, YILDIZLAR VE NEBULA ==================== */}
+    <div className="h-screen w-full overflow-y-auto overflow-x-hidden bg-gradient-to-b from-[#190C3E] via-[#2E115B] via-[#1B1953] via-[#2A0F48] to-[#100628] text-white flex flex-col font-sans select-none scroll-smooth relative">
+      {/* ==================== KOZMİK GEÇİŞLİ RENKLER, AURORA VE NEBULA IŞILTILARI ==================== */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
-        {/* Derin Uzay Gradyanları */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-gradient-to-tr from-purple-700/30 via-indigo-600/25 to-pink-600/25 rounded-full blur-[180px] animate-pulse" />
-        <div className="absolute top-3/4 left-10 w-[600px] h-[600px] bg-cyan-700/20 rounded-full blur-[170px]" />
-        <div className="absolute bottom-10 right-10 w-[700px] h-[700px] bg-fuchsia-700/20 rounded-full blur-[190px]" />
+        {/* Çok Renkli Canlı Geçiş Gradyanları (Vibrant Aurora Nebulae) */}
+        <div className="absolute top-0 left-1/4 w-[750px] h-[750px] bg-gradient-to-br from-indigo-500/35 via-purple-600/30 to-pink-500/25 rounded-full blur-[160px] animate-pulse" />
+        <div className="absolute top-1/3 right-0 w-[700px] h-[700px] bg-gradient-to-bl from-fuchsia-500/30 via-pink-600/25 to-indigo-700/20 rounded-full blur-[170px]" />
+        <div className="absolute top-2/3 left-[-100px] w-[650px] h-[650px] bg-gradient-to-tr from-cyan-500/25 via-blue-600/25 to-purple-800/20 rounded-full blur-[160px]" />
+        <div className="absolute bottom-0 right-1/4 w-[800px] h-[650px] bg-gradient-to-t from-emerald-500/20 via-teal-600/20 to-purple-900/25 rounded-full blur-[180px]" />
 
-        {/* Galaktik Yıldız Tozu & Takımyıldız Işıkları */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-950/20 via-[#070517] to-[#04020b]" />
+        {/* Canlı Galaksi Yıldızları */}
+        <div className="absolute top-14 left-20 w-2 h-2 bg-cyan-300 rounded-full animate-ping opacity-80" />
+        <div className="absolute top-40 right-28 w-2.5 h-2.5 bg-pink-400 rounded-full animate-pulse opacity-90" />
+        <div className="absolute top-80 left-1/3 w-1.5 h-1.5 bg-amber-300 rounded-full animate-ping opacity-75" />
+        <div className="absolute bottom-56 right-1/3 w-2 h-2 bg-purple-300 rounded-full animate-pulse opacity-85" />
+        <div className="absolute bottom-24 left-24 w-2 h-2 bg-emerald-400 rounded-full animate-ping opacity-80" />
+        <div className="absolute top-1/2 right-16 w-1.5 h-1.5 bg-blue-300 rounded-full animate-pulse opacity-70" />
 
-        {/* Pırıltılı Galaksi Yıldızları */}
-        <div className="absolute top-12 left-24 w-1.5 h-1.5 bg-cyan-300 rounded-full animate-ping opacity-80" />
-        <div className="absolute top-36 right-32 w-2 h-2 bg-pink-400 rounded-full animate-pulse opacity-90" />
-        <div className="absolute top-72 left-1/4 w-1 h-1 bg-amber-300 rounded-full animate-ping opacity-70" />
-        <div className="absolute bottom-48 right-1/4 w-2 h-2 bg-purple-300 rounded-full animate-pulse opacity-80" />
-        <div className="absolute bottom-20 left-16 w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping opacity-80" />
-        <div className="absolute top-1/2 right-12 w-1.5 h-1.5 bg-blue-300 rounded-full animate-pulse opacity-60" />
-
-        {/* Uzay Izgarası / Holografik Yıldız Matrisi */}
+        {/* İnce Holografik Izgara Deseni */}
         <div
-          className="absolute inset-0 opacity-[0.035]"
+          className="absolute inset-0 opacity-[0.04]"
           style={{
             backgroundImage:
-              'linear-gradient(to right, #a855f7 1px, transparent 1px), linear-gradient(to bottom, #a855f7 1px, transparent 1px)',
-            backgroundSize: '48px 48px'
+              'linear-gradient(to right, #c084fc 1px, transparent 1px), linear-gradient(to bottom, #c084fc 1px, transparent 1px)',
+            backgroundSize: '44px 44px'
           }}
         />
       </div>
 
-      {/* ==================== 1. PRESTİJLİ VE ZARİF KOZMİK HEADER ==================== */}
-      <header className="sticky top-0 z-50 w-full bg-[#0b0722]/85 backdrop-blur-2xl border-b border-purple-500/25 shadow-[0_4px_30px_rgba(0,0,0,0.7)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-18 flex items-center justify-between gap-3">
+      {/* ==================== 1. ŞIK VE MİNİMALİST KOZMİK ÜST BAR (LOGO OLMADAN) ==================== */}
+      <header className="sticky top-0 z-50 w-full bg-[#180C3D]/60 backdrop-blur-2xl border-b border-purple-400/20 shadow-[0_4px_30px_rgba(0,0,0,0.35)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-18 flex items-center justify-between gap-3">
           
-          {/* Sol: Büyük, Görkemli ve Işıltılı Logo */}
+          {/* Sol: Logo olmadan sade ve prestijli galaktik başlık */}
           <div
             onClick={onEnterStudentPanel}
-            className="flex items-center space-x-3 cursor-pointer group shrink-0"
-            title="Chirmo Açılış Vitrinine Dön"
+            className="flex items-center space-x-2.5 cursor-pointer group shrink-0"
+            title="Öğrenci Paneline Başla"
           >
-            <div className="relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-cyan-400 via-pink-500 to-purple-600 rounded-2xl blur-xs opacity-80 group-hover:opacity-100 transition duration-300 animate-pulse" />
-              <div className="relative bg-[#150d38] px-3.5 py-1.5 rounded-xl border border-purple-400/50 flex items-center shadow-lg">
-                <ChirmoLogo size="lg" variant="header" />
-              </div>
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-tr from-purple-500/30 to-pink-500/30 border border-purple-400/40 text-base shadow-sm group-hover:scale-105 transition-transform">
+              🪐
             </div>
-            <div className="hidden sm:flex flex-col pl-1">
-              <span className="text-[11px] font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-pink-300 to-cyan-300 uppercase">
+            <div className="flex flex-col">
+              <span className="text-xs sm:text-sm font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-pink-300 to-amber-300 uppercase">
                 YAPAY ZEKÂ DİL GALAKSİSİ
               </span>
               <div className="flex items-center space-x-1.5 text-[10px] text-emerald-400 font-extrabold">
@@ -277,10 +271,10 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
             </div>
           </div>
 
-          {/* Sağ Eylemler: Dil Seçici & Hızlı Giriş */}
+          {/* Sağ Eylemler: Dil Seçici & Hızlı Giriş Butonu */}
           <div className="flex items-center space-x-2 sm:space-x-3">
-            {/* Dil Seçici Gezegen Anahtarı */}
-            <div className="flex items-center bg-[#130b32] p-1 rounded-2xl border border-purple-500/40 text-xs font-black shadow-inner">
+            {/* Dil Seçici */}
+            <div className="flex items-center bg-[#23124A]/70 p-1 rounded-2xl border border-purple-400/30 text-xs font-black shadow-inner">
               <button
                 onClick={() => handleLanguageToggle('en')}
                 className={`px-3 py-1 rounded-xl transition-all cursor-pointer flex items-center space-x-1.5 ${
@@ -310,7 +304,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
             {/* Öğrenci Paneline Gir Butonu */}
             <button
               onClick={onEnterStudentPanel}
-              className="h-10.5 px-4 sm:px-5 rounded-2xl bg-gradient-to-r from-cyan-500 via-indigo-600 to-pink-600 hover:from-cyan-400 hover:to-pink-500 text-white font-black text-xs sm:text-sm flex items-center space-x-2 shadow-[0_0_25px_rgba(99,102,241,0.5)] active:scale-95 transition-all cursor-pointer border border-cyan-300/50"
+              className="h-10 px-4 sm:px-5 rounded-2xl bg-gradient-to-r from-cyan-500 via-indigo-600 to-pink-600 hover:from-cyan-400 hover:to-pink-500 text-white font-black text-xs sm:text-sm flex items-center space-x-2 shadow-[0_0_25px_rgba(99,102,241,0.5)] active:scale-95 transition-all cursor-pointer border border-cyan-300/40"
             >
               <Crown className="w-4 h-4 text-amber-300" />
               <span>Öğrenci Paneline Gir</span>
@@ -325,7 +319,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
         
         {/* CHIRMO CANLI DİYALOG BALONU (SESLENİŞ) */}
         <div className="relative mb-4 max-w-2xl w-full animate-in fade-in zoom-in-95 duration-500">
-          <div className="relative p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-[#1b104a] via-[#2a166e] to-[#1b104a] border-2 border-purple-400/70 shadow-[0_0_60px_rgba(168,85,247,0.4)] backdrop-blur-2xl">
+          <div className="relative p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-[#291461]/90 via-[#3b1b85]/90 to-[#291461]/90 border-2 border-purple-400/60 shadow-[0_0_60px_rgba(168,85,247,0.35)] backdrop-blur-2xl">
             <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-purple-400/30 text-xs">
               <span className="flex items-center space-x-2 text-cyan-300 font-black">
                 <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
@@ -345,16 +339,16 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
               "{robotGreeting}"
             </p>
           </div>
-          <div className="w-5 h-5 bg-[#2a166e] border-r-2 border-b-2 border-purple-400/70 rotate-45 mx-auto -mt-2.5 shadow-md" />
+          <div className="w-5 h-5 bg-[#3b1b85] border-r-2 border-b-2 border-purple-400/60 rotate-45 mx-auto -mt-2.5 shadow-md" />
         </div>
 
         {/* ==================== CHIRMO ORBITAL UNIVERSE (MERKEZİ 3D ROBOT & ETRAFINDA DÖNEN GEZEGEN BUTONLAR) ==================== */}
         <div className="relative w-full max-w-4xl min-h-[460px] sm:min-h-[520px] flex items-center justify-center my-4">
           
           {/* GALAKTİK YÖRÜNGE HALKALARI (ORBITAL RINGS) */}
-          <div className="absolute w-[340px] h-[340px] sm:w-[480px] sm:h-[480px] rounded-full border border-purple-500/25 border-dashed animate-[spin_50s_linear_infinite] pointer-events-none" />
-          <div className="absolute w-[440px] h-[440px] sm:w-[620px] sm:h-[620px] rounded-full border border-cyan-400/20 border-dotted animate-[spin_70s_linear_infinite_reverse] pointer-events-none" />
-          <div className="absolute w-[240px] h-[240px] sm:w-[320px] sm:h-[320px] rounded-full bg-gradient-to-tr from-cyan-500/20 via-purple-600/30 to-pink-500/25 blur-3xl pointer-events-none" />
+          <div className="absolute w-[340px] h-[340px] sm:w-[480px] sm:h-[480px] rounded-full border border-purple-400/25 border-dashed animate-[spin_50s_linear_infinite] pointer-events-none" />
+          <div className="absolute w-[440px] h-[440px] sm:w-[620px] sm:h-[620px] rounded-full border border-cyan-400/25 border-dotted animate-[spin_70s_linear_infinite_reverse] pointer-events-none" />
+          <div className="absolute w-[240px] h-[240px] sm:w-[320px] sm:h-[320px] rounded-full bg-gradient-to-tr from-cyan-500/25 via-purple-600/35 to-pink-500/30 blur-3xl pointer-events-none" />
 
           {/* ==================== ETRAFINDAKİ YUVARLAK ANİMASYONLU GEZEGEN BUTONLARI ==================== */}
           
@@ -440,7 +434,6 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
 
           {/* ==================== MERKEZDEKİ GÖRKEMLİ 3D CHIRMO KARAKTERİ ==================== */}
           <div className="relative z-10 flex flex-col items-center justify-center">
-            {/* 3D Karakter Görseli (Nefes Alma & Süzülme) */}
             <div
               onClick={() => handleSpeak(robotGreeting, 'tr')}
               className="relative w-48 h-48 sm:w-60 sm:h-60 transition-transform duration-300 hover:scale-105 active:scale-95 cursor-pointer"
@@ -513,7 +506,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
 
         {/* ==================== 3. DAĞILMIŞ YUVARLAK ALANLAR: KOZMİK MİKROFON İSTASYONU ==================== */}
         <div className="relative w-full max-w-3xl my-8">
-          <div className="p-7 sm:p-9 rounded-[40px] bg-gradient-to-b from-[#160d3d]/90 via-[#120a32]/90 to-[#0e0828]/95 border-2 border-cyan-400/40 shadow-[0_0_50px_rgba(6,182,212,0.3)] backdrop-blur-2xl">
+          <div className="p-7 sm:p-9 rounded-[40px] bg-gradient-to-b from-[#21114d]/90 via-[#1d0e44]/90 to-[#160b36]/95 border-2 border-cyan-400/40 shadow-[0_0_50px_rgba(6,182,212,0.3)] backdrop-blur-2xl">
             
             {/* Üst Kozmik Başlık */}
             <div className="flex flex-col sm:flex-row items-center justify-between pb-4 mb-4 border-b border-cyan-500/30 gap-2">
@@ -533,7 +526,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
 
             {/* Test Cümlesi */}
             <div className="text-center mb-5">
-              <span className="text-xs text-slate-400 font-semibold tracking-wide">
+              <span className="text-xs text-slate-300 font-semibold tracking-wide">
                 Aşağıdaki yuvarlak butona basıp mikrofona söyle:
               </span>
               <div className="text-xl sm:text-2xl font-black text-white mt-1.5 tracking-tight drop-shadow-md">
@@ -580,7 +573,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
             <h2 className="text-2xl sm:text-3xl font-black text-white mt-1">
               Kalıp Mantığını 10 Saniyede Görün
             </h2>
-            <p className="text-xs text-purple-300/80 mt-1 max-w-md mx-auto">
+            <p className="text-xs text-purple-200/90 mt-1 max-w-md mx-auto">
               Ezber yok; zihinsel Lego gibi birbirine kenetlenen hazır şablonlarla anında konuşun.
             </p>
           </div>
@@ -594,7 +587,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
                 className={`relative px-4 py-2.5 rounded-full text-xs font-black transition-all duration-300 cursor-pointer flex items-center space-x-2 ${
                   activeDemo.id === sc.id
                     ? 'bg-gradient-to-r from-pink-600 via-purple-600 to-cyan-600 text-white shadow-[0_0_25px_rgba(236,72,153,0.7)] border-2 border-white scale-105'
-                    : 'bg-[#150d3a] text-purple-200 hover:bg-[#201452] border border-purple-500/30'
+                    : 'bg-[#251352] text-purple-200 hover:bg-[#341b73] border border-purple-400/30'
                 }`}
               >
                 <span className="text-base">{sc.icon}</span>
@@ -607,12 +600,12 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-left">
             
             {/* KÜRE 1: KONUŞMA VE SES KÜRESİ */}
-            <div className="p-6 rounded-[32px] bg-gradient-to-b from-[#180f42]/90 to-[#10092c]/95 border-2 border-purple-500/40 shadow-xl flex flex-col justify-between">
+            <div className="p-6 rounded-[32px] bg-gradient-to-b from-[#251354]/90 to-[#190d3d]/95 border-2 border-purple-400/40 shadow-xl flex flex-col justify-between">
               <div>
                 <span className="text-[10px] font-black text-pink-400 uppercase tracking-wider block mb-1">
                   1. KONUŞMA ŞABLONU
                 </span>
-                <div className="text-xs font-semibold text-slate-300 mb-1">
+                <div className="text-xs font-semibold text-slate-200 mb-1">
                   🇹🇷 "{activeDemo.tr}"
                 </div>
                 <div className="text-base sm:text-lg font-black text-cyan-300 leading-snug my-2">
@@ -636,27 +629,27 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
             </div>
 
             {/* KÜRE 2: ZİHİNSEL KURAL & FORMÜL KÜRESİ */}
-            <div className="p-6 rounded-[32px] bg-gradient-to-b from-[#180f42]/90 to-[#10092c]/95 border-2 border-purple-500/40 shadow-xl flex flex-col justify-center">
+            <div className="p-6 rounded-[32px] bg-gradient-to-b from-[#251354]/90 to-[#190d3d]/95 border-2 border-purple-400/40 shadow-xl flex flex-col justify-center">
               <span className="text-[10px] font-black text-amber-300 uppercase tracking-wider block mb-2">
                 2. ZİHİNSEL KURAL / FORMÜL
               </span>
-              <div className="p-3.5 rounded-2xl bg-purple-950/70 border border-purple-500/40 text-purple-200 font-bold text-xs leading-relaxed">
+              <div className="p-3.5 rounded-2xl bg-purple-950/80 border border-purple-400/40 text-purple-200 font-bold text-xs leading-relaxed">
                 {activeDemo.formula}
               </div>
-              <span className="text-[10px] text-purple-300/70 font-semibold mt-3 block">
+              <span className="text-[10px] text-purple-200/80 font-semibold mt-3 block">
                 🧠 Kelimeleri tek tek çevirmek yerine bu kalıbı zihnine yapıştır.
               </span>
             </div>
 
             {/* KÜRE 3: PRATİK KONUŞMA PÜF NOKTASI KÜRESİ */}
-            <div className="p-6 rounded-[32px] bg-gradient-to-b from-[#180f42]/90 to-[#10092c]/95 border-2 border-cyan-500/40 shadow-xl flex flex-col justify-center">
+            <div className="p-6 rounded-[32px] bg-gradient-to-b from-[#251354]/90 to-[#190d3d]/95 border-2 border-cyan-400/40 shadow-xl flex flex-col justify-center">
               <span className="text-[10px] font-black text-cyan-300 uppercase tracking-wider block mb-2">
                 3. PRATİK KONUŞMA PÜF NOKTASI
               </span>
-              <div className="p-3.5 rounded-2xl bg-cyan-950/70 border border-cyan-500/40 text-cyan-100 font-semibold text-xs leading-relaxed">
+              <div className="p-3.5 rounded-2xl bg-cyan-950/80 border border-cyan-400/40 text-cyan-100 font-semibold text-xs leading-relaxed">
                 {activeDemo.tip}
               </div>
-              <span className="text-[10px] text-cyan-300/70 font-semibold mt-3 block">
+              <span className="text-[10px] text-cyan-200/80 font-semibold mt-3 block">
                 💡 Doğal akıcılığı sağlayan en önemli refleks.
               </span>
             </div>
@@ -676,8 +669,8 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-left text-xs">
             {/* KARA DELİK BULUTSUSU */}
-            <div className="p-6 rounded-[36px] bg-gradient-to-br from-rose-950/60 via-[#1c0818]/80 to-rose-950/40 border-2 border-rose-500/40 shadow-xl text-rose-200">
-              <div className="w-10 h-10 rounded-full bg-rose-900/60 border border-rose-400/50 flex items-center justify-center text-xl mb-3">
+            <div className="p-6 rounded-[36px] bg-gradient-to-br from-rose-950/70 via-[#260a21]/90 to-rose-950/50 border-2 border-rose-500/50 shadow-xl text-rose-200">
+              <div className="w-10 h-10 rounded-full bg-rose-900/70 border border-rose-400/60 flex items-center justify-center text-xl mb-3">
                 ❌
               </div>
               <div className="font-black text-sm text-rose-300 mb-1.5">
@@ -689,8 +682,8 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
             </div>
 
             {/* IŞILTILI SÜPERNOVA GALAKSİSİ */}
-            <div className="p-6 rounded-[36px] bg-gradient-to-br from-emerald-950/60 via-[#0a2022]/80 to-teal-950/40 border-2 border-emerald-400/50 shadow-xl text-emerald-200">
-              <div className="w-10 h-10 rounded-full bg-emerald-900/60 border border-emerald-400/50 flex items-center justify-center text-xl mb-3">
+            <div className="p-6 rounded-[36px] bg-gradient-to-br from-emerald-950/70 via-[#0c292c]/90 to-teal-950/50 border-2 border-emerald-400/60 shadow-xl text-emerald-200">
+              <div className="w-10 h-10 rounded-full bg-emerald-900/70 border border-emerald-400/60 flex items-center justify-center text-xl mb-3">
                 ✅
               </div>
               <div className="font-black text-sm text-emerald-300 mb-1.5">
@@ -715,7 +708,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
       </main>
 
       {/* ==================== 6. ZARİF ALT KOZMİK FOOTER ==================== */}
-      <footer className="relative z-20 px-6 py-4 border-t border-purple-500/20 text-xs text-purple-300/60 flex flex-col sm:flex-row items-center justify-between gap-2 shrink-0 bg-[#070417]/80 backdrop-blur-md">
+      <footer className="relative z-20 px-6 py-4 border-t border-purple-500/20 text-xs text-purple-300/70 flex flex-col sm:flex-row items-center justify-between gap-2 shrink-0 bg-[#12072e]/80 backdrop-blur-md">
         <div className="flex items-center space-x-2">
           <Shield className="w-4 h-4 text-emerald-400" />
           <span>Sıfır Kişisel Veri & Tarayıcı Tabanlı Güvenli Konuşma Alanı</span>
