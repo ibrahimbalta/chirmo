@@ -71,4 +71,13 @@ describe('Chirmo Hero Landing Portal (Açılış Vitrini)', () => {
     expect(content).toContain('Öğrenci Paneline Devam Et');
     expect(content).toContain('Güvenli Çıkış');
   });
+
+  it('protects all shortcuts and portal links requiring login or registration first before entering panel', () => {
+    const content = fs.readFileSync(landingPath, 'utf-8');
+
+    // Giriş yapılmadan hiçbir link panele doğrudan girmemeli
+    expect(content).toContain('handleProtectedAction');
+    expect(content).toContain('setPendingAction');
+    expect(content).toContain('pendingAction');
+  });
 });

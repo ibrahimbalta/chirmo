@@ -162,6 +162,17 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
   );
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
+
+  // Giriş Yapılmadan Hiçbir Link Doğrudan Panele Girmesin: Korumalı Eylem Yöneticisi
+  const handleProtectedAction = (action: () => void) => {
+    if (!currentUser) {
+      setPendingAction(() => action);
+      setIsAuthModalOpen(true);
+    } else {
+      action();
+    }
+  };
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [speechResult, setSpeechResult] = useState<string | null>(null);
@@ -307,19 +318,19 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
       </div>
 
       {/* ==================== 1. PRESTİJLİ VE BÜYÜTÜLMÜŞ LOGOLU KOZMİK ÜST BAR ==================== */}
-      <header className="sticky top-0 z-50 w-full bg-[#180C3D]/70 backdrop-blur-2xl border-b border-purple-400/25 shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-18 sm:h-20 flex items-center justify-between gap-3">
+      <header className="sticky top-0 z-50 w-full bg-[#180C3D]/80 backdrop-blur-2xl border-b border-purple-400/25 shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-3">
           
           {/* Sol: Büyütülmüş, Net Chirmo Logosu */}
           <div
-            onClick={onEnterStudentPanel}
+            onClick={() => handleProtectedAction(onEnterStudentPanel)}
             className="flex items-center cursor-pointer group shrink-0"
             title="Chirmo - Ana Ekrana Dön"
           >
             <img
               src="./chirmo-header-brand-logo.png"
               alt="Chirmo"
-              className="h-13 sm:h-16 md:h-18 w-auto object-contain filter drop-shadow-[0_2px_14px_rgba(255,255,255,0.3)] drop-shadow-[0_6px_25px_rgba(168,85,247,0.55)] group-hover:scale-105 active:scale-95 transition-all duration-200"
+              className="h-10 sm:h-14 md:h-18 w-auto object-contain filter drop-shadow-[0_2px_14px_rgba(255,255,255,0.3)] drop-shadow-[0_6px_25px_rgba(168,85,247,0.55)] group-hover:scale-105 active:scale-95 transition-all duration-200"
               onError={(e) => {
                 const target = e.currentTarget;
                 if (!target.src.endsWith('/chirmo-logo.png')) {
@@ -332,32 +343,32 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
           {/* Orta: Hızlı Gezinti Çipleri */}
           <nav className="hidden lg:flex items-center space-x-2 text-xs font-black">
             <button
-              onClick={onEnterCamp}
+              onClick={() => handleProtectedAction(onEnterCamp)}
               className="px-3 py-1.5 rounded-xl bg-indigo-950/60 hover:bg-indigo-800/60 border border-indigo-500/40 text-indigo-200 hover:text-white transition-all cursor-pointer flex items-center space-x-1.5"
             >
               <span>🏕️ Kamp</span>
             </button>
             <button
-              onClick={onEnterKidsWorld}
+              onClick={() => handleProtectedAction(onEnterKidsWorld)}
               className="px-3 py-1.5 rounded-xl bg-pink-950/60 hover:bg-pink-800/60 border border-pink-500/40 text-pink-200 hover:text-white transition-all cursor-pointer flex items-center space-x-1.5"
             >
               <span>🏰 Kids</span>
               <span className="text-[9px] bg-pink-500 text-white px-1.5 py-0.2 rounded-full font-bold">5-17</span>
             </button>
             <button
-              onClick={onEnterSimulator}
+              onClick={() => handleProtectedAction(onEnterSimulator)}
               className="px-3 py-1.5 rounded-xl bg-emerald-950/60 hover:bg-emerald-800/60 border border-emerald-500/40 text-emerald-200 hover:text-white transition-all cursor-pointer flex items-center space-x-1.5"
             >
               <span>🎙️ Simülatör</span>
             </button>
             <button
-              onClick={onEnterPhraseBank}
+              onClick={() => handleProtectedAction(onEnterPhraseBank)}
               className="px-3 py-1.5 rounded-xl bg-cyan-950/60 hover:bg-cyan-800/60 border border-cyan-500/40 text-cyan-200 hover:text-white transition-all cursor-pointer flex items-center space-x-1.5"
             >
               <span>💬 Kalıplar</span>
             </button>
             <button
-              onClick={() => (onEnterGames ? onEnterGames() : onEnterStudentPanel())}
+              onClick={() => handleProtectedAction(() => (onEnterGames ? onEnterGames() : onEnterStudentPanel()))}
               className="px-3 py-1.5 rounded-xl bg-rose-950/60 hover:bg-rose-800/60 border border-rose-500/40 text-rose-200 hover:text-white transition-all cursor-pointer flex items-center space-x-1.5"
             >
               <span>⚔️ Düello</span>
@@ -365,12 +376,12 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
           </nav>
 
           {/* Sağ Eylemler: Dil Seçici, Giriş/Kullanıcı Sayfası & Hızlı Panel Butonu */}
-          <div className="flex items-center space-x-2 sm:space-x-3">
-            {/* Dil Seçici */}
-            <div className="flex items-center bg-[#23124A]/80 p-1 rounded-2xl border border-purple-400/30 text-xs font-black shadow-inner">
+          <div className="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
+            {/* Dil Seçici (Mobilde bayraklı kompakt çip, masaüstünde tam metinli) */}
+            <div className="flex items-center bg-[#23124A]/80 p-0.5 sm:p-1 rounded-xl sm:rounded-2xl border border-purple-400/30 text-xs font-black shadow-inner">
               <button
                 onClick={() => handleLanguageToggle('en')}
-                className={`px-2.5 sm:px-3 py-1 rounded-xl transition-all cursor-pointer flex items-center space-x-1.5 ${
+                className={`px-2 sm:px-3 py-1 rounded-lg sm:rounded-xl transition-all cursor-pointer flex items-center space-x-1 ${
                   selectedLanguage === 'en'
                     ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-[0_0_15px_rgba(99,102,241,0.6)]'
                     : 'text-purple-300 hover:text-white'
@@ -378,11 +389,11 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
                 title="İngilizce Dünyası"
               >
                 <span>🇬🇧</span>
-                <span>English</span>
+                <span className="hidden sm:inline">English</span>
               </button>
               <button
                 onClick={() => handleLanguageToggle('de')}
-                className={`px-2.5 sm:px-3 py-1 rounded-xl transition-all cursor-pointer flex items-center space-x-1.5 ${
+                className={`px-2 sm:px-3 py-1 rounded-lg sm:rounded-xl transition-all cursor-pointer flex items-center space-x-1 ${
                   selectedLanguage === 'de'
                     ? 'bg-gradient-to-r from-pink-600 to-purple-600 text-white shadow-[0_0_15px_rgba(236,72,153,0.6)]'
                     : 'text-purple-300 hover:text-white'
@@ -390,32 +401,32 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
                 title="Almanca Dünyası"
               >
                 <span>🇩🇪</span>
-                <span>Deutsch</span>
+                <span className="hidden sm:inline">Deutsch</span>
               </button>
             </div>
 
-            {/* Giriş Yap / Kullanıcı Sayfası Butonu */}
+            {/* Giriş Yap / Kullanıcı Sayfası Butonu (Mobilde de daima net ve görünür) */}
             {!currentUser ? (
               <button
                 onClick={() => setIsAuthModalOpen(true)}
-                className="h-10 sm:h-11 px-3 sm:px-4 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm flex items-center space-x-1.5 sm:space-x-2 border border-purple-300/50 shadow-[0_0_20px_rgba(168,85,247,0.4)] active:scale-95 transition-all cursor-pointer"
+                className="h-9 sm:h-11 px-3 sm:px-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm flex items-center space-x-1.5 border border-purple-300/50 shadow-[0_0_20px_rgba(168,85,247,0.4)] active:scale-95 transition-all cursor-pointer shrink-0"
                 title="Giriş Yap veya Ücretsiz Hesap Aç"
               >
-                <LogIn className="w-4 h-4 text-cyan-300" />
+                <LogIn className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-300" />
                 <span>Giriş Yap</span>
               </button>
             ) : (
               <button
                 onClick={() => setIsProfileModalOpen(true)}
-                className="h-10 sm:h-11 px-2.5 sm:px-3.5 rounded-2xl bg-gradient-to-r from-emerald-950/80 via-purple-950/80 to-indigo-950/80 hover:from-emerald-900/90 hover:to-indigo-900/90 text-white font-bold text-xs sm:text-sm flex items-center space-x-2 border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all cursor-pointer active:scale-95 group"
+                className="h-9 sm:h-11 px-2 sm:px-3.5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-emerald-950/80 via-purple-950/80 to-indigo-950/80 hover:from-emerald-900/90 hover:to-indigo-900/90 text-white font-bold text-xs sm:text-sm flex items-center space-x-1.5 sm:space-x-2 border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all cursor-pointer active:scale-95 group shrink-0"
                 title="Kullanıcı Sayfası ve Profil Detayları"
               >
                 <span className="text-base sm:text-lg">{userProfile.avatarEmoji || '🎓'}</span>
                 <div className="flex flex-col text-left">
-                  <span className="text-xs font-black text-emerald-300 group-hover:text-white transition-colors truncate max-w-[70px] sm:max-w-[110px]">
+                  <span className="text-xs font-black text-emerald-300 group-hover:text-white transition-colors truncate max-w-[65px] sm:max-w-[110px]">
                     {currentUser.username}
                   </span>
-                  <span className="text-[10px] text-purple-300 font-semibold leading-none">
+                  <span className="text-[9px] sm:text-[10px] text-purple-300 font-semibold leading-none">
                     {userProfile.level} • Profilim
                   </span>
                 </div>
@@ -423,16 +434,28 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
               </button>
             )}
 
-            {/* Öğrenci Paneline Gir Butonu */}
-            <button
-              onClick={onEnterStudentPanel}
-              className="h-10 sm:h-11 px-3 sm:px-5 rounded-2xl bg-gradient-to-r from-cyan-500 via-indigo-600 to-pink-600 hover:from-cyan-400 hover:to-pink-500 text-white font-black text-xs sm:text-sm flex items-center space-x-1.5 sm:space-x-2 shadow-[0_0_25px_rgba(99,102,241,0.5)] active:scale-95 transition-all cursor-pointer border border-cyan-300/40"
-            >
-              <Crown className="w-4 h-4 text-amber-300" />
-              <span className="hidden sm:inline">Öğrenci Paneline Gir</span>
-              <span className="sm:hidden">Panel</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+            {/* Öğrenci Paneline Gir Butonu - Giriş yapılmışsa mobilde de çıkar, giriş yapılmamışsa geniş ekranda gösterilir */}
+            {currentUser && (
+              <button
+                onClick={() => handleProtectedAction(onEnterStudentPanel)}
+                className="h-9 sm:h-11 px-2.5 sm:px-5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-cyan-500 via-indigo-600 to-pink-600 hover:from-cyan-400 hover:to-pink-500 text-white font-black text-xs sm:text-sm flex items-center space-x-1.5 shadow-[0_0_25px_rgba(99,102,241,0.5)] active:scale-95 transition-all cursor-pointer border border-cyan-300/40 shrink-0"
+              >
+                <Crown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-300" />
+                <span className="hidden sm:inline">Öğrenci Paneline Gir</span>
+                <span className="sm:hidden">Panel</span>
+                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              </button>
+            )}
+            {!currentUser && (
+              <button
+                onClick={() => handleProtectedAction(onEnterStudentPanel)}
+                className="hidden md:flex h-10 sm:h-11 px-3 sm:px-5 rounded-2xl bg-gradient-to-r from-cyan-500 via-indigo-600 to-pink-600 hover:from-cyan-400 hover:to-pink-500 text-white font-black text-xs sm:text-sm items-center space-x-1.5 sm:space-x-2 shadow-[0_0_25px_rgba(99,102,241,0.5)] active:scale-95 transition-all cursor-pointer border border-cyan-300/40 shrink-0"
+              >
+                <Crown className="w-4 h-4 text-amber-300" />
+                <span>Öğrenci Paneline Gir</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -453,7 +476,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
           {/* KISAYOL 1: 🏕️ 30 GÜNLÜK KAMP -> Kamp (learn) */}
           <div className="absolute top-2 left-2 sm:top-6 sm:left-8 md:top-8 md:left-12 z-20 group">
             <button
-              onClick={onEnterCamp}
+              onClick={() => handleProtectedAction(onEnterCamp)}
               className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full p-1 bg-gradient-to-br from-indigo-500 via-purple-600 to-indigo-900 shadow-[0_0_30px_rgba(99,102,241,0.6)] hover:shadow-[0_0_50px_rgba(99,102,241,0.95)] hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center text-center border-2 border-indigo-300/80 animate-[bounce_6s_ease-in-out_infinite]"
               title="30 Günde Kendini İfade Etme Kampı"
             >
@@ -472,7 +495,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
           {/* KISAYOL 2: 🏰 LINGORIA KIDS -> Kids (kids) */}
           <div className="absolute top-2 right-2 sm:top-6 sm:right-8 md:top-8 md:right-12 z-20 group">
             <button
-              onClick={onEnterKidsWorld}
+              onClick={() => handleProtectedAction(onEnterKidsWorld)}
               className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full p-1 bg-gradient-to-br from-pink-500 via-purple-600 to-pink-900 shadow-[0_0_30px_rgba(236,72,153,0.6)] hover:shadow-[0_0_50px_rgba(236,72,153,0.95)] hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center text-center border-2 border-pink-300/80 animate-[bounce_7s_ease-in-out_infinite]"
               title="Lingoria Kids (5-17 Yaş Macera Evreni)"
             >
@@ -494,7 +517,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
           {/* KISAYOL 3: 💬 KALIP DEPOSU -> Kalıp Deposu (phrases) */}
           <div className="absolute top-1/2 -translate-y-1/2 left-0 sm:left-2 md:left-4 z-20 group">
             <button
-              onClick={onEnterPhraseBank}
+              onClick={() => handleProtectedAction(onEnterPhraseBank)}
               className="relative w-22 h-22 sm:w-26 sm:h-26 md:w-30 md:h-30 rounded-full p-1 bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-900 shadow-[0_0_30px_rgba(6,182,212,0.6)] hover:shadow-[0_0_50px_rgba(6,182,212,0.95)] hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center text-center border-2 border-cyan-300/80 animate-[bounce_8s_ease-in-out_infinite]"
               title="Kalıp Deposu & Cümle Kalıpları"
             >
@@ -513,7 +536,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
           {/* KISAYOL 4: 🎙️ CANLI AI SİMÜLATÖR -> Ses Simülatörü (speak) */}
           <div className="absolute top-1/2 -translate-y-1/2 right-0 sm:right-2 md:right-4 z-20 group">
             <button
-              onClick={onEnterSimulator}
+              onClick={() => handleProtectedAction(onEnterSimulator)}
               className="relative w-22 h-22 sm:w-26 sm:h-26 md:w-30 md:h-30 rounded-full p-1 bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-900 shadow-[0_0_30px_rgba(16,185,129,0.6)] hover:shadow-[0_0_50px_rgba(16,185,129,0.95)] hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center text-center border-2 border-emerald-300/80 animate-[bounce_6.5s_ease-in-out_infinite]"
               title="Canlı Konuşma Simülatörü"
             >
@@ -532,7 +555,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
           {/* KISAYOL 5: ⚔️ KONUŞMA DÜELLOSU -> Oyunlar & Düello (games) */}
           <div className="absolute bottom-4 left-2 sm:bottom-8 sm:left-10 md:bottom-10 md:left-14 z-20 group">
             <button
-              onClick={() => (onEnterGames ? onEnterGames() : onEnterStudentPanel())}
+              onClick={() => handleProtectedAction(() => (onEnterGames ? onEnterGames() : onEnterStudentPanel()))}
               className="relative w-22 h-22 sm:w-26 sm:h-26 md:w-30 md:h-30 rounded-full p-1 bg-gradient-to-br from-rose-500 via-fuchsia-600 to-purple-900 shadow-[0_0_30px_rgba(244,63,94,0.6)] hover:shadow-[0_0_50px_rgba(244,63,94,0.95)] hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center text-center border-2 border-rose-300/80 animate-[bounce_7.5s_ease-in-out_infinite]"
               title="Speaking Düellosu & Oyunlar"
             >
@@ -551,7 +574,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
           {/* KISAYOL 6: 👑 ÖĞRENCİ PANELİNE GİR -> Ana Stüdyo & Panel (search) */}
           <div className="absolute bottom-4 right-2 sm:bottom-8 sm:right-10 md:bottom-10 md:right-14 z-20 group">
             <button
-              onClick={onEnterStudentPanel}
+              onClick={() => handleProtectedAction(onEnterStudentPanel)}
               className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-34 md:h-34 rounded-full p-1 bg-gradient-to-br from-amber-400 via-pink-600 to-purple-800 shadow-[0_0_35px_rgba(245,158,11,0.8)] hover:shadow-[0_0_55px_rgba(245,158,11,1)] hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center text-center border-2 border-amber-300 animate-[bounce_5.5s_ease-in-out_infinite]"
               title="Öğrenci Paneline Başla"
             >
@@ -570,7 +593,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
           {/* KISAYOL 7: 🩺 TELAFFUZ DOKTORU -> Simülatör / Fonetik (speak) */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 sm:top-1 md:top-2 z-20 group">
             <button
-              onClick={onEnterSimulator}
+              onClick={() => handleProtectedAction(onEnterSimulator)}
               className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full p-1 bg-gradient-to-br from-teal-500 via-cyan-600 to-indigo-900 shadow-[0_0_30px_rgba(20,184,166,0.6)] hover:shadow-[0_0_50px_rgba(20,184,166,0.95)] hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center text-center border-2 border-teal-300/80 animate-[bounce_6.8s_ease-in-out_infinite]"
               title="Telaffuz Doktoru"
             >
@@ -589,7 +612,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
           {/* KISAYOL 8: 🎯 KARİYER ROTASI -> Hedefler (tasks) */}
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 sm:bottom-1 md:bottom-2 z-20 group">
             <button
-              onClick={() => (onEnterTasks ? onEnterTasks() : onEnterCamp())}
+              onClick={() => handleProtectedAction(() => (onEnterTasks ? onEnterTasks() : onEnterCamp()))}
               className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full p-1 bg-gradient-to-br from-purple-500 via-indigo-600 to-violet-950 shadow-[0_0_30px_rgba(168,85,247,0.6)] hover:shadow-[0_0_50px_rgba(168,85,247,0.95)] hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center text-center border-2 border-purple-300/80 animate-[bounce_7.2s_ease-in-out_infinite]"
               title="Kariyer ve Mülakat İngilizcesi"
             >
@@ -652,7 +675,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
             
             {/* KART 1: CANLI AI SESLİ GÖRÜŞME -> speak */}
             <div
-              onClick={onEnterSimulator}
+              onClick={() => handleProtectedAction(onEnterSimulator)}
               className="p-4 sm:p-5 rounded-2xl bg-[#1B1044]/80 hover:bg-[#25135C]/90 border border-emerald-400/40 hover:border-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.2)] hover:shadow-[0_0_35px_rgba(16,185,129,0.4)] transition-all duration-200 hover:-translate-y-1 cursor-pointer group flex flex-col justify-between"
             >
               <div>
@@ -687,7 +710,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
 
             {/* KART 2: LINGORIA 3D KIDS -> kids */}
             <div
-              onClick={onEnterKidsWorld}
+              onClick={() => handleProtectedAction(onEnterKidsWorld)}
               className="p-4 sm:p-5 rounded-2xl bg-[#261042]/80 hover:bg-[#341459]/90 border border-pink-400/40 hover:border-pink-400 shadow-[0_0_20px_rgba(236,72,153,0.2)] hover:shadow-[0_0_35px_rgba(236,72,153,0.4)] transition-all duration-200 hover:-translate-y-1 cursor-pointer group flex flex-col justify-between"
             >
               <div>
@@ -722,7 +745,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
 
             {/* KART 3: 30 GÜNLÜK KAMP -> learn */}
             <div
-              onClick={onEnterCamp}
+              onClick={() => handleProtectedAction(onEnterCamp)}
               className="p-4 sm:p-5 rounded-2xl bg-[#17134A]/80 hover:bg-[#201A63]/90 border border-indigo-400/40 hover:border-indigo-400 shadow-[0_0_20px_rgba(99,102,241,0.2)] hover:shadow-[0_0_35px_rgba(99,102,241,0.4)] transition-all duration-200 hover:-translate-y-1 cursor-pointer group flex flex-col justify-between"
             >
               <div>
@@ -757,7 +780,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
 
             {/* KART 4: 1V1 SPEAKING DÜELLOSU -> games */}
             <div
-              onClick={() => (onEnterGames ? onEnterGames() : onEnterStudentPanel())}
+              onClick={() => handleProtectedAction(() => (onEnterGames ? onEnterGames() : onEnterStudentPanel()))}
               className="p-4 sm:p-5 rounded-2xl bg-[#280F33]/80 hover:bg-[#381447]/90 border border-amber-400/40 hover:border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.2)] hover:shadow-[0_0_35px_rgba(245,158,11,0.4)] transition-all duration-200 hover:-translate-y-1 cursor-pointer group flex flex-col justify-between"
             >
               <div>
@@ -1183,12 +1206,21 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
       {/* ==================== 9. GİRİŞ / KAYIT AUTH MODALI ==================== */}
       <ChirmoAuthModal
         isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
+        onClose={() => {
+          setIsAuthModalOpen(false);
+          setPendingAction(null);
+        }}
         onSuccess={(user) => {
           setCurrentUser(user);
           setIsAuthModalOpen(false);
-          // Giriş yapan kullanıcı doğrudan panele yönlendirilir
-          onEnterStudentPanel();
+          // Giriş yapan kullanıcı bekleyen bir kısayola tıkladıysa ona, yoksa genel öğrenci paneline yönlendirilir
+          if (pendingAction) {
+            const next = pendingAction;
+            setPendingAction(null);
+            next();
+          } else {
+            onEnterStudentPanel();
+          }
         }}
       />
     </div>
