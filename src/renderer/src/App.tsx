@@ -53,9 +53,8 @@ import { CampStorageService, StudentCampProgress } from './services/curriculumDa
 export type AppNavTab = 'search' | 'learn' | 'phrases' | 'kids' | 'games' | 'speak' | 'tasks' | 'video' | 'admin';
 
 export const App: React.FC = () => {
-  // 4 Ana Sütun: 'learn' (30 Günlük Kamp) | 'phrases' (Konuşma Deposu) | 'speak' (Simülatör) | 'video' (Film)
-  // Ek Araçlar: 'search' (Stüdyo) | 'kids' (Kids) | 'games' (Oyunlar) | 'tasks' (Hedefler)
-  const [activeTab, setActiveTab] = useState<AppNavTab>('learn');
+  // Ana Sayfa ('search') varsayılan başlangıç ekranıdır
+  const [activeTab, setActiveTab] = useState<AppNavTab>('search');
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
 
   // Tarayıcı Durumu
@@ -344,12 +343,35 @@ export const App: React.FC = () => {
                   </div>
                 </div>
 
-                {/* --- 4 TEMEL KONUŞMA SÜTUNU --- */}
+                {/* --- 5 TEMEL KONUŞMA SÜTUNU --- */}
                 <div className="px-1 py-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
                   🎯 30 Günde Konuşma Devrimi
                 </div>
 
-                {/* 1. Kamp */}
+                {/* 1. Ana Sayfa */}
+                <button
+                  onClick={() => {
+                    setActiveTab('search');
+                    setIsMobileNavOpen(false);
+                  }}
+                  className={`w-full flex items-center space-x-2.5 px-2.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    activeTab === 'search'
+                      ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 shadow-2xs ring-1 ring-indigo-200 dark:ring-indigo-800'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                  title="Chirmo Ana Sayfa"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center shrink-0">
+                    <Sparkles className="w-4 h-4 text-indigo-500 shrink-0" />
+                  </div>
+                  <div className="text-left flex-1 min-w-0">
+                    <div className="font-extrabold truncate">Ana Sayfa</div>
+                    <div className="text-[10px] text-slate-400 font-normal truncate">Robot Öğretmen & Stüdyo</div>
+                  </div>
+                  {activeTab === 'search' && <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />}
+                </button>
+
+                {/* 2. Kamp */}
                 <button
                   onClick={() => {
                     setActiveTab('learn');
@@ -372,7 +394,7 @@ export const App: React.FC = () => {
                   {activeTab === 'learn' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />}
                 </button>
 
-                {/* 2. Hayat Kurtaran Konuşma Deposu */}
+                {/* 3. Hayat Kurtaran Konuşma Deposu */}
                 <button
                   onClick={() => {
                     setActiveTab('phrases');
@@ -395,7 +417,7 @@ export const App: React.FC = () => {
                   {activeTab === 'phrases' && <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />}
                 </button>
 
-                {/* 3. Simülatör */}
+                {/* 4. Simülatör */}
                 <button
                   onClick={() => {
                     setActiveTab('speak');
@@ -418,7 +440,7 @@ export const App: React.FC = () => {
                   {activeTab === 'speak' && <span className="w-1.5 h-1.5 rounded-full bg-purple-500 shrink-0" />}
                 </button>
 
-                {/* 4. Film */}
+                {/* 5. Film */}
                 <button
                   onClick={() => {
                     setActiveTab('video');
@@ -445,29 +467,6 @@ export const App: React.FC = () => {
                 <div className="px-1 pt-2 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 border-t border-slate-100 dark:border-slate-800">
                   🛠️ Ek Alanlar & Oyunlar
                 </div>
-
-                {/* 5. Stüdyo */}
-                <button
-                  onClick={() => {
-                    setActiveTab('search');
-                    setIsMobileNavOpen(false);
-                  }}
-                  className={`w-full flex items-center space-x-2.5 px-2.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    activeTab === 'search'
-                      ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 shadow-2xs ring-1 ring-indigo-200 dark:ring-indigo-800'
-                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
-                  }`}
-                  title="Chirmo Stüdyo & AI Öğretmen"
-                >
-                  <div className="w-7 h-7 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center shrink-0">
-                    <Sparkles className="w-4 h-4 text-indigo-500 shrink-0" />
-                  </div>
-                  <div className="text-left flex-1 min-w-0">
-                    <div className="font-extrabold truncate">Stüdyo</div>
-                    <div className="text-[10px] text-slate-400 font-normal truncate">Chirmo AI Öğretmen</div>
-                  </div>
-                  {activeTab === 'search' && <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />}
-                </button>
 
                 {/* 6. Kids */}
                 <button
@@ -565,10 +564,27 @@ export const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Orta: SIFIR KAFA KARIŞIKLIĞI — 4 ANA KONUŞMA SÜTUNU + DAHA FAZLA AÇILIR MENÜSÜ */}
+        {/* Orta: SIFIR KAFA KARIŞIKLIĞI — ANA SAYFA + TEMEL KONUŞMA SÜTUNLARI */}
         <nav className="hidden md:flex items-center bg-slate-100/90 dark:bg-slate-800/90 p-1 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 gap-0.5 shrink-0 shadow-2xs relative">
           
-          {/* 1. 30 Günlük Kamp */}
+          {/* 1. Ana Sayfa */}
+          <button
+            onClick={() => {
+              setActiveTab('search');
+              setIsMoreMenuOpen(false);
+            }}
+            className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
+              activeTab === 'search'
+                ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
+            }`}
+            title="Chirmo Ana Sayfa"
+          >
+            <Sparkles className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'search' ? 'text-indigo-500' : 'text-slate-400'}`} />
+            <span>Ana Sayfa</span>
+          </button>
+
+          {/* 2. 30 Günlük Kamp */}
           <button
             onClick={() => {
               setActiveTab('learn');
@@ -585,7 +601,7 @@ export const App: React.FC = () => {
             <span>30 Günlük Kamp</span>
           </button>
 
-          {/* 2. Hayat Kurtaran Konuşma Deposu */}
+          {/* 3. Hayat Kurtaran Konuşma Deposu */}
           <button
             onClick={() => {
               setActiveTab('phrases');
@@ -602,7 +618,7 @@ export const App: React.FC = () => {
             <span>Konuşma Deposu</span>
           </button>
 
-          {/* 3. Simülatör */}
+          {/* 4. Simülatör */}
           <button
             onClick={() => {
               setActiveTab('speak');
@@ -619,7 +635,7 @@ export const App: React.FC = () => {
             <span>Simülatör</span>
           </button>
 
-          {/* 4. Film & Video */}
+          {/* 5. Film & Video */}
           <button
             onClick={() => {
               setActiveTab('video');
@@ -636,12 +652,12 @@ export const App: React.FC = () => {
             <span>Film</span>
           </button>
 
-          {/* 5. DAHA FAZLA AÇILIR MENÜSÜ */}
+          {/* 6. DAHA FAZLA AÇILIR MENÜSÜ */}
           <div className="relative">
             <button
               onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
               className={`h-8 px-2.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1 shrink-0 whitespace-nowrap ${
-                ['search', 'kids', 'games', 'tasks'].includes(activeTab)
+                ['kids', 'games', 'tasks'].includes(activeTab)
                   ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
               }`}
@@ -656,19 +672,6 @@ export const App: React.FC = () => {
                 onMouseLeave={() => setIsMoreMenuOpen(false)}
                 className="absolute right-0 top-full mt-1.5 w-52 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 py-1.5 z-50 animate-in fade-in slide-in-from-top-1"
               >
-                <button
-                  onClick={() => {
-                    setActiveTab('search');
-                    setIsMoreMenuOpen(false);
-                  }}
-                  className={`w-full px-3 py-2 text-left text-xs font-bold flex items-center space-x-2 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer ${
-                    activeTab === 'search' ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-950/30' : 'text-slate-700 dark:text-slate-300'
-                  }`}
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                  <span>Stüdyo & AI Öğretmen</span>
-                </button>
-
                 <button
                   onClick={() => {
                     setActiveTab('kids');
