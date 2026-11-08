@@ -103,6 +103,8 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
   const [selectedAge, setSelectedAge] = useState<AgeGroup>('5-7');
   const [targetLang, setTargetLang] = useState<SupportedLanguage>(() => TargetLanguageService.getTargetLanguage());
   const [activeLevelId, setActiveLevelId] = useState<string | null>(null);
+  const [isGearChestOpen, setIsGearChestOpen] = useState<boolean>(false);
+  const [activeGearTab, setActiveGearTab] = useState<'sentence' | 'question' | 'request' | 'emotion' | 'connector'>('sentence');
   const [subGameTab, setSubGameTab] = useState<'memory' | 'detective' | 'puzzle' | 'voice'>('memory');
   const [activeTab, setActiveTab] = useState<
     'games' | 'cards' | 'simon' | 'stories' | 'patterns' | 'animals' | 'colors' | 'chat' | 'stickers' | 'songs'
@@ -2338,10 +2340,390 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
         )}
 
         
+        
+        {/* ==================== BÜYÜLÜ TEÇHİZAT SANDIĞI İNTERAKTİF MODAL ==================== */}
+        {isGearChestOpen && (
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 animate-fade-in overflow-y-auto">
+            <div className="max-w-3xl w-full bg-[#1e133d] border-2 border-amber-400 rounded-3xl p-5 sm:p-7 shadow-2xl text-white space-y-5 my-auto max-h-[90vh] overflow-y-auto">
+              {/* Modal Başlık */}
+              <div className="flex items-center justify-between border-b border-purple-500/30 pb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center text-3xl shadow-lg shrink-0">
+                    🎁
+                  </div>
+                  <div>
+                    <h3 className="text-lg sm:text-xl font-black text-amber-300 flex items-center space-x-2">
+                      <span>Maceracının Büyülü Teçhizat Sandığı</span>
+                      <span className="text-[10px] bg-purple-500/40 text-purple-200 border border-purple-400/40 px-2 py-0.5 rounded-full font-extrabold">
+                        5 Temel Kalıp
+                      </span>
+                    </h3>
+                    <p className="text-xs text-pink-200/80">
+                      Bir insan dilde hangi kalıpları kullanır? Teçhizatlarını incele, örnekleri dinle ve oyunda ustalaş!
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsGearChestOpen(false)}
+                  className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer font-black text-sm"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* 5 Teçhizat Sekmesi */}
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                {[
+                  { id: 'sentence', icon: '🗡️', name: 'Cümle Kılıcı', sub: 'Nasıl Cümle Kurulur?' },
+                  { id: 'question', icon: '❓', name: 'Soru Asası', sub: 'Nasıl Soru Sorulur?' },
+                  { id: 'request', icon: '🛡️', name: 'İstek Kalkanı', sub: 'İstek & Rica Kalıbı' },
+                  { id: 'emotion', icon: '🧪', name: 'Duygu İksiri', sub: 'Duygu & Fikir Belirtme' },
+                  { id: 'connector', icon: '🧭', name: 'Zaman Pusulası', sub: 'Bağlaçlar & Cümle Köprüsü' }
+                ].map((g) => (
+                  <button
+                    key={g.id}
+                    type="button"
+                    onClick={() => setActiveGearTab(g.id as any)}
+                    className={`p-2.5 rounded-2xl border-2 text-center transition-all cursor-pointer flex flex-col items-center justify-center space-y-1 ${
+                      activeGearTab === g.id
+                        ? 'bg-gradient-to-br from-amber-400 to-yellow-300 text-slate-950 font-black border-amber-300 shadow-lg scale-102'
+                        : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'
+                    }`}
+                  >
+                    <span className="text-2xl">{g.icon}</span>
+                    <span className="text-xs font-black line-clamp-1">{g.name}</span>
+                    <span className="text-[9px] opacity-80 line-clamp-1">{g.sub}</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Seçili Teçhizatın Detay Kartı */}
+              <div className="p-4 sm:p-5 rounded-2xl bg-white/5 border border-purple-400/30 space-y-4">
+                {activeGearTab === 'sentence' && (
+                  <div className="space-y-3 animate-fade-in">
+                    <div className="flex items-center space-x-2 text-amber-300 font-black text-sm sm:text-base">
+                      <span>🗡️ Cümle Kılıcı: Cümle Nasıl Kurulur? (Mental Lego)</span>
+                    </div>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      💡 <strong>Sihirli Mantık:</strong> Yabancı dilde cümleler lego parçaları gibidir. Cümlenin omurgası her zaman: <span className="text-amber-300 font-bold">ÖZNE (Kim?) + EYLEM (Ne Yapıyor?) + NESNE (Neyi?)</span> sırasıyla kurulur.
+                    </p>
+
+                    <div className="p-3 rounded-xl bg-purple-950/60 border border-purple-500/40 space-y-1">
+                      <div className="text-[10px] uppercase font-black text-purple-300">Evrensel Cümle Formülü</div>
+                      <div className="text-sm font-black text-white">
+                        [Özne / Kim?] + [Fiil / Eylem] + [Nesne / Neyi?]
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 pt-1">
+                      <div className="text-xs font-black text-amber-300 uppercase">Canlı Örnekler & Telaffuz:</div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
+                          <div>
+                            <div className="font-black text-white">{targetLang === 'de' ? 'Ich spiele Fußball.' : 'I play football.'}</div>
+                            <div className="text-[11px] text-pink-200">Ben futbol oynarım.</div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleSpeak(targetLang === 'de' ? 'Ich spiele Fußball.' : 'I play football.')}
+                            className="p-2 rounded-xl bg-purple-500/30 hover:bg-purple-500/50 text-amber-300 cursor-pointer"
+                          >
+                            <Volume2 className="w-4 h-4" />
+                          </button>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
+                          <div>
+                            <div className="font-black text-white">{targetLang === 'de' ? 'Wir trinken frisches Wasser.' : 'We drink fresh water.'}</div>
+                            <div className="text-[11px] text-pink-200">Biz taze su içeriz.</div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleSpeak(targetLang === 'de' ? 'Wir trinken frisches Wasser.' : 'We drink fresh water.')}
+                            className="p-2 rounded-xl bg-purple-500/30 hover:bg-purple-500/50 text-amber-300 cursor-pointer"
+                          >
+                            <Volume2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeGearTab === 'question' && (
+                  <div className="space-y-3 animate-fade-in">
+                    <div className="flex items-center space-x-2 text-amber-300 font-black text-sm sm:text-base">
+                      <span>❓ Soru Asası: Soru Nasıl Sorulur?</span>
+                    </div>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      💡 <strong>Sihirli Mantık:</strong> Soru sormak bir asa sallamak gibidir! Yardımcı kelimeyi (<span className="text-amber-300 font-bold">Do / Can / Is / Wo / Magst du</span>) cümlenin en başına taşırsın.
+                    </p>
+
+                    <div className="p-3 rounded-xl bg-purple-950/60 border border-purple-500/40 space-y-1">
+                      <div className="text-[10px] uppercase font-black text-purple-300">Evrensel Soru Formülü</div>
+                      <div className="text-sm font-black text-white">
+                        [Yardımcı Soru Kelimesi] + [Özne] + [Fiil / Nesne] ?
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 pt-1">
+                      <div className="text-xs font-black text-amber-300 uppercase">Canlı Soru Kalıpları:</div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
+                          <div>
+                            <div className="font-black text-white">{targetLang === 'de' ? 'Magst du Äpfel?' : 'Do you like apples?'}</div>
+                            <div className="text-[11px] text-pink-200">Elma sever misin?</div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleSpeak(targetLang === 'de' ? 'Magst du Äpfel?' : 'Do you like apples?')}
+                            className="p-2 rounded-xl bg-purple-500/30 hover:bg-purple-500/50 text-amber-300 cursor-pointer"
+                          >
+                            <Volume2 className="w-4 h-4" />
+                          </button>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
+                          <div>
+                            <div className="font-black text-white">{targetLang === 'de' ? 'Kannst du mir helfen?' : 'Can you help me?'}</div>
+                            <div className="text-[11px] text-pink-200">Bana yardım edebilir misin?</div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleSpeak(targetLang === 'de' ? 'Kannst du mir helfen?' : 'Can you help me?')}
+                            className="p-2 rounded-xl bg-purple-500/30 hover:bg-purple-500/50 text-amber-300 cursor-pointer"
+                          >
+                            <Volume2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeGearTab === 'request' && (
+                  <div className="space-y-3 animate-fade-in">
+                    <div className="flex items-center space-x-2 text-amber-300 font-black text-sm sm:text-base">
+                      <span>🛡️ İstek & Nezaket Kalkanı: İstek ve Rica Nasıl Yapılır?</span>
+                    </div>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      💡 <strong>Sihirli Mantık:</strong> Bir şey isterken emir verilmez; nezaket zırhı kuşanılır! Her zaman <span className="text-amber-300 font-bold">"Can I have..."</span> (Alabilir miyim?) veya <span className="text-amber-300 font-bold">"I would like... please"</span> (İsterim lütfen) kalıpları kullanılır.
+                    </p>
+
+                    <div className="p-3 rounded-xl bg-purple-950/60 border border-purple-500/40 space-y-1">
+                      <div className="text-[10px] uppercase font-black text-purple-300">Nezaket ve İstek Formülü</div>
+                      <div className="text-sm font-black text-white">
+                        Can I have + [nesne] + please? / I want + [nesne] + please
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 pt-1">
+                      <div className="text-xs font-black text-amber-300 uppercase">Canlı İstek Kalıpları:</div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
+                          <div>
+                            <div className="font-black text-white">{targetLang === 'de' ? 'Kann ich bitte Wasser haben?' : 'Can I have some water, please?'}</div>
+                            <div className="text-[11px] text-pink-200">Biraz su alabilir miyim lütfen?</div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleSpeak(targetLang === 'de' ? 'Kann ich bitte Wasser haben?' : 'Can I have some water, please?')}
+                            className="p-2 rounded-xl bg-purple-500/30 hover:bg-purple-500/50 text-amber-300 cursor-pointer"
+                          >
+                            <Volume2 className="w-4 h-4" />
+                          </button>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
+                          <div>
+                            <div className="font-black text-white">{targetLang === 'de' ? 'Ich möchte spielen, bitte.' : 'I want to play, please.'}</div>
+                            <div className="text-[11px] text-pink-200">Oynamak istiyorum lütfen.</div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleSpeak(targetLang === 'de' ? 'Ich möchte spielen, bitte.' : 'I want to play, please.')}
+                            className="p-2 rounded-xl bg-purple-500/30 hover:bg-purple-500/50 text-amber-300 cursor-pointer"
+                          >
+                            <Volume2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeGearTab === 'emotion' && (
+                  <div className="space-y-3 animate-fade-in">
+                    <div className="flex items-center space-x-2 text-amber-300 font-black text-sm sm:text-base">
+                      <span>🧪 Duygu & Fikir İksiri: Duygu ve Fikir Nasıl Belirtilir?</span>
+                    </div>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      💡 <strong>Sihirli Mantık:</strong> Sevdiğin şeyleri ve hissettiklerini anlatmak yeni arkadaşlar edinmeni sağlar! Kalıp: <span className="text-amber-300 font-bold">"I like / I love / I feel..."</span>
+                    </p>
+
+                    <div className="p-3 rounded-xl bg-purple-950/60 border border-purple-500/40 space-y-1">
+                      <div className="text-[10px] uppercase font-black text-purple-300">Duygu & Fikir Formülü</div>
+                      <div className="text-sm font-black text-white">
+                        I feel + [Duygu] / I love + [Nesne]
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 pt-1">
+                      <div className="text-xs font-black text-amber-300 uppercase">Canlı Duygu Kalıpları:</div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
+                          <div>
+                            <div className="font-black text-white">{targetLang === 'de' ? 'Ich liebe dieses Spiel!' : 'I love this game!'}</div>
+                            <div className="text-[11px] text-pink-200">Bu oyunu çok seviyorum!</div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleSpeak(targetLang === 'de' ? 'Ich liebe dieses Spiel!' : 'I love this game!')}
+                            className="p-2 rounded-xl bg-purple-500/30 hover:bg-purple-500/50 text-amber-300 cursor-pointer"
+                          >
+                            <Volume2 className="w-4 h-4" />
+                          </button>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
+                          <div>
+                            <div className="font-black text-white">{targetLang === 'de' ? 'Ich bin heute sehr glücklich.' : 'I feel very happy today.'}</div>
+                            <div className="text-[11px] text-pink-200">Bugün kendimi çok mutlu hissediyorum.</div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleSpeak(targetLang === 'de' ? 'Ich bin heute sehr glücklich.' : 'I feel very happy today.')}
+                            className="p-2 rounded-xl bg-purple-500/30 hover:bg-purple-500/50 text-amber-300 cursor-pointer"
+                          >
+                            <Volume2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeGearTab === 'connector' && (
+                  <div className="space-y-3 animate-fade-in">
+                    <div className="flex items-center space-x-2 text-amber-300 font-black text-sm sm:text-base">
+                      <span>🧭 Zaman & Bağlaç Pusulası: Cümleler Nasıl Bağlanır?</span>
+                    </div>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      💡 <strong>Sihirli Mantık:</strong> Cümleleri birbirine bağlayan köprüler dili akıcı yapar: <span className="text-amber-300 font-bold">and (ve), but (ama), because (çünkü), today (bugün)</span>.
+                    </p>
+
+                    <div className="p-3 rounded-xl bg-purple-950/60 border border-purple-500/40 space-y-1">
+                      <div className="text-[10px] uppercase font-black text-purple-300">Köprü Bağlaç Formülü</div>
+                      <div className="text-sm font-black text-white">
+                        [Cümle 1] + [and / but / because] + [Cümle 2]
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 pt-1">
+                      <div className="text-xs font-black text-amber-300 uppercase">Canlı Bağlaç Kalıpları:</div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
+                          <div>
+                            <div className="font-black text-white">{targetLang === 'de' ? 'Ich mag Bücher, weil sie spannend sind.' : 'I like books because they are fun.'}</div>
+                            <div className="text-[11px] text-pink-200">Kitapları seviyorum çünkü eğlenceliler.</div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleSpeak(targetLang === 'de' ? 'Ich mag Bücher, weil sie spannend sind.' : 'I like books because they are fun.')}
+                            className="p-2 rounded-xl bg-purple-500/30 hover:bg-purple-500/50 text-amber-300 cursor-pointer"
+                          >
+                            <Volume2 className="w-4 h-4" />
+                          </button>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
+                          <div>
+                            <div className="font-black text-white">{targetLang === 'de' ? 'Ich bin müde, aber glücklich.' : 'I am tired, but I am happy.'}</div>
+                            <div className="text-[11px] text-pink-200">Yorgunum ama mutluyum.</div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleSpeak(targetLang === 'de' ? 'Ich bin müde, aber glücklich.' : 'I am tired, but I am happy.')}
+                            className="p-2 rounded-xl bg-purple-500/30 hover:bg-purple-500/50 text-amber-300 cursor-pointer"
+                          >
+                            <Volume2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Teçhizatı Kuşan ve Ödülü Al Butonu */}
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-purple-500/30">
+                <div className="text-xs text-amber-300 font-bold flex items-center space-x-1.5">
+                  <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  <span>Teçhizatları İnceleme Ödülü: +50 XP & +20 Yıldız ⭐</span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsGearChestOpen(false);
+                    handleAwardStars(20, 'Teçhizat Sandığını Açtın ve 5 Temel Kalıbı Kuşandın!');
+                    setLingoriaXp((prev) => prev + 50);
+                    handleSpeak(targetLang === 'de' ? 'Ausgezeichnet! Du bist bereit für das Abenteuer!' : 'Awesome! You are now fully equipped for Lingoria!');
+                  }}
+                  className="w-full sm:w-auto px-6 py-2.5 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 text-slate-950 font-black text-xs sm:text-sm shadow-xl flex items-center justify-center space-x-2 cursor-pointer transition-all hover:scale-105 active:scale-95"
+                >
+                  <span>⚔️ Teçhizatlarımı Kuşandım, Seviyelere Başla!</span>
+                  <Check className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* ==================== 4. HARİTA VEYA LEVEL OYNAMA ALANI KONSOLU ==================== */}
         {activeLevelId === null ? (
           <>
             
+        
+        {/* ==================== MACERACININ BÜYÜLÜ TEÇHİZAT SANDIĞI (LİNGUİSTİC GEAR CHEST) ==================== */}
+        <div className="rounded-3xl bg-gradient-to-r from-amber-500/20 via-purple-600/30 to-pink-500/20 border-2 border-amber-400/60 p-4 sm:p-5 backdrop-blur-xl shadow-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center space-x-4">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-tr from-amber-400 to-yellow-200 text-slate-950 flex items-center justify-center text-3xl sm:text-4xl shadow-xl shrink-0 animate-pulse border-2 border-white/50">
+              🎁
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center space-x-2">
+                <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 shadow-xs">
+                  Ön Hazırlık & Teçhizat
+                </span>
+                <span className="text-xs font-bold text-amber-300">5 Efsanevi Konuşma Kalıbı</span>
+              </div>
+              <h3 className="text-base sm:text-lg font-black text-white">
+                Maceracının Büyülü Teçhizat Sandığı ⚔️
+              </h3>
+              <p className="text-xs text-pink-100 max-w-xl">
+                Bölümlere başlamadan önce teçhizatlarını kuşan: Cümle nasıl kurulur? Soru nasıl sorulur? İstek ve ricada hangi kalıplar kullanılır?
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-2.5 shrink-0 w-full md:w-auto">
+            <button
+              type="button"
+              onClick={() => {
+                setIsGearChestOpen(true);
+                handleSpeak(targetLang === 'de' ? 'Öffne deine Zauberkiste und lerne die Sprachmuster!' : 'Open your magic gear chest and master the speaking patterns!');
+              }}
+              className="w-full md:w-auto px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-slate-950 font-black text-xs sm:text-sm shadow-xl flex items-center justify-center space-x-2 cursor-pointer transition-all hover:scale-105 active:scale-95"
+            >
+              <span>Sandığı Aç & Kalıpları Öğren</span>
+              <Sparkles className="w-4 h-4 fill-slate-950 text-slate-950" />
+            </button>
+          </div>
+        </div>
+
         {/* ==================== LINGORIA 8 OYUN SEVİYESİ / LEVEL SEÇİM YOLU ==================== */}
         <div className="space-y-3 pt-2">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 px-1">

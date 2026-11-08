@@ -54,4 +54,15 @@ describe('Lingoria by Chirmo Kids - Fantastic Language Learning Universe', () =>
     expect(content).toContain('lingoria_completed_quests');
     expect(content).toContain('chirmo_kids_stars');
   });
+
+  it('features Maceracının Büyülü Teçhizat Sandığı (Language Gear Chest) with 5 core linguistic tools', () => {
+    expect(content).toContain('Maceracının Büyülü Teçhizat Sandığı');
+    expect(content).toContain('Cümle Kılıcı');
+    expect(content).toContain('Soru Asası');
+    expect(content).toContain('İstek Kalkanı');
+    expect(content).toContain('Duygu İksiri');
+    expect(content).toContain('Zaman Pusulası');
+    expect(content).toContain('isGearChestOpen');
+    expect(content).toContain('Teçhizatlarımı Kuşandım');
+  });
 });
