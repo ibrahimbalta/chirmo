@@ -131,6 +131,19 @@ export const App: React.FC = () => {
   // Seviye ve İhtiyaç Analizi Modalı (Diagnostic Onboarding)
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
 
+  // Sayfaya ilk girişte yaş ve seviye analizi sorup kişisel plan oluşturma
+  useEffect(() => {
+    try {
+      const isCompleted = localStorage.getItem('chirmo_onboarding_completed_v1');
+      if (!isCompleted) {
+        const timer = setTimeout(() => {
+          setIsOnboardingOpen(true);
+        }, 600);
+        return () => clearTimeout(timer);
+      }
+    } catch {}
+  }, []);
+
   const handleLeftSidebarSelect = (itemId: string) => {
     if (itemId === 'home') {
       setActiveTab('search');
@@ -963,7 +976,18 @@ export const App: React.FC = () => {
         {/* BÖLÜM 5: İŞ, HEDEFLER & GELİŞİM KARNESİ */}
         {activeTab === 'tasks' && (
           <div className="flex-1 flex flex-col h-full overflow-hidden">
-            <SimpleTaskWorkspace />
+            <SimpleTaskWorkspace
+              onNavigateTab={(tab, subTab) => {
+                setActiveTab(tab as any);
+                if (subTab) {
+                  try {
+                    localStorage.setItem('chirmo_learn_initial_tab', subTab);
+                    window.dispatchEvent(new CustomEvent('chirmo_switch_learn_subtab', { detail: subTab }));
+                  } catch {}
+                }
+              }}
+              onOpenPlanModal={() => setIsOnboardingOpen(true)}
+            />
           </div>
         )}
 
@@ -996,8 +1020,11 @@ export const App: React.FC = () => {
       <ChirmoOnboardingModal
         isOpen={isOnboardingOpen}
         onClose={() => setIsOnboardingOpen(false)}
-        onComplete={(lvl) => {
+        onComplete={(lvl, targetTab) => {
           handleLevelChange(lvl);
+          if (targetTab) {
+            setActiveTab(targetTab as any);
+          }
         }}
       />
 

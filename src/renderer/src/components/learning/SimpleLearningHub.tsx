@@ -84,6 +84,17 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
     return TargetLanguageService.subscribe((lang) => setTargetLang(lang));
   }, []);
 
+  // Kişisel plandan alt istasyon geçişlerini dinle
+  useEffect(() => {
+    const handleSubTabSwitch = (e: any) => {
+      if (e?.detail && typeof e.detail === 'string') {
+        setActiveTab(e.detail as LearningHubTab);
+      }
+    };
+    window.addEventListener('chirmo_switch_learn_subtab', handleSubTabSwitch);
+    return () => window.removeEventListener('chirmo_switch_learn_subtab', handleSubTabSwitch);
+  }, []);
+
   const handleSrsReview = (id: string, isCorrect: boolean) => {
     SpacedRepetitionService.recordReview(id, isCorrect, isCorrect ? 5 : 1);
     setSrsWords([...SpacedRepetitionService.getAllWords()]);
