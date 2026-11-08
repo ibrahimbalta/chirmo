@@ -187,16 +187,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
     }
   };
 
-  // Sayfa açıldığında Chirmo'nun seslenmesi (tek seferlik)
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!hasSpokenIntro) {
-        handleSpeak(robotGreeting, 'tr');
-        setHasSpokenIntro(true);
-      }
-    }, 800);
-    return () => clearTimeout(timer);
-  }, []);
+  // Otomatik ses çalma kapalı (ziyaretçi Chirmo'ya veya ses butonuna tıkladığında çalar)
 
   // Canlı Mikrofon Testi
   const handleStartMicTest = () => {
