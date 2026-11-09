@@ -72,7 +72,7 @@ export const CampComparisonModal: React.FC<CampComparisonModalProps> = ({
               <ul className="text-xs text-slate-500 dark:text-slate-400 space-y-1.5 pt-1">
                 <li className="flex items-start space-x-1.5">
                   <span className="text-rose-500 font-bold">✕</span>
-                  <span>Cümle kurarken Türkçeden kelime kelime çeviri</span>
+                  <span>Cümle kurarken kelime kelime çeviriye takılma</span>
                 </li>
                 <li className="flex items-start space-x-1.5">
                   <span className="text-rose-500 font-bold">✕</span>

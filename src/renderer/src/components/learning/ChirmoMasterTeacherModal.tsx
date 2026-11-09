@@ -61,7 +61,7 @@ export const ChirmoMasterTeacherModal: React.FC<ChirmoMasterTeacherModalProps> =
                   </span>
                 </div>
                 <p className="text-xs text-amber-100 font-medium mt-0.5">
-                  Türkiye'nin Dil Öğrenme Engelini Yıkan 5 Devrimci Güç Bir Arada
+                  Dil Öğrenme ve Konuşma Engelini Yıkan 5 Devrimci Güç Bir Arada
                 </p>
               </div>
             </div>
@@ -79,10 +79,10 @@ export const ChirmoMasterTeacherModal: React.FC<ChirmoMasterTeacherModalProps> =
             <span className="text-2xl shrink-0">📜</span>
             <div className="space-y-1">
               <div className="font-black text-amber-900 dark:text-amber-300">
-                "Evladım, 50 yıldır tahta başındayım. Türk insanı zeki değil diye değil, dilin 'otopsisi' yapıldığı için konuşamadı!"
+                "Evladım, 50 yıldır eğitim dünyasındayım. İnsanlar öğrenemediği için değil, dilin sadece 'otopsisi' ve ezberi yapıldığı için konuşamadı!"
               </div>
               <p className="text-[11px] sm:text-xs text-amber-800 dark:text-amber-300/90 leading-relaxed">
-                Aşağıdaki 5 laboratuvar, beynindeki Türkçe-yabancı dil uyuşmazlığını çözer, telaffuzunu yerliler gibi yapar ve hata korkunu sıfırlar. Hangisine ihtiyacın varsa tıkla ve konuşma kasını başlat!
+                Aşağıdaki 5 laboratuvar, zihindeki çeviri alışkanlığını kırar, telaffuzunu yerliler gibi yapar ve hata korkunu sıfırlar. Hangisine ihtiyacın varsa tıkla ve konuşma kasını başlat!
               </p>
             </div>
           </div>
@@ -109,7 +109,7 @@ export const ChirmoMasterTeacherModal: React.FC<ChirmoMasterTeacherModalProps> =
                     1. Gölgeleme (Shadowing) Koçu
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-snug">
-                    Kulak duyar, beyin Türkçe düşünmeden ağız taklit eder. Yavaş/hızlı yerli sesiyle konuşma ritmini yakala.
+                    Kulak duyar, beyin çeviri yapmadan doğrudan ağızla taklit eder. Yavaş/hızlı yerli sesiyle konuşma ritmini yakala.
                   </p>
                 </div>
 
@@ -119,7 +119,7 @@ export const ChirmoMasterTeacherModal: React.FC<ChirmoMasterTeacherModalProps> =
                 </div>
               </div>
 
-              {/* 2. Türklerin 100 Hatası Radarı */}
+              {/* 2. En Sık Yapılan 100 Hata Radarı */}
               <div
                 onClick={() => setActiveSubModal('pitfalls')}
                 className="p-5 rounded-3xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-slate-800 dark:to-amber-950/40 border-2 border-amber-200 dark:border-amber-800 hover:border-amber-500 transition-all flex flex-col justify-between space-y-3 cursor-pointer group shadow-xs hover:shadow-md hover:scale-[1.01]"
@@ -135,7 +135,7 @@ export const ChirmoMasterTeacherModal: React.FC<ChirmoMasterTeacherModalProps> =
 
                 <div>
                   <h3 className="text-base font-black text-slate-900 dark:text-white group-hover:text-amber-600 transition-colors">
-                    2. Türklerin 100 Sık Hatası Radarı
+                    2. En Sık Yapılan 100 Kritik Hata Radarı
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-snug">
                     "I am agree", "Ich bin warm" gibi komik duruma düşüren tuzakları, yalancı arkadaşları ve edat hatalarını yok et.

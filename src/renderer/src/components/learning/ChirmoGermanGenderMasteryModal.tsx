@@ -443,7 +443,7 @@ export const ChirmoGermanGenderMasteryModal: React.FC<ChirmoGermanGenderMasteryM
           <div className="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1">
             <div className="p-4 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 text-xs sm:text-sm text-indigo-950 dark:text-indigo-200">
               <span className="font-black">🎯 1 Dakikada Akkusativ (-i hali) ve Dativ (-e hali) Matrisi: </span>
-              Türk öğrencilerin en çok korktuğu şey basittir: Sadece "DER" Akkusativ'de değişir (DEN olur). Dativ'de ise herkes değişir!
+              Öğrencilerin en çok zorlandığı kural aslında basittir: Sadece "DER" Akkusativ'de değişir (DEN olur). Dativ'de ise herkes değişir!
             </div>
 
             <div className="rounded-3xl border-2 border-slate-200 dark:border-slate-700 overflow-hidden text-xs">

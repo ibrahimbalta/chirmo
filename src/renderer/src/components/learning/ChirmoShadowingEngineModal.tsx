@@ -80,7 +80,7 @@ const SHADOWING_DRILLS: ShadowingItem[] = [
     phoneticEn: 'Vud it bi pasıbıl tu ıreync e leyt çek-aut tumoro?',
     phoneticDe: 'Veere es mööklih, morgen aynen şpeeteren Çek-aut tsu feraynbaaren?',
     stressWords: ['possible', 'late check-out', 'tomorrow'],
-    teacherTip: '"Would it be possible..." kalıbını öğrenen bir Türk öğrenci dünyanın her otelinde kapıları açar. Sesinde ricacı ve sakin tonu koru.'
+    teacherTip: '"Would it be possible..." kalıbını öğrenen bir öğrenci dünyanın her otelinde kapıları açar. Sesinde ricacı ve sakin tonu koru.'
   },
   // B1 Seviyesi
   {
@@ -300,9 +300,9 @@ export const ChirmoShadowingEngineModal: React.FC<ChirmoShadowingEngineModalProp
               </span>
             </div>
 
-            {/* Türkçe Karşılık */}
+            {/* Karşılık */}
             <div className="text-sm sm:text-base font-bold text-slate-600 dark:text-slate-400 border-t border-indigo-100 dark:border-slate-700 pt-2.5">
-              🇹🇷 Anlamı: <span className="text-slate-900 dark:text-white font-extrabold">{currentItem.tr}</span>
+              Anlamı: <span className="text-slate-900 dark:text-white font-extrabold">{currentItem.tr}</span>
             </div>
 
             {/* Animasyonlu Dalga Çubuğu (Ses Çalarken Aktif) */}

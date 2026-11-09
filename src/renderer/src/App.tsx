@@ -64,7 +64,7 @@ export const App: React.FC = () => {
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
   const [addressBarUrl, setAddressBarUrl] = useState('');
 
-  // Öğrenme & Seviye Durumu (Türk kullanıcılar için varsayılan A1 Başlangıç)
+  // Öğrenme & Seviye Durumu (Varsayılan A1 Başlangıç)
   const [learningProgress, setLearningProgress] = useState<DailyGoalProgress>(() =>
     LearningStorageService.getProgress()
   );

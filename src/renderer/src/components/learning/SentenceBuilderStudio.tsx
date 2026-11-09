@@ -215,7 +215,7 @@ export const SentenceBuilderStudio: React.FC = () => {
             </h1>
 
             <p className="text-xs sm:text-sm text-indigo-100 max-w-2xl leading-relaxed">
-              Türklerin İngilizce konuşurken takılmasının en büyük sebebi Türkçe sırayla (Özne + Nesne + Yüklem) düşünmektir.
+              Yabancı dil konuşurken takılmanın en büyük sebebi zihinde kendi ana dilimizin sırasıyla (Özne + Nesne + Yüklem) düşünmektir.
               Chirmo kalıp motoru ile <strong>Özne + Kalıp + Nesne</strong> refleksini kazanır; öğrendiğiniz tek bir kelimeden onlarca farklı cümle türetebilirsiniz.
             </p>
 

@@ -332,7 +332,7 @@ export const ChirmoFluencyBooster: React.FC<ChirmoFluencyBoosterProps> = ({
   }, [isPlayingLoop, currentTrackIndex]);
 
   // ==========================================
-  // 4. TÜRKLERİN EN SIK YAPTIĞI HATALAR KLİNİĞİ
+  // 4. EN SIK YAPILAN KRİTİK HATALAR KLİNİĞİ
   // ==========================================
   const COMMON_MISTAKES: CommonMistakeItem[] = [
     {
@@ -352,7 +352,7 @@ export const ChirmoFluencyBooster: React.FC<ChirmoFluencyBoosterProps> = ({
       id: 'err-2',
       wrong: 'I have 25 years old.',
       correct: 'I am 25 years old.',
-      explanationTr: 'Türkçede "25 yaşındayım / 25 yaşına sahibim" mantığı kullanılır ancak İngilizcede yaş bir nesne değil durumdur (to be kullanılır).',
+      explanationTr: 'Birebir çeviride "25 yaşındayım / 25 yaşına sahibim" mantığı kullanılır ancak İngilizcede yaş bir nesne değil durumdur (to be kullanılır).',
       drillQuestion: 'Arkadaşına yaşını söylerken hangisini kullanırsın?',
       category: 'Yaş İfade Etme',
       options: [
@@ -473,7 +473,7 @@ export const ChirmoFluencyBooster: React.FC<ChirmoFluencyBoosterProps> = ({
               <span className="text-xl">🚀</span>
             </h1>
             <p className="text-xs sm:text-sm text-indigo-100 max-w-xl">
-              Türkçe düşünme engelini kıran, ağız kaslarını konuşturan ve yürürken bile pratik yaptıran bilimsel metotlar.
+              Zihinde çeviri engelini kıran, ağız kaslarını konuşturan ve yürürken bile pratik yaptıran bilimsel metotlar.
             </p>
           </div>
 
@@ -506,7 +506,7 @@ export const ChirmoFluencyBooster: React.FC<ChirmoFluencyBoosterProps> = ({
             { id: 'shadowing', label: '🎧 Gölgeleme (Shadowing)', tag: 'Ağız Jimnastiği' },
             { id: 'reflex', label: '⚡ Hızlı Refleks', tag: 'Sıfır Çeviri' },
             { id: 'loop', label: '🚶 Yürüyüş Modu', tag: 'Kulak Doldurma' },
-            { id: 'mistakes', label: '🩺 Hata Doktoru', tag: 'Türkçe Tuzaklar' },
+            { id: 'mistakes', label: '🩺 Hata Doktoru', tag: 'Kritik Tuzaklar' },
             { id: 'lifestyle', label: '🎯 Hayatım & Meslek', tag: 'Özelleştirilmiş' }
           ].map((tab) => {
             const isActive = activeMode === tab.id;
@@ -648,7 +648,7 @@ export const ChirmoFluencyBooster: React.FC<ChirmoFluencyBoosterProps> = ({
                 Görsel Refleks Antrenmanı
               </h2>
               <p className="text-xs sm:text-sm text-slate-500">
-                Türkçe çeviri yapmayı unut! Ekrana gelen duruma göre 3 saniye içinde ağzından İngilizce cümleyi çıkar.
+                Zihninden çeviri yapmayı unut! Ekrana gelen duruma göre 3 saniye içinde ağzından İngilizce cümleyi çıkar.
               </p>
             </div>
 
@@ -788,20 +788,20 @@ export const ChirmoFluencyBooster: React.FC<ChirmoFluencyBoosterProps> = ({
         )}
 
         {/* ============================================================ */}
-        {/* MOD 4: TÜRKLERİN EN SIK YAPTIĞI HATALAR */}
+        {/* MOD 4: EN SIK YAPILAN KRİTİK HATALAR */}
         {/* ============================================================ */}
         {activeMode === 'mistakes' && (
           <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
               <div>
                 <span className="text-[11px] font-black uppercase text-rose-600 bg-rose-50 dark:bg-rose-950/60 px-2.5 py-1 rounded-full">
-                  Klinik: Türklerin Yaptığı Tipik Gramer Hataları
+                  Klinik: En Sık Yapılan Tipik Dil ve Gramer Hataları
                 </span>
                 <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
                   Kurtarıcı Püf Noktaları Doktoru
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-500">
-                  Türkçe düşünürken yapılan 20 temel hatayı bir kez öğren, ömür boyu doğru konuş.
+                  Birebir çeviri yaparken düşülen 20 temel hatayı bir kez öğren, ömür boyu doğru konuş.
                 </p>
               </div>
 

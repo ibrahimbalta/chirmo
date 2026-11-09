@@ -346,13 +346,13 @@ export const ChirmoEmergencyCheatSheetModal: React.FC<ChirmoEmergencyCheatSheetM
                       "{activeText}"
                     </div>
 
-                    {/* Türkçe Karşılık */}
+                    {/* Karşılık */}
                     <div className="text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-300 mt-1">
-                      🇹🇷 {phrase.tr}
+                      {phrase.tr}
                     </div>
                   </div>
 
-                  {/* Türkçe Okunuş Kılavuzu (Hatasız Telaffuz) */}
+                  {/* Okunuş Kılavuzu (Hatasız Telaffuz) */}
                   <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-slate-900/80 border border-amber-200 dark:border-slate-700 flex items-center space-x-2">
                     <span className="text-[10px] font-black text-amber-700 dark:text-amber-400 uppercase shrink-0">
                       🗣️ Oku:

@@ -29,7 +29,7 @@ interface PitfallItem {
 }
 
 const PITFALL_DATABASE: PitfallItem[] = [
-  // 1. DOĞRUDAN TÜRKÇE ÇEVİRİ TUZAKLARI (DIRECT TRANSLATION ERRORS)
+  // 1. BİREBİR ÇEVİRİ VE DİL TUZAKLARI (DIRECT TRANSLATION ERRORS)
   {
     id: 'pit-1',
     category: 'direct',
@@ -38,7 +38,7 @@ const PITFALL_DATABASE: PitfallItem[] = [
     wrong: 'I am agree with you.',
     correct: 'I agree with you.',
     meaningTr: 'Seninle aynı fikirdeyim / Sana katılıyorum.',
-    whyWrong: 'Türkçedeki "katılmak" eylemini "I am..." sanıp "am" eklersin. İngilizcede "agree" sıfat değil, doğrudan bir fiildir. Başına "am/is/are" almaz.',
+    whyWrong: 'Birebir çeviri yaparken "katılmak" eylemi "I am..." sanılıp "am" eklenir. İngilizcede "agree" sıfat değil, doğrudan bir fiildir. Başına "am/is/are" almaz.',
     teacherSecret: '50 Yıllık Hoca Püf Noktası: "I agree" de geç. "I am agree" dersen "Ben katılmağın kendisiyim" demiş gibi olursun.'
   },
   {
@@ -60,8 +60,8 @@ const PITFALL_DATABASE: PitfallItem[] = [
     wrong: 'Please close the light before sleeping.',
     correct: 'Please turn off the light before sleeping.',
     meaningTr: 'Lütfen uyumadan önce ışığı kapat.',
-    whyWrong: 'Türkçede kapıyı da kapatırız, ışığı da kapatırız. İngilizcede elektrikli cihazlar "turn off" ile kapatılır, "close" sadece kapı/pencere içindir.',
-    teacherSecret: '"Close the light" dersen İngiliz ışığı elinle büküp katlamaya çalışıyorsun zanneder! Elektrik varsa daima "turn off".'
+    whyWrong: 'Çoğu dilde kapı da ışık da aynı kelimeyle kapatılır. İngilizcede elektrikli cihazlar "turn off" ile kapatılır, "close" sadece kapı/pencere içindir.',
+    teacherSecret: '"Close the light" dersen yabancı biri ışığı elinle büküp katlamaya çalışıyorsun zanneder! Elektrik varsa daima "turn off".'
   },
   {
     id: 'pit-4',
@@ -71,7 +71,7 @@ const PITFALL_DATABASE: PitfallItem[] = [
     wrong: 'Yesterday I went to home very late.',
     correct: 'Yesterday I went home very late.',
     meaningTr: 'Dün eve çok geç gittim.',
-    whyWrong: 'Türkçedeki eve gitmek "-e/-a" yönelme ekini "to" sanırız. İngilizcede "home" kelimesi zarftır ve önüne "to" asla almaz.',
+    whyWrong: 'Eve gitmek yönelme eki zihinde doğrudan "to" ile eşleştirilir. İngilizcede "home" kelimesi zarftır ve önüne "to" asla almaz.',
     teacherSecret: '"Go home", "come home", "arrive home". Arada "to" yok!'
   },
   {
@@ -95,7 +95,7 @@ const PITFALL_DATABASE: PitfallItem[] = [
     wrong: 'Eventually it will rain today. (Evhamlı/Muhtemelen sanılır)',
     correct: 'Eventually they found the lost keys. (Nihayetinde / Sonunda)',
     meaningTr: 'Eninde sonunda kayıp anahtarları buldular.',
-    whyWrong: '"Eventually" kelimesi Türkçedeki "evhamlı" ya da "muhtemelen" değildir! "Eninde sonunda, nihayetinde uzun çaba sonrası" demektir.',
+    whyWrong: '"Eventually" kelimesi ses benzerliğinden dolayı "muhtemelen/evhamlı" ile karıştırılmamalıdır! "Eninde sonunda, nihayetinde uzun çaba sonrası" demektir.',
     teacherSecret: '"Muhtemelen" demek için "Probably" kullan. "Eventually" sabırla beklenen sonucun gelmesidir.'
   },
   {
@@ -141,7 +141,7 @@ const PITFALL_DATABASE: PitfallItem[] = [
     wrong: 'Please listen me carefully.',
     correct: 'Please listen to me carefully.',
     meaningTr: 'Lütfen beni dikkatlice dinle.',
-    whyWrong: 'Türkçede "beni dinle" deriz, edat kullanmayız. İngilizcede "listen" fiili nesne alırken YÜZDE YÜZ "to" edatı ile birleşir.',
+    whyWrong: '"Beni dinle" derken edatsız kullanılırken, İngilizcede "listen" fiili bir nesne alırken YÜZDE YÜZ "to" edatı ile birleşir.',
     teacherSecret: '"Listen to me", "Listen to music", "Listen to the teacher". "To"suz dinlemek kulaksız dinlemektir!'
   },
   {
@@ -152,7 +152,7 @@ const PITFALL_DATABASE: PitfallItem[] = [
     wrong: 'She is married with a doctor.',
     correct: 'She is married to a doctor.',
     meaningTr: 'O bir doktor ile evli.',
-    whyWrong: 'Türkçede "biri ile evli" dediğimiz için Türk beyni hemen "with" kelimesine koşar. İngilizcede birine bağlanmak "to" ile ifade edilir.',
+    whyWrong: '"Biri ile evli" denildiğinde zihin hemen "with" kelimesine gider. İngilizcede birine bağlanmak "to" ile ifade edilir.',
     teacherSecret: '"Married with" dersen doktor yanında şahit gibi duruyor sanılır. Evlilik bağı daima "married to"dur.'
   },
 
@@ -243,14 +243,14 @@ export const ChirmoTurkishPitfallsRadarModal: React.FC<ChirmoTurkishPitfallsRada
             <div>
               <div className="flex items-center space-x-2">
                 <span className="text-base sm:text-lg font-black tracking-wide">
-                  Türklerin En Çok Yaptığı Hatalar Radarı
+                  En Sık Yapılan 100 Kritik Hata Radarı
                 </span>
                 <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-white/20 text-white border border-white/20">
                   50 Yıllık Hoca Koruma Kalkanı
                 </span>
               </div>
               <p className="text-[11px] text-amber-100 font-medium hidden sm:block">
-                Doğrudan Türkçe Düşünme Tuzakları • Yalancı Arkadaşlar (False Friends) • Kritik Almanca Hataları
+                Birebir Çeviri Tuzakları • Yalancı Arkadaşlar (False Friends) • Kritik Dil Hataları
               </p>
             </div>
           </div>
@@ -348,7 +348,7 @@ export const ChirmoTurkishPitfallsRadarModal: React.FC<ChirmoTurkishPitfallsRada
                           <span className="font-extrabold text-rose-700 dark:text-rose-400 line-through">
                             {item.wrong}
                           </span>
-                          <span className="text-[10px] block text-rose-500/80 font-bold">❌ Türkçeden Çevrilen Hata</span>
+                          <span className="text-[10px] block text-rose-500/80 font-bold">❌ Birebir Çeviri Hatası</span>
                         </div>
                       </div>
 
