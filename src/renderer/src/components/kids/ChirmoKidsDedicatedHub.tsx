@@ -2999,35 +2999,34 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
               </div>
             </div>
 
-            {/* ==================== 3. AKTİVİTE VE ÖĞRENME SEKMELERİ (MOBİLDE KAYDIRILABİLİR YATAY ÇUBUK) ==================== */}
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 sm:flex-wrap border-b-2 border-pink-200/60 dark:border-slate-800 pb-2.5">
+            {/* ==================== 3. AKTİVİTE VE ÖĞRENME SEKMELERİ (SİMETRİK 5+5 IZGARA - MOBİLDE UFAK VE DÜZENLİ) ==================== */}
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 sm:gap-2 border-b-2 border-pink-200/60 dark:border-slate-800 pb-3">
               {[
-                { id: 'games', label: '🎮 Oyunlar & Quizz', icon: Gamepad2, color: 'text-amber-500' },
-                { id: 'cards', label: '🃏 Görsel Kelimeler (30+)', icon: Smile, color: 'text-pink-500' },
-                { id: 'simon', label: '🏃‍♂️ Chirmo Diyor ki! (TPR)', icon: Zap, color: 'text-amber-500' },
-                { id: 'stories', label: '📖 Sihirli Konuşan Hikayeler', icon: BookOpen, color: 'text-purple-500' },
-                { id: 'patterns', label: '🧩 Cümle Legosu & Fabrikası', icon: Puzzle, color: 'text-purple-500' },
-                { id: 'animals', label: '🦁 Konuşan Hayvanlar', icon: Sparkles, color: 'text-emerald-500' },
-                { id: 'colors', label: '🎨 Sihirli Boya & Konuş', icon: Zap, color: 'text-rose-500' },
-                { id: 'chat', label: '💬 Çizgi Karakter Sohbeti', icon: MessageCircle, color: 'text-blue-500' },
-                { id: 'stickers', label: '⭐ Çıkartma Albümü', icon: Award, color: 'text-amber-500' },
-                { id: 'songs', label: '🎵 Şarkılar & Karaoke', icon: Music, color: 'text-rose-500' }
+                { id: 'games', label: 'Oyunlar & Quiz', emoji: '🎮' },
+                { id: 'cards', label: 'Görsel Kelimeler', emoji: '🃏' },
+                { id: 'simon', label: 'Chirmo Diyor ki!', emoji: '🏃' },
+                { id: 'stories', label: 'Masal Dünyası', emoji: '📖' },
+                { id: 'patterns', label: 'Cümle Legosu', emoji: '🧩' },
+                { id: 'animals', label: 'Konuşan Hayvanlar', emoji: '🦁' },
+                { id: 'colors', label: 'Sihirli Renkler', emoji: '🎨' },
+                { id: 'chat', label: 'Karakter Sohbeti', emoji: '💬' },
+                { id: 'stickers', label: 'Çıkartma Albümü', emoji: '⭐' },
+                { id: 'songs', label: 'Şarkı & Karaoke', emoji: '🎵' }
               ].map((tab) => {
-                const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
                 return (
                   <button
                     key={tab.id}
                     type="button"
                     onClick={() => setActiveTab(tab.id as any)}
-                    className={`px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-black transition-all cursor-pointer flex items-center space-x-1.5 sm:space-x-2 shrink-0 whitespace-nowrap ${
+                    className={`h-9 sm:h-11 px-2 sm:px-3 rounded-xl sm:rounded-2xl text-[11px] sm:text-xs md:text-sm font-black transition-all cursor-pointer flex items-center justify-center space-x-1.5 text-center shadow-xs active:scale-95 ${
                       isActive
-                        ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-md scale-102 ring-1 ring-white/30'
-                        : 'bg-white/90 dark:bg-slate-900/90 text-slate-700 dark:text-slate-300 hover:bg-pink-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800'
+                        ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-md scale-[1.02] ring-2 ring-pink-300 dark:ring-pink-500'
+                        : 'bg-white/95 dark:bg-slate-900/95 text-slate-700 dark:text-slate-300 hover:bg-pink-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800'
                     }`}
                   >
-                    <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isActive ? 'text-white' : tab.color}`} />
-                    <span>{tab.label}</span>
+                    <span className="text-sm sm:text-base shrink-0">{tab.emoji}</span>
+                    <span className="truncate">{tab.label}</span>
                   </button>
                 );
               })}
