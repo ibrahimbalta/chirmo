@@ -593,7 +593,7 @@ export const App: React.FC = () => {
         {/* Orta: MOBİL UYGULAMA SADELİĞİ — 5 TEMEL SEKME + HOCA MASASI + DİĞER ARAÇLAR */}
         <div className="flex-1 flex items-center justify-center px-2 sm:px-4 min-w-0 py-1">
           <nav className="hidden md:flex items-center bg-slate-100/90 dark:bg-slate-800/90 p-1 rounded-2xl border border-purple-100/80 dark:border-purple-950/60 gap-1 shrink-0 shadow-2xs relative">
-            {/* 1. Ana Stüdyo (Bugün) */}
+            {/* 1. Bugün (Ana Stüdyo) */}
             <button
               onClick={() => setActiveTab('search')}
               className={`h-8 px-3.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
@@ -601,10 +601,10 @@ export const App: React.FC = () => {
                   ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40'
                   : 'text-slate-600 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-white/90 dark:hover:bg-slate-700/70 font-bold active:scale-95'
               }`}
-              title="Chirmo Stüdyo & Bugünün Dersi"
+              title="Bugünün Konuşma Görevi & Chirmo Stüdyo"
             >
               <Sparkles className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'search' ? 'text-white' : 'text-indigo-500'}`} />
-              <span>Chirmo Stüdyo</span>
+              <span>1. Bugün</span>
             </button>
 
             {/* 2. 30 Günlük Kamp */}
@@ -618,10 +618,24 @@ export const App: React.FC = () => {
               title="30 Günde Günlük Konuşma Kampı"
             >
               <BookOpen className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'learn' ? 'text-white' : 'text-emerald-500'}`} />
-              <span>30 Günlük Kamp</span>
+              <span>2. 30 Günlük Kamp</span>
             </button>
 
-            {/* 3. Canlı Simülatör */}
+            {/* 3. Kalıp Deposu */}
+            <button
+              onClick={() => setActiveTab('phrases')}
+              className={`h-8 px-3.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
+                activeTab === 'phrases'
+                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40'
+                  : 'text-slate-600 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-white/90 dark:hover:bg-slate-700/70 font-bold active:scale-95'
+              }`}
+              title="Hayat Kurtaran Hazır Konuşma Kalıpları"
+            >
+              <Layers className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'phrases' ? 'text-white' : 'text-blue-500'}`} />
+              <span>3. Kalıp Deposu</span>
+            </button>
+
+            {/* 4. Canlı Simülatör */}
             <button
               onClick={() => setActiveTab('speak')}
               className={`h-8 px-3.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
@@ -632,21 +646,7 @@ export const App: React.FC = () => {
               title="Gerçek Yaşam Konuşma Simülatörü"
             >
               <Mic className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'speak' ? 'text-white' : 'text-purple-500'}`} />
-              <span>Simülatör</span>
-            </button>
-
-            {/* 4. Film & Video */}
-            <button
-              onClick={() => setActiveTab('video')}
-              className={`h-8 px-3.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
-                activeTab === 'video'
-                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-white/90 dark:hover:bg-slate-700/70 font-bold active:scale-95'
-              }`}
-              title="YouTube, Film ve Dizi ile Konuşma Stüdyosu"
-            >
-              <Film className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'video' ? 'text-white' : 'text-rose-500'}`} />
-              <span>Film</span>
+              <span>4. Simülatör</span>
             </button>
 
             {/* 5. Chirmo Kids (5-17 Yaş) */}
@@ -660,7 +660,7 @@ export const App: React.FC = () => {
               title="Chirmo Kids (5-17 Yaş) Çocuk & Genç Alanı"
             >
               <Smile className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'kids' ? 'text-white' : 'text-pink-500'}`} />
-              <span>Kids (5-17)</span>
+              <span>5. Kids</span>
             </button>
 
             {/* İnce Dikey Ayırıcı Çizgi */}
@@ -702,15 +702,15 @@ export const App: React.FC = () => {
                   <div className="absolute right-0 top-10 z-50 w-52 p-1.5 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 space-y-1">
                     <button
                       onClick={() => {
-                        setActiveTab('phrases');
+                        setActiveTab('video');
                         setIsMoreMenuOpen(false);
                       }}
                       className={`w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                        activeTab === 'phrases' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                        activeTab === 'video' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                     >
-                      <Layers className="w-4 h-4 text-blue-500 shrink-0" />
-                      <span>Konuşma Deposu (1000+)</span>
+                      <Film className="w-4 h-4 text-rose-500 shrink-0" />
+                      <span>Film & Video Stüdyosu</span>
                     </button>
 
                     <button
@@ -723,7 +723,7 @@ export const App: React.FC = () => {
                       }`}
                     >
                       <Gamepad2 className="w-4 h-4 text-purple-500 shrink-0" />
-                      <span>Oyunlar</span>
+                      <span>Oyunlar & 1v1 Düello</span>
                     </button>
 
                     <button
@@ -826,45 +826,9 @@ export const App: React.FC = () => {
         {/* BÖLÜM 1: ARAMA & TARAYICI */}
         {activeTab === 'search' && (
           <div className="flex-1 relative flex flex-col h-full overflow-hidden">
-            {/* Eğer bir siteye girilmemişse: 3 Panelli Masaüstü Arama & Öğrenme Paneli */}
+            {/* Eğer bir siteye girilmemişse: Tam Genişlikte Sade Mobil Uygulama Stüdyosu */}
             {!isBrowserNavigating ? (
               <div className="flex-1 flex flex-row h-full overflow-hidden relative">
-                {/* SOL AKORDİYON PANEL: ÖĞRENME MERKEZİ (Masaüstü/Tablet) */}
-                <div
-                  className={`hidden md:flex shrink-0 h-full transition-all duration-300 ease-in-out relative ${
-                    isLeftSidebarOpen ? 'w-64' : 'w-0'
-                  } overflow-hidden`}
-                >
-                  <div className="w-64 h-full shrink-0">
-                    <LearningCenterSidebar
-                      isOpen={true}
-                      onSelectItem={handleLeftSidebarSelect}
-                      onToggle={() => setIsLeftSidebarOpen(false)}
-                    />
-                  </div>
-                </div>
-
-                {/* SOL KENAR AKORDİYON KAYDIRMA / GENİŞLETME BUTONU */}
-                <button
-                  onClick={() => setIsLeftSidebarOpen(!isLeftSidebarOpen)}
-                  className={`hidden md:flex absolute top-1/2 -translate-y-1/2 z-30 transition-all duration-300 ease-in-out items-center justify-center w-5 h-14 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xs border border-slate-200/90 dark:border-slate-700 shadow-md hover:shadow-lg hover:bg-indigo-50 dark:hover:bg-slate-700 text-slate-500 hover:text-indigo-600 rounded-r-xl cursor-pointer select-none group ${
-                    isLeftSidebarOpen ? 'left-64' : 'left-0'
-                  }`}
-                  title={
-                    isLeftSidebarOpen
-                      ? 'Sol Paneli Sola Kaydırarak Kapat (Sayfayı Genişlet)'
-                      : 'Öğrenme Merkezini Sağa Kaydırarak Aç'
-                  }
-                  aria-label={isLeftSidebarOpen ? 'Sol Paneli Daralt' : 'Sol Paneli Genişlet'}
-                >
-                  {isLeftSidebarOpen ? (
-                    <ChevronLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
-                  ) : (
-                    <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform text-indigo-600" />
-                  )}
-                </button>
-
-                {/* ORTA PANEL: ARAMA & GÖREVLER (Akordiyon kayarak kapandıkça tam genişler) */}
                 <div className="flex-1 h-full overflow-y-auto transition-all duration-300">
                   <SimpleSearchHome
                     onSearch={handleNavigate}
@@ -878,41 +842,6 @@ export const App: React.FC = () => {
                     userLevel={learningProgress.currentLevel}
                     pendingTaskCount={pendingTaskCount}
                   />
-                </div>
-
-                {/* SAĞ KENAR AKORDİYON KAYDIRMA / GENİŞLETME BUTONU */}
-                <button
-                  onClick={() => setIsTutorOpen(!isTutorOpen)}
-                  className={`hidden lg:flex absolute top-1/2 -translate-y-1/2 z-30 transition-all duration-300 ease-in-out items-center justify-center w-5 h-14 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xs border border-slate-200/90 dark:border-slate-700 shadow-md hover:shadow-lg hover:bg-purple-50 dark:hover:bg-slate-700 text-slate-500 hover:text-purple-600 rounded-l-xl cursor-pointer select-none group ${
-                    isTutorOpen ? 'right-72' : 'right-0'
-                  }`}
-                  title={
-                    isTutorOpen
-                      ? 'Sağ Paneli Sağa Kaydırarak Kapat (Sayfayı Genişlet)'
-                      : 'Chirmo AI Öğretmeni Sola Kaydırarak Aç'
-                  }
-                  aria-label={isTutorOpen ? 'Sağ Paneli Daralt' : 'Sağ Paneli Genişlet'}
-                >
-                  {isTutorOpen ? (
-                    <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-                  ) : (
-                    <ChevronLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform text-purple-600" />
-                  )}
-                </button>
-
-                {/* SAĞ AKORDİYON PANEL: CHIRMO AI ÖĞRETMENİ */}
-                <div
-                  className={`hidden lg:flex shrink-0 h-full transition-all duration-300 ease-in-out relative ${
-                    isTutorOpen ? 'w-72' : 'w-0'
-                  } overflow-hidden`}
-                >
-                  <div className="w-72 h-full shrink-0">
-                    <ChirmoAiTeacherSidebar
-                      isOpen={true}
-                      onClose={() => setIsTutorOpen(false)}
-                      userLevel={learningProgress.currentLevel}
-                    />
-                  </div>
                 </div>
               </div>
             ) : (
@@ -1151,7 +1080,7 @@ export const App: React.FC = () => {
           }`}
         >
           <Sparkles className="w-4 h-4 mb-0.5 shrink-0" />
-          <span className="text-[10px] leading-tight truncate">Stüdyo</span>
+          <span className="text-[10px] leading-tight truncate">Bugün</span>
         </button>
 
         <button
@@ -1167,6 +1096,18 @@ export const App: React.FC = () => {
         </button>
 
         <button
+          onClick={() => setActiveTab('phrases')}
+          className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-center transition-all cursor-pointer min-h-[48px] active:scale-95 ${
+            activeTab === 'phrases'
+              ? 'text-blue-600 dark:text-blue-400 font-black bg-blue-50/90 dark:bg-blue-950/60 shadow-2xs'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
+          }`}
+        >
+          <Layers className="w-4 h-4 mb-0.5 shrink-0" />
+          <span className="text-[10px] leading-tight truncate">Kalıplar</span>
+        </button>
+
+        <button
           onClick={() => setActiveTab('speak')}
           className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-center transition-all cursor-pointer min-h-[48px] active:scale-95 ${
             activeTab === 'speak'
@@ -1176,18 +1117,6 @@ export const App: React.FC = () => {
         >
           <Mic className="w-4 h-4 mb-0.5 shrink-0" />
           <span className="text-[10px] leading-tight truncate">Simülatör</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('video')}
-          className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-center transition-all cursor-pointer min-h-[48px] active:scale-95 ${
-            activeTab === 'video'
-              ? 'text-rose-600 dark:text-rose-400 font-black bg-rose-50/90 dark:bg-rose-950/60 shadow-2xs'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
-          }`}
-        >
-          <Film className="w-4 h-4 mb-0.5 shrink-0" />
-          <span className="text-[10px] leading-tight truncate">Film</span>
         </button>
 
         <button

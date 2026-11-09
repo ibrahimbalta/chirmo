@@ -11,14 +11,11 @@ import {
   Star,
   Check,
   Zap,
-  ShieldCheck,
-  Compass,
   Lightbulb,
   HeartHandshake
 } from 'lucide-react';
 import {
   DayMission,
-  THIRTY_DAY_MISSIONS,
   CampStorageService,
   CurriculumService,
   StudentCampProgress
@@ -42,9 +39,18 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
     const saved = CampStorageService.getProgress();
     return saved.currentDay || 1;
   });
+  const [activeWeekFilter, setActiveWeekFilter] = useState<number>(() => {
+    const saved = CampStorageService.getProgress();
+    const cur = saved.currentDay || 1;
+    if (cur <= 7) return 1;
+    if (cur <= 14) return 2;
+    if (cur <= 21) return 3;
+    return 4;
+  });
+
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isGraduationDialogueOpen, setIsGraduationDialogueOpen] = useState(false);
-  const [userProfile, setUserProfile] = useState<UserProfile>(() => UserProfileService.getProfile());
+  const [userProfile] = useState<UserProfile>(() => UserProfileService.getProfile());
   const [targetLang, setTargetLang] = useState(() => TargetLanguageService.getTargetLanguage());
 
   useEffect(() => {
@@ -67,6 +73,13 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
   const activeMissions = CurriculumService.getDayMissions(targetLang);
   const selectedMission: DayMission =
     activeMissions.find((m) => m.day === selectedDayNumber) || activeMissions[0];
+
+  const weekMissions = activeMissions.filter((m) => {
+    if (activeWeekFilter === 1) return m.day >= 1 && m.day <= 7;
+    if (activeWeekFilter === 2) return m.day >= 8 && m.day <= 14;
+    if (activeWeekFilter === 3) return m.day >= 15 && m.day <= 21;
+    return m.day >= 22 && m.day <= 30;
+  });
 
   useEffect(() => {
     setUserSpokenText('');
@@ -126,7 +139,7 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
       const sampleAnswer = selectedMission.suggestedAnswer;
       evaluateSpeech(sampleAnswer);
       setIsListening(false);
-    }, 1800);
+    }, 1500);
   };
 
   const evaluateSpeech = (spoken: string) => {
@@ -140,24 +153,26 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
     });
 
     const matchRatio = targetWords.length > 0 ? matches / targetWords.length : 0.85;
-    const finalScore = Math.min(100, Math.max(80, Math.round(78 + matchRatio * 22)));
+    const finalScore = Math.min(100, Math.max(82, Math.round(78 + matchRatio * 22)));
     const stars = finalScore >= 90 ? 3 : 2;
 
-    const praises = targetLang === 'de' ? [
-      'Harika telaffuz! Ağzından çok doğal ve akıcı bir Almanca döküldü.',
-      'Süpersin! Dil kasın açılıyor, Almanca konuşurken ses tonundaki özgüven harika!',
-      'Mükemmel! Kafanda Türkçe çeviri yapmadan doğrudan Almanca refleks verdin.',
-      'Çok iyi! Hata yapmaktan korkmadan konuştun, tam olarak bu ruh lazım!'
-    ] : [
-      'Harika telaffuz! Ağzından çok doğal ve akıcı döküldü.',
-      'Süpersin! Dil kasın açılıyor, ses tonundaki özgüven harika!',
-      'Mükemmel! Kafanda Türkçe çeviri yapmadan doğrudan İngilizce refleks verdin.',
-      'Çok iyi! Hata yapmaktan korkmadan konuştun, tam olarak bu ruh lazım!'
-    ];
+    const praises =
+      targetLang === 'de'
+        ? [
+            'Harika telaffuz! Çok doğal ve akıcı bir Almanca cümle kurdun.',
+            'Süpersin! Konuşurken ses tonundaki özgüven çok iyi!',
+            'Mükemmel! Doğrudan Almanca refleks verdin.'
+          ]
+        : [
+            'Harika telaffuz! Çok doğal ve akıcı bir cümle kurdun.',
+            'Süpersin! Konuşurken ses tonundaki özgüven çok iyi!',
+            'Mükemmel! Doğrudan İngilizce refleks verdin.'
+          ];
     const praiseTr = praises[Math.floor(Math.random() * praises.length)];
-    const aiReplyEn = targetLang === 'de'
-      ? 'Ausgezeichnet! Du klingst so natürlich, mach weiter so!'
-      : 'Brilliant! You sound so natural, keep it up!';
+    const aiReplyEn =
+      targetLang === 'de'
+        ? 'Ausgezeichnet! Du klingst sehr natürlich!'
+        : 'Brilliant! You sound so natural, keep it up!';
 
     setScoreResult({
       stars,
@@ -181,100 +196,106 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
     if (selectedMission.day === 30 || updated.completedDays.length >= 30) {
       setIsGraduationDialogueOpen(true);
     } else if (selectedMission.day < 30) {
-      setSelectedDayNumber(selectedMission.day + 1);
+      const nextDay = selectedMission.day + 1;
+      setSelectedDayNumber(nextDay);
+      if (nextDay <= 7) setActiveWeekFilter(1);
+      else if (nextDay <= 14) setActiveWeekFilter(2);
+      else if (nextDay <= 21) setActiveWeekFilter(3);
+      else setActiveWeekFilter(4);
     }
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-slate-50 dark:bg-slate-950 overflow-y-auto select-none p-3 sm:p-6 pb-28 sm:pb-8">
-      <div className="max-w-5xl mx-auto w-full space-y-4 sm:space-y-6">
-        {/* ==================== 20 YILLIK ÖĞRETMEN FORMÜLÜ & MOTİVASYON BARI ==================== */}
-        <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-violet-800 rounded-2xl p-3 sm:p-4 text-white shadow-md relative overflow-hidden">
-          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
-            <div>
-              <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-[10px] font-black text-amber-300">
-                <Sparkles className="w-3 h-3" />
-                <span>20 Yıllık Öğretmen Metodu • 30 Günde {targetLang === 'de' ? 'Almanca ' : ''}Konuşma Devrimi</span>
-              </div>
-              <h1 className="text-base sm:text-lg font-black tracking-tight mt-0.5">
-                Gramer Ezberini Unut! Günde 5 Dakika {targetLang === 'de' ? 'Almanca ' : ''}Konuşarak Dili Sök 🚀
-              </h1>
+    <div className="flex-1 flex flex-col h-full bg-[#F5F7FF] dark:bg-slate-950 overflow-y-auto select-none p-3 sm:p-5 pb-28 sm:pb-8">
+      <div className="max-w-4xl mx-auto w-full space-y-4">
+        {/* ==================== 1. KOMPAKT KAMP DURUM BARI ==================== */}
+        <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 rounded-2xl p-4 text-white shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-purple-950 text-[10px] font-black uppercase">
+                📅 30 Günlük Kamp
+              </span>
+              <span className="text-xs font-bold text-indigo-100">
+                Tamamlanan: {progress.completedDays.length} / 30 Gün
+              </span>
             </div>
+            <h1 className="text-base sm:text-lg font-black mt-1">
+              Her Gün 3 Basit Adımda Konuşarak Öğren
+            </h1>
+          </div>
 
-            {/* İstatistik Rozetleri & Karne Butonu */}
-            <div className="flex items-center flex-wrap gap-2 shrink-0">
-              <button
-                type="button"
-                onClick={() => setIsGraduationDialogueOpen(true)}
-                className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-purple-950 font-black text-xs transition-all shadow-xs flex items-center space-x-1 cursor-pointer"
-              >
-                <Sparkles className="w-3 h-3 fill-purple-950" />
-                <span>🤖 Mezuniyet Sohbeti</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setIsReportOpen(true)}
-                className="px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 border border-white/30 text-white font-black text-xs transition-all shadow-xs flex items-center space-x-1 cursor-pointer"
-              >
-                <span>📊 Gelişim Karnem</span>
-              </button>
-
-              <div className="bg-white/15 px-2.5 py-1 rounded-xl border border-white/20 flex items-center space-x-1.5 text-xs font-black">
-                <Flame className="w-3.5 h-3.5 text-amber-400" />
-                <span>{progress.streakDays} Gün Seri</span>
-              </div>
-
-              <div className="bg-white/15 px-2.5 py-1 rounded-xl border border-white/20 flex items-center space-x-1.5 text-xs font-black">
-                <Award className="w-3.5 h-3.5 text-yellow-300" />
-                <span>{progress.totalXp} XP</span>
-              </div>
+          <div className="flex items-center flex-wrap gap-2 shrink-0">
+            <div className="bg-white/15 px-3 py-1.5 rounded-xl border border-white/20 flex items-center gap-1.5 text-xs font-black">
+              <Flame className="w-3.5 h-3.5 text-amber-300" />
+              <span>{progress.streakDays} Gün</span>
             </div>
+            <div className="bg-white/15 px-3 py-1.5 rounded-xl border border-white/20 flex items-center gap-1.5 text-xs font-black">
+              <Award className="w-3.5 h-3.5 text-yellow-300" />
+              <span>{progress.totalXp} XP</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsReportOpen(true)}
+              className="px-3 py-1.5 rounded-xl bg-white text-indigo-900 hover:bg-indigo-50 font-black text-xs transition cursor-pointer shadow-xs"
+            >
+              📊 Karnem
+            </button>
           </div>
         </div>
 
-        {/* ==================== 30 GÜNLÜK YOL HARİTASI (GRID) ==================== */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 border border-slate-200 dark:border-slate-800 shadow-xs space-y-2">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xs font-black text-slate-800 dark:text-slate-100 flex items-center space-x-1.5">
-              <Zap className="w-3.5 h-3.5 text-amber-500" />
-              <span>30 Günlük Dönüşüm Takvimi</span>
-            </h2>
-            <div className="flex items-center space-x-1.5">
-              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">
-                {progress.completedDays.length} / 30 Görev
-              </span>
-              <span className="text-[11px] font-bold text-emerald-600">
-                (%{Math.round((progress.completedDays.length / 30) * 100)})
-              </span>
-            </div>
+        {/* ==================== 2. SADE HAFTA & GÜN SEÇİCİ ==================== */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-3.5 border border-slate-200/80 dark:border-slate-800 shadow-2xs space-y-3">
+          {/* 4 Hafta Sekmesi */}
+          <div className="grid grid-cols-4 gap-1.5 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl">
+            {[
+              { w: 1, label: '1. Hafta', sub: 'Gün 1-7' },
+              { w: 2, label: '2. Hafta', sub: 'Gün 8-14' },
+              { w: 3, label: '3. Hafta', sub: 'Gün 15-21' },
+              { w: 4, label: '4. Hafta', sub: 'Gün 22-30' }
+            ].map((item) => (
+              <button
+                key={item.w}
+                type="button"
+                onClick={() => {
+                  setActiveWeekFilter(item.w);
+                  const firstDay = item.w === 1 ? 1 : item.w === 2 ? 8 : item.w === 3 ? 15 : 22;
+                  setSelectedDayNumber(firstDay);
+                }}
+                className={`py-2 px-2 rounded-lg text-center transition-all cursor-pointer ${
+                  activeWeekFilter === item.w
+                    ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 font-black shadow-2xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 font-bold'
+                }`}
+              >
+                <div className="text-xs leading-tight">{item.label}</div>
+                <div className="text-[10px] opacity-75">{item.sub}</div>
+              </button>
+            ))}
           </div>
 
-          {/* Gün Seçim Düğmeleri */}
-          <div className="grid grid-cols-5 sm:grid-cols-10 gap-1.5">
-            {activeMissions.map((mission) => {
+          {/* Seçili Haftanın Günleri (Sadece 7-9 Büyük ve Rahat Buton) */}
+          <div className="grid grid-cols-7 sm:grid-cols-9 gap-1.5">
+            {weekMissions.map((mission) => {
               const isCompleted = progress.completedDays.includes(mission.day);
               const isSelected = selectedDayNumber === mission.day;
-              const isCurrent = progress.currentDay === mission.day;
 
               return (
                 <button
                   key={mission.day}
+                  type="button"
                   onClick={() => setSelectedDayNumber(mission.day)}
-                  className={`relative py-1.5 px-1 rounded-xl font-black text-xs flex flex-col items-center justify-center transition-all cursor-pointer ${
+                  className={`relative py-2 px-1 rounded-xl font-black text-xs flex flex-col items-center justify-center transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-blue-600 text-white shadow-xs ring-2 ring-blue-400 scale-102'
+                      ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-300 scale-105'
                       : isCompleted
                       ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
-                      : isCurrent
-                      ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-300'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
                   }`}
                 >
-                  <span className="text-[9px] font-bold opacity-75">{targetLang === 'de' ? 'TAG' : 'GÜN'}</span>
-                  <span className="text-xs leading-none">{mission.day}</span>
+                  <span className="text-[9px] font-bold opacity-75">GÜN</span>
+                  <span className="text-sm leading-none mt-0.5">{mission.day}</span>
                   {isCompleted && (
-                    <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400 absolute -top-1 -right-1 bg-white rounded-full" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 absolute -top-1 -right-1 bg-white dark:bg-slate-900 rounded-full" />
                   )}
                 </button>
               );
@@ -282,202 +303,171 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
           </div>
         </div>
 
-        {/* ==================== SEÇİLİ GÜNÜN SESLİ MİSYONU ==================== */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-blue-100 dark:border-slate-800 p-4 sm:p-6 shadow-sm space-y-4 sm:space-y-6">
-          {/* Başlık ve Hafta Bilgisi */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 gap-3">
+        {/* ==================== 3. SEÇİLİ GÜNÜN 3 BASİT ADIMI ==================== */}
+        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-4 sm:p-6 shadow-xs space-y-4">
+          {/* Gün Başlığı */}
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
             <div>
-              <div className="flex items-center space-x-2">
-                <span className="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200 text-[11px] font-bold">
-                  {selectedMission.week}. Hafta
-                </span>
-                <span className="text-xs font-semibold text-slate-400">
-                  {selectedMission.theme}
-                </span>
-              </div>
-              <h3 className="text-xl font-black text-slate-900 dark:text-white mt-1">
-                {selectedMission.day}. Gün: {selectedMission.title}
-              </h3>
-            </div>
-
-            <div className="flex items-center space-x-2 shrink-0">
-              <span className="text-xs font-black px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 text-amber-800 dark:text-amber-300 flex items-center space-x-1">
-                <Award className="w-4 h-4 text-amber-500" />
-                <span>+{selectedMission.xpReward} XP Ödül</span>
+              <span className="text-[11px] font-black uppercase text-indigo-600 dark:text-indigo-400">
+                {selectedMission.week}. Hafta • {selectedMission.theme}
               </span>
+              <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">
+                {selectedMission.day}. Gün: {selectedMission.title}
+              </h2>
             </div>
+            <span className="px-3 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 text-amber-800 dark:text-amber-300 text-xs font-black shrink-0">
+              +{selectedMission.xpReward} XP
+            </span>
           </div>
 
-          {/* 1. ADIM: 5 DAKİKALIK KELİME & BLOK KALIPLAR */}
-          <div className="bg-emerald-50/60 dark:bg-emerald-950/20 rounded-2xl p-5 border border-emerald-100 dark:border-emerald-900/40 space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-black text-emerald-800 dark:text-emerald-300 uppercase tracking-wide flex items-center space-x-1.5">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>1. Adım (5 Dk Kelime): Günün Blok Kalıpları & Anlamı</span>
+          {/* ADIM 1: HEDEF CÜMLEYİ DİNLE */}
+          <div className="p-4 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200/80 dark:border-emerald-900/50 space-y-2.5">
+            <div className="flex items-center justify-between gap-2">
+              <span className="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-[11px] font-black">
+                1. Adım • Kalıbı Dinle ve Öğren
               </span>
-
               <button
+                type="button"
                 onClick={() => handleSpeak(selectedMission.suggestedAnswer)}
-                className="px-3 py-1 rounded-xl bg-white dark:bg-slate-800 hover:bg-emerald-100 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-slate-700 text-xs font-bold flex items-center space-x-1.5 shadow-xs cursor-pointer transition-colors"
-                title="Doğru Telaffuzu Dinle"
+                className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-emerald-100 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-slate-700 text-xs font-black flex items-center gap-1.5 shadow-2xs cursor-pointer"
               >
                 <Volume2 className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Doğru Okunuşu Dinle</span>
+                <span>🔊 Sesli Dinle</span>
               </button>
             </div>
 
             <InteractiveSentence
               sentence={selectedMission.suggestedAnswer}
               translation={selectedMission.suggestedAnswerTr}
-              language={selectedMission.language as ('en' | 'de')}
+              language={selectedMission.language as 'en' | 'de'}
               showDictionaryBreakdown={true}
             />
-
-            {/* Blok Kalıplar */}
-            <div className="flex items-center flex-wrap gap-1.5 pt-2">
-              <span className="text-[11px] font-bold text-slate-400">Blok Kalıplar:</span>
-              {selectedMission.keyVocabulary.map((kw) => (
-                <span
-                  key={kw}
-                  className="px-2 py-0.5 rounded-lg bg-emerald-100/80 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold"
-                >
-                  {kw}
-                </span>
-              ))}
-            </div>
           </div>
 
-          {/* 2. ADIM: 5 DAKİKALIK DİNLEME (CHIRMO SANA SORUYOR) */}
-          <div className="bg-blue-50/70 dark:bg-blue-950/30 rounded-2xl p-5 border border-blue-100 dark:border-blue-900/40 space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-black text-sm shadow-xs">
-                  🎙️
-                </div>
-                <span className="text-xs font-black text-blue-800 dark:text-blue-300 uppercase tracking-wide">
-                  2. Adım (5 Dk Dinleme): Chirmo'nun Sorusu
-                </span>
-              </div>
-
+          {/* ADIM 2: CHIRMO'NUN SORUSU & İPUCU */}
+          <div className="p-4 rounded-2xl bg-blue-50/70 dark:bg-blue-950/20 border border-blue-200/80 dark:border-blue-900/50 space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <span className="px-2.5 py-0.5 rounded-full bg-blue-600 text-white text-[11px] font-black">
+                2. Adım • Chirmo Sana Soruyor
+              </span>
               <button
+                type="button"
                 onClick={() => handleSpeak(selectedMission.aiPrompt)}
-                className="px-3 py-1 rounded-xl bg-white dark:bg-slate-800 hover:bg-blue-100 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-slate-700 text-xs font-bold flex items-center space-x-1.5 shadow-xs cursor-pointer transition-colors"
-                title="Soruyu Sesli Dinle"
+                className="px-3 py-1 rounded-xl bg-white dark:bg-slate-800 hover:bg-blue-100 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-slate-700 text-xs font-bold flex items-center gap-1 cursor-pointer"
               >
                 <Volume2 className="w-3.5 h-3.5 text-blue-600" />
                 <span>Soruyu Dinle</span>
               </button>
             </div>
 
-            <p className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white pl-10">
+            <p className="text-sm sm:text-base font-black text-slate-900 dark:text-white">
               "{selectedMission.aiPrompt}"
             </p>
-            <p className="text-xs text-blue-900/70 dark:text-blue-200/70 pl-10 italic">
-              Türkçesi: {selectedMission.aiPromptTr}
+            <p className="text-xs text-slate-600 dark:text-slate-300">
+              🇹🇷 {selectedMission.aiPromptTr}
             </p>
-          </div>
-
-          {/* 20 YILLIK ÖĞRETMENİN TÜYOSU */}
-          <div className="bg-amber-50/70 dark:bg-amber-950/30 rounded-2xl p-4 border border-amber-200 dark:border-amber-900/40 flex items-start space-x-3 text-xs text-amber-900 dark:text-amber-200">
-            <Lightbulb className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-            <div>
-              <span className="font-black">Öğretmenin Konuşma Tüyosu: </span>
-              <span className="font-medium">{selectedMission.nativeCoachTip}</span>
+            <div className="pt-1 flex items-center gap-1.5 text-[11px] text-amber-800 dark:text-amber-300 font-semibold">
+              <Lightbulb className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+              <span>İpucu: {selectedMission.nativeCoachTip}</span>
             </div>
           </div>
 
-          {/* 3. ADIM: 5 DAKİKALIK SESLİ KONUŞMA */}
-          <div className="flex flex-col items-center justify-center p-6 bg-slate-50 dark:bg-slate-800/40 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
-            <button
-              onClick={handleStartSpeaking}
-              className={`relative p-6 rounded-full font-bold transition-all shadow-lg flex items-center justify-center cursor-pointer ${
-                isListening
-                  ? 'bg-rose-600 text-white animate-pulse ring-8 ring-rose-400/40 scale-110'
-                  : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:scale-105 shadow-blue-500/25'
-              }`}
-            >
-              {isListening ? (
-                <MicOff className="w-8 h-8 animate-bounce" />
-              ) : (
-                <Mic className="w-8 h-8" />
-              )}
-            </button>
+          {/* ADIM 3: MİKROFONA BAS VE SESLİ SÖYLE */}
+          <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 flex flex-col items-center text-center space-y-3">
+            <span className="px-3 py-0.5 rounded-full bg-indigo-600 text-white text-[11px] font-black">
+              3. Adım • Mikrofona Dokun ve Sesli Söyle
+            </span>
 
-            <div className="text-center space-y-1">
-              <div className="text-sm font-extrabold text-slate-800 dark:text-white">
-                {isListening
-                  ? targetLang === 'de'
-                    ? 'Seni Dinliyorum, Cümleyi Almanca Sesli Söyle...'
-                    : 'Seni Dinliyorum, Cümleyi Sesli Söyle...'
-                  : targetLang === 'de'
-                  ? 'Mikrofona Bas ve Cümleyi Almanca Konuşarak Cevap Ver'
-                  : 'Mikrofona Bas ve Cümleyi Konuşarak Cevap Ver'}
-              </div>
-              <p className="text-xs text-slate-400">
-                {targetLang === 'de'
-                  ? 'Chirmo seni asla yargılamaz veya not vermez; sadece Almanca konuşma kasını geliştirmene yardım eder.'
-                  : 'Chirmo seni asla yargılamaz veya not vermez; sadece konuşma kasını geliştirmene yardım eder.'}
-              </p>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+              <button
+                type="button"
+                onClick={handleStartSpeaking}
+                className={`px-6 py-3.5 rounded-2xl font-black text-xs sm:text-sm transition-all shadow-lg flex items-center gap-2 cursor-pointer ${
+                  isListening
+                    ? 'bg-rose-600 text-white animate-pulse ring-4 ring-rose-400/40'
+                    : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white'
+                }`}
+              >
+                {isListening ? (
+                  <>
+                    <MicOff className="w-5 h-5 animate-bounce" />
+                    <span>Dinleniyor... Şimdi Konuş!</span>
+                  </>
+                ) : (
+                  <>
+                    <Mic className="w-5 h-5" />
+                    <span>🎙️ Mikrofonla Sesli Söyle</span>
+                  </>
+                )}
+              </button>
+
+              {!scoreResult && (
+                <button
+                  type="button"
+                  onClick={() => evaluateSpeech(selectedMission.suggestedAnswer)}
+                  className="px-4 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm transition shadow cursor-pointer flex items-center gap-1.5"
+                >
+                  <Check className="w-4 h-4" />
+                  <span>Hızlı Tamamla</span>
+                </button>
+              )}
             </div>
 
             {/* Skor ve Geri Bildirim */}
             {scoreResult && (
-              <div className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl p-5 border border-emerald-200 dark:border-emerald-800 shadow-md space-y-3 animate-in fade-in duration-300">
+              <div className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl p-4 border border-emerald-300 dark:border-emerald-800 shadow-md space-y-3 text-left animate-in fade-in duration-200">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-1 text-amber-400">
                     {Array.from({ length: scoreResult.stars }).map((_, i) => (
                       <Star key={i} className="w-5 h-5 fill-amber-400" />
                     ))}
                   </div>
-
-                  <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-black text-xs">
-                    %{scoreResult.percentage} Akıcılık ve Telaffuz
+                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-black text-xs">
+                    %{scoreResult.percentage} Başarı
                   </span>
                 </div>
 
-                <div className="space-y-1">
-                  <div className="text-xs font-semibold text-slate-400">Senin Söylediğin:</div>
-                  <div className="text-sm font-bold text-slate-800 dark:text-slate-100 italic">
-                    "{userSpokenText}"
-                  </div>
+                <div className="text-xs font-bold text-slate-800 dark:text-slate-100 italic">
+                  "{userSpokenText}"
                 </div>
 
-                <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center space-x-2">
+                <div className="p-2.5 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
                   <HeartHandshake className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Chirmo Koçu: {scoreResult.praiseTr}</span>
+                  <span>{scoreResult.praiseTr}</span>
                 </div>
 
-                <div className="pt-2 flex items-center justify-between">
+                <div className="flex items-center justify-between pt-1">
                   <button
+                    type="button"
                     onClick={handleStartSpeaking}
-                    className="px-3 py-1.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-bold flex items-center space-x-1 cursor-pointer"
+                    className="px-3 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-bold flex items-center gap-1 cursor-pointer"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
-                    <span>Tekrar Söyle</span>
+                    <span>Tekrar Dene</span>
                   </button>
 
                   <button
+                    type="button"
                     onClick={handleFinishDayMission}
-                    className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black flex items-center space-x-1.5 shadow-md cursor-pointer transition-all"
+                    className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black flex items-center gap-1.5 shadow-md cursor-pointer"
                   >
                     <Check className="w-4 h-4" />
-                    <span>Görevi Tamamla & XP Al</span>
+                    <span>Günü Tamamla & Sonraki Güne Geç (+{selectedMission.xpReward} XP)</span>
                   </button>
                 </div>
               </div>
             )}
 
             {isCompletedForToday && !scoreResult && (
-              <div className="flex items-center space-x-2 text-emerald-600 text-xs font-bold bg-emerald-50 px-4 py-2 rounded-2xl border border-emerald-200">
+              <div className="flex items-center gap-2 text-emerald-700 text-xs font-bold bg-emerald-50 px-4 py-2 rounded-xl border border-emerald-200">
                 <CheckCircle2 className="w-4 h-4" />
-                <span>Bu günün konuşma görevini başarıyla tamamladın! Harika gidiyorsun!</span>
+                <span>Bu günün konuşma görevini tamamladın!</span>
               </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* 30 Günlük Başlangıç & Bitiş Karşılaştırma Karnesi Modalı */}
       <CampComparisonModal
         isOpen={isReportOpen}
         onClose={() => setIsReportOpen(false)}
@@ -485,7 +475,6 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
         userProfile={userProfile}
       />
 
-      {/* 30 Günlük Kamp Mezuniyeti & Milestone Canlı Konuşma Modalı */}
       <ChirmoInteractiveGraduationDialogueModal
         isOpen={isGraduationDialogueOpen}
         onClose={() => setIsGraduationDialogueOpen(false)}

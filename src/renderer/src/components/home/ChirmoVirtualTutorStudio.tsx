@@ -404,39 +404,22 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
           </div>
         </section>
 
-        {/* ==================== 3. MOBİL UYGULAMA KISAYOL IZGARASI (8 SİMETRİK KART) ==================== */}
+        {/* ==================== 3. HIZLI EKSTRA ARAÇLAR (4 SİMETRİK MOBİL KART) ==================== */}
         <section className="space-y-3">
           <div className="flex items-center justify-between px-1">
             <div className="flex items-center gap-2">
               <span className="w-7 h-7 rounded-xl bg-purple-600 text-white font-black text-xs flex items-center justify-center shadow-xs">
-                ✨
+                3
               </span>
               <h2 className="text-sm sm:text-base font-black text-slate-900 dark:text-white">
-                Pratik & Özel Eğitim Araçları
+                3. Adım: Ekstra Pratik Araçları
               </h2>
             </div>
-            <span className="text-xs font-bold text-slate-400">Tek Dokunuşla Aç</span>
+            <span className="text-xs font-bold text-slate-400">Tek Dokunuş</span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-            {/* 1. Teçhizat Sandığı */}
-            <button
-              type="button"
-              onClick={() => setIsToolboxModalOpen(true)}
-              className="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-amber-400 shadow-2xs hover:shadow-md transition-all flex flex-col items-center text-center gap-1.5 cursor-pointer active:scale-95"
-            >
-              <span className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/70 text-xl flex items-center justify-center">
-                🧰
-              </span>
-              <span className="text-xs font-black text-slate-900 dark:text-white truncate w-full">
-                Teçhizat Sandığı
-              </span>
-              <span className="text-[10px] text-slate-500 truncate w-full">
-                5 Temel Cümle Kalıbı
-              </span>
-            </button>
-
-            {/* 2. Hikaye Diyaloğu */}
+            {/* 1. Hikaye Diyaloğu */}
             <button
               type="button"
               onClick={() => setIsStoryModalOpen(true)}
@@ -453,41 +436,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
               </span>
             </button>
 
-            {/* 3. 3x Akıcılık */}
-            <button
-              type="button"
-              onClick={() => setIsBoosterModalOpen(true)}
-              className="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-orange-400 shadow-2xs hover:shadow-md transition-all flex flex-col items-center text-center gap-1.5 cursor-pointer active:scale-95"
-            >
-              <span className="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-950/70 text-xl flex items-center justify-center">
-                🚀
-              </span>
-              <span className="text-xs font-black text-slate-900 dark:text-white truncate w-full">
-                3x Akıcılık
-              </span>
-              <span className="text-[10px] text-slate-500 truncate w-full">
-                Gölgeleme & Hız
-              </span>
-            </button>
-
-            {/* 4. Kamera (Vision) */}
-            <button
-              type="button"
-              onClick={() => setIsVisionExplorerOpen(true)}
-              className="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-pink-400 shadow-2xs hover:shadow-md transition-all flex flex-col items-center text-center gap-1.5 cursor-pointer active:scale-95"
-            >
-              <span className="w-10 h-10 rounded-xl bg-pink-100 dark:bg-pink-950/70 text-xl flex items-center justify-center">
-                📸
-              </span>
-              <span className="text-xs font-black text-slate-900 dark:text-white truncate w-full">
-                Kamera (Vision)
-              </span>
-              <span className="text-[10px] text-slate-500 truncate w-full">
-                Nesneleri Göster Öğren
-              </span>
-            </button>
-
-            {/* 5. Vize & Mülakat / der-die-das */}
+            {/* 2. Vize & Mülakat / der-die-das */}
             {targetLang === 'de' ? (
               <button
                 type="button"
@@ -522,41 +471,24 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
               </button>
             )}
 
-            {/* 6. Aksan Seçici */}
+            {/* 3. Kamera (Vision) */}
             <button
               type="button"
-              onClick={() => setIsAccentModalOpen(true)}
-              className="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-sky-400 shadow-2xs hover:shadow-md transition-all flex flex-col items-center text-center gap-1.5 cursor-pointer active:scale-95"
+              onClick={() => setIsVisionExplorerOpen(true)}
+              className="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-pink-400 shadow-2xs hover:shadow-md transition-all flex flex-col items-center text-center gap-1.5 cursor-pointer active:scale-95"
             >
-              <span className="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-950/70 text-xl flex items-center justify-center">
-                🎙️
+              <span className="w-10 h-10 rounded-xl bg-pink-100 dark:bg-pink-950/70 text-xl flex items-center justify-center">
+                📸
               </span>
               <span className="text-xs font-black text-slate-900 dark:text-white truncate w-full">
-                Aksan: {currentAccent === 'uk' ? 'İngiliz' : currentAccent === 'au' ? 'Avustralya' : currentAccent === 'robot' ? 'Robot' : 'Amerikan'}
+                Kamera (Vision)
               </span>
               <span className="text-[10px] text-slate-500 truncate w-full">
-                Ses Tonunu Değiştir
+                Nesneleri Göster Öğren
               </span>
             </button>
 
-            {/* 7. Eğitici Oyunlar */}
-            <button
-              type="button"
-              onClick={() => onNavigateToGames && onNavigateToGames()}
-              className="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-indigo-400 shadow-2xs hover:shadow-md transition-all flex flex-col items-center text-center gap-1.5 cursor-pointer active:scale-95"
-            >
-              <span className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-950/70 text-xl flex items-center justify-center">
-                🎮
-              </span>
-              <span className="text-xs font-black text-slate-900 dark:text-white truncate w-full">
-                Oyun Merkezi
-              </span>
-              <span className="text-[10px] text-slate-500 truncate w-full">
-                Kelime & Hafıza Oyunu
-              </span>
-            </button>
-
-            {/* 8. Günün Hazine Sandığı */}
+            {/* 4. Günün Hazine Sandığı */}
             <button
               type="button"
               onClick={handleOpenChest}
