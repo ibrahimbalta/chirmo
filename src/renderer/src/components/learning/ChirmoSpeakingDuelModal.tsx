@@ -25,6 +25,10 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
   initialTab = 'duel'
 }) => {
   const [activeTab, setActiveTab] = useState<'league' | 'duel'>(initialTab);
+  const [opponentCategory, setOpponentCategory] = useState<'real' | 'ai'>('real');
+  const [realOpponents, setRealOpponents] = useState<DuelOpponent[]>([]);
+  const [isLoadingRealUsers, setIsLoadingRealUsers] = useState<boolean>(false);
+
   const [targetLang, setTargetLang] = useState<SupportedLanguage>(() =>
     TargetLanguageService.getTargetLanguage()
   );
@@ -49,6 +53,26 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
   const timerRef = useRef<any>(null);
   const recognitionRef = useRef<any>(null);
 
+  const loadCloudPlayersAndLeaderboard = async (currentXpVal: number) => {
+    setIsLoadingRealUsers(true);
+    try {
+      const cloudPlayers = await SpeakingDuelService.fetchRealOpponents();
+      setRealOpponents(cloudPlayers);
+      setLeaderboard(SpeakingDuelService.getWeeklyLeaderboard(currentXpVal, cloudPlayers));
+      if (cloudPlayers.length > 0) {
+        setOpponentCategory('real');
+        setSelectedOpponentId(cloudPlayers[0].id);
+      } else {
+        setOpponentCategory('ai');
+        setSelectedOpponentId(OPPONENT_POOL[0].id);
+      }
+    } catch {
+      setLeaderboard(SpeakingDuelService.getWeeklyLeaderboard(currentXpVal, []));
+    } finally {
+      setIsLoadingRealUsers(false);
+    }
+  };
+
   useEffect(() => {
     if (isOpen) {
       setActiveTab(initialTab);
@@ -59,8 +83,8 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
       setUserXP(xp);
       const tier = SpeakingDuelService.getLeagueTier(xp);
       setLeagueTier(tier);
-      setLeaderboard(SpeakingDuelService.getWeeklyLeaderboard(xp));
       setRounds(SpeakingDuelService.getDuelRounds(currentLang));
+      loadCloudPlayersAndLeaderboard(xp);
     } else {
       resetDuel();
     }
@@ -120,7 +144,10 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
     setRounds(activeRounds);
 
     setTimeout(() => {
-      const matched = SpeakingDuelService.generateOpponent(preferredOpponentId || selectedOpponentId);
+      const matched = SpeakingDuelService.generateOpponent(
+        preferredOpponentId || selectedOpponentId,
+        realOpponents
+      );
       setOpponent(matched);
       setDuelPhase('in_round');
       setCurrentRoundIndex(0);
@@ -129,7 +156,7 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
       if (firstRound) {
         LearningStorageService.speak(firstRound.prompt);
       }
-    }, 1200);
+    }, 1000);
   };
 
   const handleTimeExpired = () => {
@@ -211,7 +238,8 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
     if (timerRef.current) clearInterval(timerRef.current);
 
     const activeRound = rounds[currentRoundIndex] || SpeakingDuelService.getDuelRounds(targetLang)[0];
-    const activeOpponent = opponent || SpeakingDuelService.generateOpponent(selectedOpponentId);
+    const activeOpponent =
+      opponent || SpeakingDuelService.generateOpponent(selectedOpponentId, realOpponents);
     const finalAnswer =
       (textToEvaluate !== undefined ? textToEvaluate : userSpeechText).trim() ||
       activeRound?.quickReplies?.[0]?.text ||
@@ -237,7 +265,7 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
     }
   };
 
-  const handleNextRound = () => {
+  const handleNextRound = async () => {
     setUserSpeechText('');
     setCurrentRoundEvaluation(null);
 
@@ -250,13 +278,13 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
         LearningStorageService.speak(nextRound.prompt);
       }
     } else {
-      // Duel finished!
+      // Duel finished! Sync +60 XP to local & Firebase Firestore cloud
       setDuelPhase('match_summary');
       if (onRewardXP) onRewardXP(60);
-      const updatedXP = userXP + 60;
+      const updatedXP = await SpeakingDuelService.syncDuelVictoryToCloud(60);
       setUserXP(updatedXP);
       setLeagueTier(SpeakingDuelService.getLeagueTier(updatedXP));
-      setLeaderboard(SpeakingDuelService.getWeeklyLeaderboard(updatedXP));
+      setLeaderboard(SpeakingDuelService.getWeeklyLeaderboard(updatedXP, realOpponents));
     }
   };
 
@@ -268,6 +296,10 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
   if (!isOpen) return null;
 
   const currentRound = rounds[currentRoundIndex];
+  const allAvailableOpponents = [...realOpponents, ...OPPONENT_POOL];
+  const displayedOpponents = opponentCategory === 'real' ? realOpponents : OPPONENT_POOL;
+  const currentlySelectedOpponent =
+    allAvailableOpponents.find((o) => o.id === selectedOpponentId) || OPPONENT_POOL[0];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
@@ -287,12 +319,12 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
                 <h2 className="text-base sm:text-xl font-black text-white">
                   1v1 Canlı Konuşma Düellosu & Sosyal Lig
                 </h2>
-                <span className="text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                  1v1 Arena 🏆
+                <span className="text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  🟢 Canlı Bulut & AI Arena
                 </span>
               </div>
               <p className="text-xs text-gray-400 mt-0.5">
-                3 raundluk hızlı konuşma maçında rakibinle yarış, cümleni sesli söyle veya kalıp seçerek puan topla!
+                Kayıtlı gerçek Chirmo oyuncularıyla veya uluslararası AI partnerlerle 3 raundluk konuşma maçı yap!
               </p>
             </div>
           </div>
@@ -361,25 +393,25 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
             }`}
           >
             <span>🏆</span>
-            <span>Haftalık Lig Sıralaması ({leagueTier.name})</span>
+            <span>Haftalık Canlı Lig Sıralaması ({leagueTier.name})</span>
           </button>
         </div>
 
         {/* Tab 1: 1v1 Hızlı Konuşma Düellosu */}
         {activeTab === 'duel' && (
           <div className="overflow-y-auto p-4 sm:p-6 space-y-5 flex-1 text-sm custom-scrollbar flex flex-col justify-between">
-            {/* Phase 1: Idle Screen (Nasıl Çalışır + Rakip Seçimi) */}
+            {/* Phase 1: Idle Screen (Nasıl Çalışır + Gerçek/AI Rakip Seçimi) */}
             {duelPhase === 'idle' && (
               <div className="space-y-5 max-w-3xl mx-auto w-full">
                 {/* Nasıl Çalışır? 4 Adım Rehberi */}
                 <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-gray-900 via-gray-950 to-black border border-amber-500/30 space-y-3">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
                     <h3 className="text-sm sm:text-base font-black text-amber-400 flex items-center gap-2">
                       <span>🎯</span>
                       <span>1v1 Canlı Konuşma Düellosu Nasıl Çalışır?</span>
                     </h3>
                     <span className="text-[11px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
-                      3 Raund • +60 XP Ödül
+                      3 Raund • +60 XP Canlı Bulut Puanı
                     </span>
                   </div>
 
@@ -387,97 +419,168 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
                     <div className="p-3 rounded-xl bg-gray-900/90 border border-gray-800">
                       <div className="font-black text-amber-300 mb-1">1️⃣ Rakibini Seç</div>
                       <p className="text-gray-300 text-[11px] leading-relaxed">
-                        Aşağıdaki dünya çapındaki konuşma partnerlerinden birini seç veya rastgele eşleş.
+                        İster <b>👥 Gerçek Kayıtlı Oyuncuları</b>, ister <b>🤖 AI Konuşma Partnerlerini</b> seç.
                       </p>
                     </div>
                     <div className="p-3 rounded-xl bg-gray-900/90 border border-gray-800">
                       <div className="font-black text-cyan-300 mb-1">2️⃣ Soruyu & Rakibi Dinle</div>
                       <p className="text-gray-300 text-[11px] leading-relaxed">
-                        Her raundda gerçek hayattan bir soru sorulur ve rakibinin örnek yanıtı gösterilir.
+                        Her raundda gerçek hayattan bir soru sorulur ve rakibinin yanıtı gösterilir.
                       </p>
                     </div>
                     <div className="p-3 rounded-xl bg-gray-900/90 border border-gray-800">
                       <div className="font-black text-emerald-300 mb-1">3️⃣ Konuş veya Kalıp Seç</div>
                       <p className="text-gray-300 text-[11px] leading-relaxed">
-                        İster <b>🎙️ Mikrofona konuş</b>, ister <b>⚡ Hazır Cevap Kalıplarına</b> tıkla, ister yazarak yanıtla!
+                        İster <b>🎙️ Mikrofona konuş</b>, ister <b>⚡ Hazır Cevap Kalıplarına</b> tıkla!
                       </p>
                     </div>
                     <div className="p-3 rounded-xl bg-gray-900/90 border border-gray-800">
-                      <div className="font-black text-pink-300 mb-1">4️⃣ PuanTopla & Yüksel</div>
+                      <div className="font-black text-pink-300 mb-1">4️⃣ Bulut Ligde Yüksel</div>
                       <p className="text-gray-300 text-[11px] leading-relaxed">
-                        AI Hakem akıcılık, kelime ve hız puanını hesaplar; kazanan ligde üst sıraya çıkar!
+                        Kazandığın +60 XP doğrudan Firebase bulut liderlik tablosuna işlenir!
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Rakip Seçimi */}
-                <div className="space-y-2.5">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-black uppercase tracking-wider text-gray-300">
-                      🌍 Meydan Okuyacağın Rakibi Seç:
-                    </label>
-                    <span className="text-[11px] text-gray-400">
-                      Hedef Dil: <b className="text-amber-400">{targetLang === 'de' ? '🇩🇪 Almanca' : '🇬🇧 İngilizce'}</b>
-                    </span>
+                {/* Rakip Kategorisi Seçimi: Gerçek Kayıtlı Oyuncular vs AI Partnerler */}
+                <div className="space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setOpponentCategory('real');
+                          if (realOpponents.length > 0) {
+                            setSelectedOpponentId(realOpponents[0].id);
+                          }
+                        }}
+                        className={`px-3.5 py-2 rounded-xl text-xs font-black transition flex items-center gap-1.5 cursor-pointer ${
+                          opponentCategory === 'real'
+                            ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20'
+                            : 'bg-gray-900 text-gray-300 border border-gray-800 hover:bg-gray-800'
+                        }`}
+                      >
+                        <span>👥</span>
+                        <span>Gerçek Kayıtlı Oyuncular ({realOpponents.length})</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setOpponentCategory('ai');
+                          setSelectedOpponentId(OPPONENT_POOL[0].id);
+                        }}
+                        className={`px-3.5 py-2 rounded-xl text-xs font-black transition flex items-center gap-1.5 cursor-pointer ${
+                          opponentCategory === 'ai'
+                            ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20'
+                            : 'bg-gray-900 text-gray-300 border border-gray-800 hover:bg-gray-800'
+                        }`}
+                      >
+                        <span>🤖</span>
+                        <span>Uluslararası AI Partnerler ({OPPONENT_POOL.length})</span>
+                      </button>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => loadCloudPlayersAndLeaderboard(userXP)}
+                      disabled={isLoadingRealUsers}
+                      className="text-xs font-bold text-cyan-300 hover:text-white bg-cyan-950/60 border border-cyan-500/30 px-3 py-1.5 rounded-xl cursor-pointer transition"
+                    >
+                      {isLoadingRealUsers ? '⏳ Buluttan Yükleniyor...' : '🔄 Oyuncuları Yenile'}
+                    </button>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
-                    {OPPONENT_POOL.map((opp) => {
-                      const isSelected = selectedOpponentId === opp.id;
-                      return (
-                        <button
-                          key={opp.id}
-                          type="button"
-                          onClick={() => setSelectedOpponentId(opp.id)}
-                          className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
-                            isSelected
-                              ? 'bg-amber-500/20 border-amber-400 shadow-lg shadow-amber-500/10 scale-[1.02]'
-                              : 'bg-gray-900/80 border-gray-800 hover:border-gray-700'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between mb-1.5">
-                            <span className="text-2xl">{opp.avatar}</span>
-                            <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-black/50 text-amber-300">
-                              ⚡ {opp.skillRating}
-                            </span>
-                          </div>
-                          <div>
-                            <div className="font-black text-white text-xs flex items-center gap-1">
-                              <span className="truncate">{opp.name}</span>
-                              <span>{opp.countryFlag}</span>
+                  {/* Gerçek Kullanıcı Listesi Boşsa Bilgilendirme */}
+                  {opponentCategory === 'real' && realOpponents.length === 0 && !isLoadingRealUsers && (
+                    <div className="p-4 rounded-2xl bg-gray-900/90 border border-emerald-500/30 text-center space-y-2">
+                      <div className="text-2xl">👥</div>
+                      <div className="text-xs font-bold text-white">
+                        Henüz başka kayıtlı oyuncu bulunamadı veya tek kayıtlı hesap sizsiniz.
+                      </div>
+                      <p className="text-[11px] text-gray-400">
+                        Yeni öğrenciler kayıt oldukça burada <b>🟢 Gerçek Oyuncu</b> olarak otomatik listelenir. Hemen pratik yapmak için <b>🤖 Uluslararası AI Partnerler</b> sekmesinden bir rakip seçebilirsiniz!
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setOpponentCategory('ai');
+                          setSelectedOpponentId(OPPONENT_POOL[0].id);
+                        }}
+                        className="px-4 py-2 rounded-xl bg-amber-500 text-black font-black text-xs cursor-pointer"
+                      >
+                        🤖 AI Partnerleri Göster
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Rakip Kartları */}
+                  {displayedOpponents.length > 0 && (
+                    <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
+                      {displayedOpponents.map((opp) => {
+                        const isSelected = selectedOpponentId === opp.id;
+                        return (
+                          <button
+                            key={opp.id}
+                            type="button"
+                            onClick={() => setSelectedOpponentId(opp.id)}
+                            className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                              isSelected
+                                ? opp.isRealUser
+                                  ? 'bg-emerald-500/20 border-emerald-400 shadow-lg shadow-emerald-500/10 scale-[1.02]'
+                                  : 'bg-amber-500/20 border-amber-400 shadow-lg shadow-amber-500/10 scale-[1.02]'
+                                : 'bg-gray-900/80 border-gray-800 hover:border-gray-700'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between mb-1.5">
+                              <span className="text-2xl">{opp.avatar}</span>
+                              <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-black/50 text-amber-300">
+                                ⚡ {opp.skillRating}
+                              </span>
                             </div>
-                            <div className="text-[10px] text-amber-300/90 font-semibold mt-0.5">
-                              {opp.city} • {opp.badge}
+                            <div>
+                              <div className="font-black text-white text-xs flex items-center gap-1">
+                                <span className="truncate">{opp.name}</span>
+                                <span>{opp.countryFlag}</span>
+                              </div>
+                              <div
+                                className={`text-[10px] font-semibold mt-0.5 ${
+                                  opp.isRealUser ? 'text-emerald-300' : 'text-amber-300/90'
+                                }`}
+                              >
+                                {opp.city} • {opp.badge}
+                              </div>
+                              <div className="text-[10px] text-gray-400 mt-0.5 line-clamp-1">
+                                {opp.specialtyTr}
+                              </div>
                             </div>
-                            <div className="text-[10px] text-gray-400 mt-0.5 line-clamp-1">
-                              {opp.specialtyTr}
-                            </div>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
 
                 {/* Başlat Butonları */}
                 <div className="flex flex-col sm:flex-row gap-3 pt-1">
                   <button
                     type="button"
-                    onClick={() => startMatchmaking(selectedOpponentId)}
+                    onClick={() => startMatchmaking(currentlySelectedOpponent.id)}
                     className="flex-1 py-3.5 px-5 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:to-yellow-300 text-black font-black text-sm rounded-2xl shadow-xl shadow-amber-500/20 transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
                   >
                     <span>⚔️</span>
                     <span>
-                      Seçili Rakiple Düelloya Başla (
-                      {OPPONENT_POOL.find((o) => o.id === selectedOpponentId)?.name})
+                      Seçili Rakiple Düelloya Başla ({currentlySelectedOpponent.name}{' '}
+                      {currentlySelectedOpponent.isRealUser ? '• Gerçek Oyuncu' : '• AI Partner'})
                     </span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => {
-                      const randomOpp = OPPONENT_POOL[Math.floor(Math.random() * OPPONENT_POOL.length)];
+                      const pool = displayedOpponents.length > 0 ? displayedOpponents : OPPONENT_POOL;
+                      const randomOpp = pool[Math.floor(Math.random() * pool.length)];
                       setSelectedOpponentId(randomOpp.id);
                       startMatchmaking(randomOpp.id);
                     }}
@@ -541,7 +644,8 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
                         <span>{opponent.countryFlag}</span>
                       </div>
                       <div className="text-[10px] text-amber-300 font-semibold">
-                        Toplam: {totalOpponentScore} Puan • {opponent.city}
+                        Toplam: {totalOpponentScore} Puan •{' '}
+                        {opponent.isRealUser ? 'Gerçek Oyuncu' : opponent.city}
                       </div>
                     </div>
                     <span className="text-3xl">{opponent.avatar}</span>
@@ -586,7 +690,7 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-xs font-bold text-purple-300 flex items-center gap-1.5">
                           <span>{opponent.avatar}</span>
-                          <span>{opponent.name} Nasıl Yanıtladı?</span>
+                          <span>{opponent.name} Yanıtı:</span>
                         </span>
                         <button
                           type="button"
@@ -652,7 +756,7 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
                     </div>
                   </div>
 
-                  {/* 3. Tek Tıkla Hazır Cevap Kalıpları (Mikrofonsuz veya Hızlı Oynamak İsteyenler İçin) */}
+                  {/* 3. Tek Tıkla Hazır Cevap Kalıpları */}
                   {!currentRoundEvaluation && currentRound.quickReplies && (
                     <div className="pt-2 border-t border-gray-800/80 space-y-2">
                       <div className="flex items-center justify-between">
@@ -773,7 +877,7 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
                   {isMatchWinner ? 'Tebrikler, Düello Şampiyonusun!' : 'Harika Bir Mücadeleydi!'}
                 </h3>
                 <p className="text-xs text-gray-300">
-                  {opponent.name} ({opponent.countryFlag}) ile 3 raundluk canlı konuşma düellosunu tamamladın.
+                  {opponent.name} ({opponent.isRealUser ? '🟢 Gerçek Oyuncu' : opponent.countryFlag}) ile 3 raundluk canlı konuşma düellosunu tamamladın.
                 </p>
 
                 {/* Score Comparison */}
@@ -791,9 +895,9 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
 
                 {/* Rewards Badge */}
                 <div className="p-3.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border border-amber-500/40 text-amber-300 font-bold text-xs flex items-center justify-center gap-3">
-                  <span>✨ +60 XP Kazanıldı</span>
+                  <span>✨ +60 XP Buluta Kaydedildi</span>
                   <span>&bull;</span>
-                  <span>🏅 Lig Sıralama Puanın Güncellendi</span>
+                  <span>🏅 Canlı Lig Puanın Güncellendi</span>
                 </div>
 
                 <div className="flex gap-2.5">
@@ -802,7 +906,7 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
                     onClick={() => setActiveTab('league')}
                     className="flex-1 py-3 bg-gray-800 hover:bg-gray-700 text-gray-200 font-bold text-xs rounded-xl transition cursor-pointer"
                   >
-                    🏆 Lider Tablosunu Gör
+                    🏆 Canlı Lider Tablosunu Gör
                   </button>
                   <button
                     type="button"
@@ -825,43 +929,54 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
               <div className="flex items-center gap-3.5">
                 <span className="text-4xl">{leagueTier.icon}</span>
                 <div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <h3 className="text-base font-black text-white">{leagueTier.name}</h3>
                     <span className="text-[11px] font-mono text-amber-400 font-bold px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30">
                       {userXP} XP
                     </span>
+                    <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+                      🟢 Firebase Bulut Senkronize
+                    </span>
                   </div>
                   <p className="text-xs text-gray-300 mt-0.5">
-                    İlk 3 sıra bir üst lige terfi eder. Sıfırlanmaya:{' '}
-                    <span className="text-amber-400 font-bold">2 Gün 14 Saat</span>
+                    Kayıtlı gerçek Chirmo öğrencileri ve küresel lig adayları birlikte sıralanır. İlk 3 sıra üst lige terfi eder!
                   </p>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setActiveTab('duel');
-                  if (duelPhase === 'idle') {
-                    startMatchmaking(selectedOpponentId);
-                  }
-                }}
-                className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-black font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 transition flex items-center justify-center gap-2 shrink-0 cursor-pointer"
-              >
-                <span>⚔️</span>
-                <span>Hemen Düello Başlat (+60 XP)</span>
-              </button>
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => loadCloudPlayersAndLeaderboard(userXP)}
+                  className="px-3.5 py-2.5 bg-gray-800 hover:bg-gray-700 text-cyan-300 font-bold text-xs rounded-xl border border-gray-700 cursor-pointer"
+                >
+                  🔄 Yenile
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('duel');
+                    if (duelPhase === 'idle') {
+                      startMatchmaking(currentlySelectedOpponent.id);
+                    }
+                  }}
+                  className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-black font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 transition flex items-center justify-center gap-2 shrink-0 cursor-pointer"
+                >
+                  <span>⚔️</span>
+                  <span>Hemen Düello Başlat (+60 XP)</span>
+                </button>
+              </div>
             </div>
 
             {/* Leaderboard Table */}
             <div className="rounded-2xl border border-gray-800 bg-gray-950/80 overflow-hidden">
               <div className="px-4 py-3 bg-gray-900/80 border-b border-gray-800 flex items-center justify-between text-xs font-bold text-gray-400">
-                <span>OYUNCU & ÜLKE</span>
-                <span>HAFTALIK PUAN</span>
+                <span>OYUNCU & DURUM</span>
+                <span>HAFTALIK BULUT PUANI</span>
               </div>
               <div className="divide-y divide-gray-800/80">
                 {leaderboard.map((entry) => (
                   <div
-                    key={entry.rank}
+                    key={`${entry.rank}_${entry.name}`}
                     className={`px-4 py-3 flex items-center justify-between text-xs transition ${
                       entry.isUser
                         ? 'bg-amber-950/40 border-l-4 border-amber-400 text-white font-bold'
@@ -883,11 +998,16 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
                         {entry.rank <= 3 ? ['🥇', '🥈', '🥉'][entry.rank - 1] : entry.rank}
                       </span>
                       <span className="text-base">{entry.avatar}</span>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-semibold text-white">{entry.name}</span>
                         <span>{entry.countryFlag}</span>
+                        {entry.isRealUser && !entry.isUser && (
+                          <span className="text-[10px] text-emerald-300 font-bold px-2 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-500/40">
+                            🟢 Gerçek Oyuncu
+                          </span>
+                        )}
                         {entry.status === 'promote' && (
-                          <span className="text-[10px] text-emerald-400 font-bold px-1.5 py-0.2 rounded bg-emerald-950/60 border border-emerald-500/30">
+                          <span className="text-[10px] text-amber-300 font-bold px-1.5 py-0.2 rounded bg-amber-950/60 border border-amber-500/30">
                             ⬆️ Terfi Potası
                           </span>
                         )}

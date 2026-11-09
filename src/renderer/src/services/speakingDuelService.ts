@@ -1,4 +1,7 @@
 import { SupportedLanguage, TargetLanguageService } from './targetLanguageService';
+import { FirestoreService } from './firestoreService';
+import { PrivacyAuthService, UserAccount } from './privacyAuthService';
+import { LearningStorageService } from './learningStorage';
 
 export type LeagueTierId = 'bronze' | 'silver' | 'gold' | 'diamond' | 'champions';
 
@@ -19,6 +22,8 @@ export interface LeaderboardEntry {
   countryFlag: string;
   xp: number;
   isUser: boolean;
+  isRealUser?: boolean;
+  level?: string;
   status: 'promote' | 'stay' | 'demote';
 }
 
@@ -31,6 +36,9 @@ export interface DuelOpponent {
   skillRating: number;
   badge: string;
   specialtyTr: string;
+  isRealUser?: boolean;
+  xp?: number;
+  level?: string;
 }
 
 export interface QuickDuelReply {
@@ -283,24 +291,26 @@ export const DUEL_ROUNDS = DUEL_ROUNDS_EN;
 
 export const OPPONENT_POOL: DuelOpponent[] = [
   {
+    id: 'opp_4',
+    name: 'Marco Rossi',
+    city: 'Milano',
+    countryFlag: '🇮🇹',
+    avatar: '🧑‍🎨',
+    skillRating: 74,
+    badge: 'AI Partner • Başlangıç',
+    specialtyTr: 'Kültür & Sosyal Sohbet',
+    isRealUser: false
+  },
+  {
     id: 'opp_1',
     name: 'Liam Smith',
     city: 'Londra',
     countryFlag: '🇬🇧',
     avatar: '👨‍💼',
     skillRating: 78,
-    badge: 'Akıcılık Ustası',
-    specialtyTr: 'Günlük & İş Diyalogları'
-  },
-  {
-    id: 'opp_2',
-    name: 'Sarah Miller',
-    city: 'New York',
-    countryFlag: '🇺🇸',
-    avatar: '👩‍💻',
-    skillRating: 82,
-    badge: 'Hızlı Refleks',
-    specialtyTr: 'Teknoloji & Seyahat'
+    badge: 'AI Partner • Orta',
+    specialtyTr: 'Günlük & İş Diyalogları',
+    isRealUser: false
   },
   {
     id: 'opp_3',
@@ -309,18 +319,9 @@ export const OPPONENT_POOL: DuelOpponent[] = [
     countryFlag: '🇩🇪',
     avatar: '🧑‍🏫',
     skillRating: 79,
-    badge: 'Kalıp Şampiyonu',
-    specialtyTr: 'Almanca & İngilizce Pratik'
-  },
-  {
-    id: 'opp_4',
-    name: 'Marco Rossi',
-    city: 'Milano',
-    countryFlag: '🇮🇹',
-    avatar: '🧑‍🎨',
-    skillRating: 74,
-    badge: 'Kelime Avcısı',
-    specialtyTr: 'Kültür & Sosyal Sohbet'
+    badge: 'AI Partner • Kalıp',
+    specialtyTr: 'Almanca & İngilizce Pratik',
+    isRealUser: false
   },
   {
     id: 'opp_5',
@@ -329,10 +330,53 @@ export const OPPONENT_POOL: DuelOpponent[] = [
     countryFlag: '🇯🇵',
     avatar: '👨‍🔬',
     skillRating: 80,
-    badge: 'Poliglot',
-    specialtyTr: 'Hızlı Cevap & Telaffuz'
+    badge: 'AI Partner • İleri',
+    specialtyTr: 'Hızlı Cevap & Telaffuz',
+    isRealUser: false
+  },
+  {
+    id: 'opp_2',
+    name: 'Sarah Miller',
+    city: 'New York',
+    countryFlag: '🇺🇸',
+    avatar: '👩‍💻',
+    skillRating: 82,
+    badge: 'AI Partner • Uzman',
+    specialtyTr: 'Teknoloji & Seyahat',
+    isRealUser: false
   }
 ];
+
+function mapUserAccountToOpponent(acc: UserAccount): DuelOpponent {
+  const synced = acc.syncedData || {};
+  const profile = synced.profile || {};
+  const progress = synced.learningProgress || {};
+  const level: string = profile.level || progress.currentLevel || 'B1';
+  const xp: number = typeof progress.xp === 'number' ? progress.xp : 480;
+  const avatar = profile.avatarEmoji || (acc.plan === 'lifetime' ? '👑' : acc.plan === 'pro' ? '🚀' : '🎓');
+
+  const levelToSkill: Record<string, number> = {
+    A1: 72,
+    A2: 75,
+    B1: 79,
+    B2: 83,
+    C1: 87
+  };
+
+  return {
+    id: `real_${acc.username}`,
+    name: acc.username,
+    city: `Seviye ${level}`,
+    countryFlag: '🟢',
+    avatar,
+    skillRating: levelToSkill[level] || 78,
+    badge: acc.plan === 'lifetime' ? 'VIP Oyuncu' : acc.plan === 'pro' ? 'Pro Oyuncu' : 'Kayıtlı Öğrenci',
+    specialtyTr: `${xp} XP • Gerçek Chirmo Kullanıcısı`,
+    isRealUser: true,
+    xp,
+    level
+  };
+}
 
 export class SpeakingDuelService {
   public static getLeagueTier(xp: number): LeagueTier {
@@ -344,10 +388,12 @@ export class SpeakingDuelService {
     return LEAGUE_TIERS[0];
   }
 
-  public static getWeeklyLeaderboard(userXP: number): LeaderboardEntry[] {
+  public static getWeeklyLeaderboard(userXP: number, realUsers: DuelOpponent[] = []): LeaderboardEntry[] {
     const tier = SpeakingDuelService.getLeagueTier(userXP);
     const base = tier.minXP;
     const diff = tier.maxXP === Infinity ? 1000 : tier.maxXP - tier.minXP;
+    const currentSession = PrivacyAuthService.getCurrentUser();
+    const currentUsername = currentSession?.username || 'Sen (Oyuncu)';
 
     const botProfiles = [
       { name: 'Sarah Miller', flag: '🇺🇸', avatar: '👩‍💻' },
@@ -355,9 +401,6 @@ export class SpeakingDuelService {
       { name: 'Lukas Weber', flag: '🇩🇪', avatar: '🧑‍🏫' },
       { name: 'Elena Petrov', flag: '🇨🇿', avatar: '👩‍🏫' },
       { name: 'Liam Smith', flag: '🇬🇧', avatar: '👨‍💼' },
-      { name: 'Aylin Kaya', flag: '🇹🇷', avatar: '👩‍🎓' },
-      { name: 'David Kim', flag: '🇰🇷', avatar: '🧑‍🚀' },
-      { name: 'Sofia Rodriguez', flag: '🇪🇸', avatar: '👩‍⚕️' },
       { name: 'Marco Rossi', flag: '🇮🇹', avatar: '🧑‍🎨' }
     ];
 
@@ -367,33 +410,54 @@ export class SpeakingDuelService {
       countryFlag: string;
       xp: number;
       isUser: boolean;
+      isRealUser?: boolean;
+      level?: string;
     }> = botProfiles.map((bot, index) => {
-      const factor = (9 - index) / 10;
-      const botXP = Math.round(base + diff * factor * 0.95);
+      const factor = (6 - index) / 7;
+      const botXP = Math.round(base + diff * factor * 0.92);
       return {
         name: bot.name,
         avatar: bot.avatar,
         countryFlag: bot.flag,
         xp: botXP,
-        isUser: false
+        isUser: false,
+        isRealUser: false
       };
     });
 
+    // Gerçek kayıtlı kullanıcıları liderlik tablosuna ekle
+    for (const ru of realUsers) {
+      if (currentSession && ru.name.toLowerCase() === currentSession.username.toLowerCase()) {
+        continue;
+      }
+      entries.push({
+        name: ru.name,
+        avatar: ru.avatar,
+        countryFlag: '🟢',
+        xp: ru.xp ?? 480,
+        isUser: false,
+        isRealUser: true,
+        level: ru.level || 'B1'
+      });
+    }
+
+    // Mevcut kullanıcıyı ekle
     entries.push({
-      name: 'Sen (Oyuncu)',
+      name: currentSession ? `${currentUsername} (Sen)` : 'Sen (Oyuncu)',
       avatar: '🌟',
       countryFlag: '🏆',
       xp: userXP,
-      isUser: true
+      isUser: true,
+      isRealUser: true
     });
 
     entries.sort((a, b) => b.xp - a.xp);
 
-    return entries.slice(0, 10).map((entry, idx) => {
+    return entries.slice(0, 12).map((entry, idx) => {
       const rank = idx + 1;
       let status: 'promote' | 'stay' | 'demote' = 'stay';
       if (rank <= 3) status = 'promote';
-      else if (rank >= 8) status = 'demote';
+      else if (rank >= 9) status = 'demote';
 
       return {
         rank,
@@ -403,13 +467,79 @@ export class SpeakingDuelService {
     });
   }
 
-  public static generateOpponent(preferredId?: string): DuelOpponent {
+  /**
+   * Firebase Firestore ve yerel kayıtlı hesaplardan gerçek Chirmo kullanıcılarını çeker
+   */
+  public static async fetchRealOpponents(): Promise<DuelOpponent[]> {
+    const currentSession = PrivacyAuthService.getCurrentUser();
+    const map = new Map<string, DuelOpponent>();
+
+    try {
+      const cloudUsers = await FirestoreService.getAllUsers();
+      for (const acc of cloudUsers) {
+        if (!acc.username) continue;
+        if (currentSession && acc.username.toLowerCase() === currentSession.username.toLowerCase()) {
+          continue;
+        }
+        map.set(acc.username.toLowerCase(), mapUserAccountToOpponent(acc));
+      }
+    } catch {}
+
+    // Yerel tarayıcıdaki kayıtlı hesapları da dahil et
+    try {
+      const raw = localStorage.getItem('chirmo_saas_accounts_v1');
+      if (raw) {
+        const localAccounts: Record<string, UserAccount> = JSON.parse(raw);
+        for (const acc of Object.values(localAccounts)) {
+          if (!acc.username) continue;
+          if (currentSession && acc.username.toLowerCase() === currentSession.username.toLowerCase()) {
+            continue;
+          }
+          if (!map.has(acc.username.toLowerCase())) {
+            map.set(acc.username.toLowerCase(), mapUserAccountToOpponent(acc));
+          }
+        }
+      }
+    } catch {}
+
+    return Array.from(map.values()).sort((a, b) => (b.xp || 0) - (a.xp || 0));
+  }
+
+  /**
+   * Kullanıcının kazandığı düello puanını hem yerel ilerlemeye hem de Firebase Firestore bulutuna yazar
+   */
+  public static async syncDuelVictoryToCloud(addedXP: number): Promise<number> {
+    const progress = LearningStorageService.addXP(addedXP);
+    const updatedXP = progress.xp;
+
+    try {
+      const currentSession = PrivacyAuthService.getCurrentUser();
+      if (currentSession?.username) {
+        const cloudUser = await FirestoreService.getUser(currentSession.username);
+        if (cloudUser) {
+          const syncedData = cloudUser.syncedData || {};
+          syncedData.learningProgress = {
+            ...(syncedData.learningProgress || {}),
+            xp: updatedXP,
+            lastDuelAt: new Date().toISOString()
+          };
+          cloudUser.syncedData = syncedData;
+          await FirestoreService.saveUser(cloudUser);
+        }
+      }
+    } catch {}
+
+    return updatedXP;
+  }
+
+  public static generateOpponent(preferredId?: string, extraPool: DuelOpponent[] = []): DuelOpponent {
+    const combined = [...extraPool, ...OPPONENT_POOL];
     if (preferredId) {
-      const found = OPPONENT_POOL.find((o) => o.id === preferredId);
+      const found = combined.find((o) => o.id === preferredId);
       if (found) return found;
     }
-    const randomIndex = Math.floor(Math.random() * OPPONENT_POOL.length);
-    return OPPONENT_POOL[randomIndex];
+    const randomIndex = Math.floor(Math.random() * combined.length);
+    return combined[randomIndex];
   }
 
   public static getDuelRounds(lang?: SupportedLanguage): DuelRound[] {
@@ -442,7 +572,7 @@ export class SpeakingDuelService {
 
     const speedBonus = Math.min(12, Math.max(4, Math.round(secondsRemaining / 2)));
 
-    let userScore = Math.round((fluencyScore * 0.55) + (vocabScore * 0.35) + speedBonus);
+    let userScore = Math.round(fluencyScore * 0.55 + vocabScore * 0.35 + speedBonus);
     userScore = Math.min(99, Math.max(55, userScore));
 
     // Opponent score based on skill rating +/- 3 jitter
