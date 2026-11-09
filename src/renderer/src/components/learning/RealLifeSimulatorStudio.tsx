@@ -101,33 +101,33 @@ export const RealLifeSimulatorStudio: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full flex flex-col bg-[#f0f4ff] dark:bg-slate-950 overflow-y-auto p-3 sm:p-6 pb-28 select-none max-w-full box-border">
+    <div className="w-full h-full flex flex-col bg-gradient-to-b from-[#EEF2FF] via-[#F5F7FF] to-[#F8FAFC] dark:bg-slate-950 overflow-y-auto p-3 sm:p-6 pb-28 select-none max-w-full box-border">
       <div className="max-w-5xl mx-auto w-full space-y-4 sm:space-y-6 min-w-0">
 
-        {/* ==================== OYUN BAŞLIĞI VE OYUNCU HUD ==================== */}
-        <div className="p-3 sm:p-4 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-700 text-white shadow-md relative overflow-hidden min-w-0">
-          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 min-w-0">
-            <div className="space-y-0.5 min-w-0 flex-1">
-              <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-xs text-[10px] font-black uppercase tracking-wider">
-                <Sparkles className="w-3 h-3 text-amber-300" />
-                <span>Gerçek Yaşam Rol Yapma Oyunu 🎭</span>
+        {/* ==================== PRO SIMÜLATÖR BAŞLIĞI VE OYUNCU HUD ==================== */}
+        <div className="p-5 sm:p-6 rounded-[26px] bg-gradient-to-br from-[#0B1120] via-[#1B1448] to-[#2E1065] text-white shadow-[0_18px_40px_-10px_rgba(30,27,75,0.4)] border border-indigo-400/30 relative overflow-hidden min-w-0">
+          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 min-w-0">
+            <div className="space-y-1 min-w-0 flex-1">
+              <div className="inline-flex items-center space-x-1.5 px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-orange-400 text-slate-950 text-[11px] font-black uppercase tracking-wider shadow-xs">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Gerçek Yaşam Rol Yapma Stüdyosu 🎭</span>
               </div>
-              <h1 className="text-base sm:text-lg font-black tracking-tight break-words">
-                Sokakta & Seyahatte İngilizceyle Yaşa! 🌍
+              <h1 className="text-lg sm:text-2xl font-black tracking-tight break-words text-white">
+                Sokakta, Kafede ve Seyahatte Canlı Diyalog Pratiği 🌍
               </h1>
-              <p className="text-xs text-emerald-100 hidden sm:block">
-                Bir sahne seç, Chirmo ile canlı rol yap! Her denemede +40 XP kazan.
+              <p className="text-xs text-indigo-200/90 hidden sm:block">
+                Bir sahne seç, Chirmo ile karşılıklı rol yap! Her tamamlanan görevde +40 XP kazan.
               </p>
             </div>
 
             {/* Oyuncu Puan Rozeti */}
             <div className="flex items-center gap-2 shrink-0">
-              <div className="px-2.5 py-1 rounded-xl bg-black/25 border border-white/20 flex items-center space-x-1.5 text-xs font-black text-amber-200">
-                <Trophy className="w-3.5 h-3.5 text-amber-300" />
+              <div className="px-3.5 py-2 rounded-2xl bg-white/[0.08] border border-white/15 flex items-center space-x-1.5 text-xs font-black text-amber-300">
+                <Trophy className="w-4 h-4 text-amber-300" />
                 <span>+40 XP / Görev</span>
               </div>
-              <div className="px-2.5 py-1 rounded-xl bg-black/25 border border-white/20 flex items-center space-x-1.5 text-xs font-black text-white">
-                <Flame className="w-3.5 h-3.5 text-orange-300" />
+              <div className="px-3.5 py-2 rounded-2xl bg-white/[0.08] border border-white/15 flex items-center space-x-1.5 text-xs font-black text-emerald-300">
+                <Flame className="w-4 h-4 text-emerald-400" />
                 <span>Canlı Diyalog</span>
               </div>
             </div>
@@ -135,18 +135,18 @@ export const RealLifeSimulatorStudio: React.FC = () => {
         </div>
 
         {/* ==================== GÖREV SEÇİM PARKURU / SAHNE SEÇİCİ ==================== */}
-        <div className="space-y-1.5 min-w-0">
+        <div className="space-y-2 min-w-0">
           <div className="flex items-center justify-between px-1">
-            <h3 className="text-[11px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+            <h3 className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
               <span>🎯</span>
               <span>Oynamak İstediğin Görev Sahnesini Seç:</span>
             </h3>
-            <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400">
+            <span className="text-xs font-black text-indigo-600 dark:text-indigo-400">
               {activeScenarios.length} Farklı Senaryo
             </span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 min-w-0">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 min-w-0">
             {activeScenarios.map((sc, index) => {
               const isSelected = selectedScenario.id === sc.id;
               return (
@@ -158,24 +158,30 @@ export const RealLifeSimulatorStudio: React.FC = () => {
                     setUserSpeechInput('');
                     setFeedback(null);
                   }}
-                  className={`p-2 sm:p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between min-w-0 relative ${
+                  className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between min-w-0 relative ${
                     isSelected
-                      ? 'border-emerald-500 bg-white dark:bg-slate-900 text-emerald-950 dark:text-emerald-100 shadow-sm ring-2 ring-emerald-500/30'
-                      : 'border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 hover:bg-slate-50'
+                      ? 'border-indigo-500 bg-gradient-to-br from-[#0F172A] to-[#1E1B4B] text-white shadow-lg shadow-indigo-950/20 ring-2 ring-indigo-400/40'
+                      : 'border-indigo-100/90 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-indigo-300 hover:shadow-sm'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-base sm:text-lg">{sc.badge.split(' ')[0]}</span>
-                    <span className="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                      Lvl {index + 1}
+                    <span className="text-lg sm:text-xl">{sc.badge.split(' ')[0]}</span>
+                    <span className={`px-2 py-0.5 rounded-full text-[9px] font-black ${
+                      isSelected ? 'bg-amber-400 text-slate-950' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+                    }`}>
+                      Sahne {index + 1}
                     </span>
                   </div>
-                  <div className="text-xs font-black text-slate-800 dark:text-slate-100 truncate w-full">
+                  <div className={`text-xs font-black truncate w-full ${
+                    isSelected ? 'text-white' : 'text-slate-800 dark:text-slate-100'
+                  }`}>
                     {sc.title}
                   </div>
-                  <div className="text-[10px] text-slate-500 truncate w-full mt-0.5 flex items-center justify-between">
+                  <div className={`text-[10px] truncate w-full mt-0.5 flex items-center justify-between ${
+                    isSelected ? 'text-indigo-200' : 'text-slate-500'
+                  }`}>
                     <span>{sc.category}</span>
-                    <span className="text-amber-500 text-[10px]">⭐⭐⭐</span>
+                    <span className="text-amber-400 text-[10px]">⭐⭐⭐</span>
                   </div>
                 </button>
               );

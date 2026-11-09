@@ -171,82 +171,102 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   };
 
   return (
-    <div className="w-full h-full flex flex-col bg-[#F5F7FF] dark:bg-slate-950 overflow-y-auto px-3 sm:px-6 py-4 sm:py-6 pb-24 sm:pb-10 select-none overflow-x-hidden box-border">
-      {/* MOBİL UYGULAMA MERKEZ KONTEYNERİ (Sade, Odaklı ve Ferah) */}
-      <div className="max-w-4xl mx-auto w-full space-y-5 min-w-0">
+    <div className="w-full h-full flex flex-col bg-gradient-to-b from-[#EEF2FF] via-[#F5F7FF] to-[#F8FAFC] dark:bg-slate-950 overflow-y-auto px-3 sm:px-6 py-4 sm:py-6 pb-24 sm:pb-10 select-none overflow-x-hidden box-border">
+      {/* PRO STUDIO MERKEZ KONTEYNERİ (20 Yıllık Tasarım Mimarisi) */}
+      <div className="max-w-5xl mx-auto w-full space-y-5 min-w-0">
 
-        {/* ==================== 1. GÜNÜN ANA KARTI: CHIRMO AI CANLI KONUŞMA SAHNESİ ==================== */}
-        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#4338ca] via-[#5b21b6] to-[#7e22ce] text-white p-4 sm:p-6 shadow-xl shadow-indigo-500/15 border border-indigo-400/30">
-          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-5">
+        {/* ==================== 1. PRO KOMUTA SAHNESİ: CHIRMO AI CANLI KONUŞMA STÜDYOSU ==================== */}
+        <section className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-[#0B1120] via-[#1B1448] to-[#2E1065] text-white p-5 sm:p-7 shadow-[0_20px_50px_-12px_rgba(30,27,75,0.45)] border border-indigo-400/30">
+          {/* Dekoratif Ambient Işık Küreleri */}
+          <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-indigo-500/20 blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-purple-500/20 blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
             {/* Sol: Günün Hedefi & Hızlı Başlat */}
-            <div className="space-y-3.5 flex-1 text-center md:text-left min-w-0">
+            <div className="space-y-4 flex-1 text-center md:text-left min-w-0">
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-                <span className="px-3 py-1 rounded-full bg-amber-400 text-purple-950 font-black text-xs shadow-xs inline-flex items-center gap-1">
+                <span className="px-3 py-1 rounded-full bg-gradient-to-r from-amber-400 to-orange-400 text-slate-950 font-black text-xs shadow-sm inline-flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>Günün 15 Dk Görevi</span>
+                  <span>Günün 15 Dk Konuşma Programı</span>
                 </span>
-                <span className="px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-white font-bold text-xs border border-white/20">
-                  ☕ Kafede Sipariş Verme
+                <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-indigo-100 font-bold text-xs border border-white/15">
+                  ☕ Kafede Sipariş & Günlük Diyalog
                 </span>
-                <span className="px-2.5 py-1 rounded-full bg-emerald-400/20 border border-emerald-300/40 text-emerald-200 font-bold text-xs">
+                <span className="px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/35 text-emerald-300 font-black text-xs">
                   Seviye: {userLevel}
                 </span>
               </div>
 
-              <div className="space-y-1">
-                <h1 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight leading-snug">
+              <div className="space-y-1.5">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight leading-snug text-white">
                   {targetLang === 'de'
-                    ? 'Günün Almanca Konuşma Pratiğine Hazır mısın? 🇩🇪'
-                    : 'Günün Konuşma Pratiğine Hazır mısın? 👋'}
+                    ? 'Bugün Almanca Konuşma Kasını Çalıştırıyoruz 🇩🇪'
+                    : 'Bugün İngilizce Konuşma Kasını Çalıştırıyoruz 🇬🇧'}
                 </h1>
-                <p className="text-xs sm:text-sm text-indigo-100/90 font-medium">
-                  Aşağıdaki 4 kısa adımı sırayla tamamla veya doğrudan Chirmo ile sesli konuşmaya başla.
+                <p className="text-xs sm:text-sm text-indigo-200/90 font-medium max-w-xl">
+                  Gramer ezberlemeden, 4 adımlı konuşma parkurunu sırayla tamamla veya doğrudan yapay zekâ koçunla sesli pratiğe başla.
                 </p>
               </div>
 
               {/* Chirmo Canlı Diyalog Baloncuğu */}
-              <div className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-left space-y-1">
-                <div className="text-[11px] font-black text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
-                  <MessageCircle className="w-3.5 h-3.5 shrink-0" />
-                  <span>Chirmo AI ({targetLang === 'de' ? 'Almanca' : 'İngilizce'}):</span>
+              <div className="p-4 rounded-2xl bg-white/[0.08] backdrop-blur-xl border border-white/15 text-left space-y-1.5 shadow-inner">
+                <div className="flex items-center justify-between">
+                  <div className="text-[11px] font-black text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <MessageCircle className="w-3.5 h-3.5 shrink-0" />
+                    <span>Canlı Koç Cümlesi ({targetLang === 'de' ? 'Deutsch' : 'English'}):</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleChirmoSpeak(
+                        targetLang === 'de'
+                          ? 'Lass uns heute zusammen das Bestellen im Café auf Deutsch üben!'
+                          : "Let's practice ordering coffee and delicious snacks together today!"
+                      )
+                    }
+                    className="px-2.5 py-0.5 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-bold text-cyan-300 flex items-center gap-1 cursor-pointer transition"
+                  >
+                    <Volume2 className="w-3 h-3" />
+                    <span>Dinle</span>
+                  </button>
                 </div>
-                <div className="text-xs sm:text-sm font-bold text-white">
+                <div className="text-xs sm:text-sm font-black text-white">
                   {targetLang === 'de'
                     ? '"Lass uns heute zusammen das Bestellen im Café auf Deutsch üben!"'
                     : '"Let\'s practice ordering coffee and delicious snacks together today!"'}
                 </div>
-                <div className="text-[11px] text-indigo-200">
+                <div className="text-[11px] text-indigo-200/90">
                   {targetLang === 'de'
                     ? '🇹🇷 "Bugün kafede Almanca kahve ve atıştırmalık siparişi vermeyi pratik yapalım!"'
                     : '🇹🇷 "Bugün kafede İngilizce kahve ve atıştırmalık siparişi vermeyi pratik yapalım!"'}
                 </div>
               </div>
 
-              {/* 2 Net Mobil Uygulama Aksiyon Butonu */}
-              <div className="pt-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+              {/* 2 Net Pro Aksiyon Butonu */}
+              <div className="pt-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <button
                   type="button"
                   onClick={() => setIsRobotDialogueOpen(true)}
-                  className="flex-1 px-5 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-purple-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-500/25 border border-amber-200 flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all"
+                  className="flex-1 px-5 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-300 to-orange-400 hover:from-amber-300 hover:to-orange-300 text-slate-950 font-black text-xs sm:text-sm shadow-[0_10px_25px_rgba(245,158,11,0.35)] border border-amber-200 flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all"
                 >
-                  <Mic className="w-4 h-4 fill-purple-950 shrink-0" />
+                  <Mic className="w-4 h-4 fill-slate-950 shrink-0" />
                   <span>Chirmo ile Canlı Konuşmaya Başla</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setIsVoiceCallModalOpen(true)}
-                  className="px-4 py-3.5 rounded-2xl bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/25 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all shrink-0"
+                  className="px-5 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all shrink-0"
                   title="Chirmo ile 2 Dakikalık Doğal Telefon Görüşmesi"
                 >
                   <Phone className="w-4 h-4 text-emerald-300 shrink-0" />
-                  <span>2 Dk Sesli Arama</span>
+                  <span>📞 2 Dk Sesli Arama</span>
                 </button>
               </div>
             </div>
 
             {/* Sağ: İnteraktif Konuşan Robot Avatarı */}
-            <div className="flex flex-col items-center justify-center shrink-0">
+            <div className="flex flex-col items-center justify-center shrink-0 bg-white/[0.04] p-4 rounded-3xl border border-white/10">
               <div
                 onClick={() => setIsRobotDialogueOpen(true)}
                 className="cursor-pointer group flex flex-col items-center"
@@ -258,7 +278,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                   showStatusBadge={true}
                   statusText={targetLang === 'de' ? 'Almanca Dinliyor 🇩🇪' : 'İngilizce Dinliyor 🇬🇧'}
                 />
-                <span className="mt-2 text-[11px] font-bold text-amber-300 group-hover:underline">
+                <span className="mt-2.5 px-3 py-1 rounded-full bg-amber-400/15 border border-amber-400/30 text-[11px] font-black text-amber-300 group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors">
                   Konuşmak İçin Dokun 👆
                 </span>
               </div>
@@ -266,76 +286,85 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
           </div>
         </section>
 
-        {/* ==================== 2. BUGÜNÜN 4 ADIMLI DERS YOLU (SİMETRİK 2x2 MOBİL KARTLAR) ==================== */}
+        {/* ==================== 2. BUGÜNÜN 4 ADIMLI DERS YOLU (PRO BENTO KARTLAR) ==================== */}
         <section className="space-y-3">
           <div className="flex items-center justify-between px-1">
-            <div className="flex items-center gap-2">
-              <span className="w-7 h-7 rounded-xl bg-indigo-600 text-white font-black text-xs flex items-center justify-center shadow-xs">
-                🎯
+            <div className="flex items-center gap-2.5">
+              <span className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 text-white font-black text-xs flex items-center justify-center shadow-sm">
+                01
               </span>
               <div>
-                <h2 className="text-sm sm:text-base font-black text-slate-900 dark:text-white">
+                <h2 className="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight">
                   Bugünün 4 Adımlı Konuşma Parkuru
                 </h2>
+                <p className="text-[11px] text-slate-500 font-medium">
+                  Sırasıyla tamamlayarak günlük konuşma refleksini oluştur
+                </p>
               </div>
             </div>
             <button
               type="button"
               onClick={() => onNavigateToLearn && onNavigateToLearn()}
-              className="text-xs font-extrabold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 cursor-pointer"
+              className="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-xs font-black text-indigo-700 dark:text-indigo-300 flex items-center gap-1.5 cursor-pointer transition"
             >
               <span>30 Günlük Kampı Aç</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             {/* ADIM 1: 3 Saniye Refleks */}
             <button
               type="button"
               onClick={() => setIsReflexDrillOpen(true)}
-              className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs hover:shadow-md hover:border-amber-400 transition-all flex items-center justify-between text-left cursor-pointer group active:scale-[0.99]"
+              className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-indigo-100/90 dark:border-slate-800 shadow-[0_8px_24px_-6px_rgba(15,23,42,0.06)] hover:shadow-[0_14px_30px_-6px_rgba(245,158,11,0.18)] hover:border-amber-400 hover:-translate-y-0.5 transition-all flex items-center justify-between text-left cursor-pointer group active:scale-[0.99]"
             >
-              <div className="flex items-center gap-3.5 min-w-0">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white font-black text-xl flex items-center justify-center shadow-xs shrink-0">
+              <div className="flex items-center gap-4 min-w-0">
+                <div className="w-13 h-13 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white font-black text-2xl flex items-center justify-center shadow-md shadow-amber-500/20 shrink-0">
                   ⚡
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">
+                    <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300">
                       1. Adım • Isınma
                     </span>
-                    <span className="text-[10px] font-bold text-emerald-600">+50 XP</span>
+                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      +50 XP
+                    </span>
                   </div>
-                  <h3 className="text-sm font-black text-slate-900 dark:text-white mt-1 truncate">
+                  <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white mt-1 truncate">
                     3 Saniye Refleks Antrenörü
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                    İçinden çeviri yapmadan anında cevap ver
+                    İçinden çeviri yapmadan anında sesli cevap ver
                   </p>
                 </div>
               </div>
-              <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all shrink-0 ml-2" />
+              <div className="w-8 h-8 rounded-xl bg-slate-50 group-hover:bg-amber-50 flex items-center justify-center shrink-0 ml-2 transition-colors">
+                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-amber-600 group-hover:translate-x-0.5 transition-all" />
+              </div>
             </button>
 
             {/* ADIM 2: Lego Kalıp Sihirbazı */}
             <button
               type="button"
               onClick={() => setIsLegoModalOpen(true)}
-              className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs hover:shadow-md hover:border-blue-400 transition-all flex items-center justify-between text-left cursor-pointer group active:scale-[0.99]"
+              className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-indigo-100/90 dark:border-slate-800 shadow-[0_8px_24px_-6px_rgba(15,23,42,0.06)] hover:shadow-[0_14px_30px_-6px_rgba(59,130,246,0.18)] hover:border-blue-400 hover:-translate-y-0.5 transition-all flex items-center justify-between text-left cursor-pointer group active:scale-[0.99]"
             >
-              <div className="flex items-center gap-3.5 min-w-0">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-black text-xl flex items-center justify-center shadow-xs shrink-0">
+              <div className="flex items-center gap-4 min-w-0">
+                <div className="w-13 h-13 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-black text-2xl flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
                   🧱
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300">
+                    <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-900 dark:text-blue-300">
                       2. Adım • Cümle Kur
                     </span>
-                    <span className="text-[10px] font-bold text-emerald-600">+80 XP</span>
+                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      +80 XP
+                    </span>
                   </div>
-                  <h3 className="text-sm font-black text-slate-900 dark:text-white mt-1 truncate">
+                  <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white mt-1 truncate">
                     Lego Kalıp Sihirbazı
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
@@ -343,27 +372,31 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                   </p>
                 </div>
               </div>
-              <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-blue-500 group-hover:translate-x-0.5 transition-all shrink-0 ml-2" />
+              <div className="w-8 h-8 rounded-xl bg-slate-50 group-hover:bg-blue-50 flex items-center justify-center shrink-0 ml-2 transition-colors">
+                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
+              </div>
             </button>
 
             {/* ADIM 3: Telaffuz Doktoru */}
             <button
               type="button"
               onClick={() => setIsPronunciationDoctorOpen(true)}
-              className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs hover:shadow-md hover:border-rose-400 transition-all flex items-center justify-between text-left cursor-pointer group active:scale-[0.99]"
+              className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-indigo-100/90 dark:border-slate-800 shadow-[0_8px_24px_-6px_rgba(15,23,42,0.06)] hover:shadow-[0_14px_30px_-6px_rgba(244,63,94,0.18)] hover:border-rose-400 hover:-translate-y-0.5 transition-all flex items-center justify-between text-left cursor-pointer group active:scale-[0.99]"
             >
-              <div className="flex items-center gap-3.5 min-w-0">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 text-white font-black text-xl flex items-center justify-center shadow-xs shrink-0">
+              <div className="flex items-center gap-4 min-w-0">
+                <div className="w-13 h-13 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 text-white font-black text-2xl flex items-center justify-center shadow-md shadow-rose-500/20 shrink-0">
                   🎯
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300">
+                    <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-rose-100 dark:bg-rose-950 text-rose-900 dark:text-rose-300">
                       3. Adım • Telaffuz
                     </span>
-                    <span className="text-[10px] font-bold text-emerald-600">+100 XP</span>
+                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      +100 XP
+                    </span>
                   </div>
-                  <h3 className="text-sm font-black text-slate-900 dark:text-white mt-1 truncate">
+                  <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white mt-1 truncate">
                     Telaffuz & Ses Doktoru
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
@@ -371,67 +404,75 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                   </p>
                 </div>
               </div>
-              <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-rose-500 group-hover:translate-x-0.5 transition-all shrink-0 ml-2" />
+              <div className="w-8 h-8 rounded-xl bg-slate-50 group-hover:bg-rose-50 flex items-center justify-center shrink-0 ml-2 transition-colors">
+                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-rose-600 group-hover:translate-x-0.5 transition-all" />
+              </div>
             </button>
 
             {/* ADIM 4: 1v1 Canlı Konuşma Düellosu */}
             <button
               type="button"
               onClick={() => setIsDuelModalOpen(true)}
-              className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs hover:shadow-md hover:border-purple-400 transition-all flex items-center justify-between text-left cursor-pointer group active:scale-[0.99]"
+              className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-indigo-100/90 dark:border-slate-800 shadow-[0_8px_24px_-6px_rgba(15,23,42,0.06)] hover:shadow-[0_14px_30px_-6px_rgba(147,51,234,0.18)] hover:border-purple-400 hover:-translate-y-0.5 transition-all flex items-center justify-between text-left cursor-pointer group active:scale-[0.99]"
             >
-              <div className="flex items-center gap-3.5 min-w-0">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 text-white font-black text-xl flex items-center justify-center shadow-xs shrink-0">
+              <div className="flex items-center gap-4 min-w-0">
+                <div className="w-13 h-13 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 text-white font-black text-2xl flex items-center justify-center shadow-md shadow-purple-500/20 shrink-0">
                   🏆
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950 text-purple-800 dark:text-purple-300">
-                      4. Adım • Meydan Okuma
+                    <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950 text-purple-900 dark:text-purple-300">
+                      4. Adım • Canlı Arena
                     </span>
-                    <span className="text-[10px] font-bold text-emerald-600">+150 XP</span>
+                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      +150 XP
+                    </span>
                   </div>
-                  <h3 className="text-sm font-black text-slate-900 dark:text-white mt-1 truncate">
+                  <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white mt-1 truncate">
                     1v1 Canlı Konuşma Düellosu
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                    Öğrendiğin kalıplarla lig mücadelesine katıl
+                    Gerçek üyelerle ve AI rakiplerle konuşma ligine katıl
                   </p>
                 </div>
               </div>
-              <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-purple-500 group-hover:translate-x-0.5 transition-all shrink-0 ml-2" />
+              <div className="w-8 h-8 rounded-xl bg-slate-50 group-hover:bg-purple-50 flex items-center justify-center shrink-0 ml-2 transition-colors">
+                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-purple-600 group-hover:translate-x-0.5 transition-all" />
+              </div>
             </button>
           </div>
         </section>
 
-        {/* ==================== 3. HIZLI EKSTRA ARAÇLAR (4 SİMETRİK MOBİL KART) ==================== */}
+        {/* ==================== 3. UZMANLIK & PRATİK ARAÇLARI (4 SİMETRİK PRO KART) ==================== */}
         <section className="space-y-3">
           <div className="flex items-center justify-between px-1">
-            <div className="flex items-center gap-2">
-              <span className="w-7 h-7 rounded-xl bg-purple-600 text-white font-black text-xs flex items-center justify-center shadow-xs">
-                3
+            <div className="flex items-center gap-2.5">
+              <span className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-600 to-pink-600 text-white font-black text-xs flex items-center justify-center shadow-sm">
+                02
               </span>
-              <h2 className="text-sm sm:text-base font-black text-slate-900 dark:text-white">
-                3. Adım: Ekstra Pratik Araçları
-              </h2>
+              <div>
+                <h2 className="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight">
+                  Özel Uzmanlık & Kamera Stüdyoları
+                </h2>
+              </div>
             </div>
-            <span className="text-xs font-bold text-slate-400">Tek Dokunuş</span>
+            <span className="text-xs font-bold text-slate-400">Tek Dokunuşla Başlat</span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {/* 1. Hikaye Diyaloğu */}
             <button
               type="button"
               onClick={() => setIsStoryModalOpen(true)}
-              className="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-purple-400 shadow-2xs hover:shadow-md transition-all flex flex-col items-center text-center gap-1.5 cursor-pointer active:scale-95"
+              className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-indigo-100/80 dark:border-slate-800 hover:border-purple-400 shadow-[0_6px_20px_-6px_rgba(15,23,42,0.05)] hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col items-center text-center gap-2 cursor-pointer active:scale-95"
             >
-              <span className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950/70 text-xl flex items-center justify-center">
+              <span className="w-11 h-11 rounded-2xl bg-gradient-to-br from-purple-500/15 to-indigo-500/15 border border-purple-200/60 text-2xl flex items-center justify-center">
                 🎭
               </span>
               <span className="text-xs font-black text-slate-900 dark:text-white truncate w-full">
                 Hikaye Diyaloğu
               </span>
-              <span className="text-[10px] text-slate-500 truncate w-full">
+              <span className="text-[10px] font-medium text-slate-500 truncate w-full">
                 İnteraktif Rol Yapma
               </span>
             </button>
@@ -441,15 +482,15 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
               <button
                 type="button"
                 onClick={() => setIsGermanGenderModalOpen(true)}
-                className="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-teal-400 shadow-2xs hover:shadow-md transition-all flex flex-col items-center text-center gap-1.5 cursor-pointer active:scale-95"
+                className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-indigo-100/80 dark:border-slate-800 hover:border-teal-400 shadow-[0_6px_20px_-6px_rgba(15,23,42,0.05)] hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col items-center text-center gap-2 cursor-pointer active:scale-95"
               >
-                <span className="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-950/70 text-xl flex items-center justify-center">
+                <span className="w-11 h-11 rounded-2xl bg-gradient-to-br from-teal-500/15 to-emerald-500/15 border border-teal-200/60 text-2xl flex items-center justify-center">
                   🔵
                 </span>
                 <span className="text-xs font-black text-slate-900 dark:text-white truncate w-full">
                   der / die / das
                 </span>
-                <span className="text-[10px] text-slate-500 truncate w-full">
+                <span className="text-[10px] font-medium text-slate-500 truncate w-full">
                   Renk Kodlu Artikel
                 </span>
               </button>
@@ -457,15 +498,15 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
               <button
                 type="button"
                 onClick={() => setIsCareerModalOpen(true)}
-                className="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-emerald-400 shadow-2xs hover:shadow-md transition-all flex flex-col items-center text-center gap-1.5 cursor-pointer active:scale-95"
+                className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-indigo-100/80 dark:border-slate-800 hover:border-emerald-400 shadow-[0_6px_20px_-6px_rgba(15,23,42,0.05)] hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col items-center text-center gap-2 cursor-pointer active:scale-95"
               >
-                <span className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/70 text-xl flex items-center justify-center">
+                <span className="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500/15 to-teal-500/15 border border-emerald-200/60 text-2xl flex items-center justify-center">
                   💼
                 </span>
                 <span className="text-xs font-black text-slate-900 dark:text-white truncate w-full">
                   Vize & Mülakat
                 </span>
-                <span className="text-[10px] text-slate-500 truncate w-full">
+                <span className="text-[10px] font-medium text-slate-500 truncate w-full">
                   İş & Konsolosluk
                 </span>
               </button>
@@ -475,15 +516,15 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             <button
               type="button"
               onClick={() => setIsVisionExplorerOpen(true)}
-              className="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-pink-400 shadow-2xs hover:shadow-md transition-all flex flex-col items-center text-center gap-1.5 cursor-pointer active:scale-95"
+              className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-indigo-100/80 dark:border-slate-800 hover:border-pink-400 shadow-[0_6px_20px_-6px_rgba(15,23,42,0.05)] hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col items-center text-center gap-2 cursor-pointer active:scale-95"
             >
-              <span className="w-10 h-10 rounded-xl bg-pink-100 dark:bg-pink-950/70 text-xl flex items-center justify-center">
+              <span className="w-11 h-11 rounded-2xl bg-gradient-to-br from-pink-500/15 to-rose-500/15 border border-pink-200/60 text-2xl flex items-center justify-center">
                 📸
               </span>
               <span className="text-xs font-black text-slate-900 dark:text-white truncate w-full">
                 Kamera (Vision)
               </span>
-              <span className="text-[10px] text-slate-500 truncate w-full">
+              <span className="text-[10px] font-medium text-slate-500 truncate w-full">
                 Nesneleri Göster Öğren
               </span>
             </button>
@@ -492,41 +533,41 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             <button
               type="button"
               onClick={handleOpenChest}
-              className={`p-3.5 rounded-2xl border shadow-2xs hover:shadow-md transition-all flex flex-col items-center text-center gap-1.5 cursor-pointer active:scale-95 ${
+              className={`p-4 rounded-2xl border shadow-[0_6px_20px_-6px_rgba(15,23,42,0.05)] hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col items-center text-center gap-2 cursor-pointer active:scale-95 ${
                 chestOpened
                   ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800'
-                  : 'bg-gradient-to-b from-amber-50 to-yellow-50 dark:from-amber-950/40 dark:to-slate-900 border-amber-300 dark:border-amber-700'
+                  : 'bg-gradient-to-b from-amber-50/90 to-orange-50/60 dark:from-amber-950/40 dark:to-slate-900 border-amber-300 dark:border-amber-700'
               }`}
             >
-              <span className="w-10 h-10 rounded-xl bg-amber-400/30 text-xl flex items-center justify-center">
+              <span className="w-11 h-11 rounded-2xl bg-amber-400/25 border border-amber-300/60 text-2xl flex items-center justify-center">
                 🎁
               </span>
               <span className="text-xs font-black text-slate-900 dark:text-white truncate w-full">
                 {chestOpened ? 'Sandık Açıldı ✓' : 'Günün Sandığı'}
               </span>
-              <span className="text-[10px] text-amber-700 dark:text-amber-400 font-bold truncate w-full">
+              <span className="text-[10px] text-amber-700 dark:text-amber-400 font-black truncate w-full">
                 {chestOpened ? '+100 XP Kazanıldı!' : 'Tıkla +100 XP Kap'}
               </span>
             </button>
           </div>
         </section>
 
-        {/* ==================== 4. KOMPAKT AI ÖĞRETMEN & GELİŞİM BARI ==================== */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {/* ==================== 4. PRO AI KOÇ & KAMP PERFORMANS BARI ==================== */}
+        <section className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           {/* Sol: Chirmo AI Sohbet */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3 shadow-2xs">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="w-11 h-11 rounded-2xl bg-purple-100 dark:bg-purple-950/80 flex items-center justify-center text-xl shrink-0">
+          <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#0F172A] to-[#1E1B4B] text-white border border-indigo-400/25 flex items-center justify-between gap-3 shadow-md">
+            <div className="flex items-center gap-3.5 min-w-0">
+              <div className="w-12 h-12 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center text-2xl shrink-0">
                 🤖
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <h3 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white truncate">
-                    Chirmo AI Öğretmeni
+                  <h3 className="text-xs sm:text-sm font-black text-white truncate">
+                    Chirmo AI Özel Öğretmen
                   </h3>
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
                 </div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                <p className="text-[11px] text-indigo-200 truncate">
                   "{tutorSpeechText}"
                 </p>
               </div>
@@ -537,31 +578,31 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 handleChirmoSpeak(tutorSpeechText);
                 setIsChatModalOpen(true);
               }}
-              className="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-black text-xs shrink-0 cursor-pointer active:scale-95 transition-all"
+              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-black text-xs shrink-0 cursor-pointer active:scale-95 transition-all shadow-sm"
             >
-              Sohbet Et
+              Sohbet Et →
             </button>
           </div>
 
           {/* Sağ: Günlük Hedef & Gelişim Özeti */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3 shadow-2xs">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="w-11 h-11 rounded-2xl bg-emerald-100 dark:bg-emerald-950/80 flex items-center justify-center text-xl shrink-0">
+          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-indigo-100/90 dark:border-slate-800 flex items-center justify-between gap-3 shadow-[0_8px_24px_-6px_rgba(15,23,42,0.06)]">
+            <div className="flex items-center gap-3.5 min-w-0">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200/80 dark:bg-emerald-950/80 flex items-center justify-center text-2xl shrink-0">
                 📈
               </div>
               <div className="min-w-0">
                 <h3 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white truncate">
-                  Gelişim & Günlük Hedefler
+                  Gelişim & Günlük Hedef Karnesi
                 </h3>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                  🔥 {streakDays} Gün Seri • ⭐ {totalXp} XP Kazanıldı
+                <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 truncate">
+                  🔥 {streakDays} Gün Kesintisiz Seri • ⭐ {totalXp} XP
                 </p>
               </div>
             </div>
             <button
               type="button"
               onClick={() => onNavigateToTasks && onNavigateToTasks()}
-              className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-black text-xs shrink-0 cursor-pointer active:scale-95 transition-all"
+              className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-black text-xs shrink-0 cursor-pointer active:scale-95 transition-all"
             >
               Raporu Gör
             </button>

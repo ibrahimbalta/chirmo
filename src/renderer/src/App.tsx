@@ -275,56 +275,62 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#FAF9FE] text-slate-800 select-none font-sans">
-      {/* ==================== ÜST KUSURSUZ SİMETRİK & TAM SIĞAN MODERN ANA BAŞLIK ==================== */}
-      <header className="h-14 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-start z-30 shrink-0 select-none">
-        {/* Sol: Temiz Logo + Mobilde Modül Açılır Menüsü */}
-        <div
-          className={`flex items-center justify-between h-full px-3 sm:px-4 shrink-0 transition-all duration-300 ${
-            activeTab === 'search' && isLeftSidebarOpen
-              ? 'md:w-64 md:border-r md:border-slate-200/90 dark:md:border-slate-800'
-              : 'w-auto'
-          }`}
-        >
+    <div className="flex flex-col h-screen w-screen overflow-hidden bg-gradient-to-b from-[#EEF2FF] via-[#F5F7FF] to-[#F8FAFC] dark:bg-slate-950 text-slate-800 select-none font-sans">
+      {/* ==================== ÜST PRO STUDIO KOMUTA BARI (20 YILLIK TASARIM MİMARİSİ) ==================== */}
+      <header className="h-16 bg-gradient-to-r from-[#0B1120] via-[#141138] to-[#1F103E] text-white border-b border-indigo-400/20 shadow-[0_8px_30px_rgba(15,23,42,0.3)] flex items-center justify-between z-30 shrink-0 select-none px-3 sm:px-5">
+        {/* Sol: Prestijli Logo + Mobilde Modül Açılır Menüsü */}
+        <div className="flex items-center gap-2.5 shrink-0">
           <div
             onClick={handleGoHome}
-            className="cursor-pointer flex items-center hover:opacity-90 transition-opacity shrink-0"
+            className="cursor-pointer flex items-center hover:scale-[1.02] active:scale-95 transition-transform shrink-0"
             title="Chirmo Ana Sayfa - 30 Günde Konuşma Garantili Sanal Öğretmen"
             aria-label="30 Günde Konuşma Garantili Sanal Öğretmen"
           >
-            <ChirmoLogo size="lg" variant="header" className="drop-shadow-xs" />
+            <img
+              src="./chirmo-header-brand-logo.png"
+              alt="Chirmo"
+              className="h-9 sm:h-11 w-auto object-contain filter drop-shadow-[0_2px_12px_rgba(168,85,247,0.5)]"
+              onError={(e) => {
+                const target = e.currentTarget;
+                if (!target.src.endsWith('/chirmo-logo.png')) {
+                  target.src = './chirmo-logo.png';
+                }
+              }}
+            />
           </div>
 
-          {/* Mobilde 2. Görseldeki Tüm Modülleri Gösteren Açılır Menü Butonu */}
+          {/* Mobilde Tüm Modülleri Gösteren Açılır Menü Butonu */}
           <div className="relative md:hidden shrink-0">
             <button
               onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
-              className="h-8 px-2.5 rounded-xl bg-slate-100/90 hover:bg-slate-200/80 dark:bg-slate-800/90 dark:hover:bg-slate-700/80 text-slate-800 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700 text-xs font-bold inline-flex items-center space-x-1.5 transition-all shadow-2xs shrink-0 cursor-pointer active:scale-95"
+              className="h-9 px-3 rounded-xl bg-white/10 hover:bg-white/15 text-white border border-white/15 text-xs font-black inline-flex items-center space-x-1.5 transition-all shadow-xs shrink-0 cursor-pointer active:scale-95"
               title="Modüller Menüsü"
               aria-label="Tüm Modülleri Göster"
               aria-expanded={isMobileNavOpen}
             >
-              <Compass className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
-              <span className="font-extrabold max-w-[65px] truncate">
+              <Compass className="w-3.5 h-3.5 text-cyan-300 shrink-0" />
+              <span className="font-extrabold max-w-[70px] truncate">
                 {activeTab === 'video'
                   ? 'Film'
                   : activeTab === 'search'
-                  ? 'Stüdyo'
+                  ? '1. Bugün'
                   : activeTab === 'learn'
-                  ? 'Kamp'
+                  ? '2. Kamp'
+                  : activeTab === 'phrases'
+                  ? '3. Kalıplar'
+                  : activeTab === 'speak'
+                  ? '4. Simülatör'
                   : activeTab === 'kids'
-                  ? 'Kids'
+                  ? '5. Kids'
                   : activeTab === 'games'
                   ? 'Oyunlar'
-                  : activeTab === 'speak'
-                  ? 'Simülatör'
                   : activeTab === 'tasks'
                   ? 'Hedef'
                   : 'Modüller'}
               </span>
               <ChevronDown
-                className={`w-3 h-3 text-slate-400 transition-transform duration-200 shrink-0 ${
-                  isMobileNavOpen ? 'rotate-180 text-indigo-500' : ''
+                className={`w-3.5 h-3.5 text-purple-200 transition-transform duration-200 shrink-0 ${
+                  isMobileNavOpen ? 'rotate-180 text-cyan-300' : ''
                 }`}
               />
             </button>
@@ -590,90 +596,90 @@ export const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Orta: MOBİL UYGULAMA SADELİĞİ — 5 TEMEL SEKME + HOCA MASASI + DİĞER ARAÇLAR */}
+        {/* Orta: PRO STÜDYO KOMUTA DOCK'U — 5 NUMARALI SEKME + HOCA MASASI + DİĞER ARAÇLAR */}
         <div className="flex-1 flex items-center justify-center px-2 sm:px-4 min-w-0 py-1">
-          <nav className="hidden md:flex items-center bg-slate-100/90 dark:bg-slate-800/90 p-1 rounded-2xl border border-purple-100/80 dark:border-purple-950/60 gap-1 shrink-0 shadow-2xs relative">
+          <nav className="hidden md:flex items-center bg-white/[0.06] backdrop-blur-xl p-1 rounded-2xl border border-white/10 gap-1 shrink-0 shadow-inner relative">
             {/* 1. Bugün (Ana Stüdyo) */}
             <button
               onClick={() => setActiveTab('search')}
-              className={`h-8 px-3.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
+              className={`h-9 px-3.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
                 activeTab === 'search'
-                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-white/90 dark:hover:bg-slate-700/70 font-bold active:scale-95'
+                  ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 text-white font-black shadow-[0_4px_18px_rgba(99,102,241,0.45)] ring-1 ring-white/25'
+                  : 'text-slate-300 hover:text-white hover:bg-white/10 font-bold active:scale-95'
               }`}
               title="Bugünün Konuşma Görevi & Chirmo Stüdyo"
             >
-              <Sparkles className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'search' ? 'text-white' : 'text-indigo-500'}`} />
+              <Sparkles className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'search' ? 'text-amber-300' : 'text-indigo-400'}`} />
               <span>1. Bugün</span>
             </button>
 
             {/* 2. 30 Günlük Kamp */}
             <button
               onClick={() => setActiveTab('learn')}
-              className={`h-8 px-3.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
+              className={`h-9 px-3.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
                 activeTab === 'learn'
-                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-white/90 dark:hover:bg-slate-700/70 font-bold active:scale-95'
+                  ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 text-white font-black shadow-[0_4px_18px_rgba(99,102,241,0.45)] ring-1 ring-white/25'
+                  : 'text-slate-300 hover:text-white hover:bg-white/10 font-bold active:scale-95'
               }`}
               title="30 Günde Günlük Konuşma Kampı"
             >
-              <BookOpen className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'learn' ? 'text-white' : 'text-emerald-500'}`} />
+              <BookOpen className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'learn' ? 'text-emerald-300' : 'text-emerald-400'}`} />
               <span>2. 30 Günlük Kamp</span>
             </button>
 
             {/* 3. Kalıp Deposu */}
             <button
               onClick={() => setActiveTab('phrases')}
-              className={`h-8 px-3.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
+              className={`h-9 px-3.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
                 activeTab === 'phrases'
-                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-white/90 dark:hover:bg-slate-700/70 font-bold active:scale-95'
+                  ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 text-white font-black shadow-[0_4px_18px_rgba(99,102,241,0.45)] ring-1 ring-white/25'
+                  : 'text-slate-300 hover:text-white hover:bg-white/10 font-bold active:scale-95'
               }`}
               title="Hayat Kurtaran Hazır Konuşma Kalıpları"
             >
-              <Layers className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'phrases' ? 'text-white' : 'text-blue-500'}`} />
+              <Layers className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'phrases' ? 'text-cyan-300' : 'text-cyan-400'}`} />
               <span>3. Kalıp Deposu</span>
             </button>
 
             {/* 4. Canlı Simülatör */}
             <button
               onClick={() => setActiveTab('speak')}
-              className={`h-8 px-3.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
+              className={`h-9 px-3.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
                 activeTab === 'speak'
-                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-white/90 dark:hover:bg-slate-700/70 font-bold active:scale-95'
+                  ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 text-white font-black shadow-[0_4px_18px_rgba(99,102,241,0.45)] ring-1 ring-white/25'
+                  : 'text-slate-300 hover:text-white hover:bg-white/10 font-bold active:scale-95'
               }`}
               title="Gerçek Yaşam Konuşma Simülatörü"
             >
-              <Mic className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'speak' ? 'text-white' : 'text-purple-500'}`} />
+              <Mic className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'speak' ? 'text-amber-300' : 'text-purple-400'}`} />
               <span>4. Simülatör</span>
             </button>
 
             {/* 5. Chirmo Kids (5-17 Yaş) */}
             <button
               onClick={() => setActiveTab('kids')}
-              className={`h-8 px-3.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
+              className={`h-9 px-3.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
                 activeTab === 'kids'
-                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-white/90 dark:hover:bg-slate-700/70 font-bold active:scale-95'
+                  ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 text-white font-black shadow-[0_4px_18px_rgba(99,102,241,0.45)] ring-1 ring-white/25'
+                  : 'text-slate-300 hover:text-white hover:bg-white/10 font-bold active:scale-95'
               }`}
               title="Chirmo Kids (5-17 Yaş) Çocuk & Genç Alanı"
             >
-              <Smile className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'kids' ? 'text-white' : 'text-pink-500'}`} />
+              <Smile className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'kids' ? 'text-pink-200' : 'text-pink-400'}`} />
               <span>5. Kids</span>
             </button>
 
             {/* İnce Dikey Ayırıcı Çizgi */}
-            <div className="h-4 w-px bg-slate-300/80 dark:bg-slate-700 mx-0.5 shrink-0" />
+            <div className="h-4 w-px bg-white/15 mx-0.5 shrink-0" />
 
             {/* 🎓 Hoca Masası (Özel Eğitim Araçları) */}
             <button
               type="button"
               onClick={() => setIsMasterTeacherOpen(true)}
-              className="h-8 px-3 rounded-xl text-xs font-black transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white shadow-xs hover:shadow-md active:scale-95 group ring-1 ring-amber-300/60"
+              className="h-9 px-3 rounded-xl text-xs font-black transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 shadow-sm active:scale-95 group"
               title="Pratik Dil ve Konuşma İstasyonu (Gölgeleme, Sık Yapılan Hatalar, Almanca Artikel, Hazır Kalıplar)"
             >
-              <GraduationCap className="w-3.5 h-3.5 text-white" />
+              <GraduationCap className="w-3.5 h-3.5 text-slate-950" />
               <span>Hoca Masası</span>
             </button>
 
@@ -682,12 +688,12 @@ export const App: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
-                className={`h-8 px-3 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer inline-flex items-center space-x-1 shrink-0 whitespace-nowrap ${
-                  ['phrases', 'games', 'tasks', 'portal'].includes(activeTab)
-                    ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-purple-700 hover:bg-white/90 dark:hover:bg-slate-700/70'
+                className={`h-9 px-3 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer inline-flex items-center space-x-1 shrink-0 whitespace-nowrap ${
+                  ['games', 'tasks', 'video'].includes(activeTab)
+                    ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 text-white font-black shadow-xs'
+                    : 'text-slate-300 hover:text-white hover:bg-white/10'
                 }`}
-                title="Diğer Modüller (Konuşma Deposu, Oyunlar, Hedeflerim, APK)"
+                title="Diğer Modüller (Oyunlar, Film Stüdyosu, Hedeflerim, APK)"
               >
                 <span>Diğer</span>
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isMoreMenuOpen ? 'rotate-180' : ''}`} />
@@ -699,17 +705,17 @@ export const App: React.FC = () => {
                     className="fixed inset-0 z-40"
                     onClick={() => setIsMoreMenuOpen(false)}
                   />
-                  <div className="absolute right-0 top-10 z-50 w-52 p-1.5 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 space-y-1">
+                  <div className="absolute right-0 top-11 z-50 w-56 p-1.5 bg-[#0F172A] text-white rounded-2xl shadow-2xl border border-indigo-400/25 space-y-1">
                     <button
                       onClick={() => {
                         setActiveTab('video');
                         setIsMoreMenuOpen(false);
                       }}
                       className={`w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                        activeTab === 'video' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                        activeTab === 'video' ? 'bg-indigo-600 text-white' : 'text-slate-200 hover:bg-white/10'
                       }`}
                     >
-                      <Film className="w-4 h-4 text-rose-500 shrink-0" />
+                      <Film className="w-4 h-4 text-rose-400 shrink-0" />
                       <span>Film & Video Stüdyosu</span>
                     </button>
 
@@ -719,10 +725,10 @@ export const App: React.FC = () => {
                         setIsMoreMenuOpen(false);
                       }}
                       className={`w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                        activeTab === 'games' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                        activeTab === 'games' ? 'bg-indigo-600 text-white' : 'text-slate-200 hover:bg-white/10'
                       }`}
                     >
-                      <Gamepad2 className="w-4 h-4 text-purple-500 shrink-0" />
+                      <Gamepad2 className="w-4 h-4 text-purple-400 shrink-0" />
                       <span>Oyunlar & 1v1 Düello</span>
                     </button>
 
@@ -732,10 +738,10 @@ export const App: React.FC = () => {
                         setIsMoreMenuOpen(false);
                       }}
                       className={`w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                        activeTab === 'tasks' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                        activeTab === 'tasks' ? 'bg-indigo-600 text-white' : 'text-slate-200 hover:bg-white/10'
                       }`}
                     >
-                      <CheckSquare className="w-4 h-4 text-emerald-500 shrink-0" />
+                      <CheckSquare className="w-4 h-4 text-emerald-400 shrink-0" />
                       <span>Hedeflerim & Rapor</span>
                     </button>
 
@@ -744,22 +750,22 @@ export const App: React.FC = () => {
                         setActiveTab('portal');
                         setIsMoreMenuOpen(false);
                       }}
-                      className="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer"
+                      className="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:bg-white/10 transition-all cursor-pointer"
                     >
-                      <Home className="w-4 h-4 text-indigo-500 shrink-0" />
+                      <Home className="w-4 h-4 text-cyan-400 shrink-0" />
                       <span>Vitrin (Ana Karşılama)</span>
                     </button>
 
-                    <div className="border-t border-slate-100 dark:border-slate-800 pt-1">
+                    <div className="border-t border-white/10 pt-1">
                       <button
                         type="button"
                         onClick={() => {
                           setIsMoreMenuOpen(false);
                           setIsInstallModalOpen(true);
                         }}
-                        className="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-black text-purple-700 dark:text-purple-300 bg-purple-50/80 dark:bg-purple-950/50 hover:bg-purple-100 transition-all cursor-pointer"
+                        className="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-black text-amber-300 bg-amber-400/10 hover:bg-amber-400/20 transition-all cursor-pointer"
                       >
-                        <Download className="w-4 h-4 text-purple-600 shrink-0" />
+                        <Download className="w-4 h-4 text-amber-300 shrink-0" />
                         <span>Mobil Uygulama (APK)</span>
                       </button>
                     </div>
@@ -770,20 +776,20 @@ export const App: React.FC = () => {
           </nav>
         </div>
 
-        {/* Sağ: Tekil ve Tutarlı İlerleme, Dil Seçici & Profil Barı */}
-        <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0 ml-auto pr-2.5 sm:pr-4">
+        {/* Sağ: Tutarlı İlerleme, Dil Seçici & Profil Barı */}
+        <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0 ml-auto">
           {/* Gün Serisi & XP Rozeti */}
           <div
             onClick={() => setActiveTab('learn')}
-            className="hidden sm:flex h-8 px-2.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 items-center space-x-1.5 text-xs font-bold cursor-pointer hover:bg-slate-200/70 dark:hover:bg-slate-700/70 transition-all shrink-0"
+            className="hidden sm:flex h-9 px-3 rounded-xl bg-white/[0.07] hover:bg-white/[0.12] border border-white/15 items-center space-x-1.5 text-xs font-bold cursor-pointer transition-all shrink-0"
             title="30 Günlük Kamp Kesintisiz Serisi ve Toplam XP"
           >
-            <div className="flex items-center space-x-1 text-amber-600 dark:text-amber-400 font-black">
+            <div className="flex items-center space-x-1 text-amber-300 font-black">
               <span>🔥</span>
               <span>{campProgress.streakDays}</span>
             </div>
-            <span className="text-slate-300 dark:text-slate-600 font-light">•</span>
-            <div className="flex items-center space-x-1 text-indigo-600 dark:text-indigo-400 font-black">
+            <span className="text-white/30 font-light">•</span>
+            <div className="flex items-center space-x-1 text-cyan-300 font-black">
               <span>⭐</span>
               <span>{campProgress.totalXp} XP</span>
             </div>
@@ -792,12 +798,12 @@ export const App: React.FC = () => {
           {/* Akıllı Dil Değiştirici Kapsülü (🇬🇧 EN / 🇩🇪 DE) */}
           <button
             onClick={() => TargetLanguageService.setTargetLanguage(targetLanguage === 'en' ? 'de' : 'en')}
-            className="h-8 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 text-xs font-extrabold transition-all flex items-center space-x-1.5 shrink-0 shadow-2xs cursor-pointer text-slate-800 dark:text-slate-100 active:scale-95"
+            className="h-9 px-3 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] border border-white/15 text-xs font-black transition-all flex items-center space-x-1.5 shrink-0 cursor-pointer text-white active:scale-95"
             title="Çalışma Dilini Değiştir (Tıkla: İngilizce / Almanca)"
           >
             <span>{targetLanguage === 'de' ? '🇩🇪' : '🇬🇧'}</span>
-            <span className="hidden sm:inline">{targetLanguage === 'de' ? 'Almanca' : 'İngilizce'}</span>
-            <span className="text-[10px] text-slate-400 font-normal">⇄</span>
+            <span className="hidden sm:inline">{targetLanguage === 'de' ? 'Deutsch' : 'English'}</span>
+            <span className="text-[10px] text-cyan-300 font-bold">⇄</span>
           </button>
 
           {/* Kullanıcı Profili */}
@@ -805,13 +811,13 @@ export const App: React.FC = () => {
             <div className="flex items-center space-x-1 shrink-0">
               <button
                 onClick={() => setActiveTab('portal')}
-                className="h-8 px-2 sm:px-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-extrabold cursor-pointer hover:bg-indigo-100 transition-colors inline-flex items-center space-x-1 whitespace-nowrap"
+                className="h-9 px-2.5 sm:px-3 rounded-xl bg-gradient-to-r from-emerald-500/20 to-indigo-500/20 border border-emerald-400/40 text-emerald-200 hover:text-white text-xs font-black cursor-pointer hover:border-emerald-300 transition-all inline-flex items-center space-x-1.5 whitespace-nowrap"
                 title={`Kullanıcı Sayfası ve Profil Detayları: @${currentUser.username}`}
               >
                 <span>{userProfile.avatarEmoji || '👤'}</span>
-                <span className="max-w-[70px] truncate hidden md:inline">@{currentUser.username}</span>
+                <span className="max-w-[75px] truncate hidden md:inline">@{currentUser.username}</span>
                 {currentUser.plan === 'pro' && (
-                  <span className="text-[8px] sm:text-[9px] px-1 sm:px-1.5 py-0.2 rounded-full bg-indigo-600 text-white font-black">
+                  <span className="text-[8px] sm:text-[9px] px-1.5 py-0.2 rounded-full bg-amber-400 text-slate-950 font-black">
                     PRO
                   </span>
                 )}
@@ -1069,66 +1075,66 @@ export const App: React.FC = () => {
         onRewardXP={() => setLearningProgress({ ...LearningStorageService.getProgress() })}
       />
 
-      {/* ==================== MOBİL ALT MENÜ (SMARTPHONE BOTTOM NAV - 5 SİMETRİK ANA SEKME) ==================== */}
-      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/90 dark:border-slate-800 shadow-xl px-1.5 py-1 grid grid-cols-5 gap-1 select-none">
+      {/* ==================== MOBİL ALT MENÜ (PRO GLASSMORPHIC DOCK - 5 SİMETRİK ANA SEKME) ==================== */}
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-r from-[#0B1120]/95 via-[#141138]/95 to-[#1F103E]/95 backdrop-blur-2xl border-t border-indigo-400/25 shadow-[0_-8px_30px_rgba(15,23,42,0.4)] px-1.5 py-1.5 grid grid-cols-5 gap-1 select-none text-white">
         <button
           onClick={() => setActiveTab('search')}
           className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-center transition-all cursor-pointer min-h-[48px] active:scale-95 ${
             activeTab === 'search'
-              ? 'text-indigo-600 dark:text-indigo-400 font-black bg-indigo-50/90 dark:bg-indigo-950/60 shadow-2xs'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
+              ? 'text-white font-black bg-gradient-to-r from-indigo-500 to-purple-600 shadow-[0_4px_15px_rgba(99,102,241,0.5)]'
+              : 'text-slate-300 hover:text-white font-bold'
           }`}
         >
-          <Sparkles className="w-4 h-4 mb-0.5 shrink-0" />
-          <span className="text-[10px] leading-tight truncate">Bugün</span>
+          <Sparkles className={`w-4 h-4 mb-0.5 shrink-0 ${activeTab === 'search' ? 'text-amber-300' : 'text-indigo-300'}`} />
+          <span className="text-[10px] leading-tight truncate">1. Bugün</span>
         </button>
 
         <button
           onClick={() => setActiveTab('learn')}
           className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-center transition-all cursor-pointer min-h-[48px] active:scale-95 ${
             activeTab === 'learn'
-              ? 'text-emerald-600 dark:text-emerald-400 font-black bg-emerald-50/90 dark:bg-emerald-950/60 shadow-2xs'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
+              ? 'text-white font-black bg-gradient-to-r from-indigo-500 to-purple-600 shadow-[0_4px_15px_rgba(99,102,241,0.5)]'
+              : 'text-slate-300 hover:text-white font-bold'
           }`}
         >
-          <BookOpen className="w-4 h-4 mb-0.5 shrink-0" />
-          <span className="text-[10px] leading-tight truncate">Kamp</span>
+          <BookOpen className={`w-4 h-4 mb-0.5 shrink-0 ${activeTab === 'learn' ? 'text-emerald-300' : 'text-emerald-400'}`} />
+          <span className="text-[10px] leading-tight truncate">2. Kamp</span>
         </button>
 
         <button
           onClick={() => setActiveTab('phrases')}
           className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-center transition-all cursor-pointer min-h-[48px] active:scale-95 ${
             activeTab === 'phrases'
-              ? 'text-blue-600 dark:text-blue-400 font-black bg-blue-50/90 dark:bg-blue-950/60 shadow-2xs'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
+              ? 'text-white font-black bg-gradient-to-r from-indigo-500 to-purple-600 shadow-[0_4px_15px_rgba(99,102,241,0.5)]'
+              : 'text-slate-300 hover:text-white font-bold'
           }`}
         >
-          <Layers className="w-4 h-4 mb-0.5 shrink-0" />
-          <span className="text-[10px] leading-tight truncate">Kalıplar</span>
+          <Layers className={`w-4 h-4 mb-0.5 shrink-0 ${activeTab === 'phrases' ? 'text-cyan-300' : 'text-cyan-400'}`} />
+          <span className="text-[10px] leading-tight truncate">3. Kalıplar</span>
         </button>
 
         <button
           onClick={() => setActiveTab('speak')}
           className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-center transition-all cursor-pointer min-h-[48px] active:scale-95 ${
             activeTab === 'speak'
-              ? 'text-purple-600 dark:text-purple-400 font-black bg-purple-50/90 dark:bg-purple-950/60 shadow-2xs'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
+              ? 'text-white font-black bg-gradient-to-r from-indigo-500 to-purple-600 shadow-[0_4px_15px_rgba(99,102,241,0.5)]'
+              : 'text-slate-300 hover:text-white font-bold'
           }`}
         >
-          <Mic className="w-4 h-4 mb-0.5 shrink-0" />
-          <span className="text-[10px] leading-tight truncate">Simülatör</span>
+          <Mic className={`w-4 h-4 mb-0.5 shrink-0 ${activeTab === 'speak' ? 'text-amber-300' : 'text-purple-400'}`} />
+          <span className="text-[10px] leading-tight truncate">4. Simülatör</span>
         </button>
 
         <button
           onClick={() => setActiveTab('kids')}
           className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-center transition-all cursor-pointer min-h-[48px] active:scale-95 ${
             activeTab === 'kids'
-              ? 'text-pink-600 dark:text-pink-400 font-black bg-pink-50/90 dark:bg-pink-950/60 shadow-2xs'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
+              ? 'text-white font-black bg-gradient-to-r from-indigo-500 to-purple-600 shadow-[0_4px_15px_rgba(99,102,241,0.5)]'
+              : 'text-slate-300 hover:text-white font-bold'
           }`}
         >
-          <Smile className="w-4 h-4 mb-0.5 shrink-0" />
-          <span className="text-[10px] leading-tight truncate">Kids</span>
+          <Smile className={`w-4 h-4 mb-0.5 shrink-0 ${activeTab === 'kids' ? 'text-pink-200' : 'text-pink-400'}`} />
+          <span className="text-[10px] leading-tight truncate">5. Kids</span>
         </button>
       </nav>
     </div>

@@ -175,21 +175,21 @@ export const LifePhraseBankView: React.FC<LifePhraseBankViewProps> = ({
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-slate-50 dark:bg-slate-950 overflow-y-auto">
-      {/* 1. ÜST HERO & REHBER BANNERI */}
-      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-700 text-white px-4 sm:px-8 py-6 sm:py-8 shrink-0 shadow-sm relative overflow-hidden">
-        <div className="absolute right-0 top-0 -mt-6 -mr-6 w-56 h-56 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+    <div className="flex-1 flex flex-col h-full bg-gradient-to-b from-[#EEF2FF] via-[#F5F7FF] to-[#F8FAFC] dark:bg-slate-950 overflow-y-auto">
+      {/* 1. ÜST PRO STUDIO HERO & REHBER BANNERI */}
+      <div className="bg-gradient-to-br from-[#0B1120] via-[#1B1448] to-[#2E1065] text-white px-4 sm:px-8 py-6 sm:py-8 shrink-0 shadow-[0_16px_40px_-10px_rgba(30,27,75,0.4)] border-b border-indigo-400/25 relative overflow-hidden">
+        <div className="absolute right-0 top-0 -mt-10 -mr-10 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-6xl mx-auto relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-xs font-bold mb-2">
-              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-              <span>Gramer Ezberi Yok • 30 Günde Konuşma Devrimi</span>
+            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-gradient-to-r from-amber-400 to-orange-400 text-slate-950 text-xs font-black mb-2.5 shadow-xs">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Gramer Ezberi Yok • Hazır Cümle Kalıpları</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
               Hayat Kurtaran Konuşma Deposu
             </h1>
-            <p className="text-white/80 text-xs sm:text-sm mt-1 max-w-2xl font-medium">
+            <p className="text-indigo-200/90 text-xs sm:text-sm mt-1 max-w-2xl font-medium">
               Kelime kelime çeviri yapmak yerine buradaki hazır cümle kalıplarını dinleyin ve sesli tekrar edin; 
               günlük yaşamda düşünmeden doğal ve akıcı yanıtlar verin!
             </p>
@@ -198,7 +198,7 @@ export const LifePhraseBankView: React.FC<LifePhraseBankViewProps> = ({
           {/* DİL SEÇİMİ VE REFLEKS SAYACI */}
           <div className="flex items-center space-x-3 self-start md:self-auto shrink-0">
             {/* Dil Değiştirici */}
-            <div className="flex bg-white/20 backdrop-blur-md p-1 rounded-2xl border border-white/20">
+            <div className="flex bg-white/10 backdrop-blur-md p-1 rounded-2xl border border-white/15">
               <button
                 onClick={() => {
                   setActiveLang('en');
@@ -206,8 +206,8 @@ export const LifePhraseBankView: React.FC<LifePhraseBankViewProps> = ({
                 }}
                 className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all flex items-center space-x-1.5 cursor-pointer ${
                   activeLang === 'en'
-                    ? 'bg-white text-blue-700 shadow-md'
-                    : 'text-white hover:bg-white/10'
+                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
+                    : 'text-indigo-200 hover:text-white hover:bg-white/10'
                 }`}
               >
                 <span>🇬🇧</span>
@@ -220,8 +220,8 @@ export const LifePhraseBankView: React.FC<LifePhraseBankViewProps> = ({
                 }}
                 className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all flex items-center space-x-1.5 cursor-pointer ${
                   activeLang === 'de'
-                    ? 'bg-white text-indigo-900 shadow-md'
-                    : 'text-white hover:bg-white/10'
+                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
+                    : 'text-indigo-200 hover:text-white hover:bg-white/10'
                 }`}
               >
                 <span>🇩🇪</span>
@@ -230,7 +230,7 @@ export const LifePhraseBankView: React.FC<LifePhraseBankViewProps> = ({
             </div>
 
             {/* Öğrenilen / Refleks Sayacı */}
-            <div className="bg-white/15 backdrop-blur-md border border-white/20 px-3.5 py-1.5 rounded-2xl flex items-center space-x-2 text-xs font-bold">
+            <div className="bg-white/10 backdrop-blur-md border border-white/15 px-3.5 py-2 rounded-2xl flex items-center space-x-2 text-xs font-bold">
               <Flame className="w-4 h-4 text-amber-400" />
               <span>
                 <strong className="text-amber-300 font-black">{masteredCount}</strong> Kalıp Refleks Oldu
