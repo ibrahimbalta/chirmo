@@ -74,7 +74,9 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   onNavigateToSpeak,
   onNavigateToTasks,
   onNavigateToPortal,
-  onOpenInstallModal
+  onOpenInstallModal,
+  userLevel = 'B1',
+  pendingTaskCount = 2
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
