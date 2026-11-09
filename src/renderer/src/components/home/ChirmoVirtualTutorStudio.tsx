@@ -46,6 +46,7 @@ import { ChirmoSpeakingDuelModal } from '../learning/ChirmoSpeakingDuelModal';
 import { ChirmoReflexDrillModal } from '../learning/ChirmoReflexDrillModal';
 import { ChirmoLegoChunkingModal } from '../learning/ChirmoLegoChunkingModal';
 import { ChirmoGermanGenderMasteryModal } from '../learning/ChirmoGermanGenderMasteryModal';
+import { ChirmoSpeakingToolboxModal } from '../learning/ChirmoSpeakingToolboxModal';
 import { ChirmoTalkingRobotAvatar } from '../avatar/ChirmoTalkingRobotAvatar';
 import { CEFRLevel } from '../../types';
 
@@ -83,6 +84,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   const [isCareerModalOpen, setIsCareerModalOpen] = useState(false);
   const [isDuelModalOpen, setIsDuelModalOpen] = useState(false);
   const [isReflexDrillOpen, setIsReflexDrillOpen] = useState(false);
+  const [isToolboxModalOpen, setIsToolboxModalOpen] = useState(false);
   const [isLegoModalOpen, setIsLegoModalOpen] = useState(false);
   const [isGermanGenderModalOpen, setIsGermanGenderModalOpen] = useState(false);
   const [currentAccent, setCurrentAccent] = useState(LearningStorageService.getSelectedAccent());
@@ -482,7 +484,51 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             </div>
 
             {/* PARKUR PARKURU DİZİLİMİ - MOBİLDE TAŞMAYAN MÜKEMMEL HİZALAMA */}
-            <div className="relative pl-1 sm:pl-6 space-y-4 sm:space-y-6 min-w-0 before:absolute before:left-[17px] sm:before:left-[35px] before:top-4 before:bottom-4 before:w-1 before:bg-gradient-to-b before:from-emerald-400 via-amber-400 to-indigo-500 before:rounded-full">
+            <div className="relative pl-1 sm:pl-6 space-y-4 sm:space-y-6 min-w-0 before:absolute before:left-[17px] sm:before:left-[35px] before:top-4 before:bottom-4 before:w-1 before:bg-gradient-to-b before:from-amber-400 via-emerald-400 via-amber-400 to-indigo-500 before:rounded-full">
+
+              {/* -------------------- ÖN HAZIRLIK & ALET ÇANTASI: BÜYÜLÜ TEÇHİZAT SANDIĞI -------------------- */}
+              <div className="relative flex items-start gap-2.5 sm:gap-4 min-w-0">
+                {/* İstasyon Rozeti */}
+                <div className="relative z-10 w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-gradient-to-br from-amber-400 via-yellow-300 to-amber-500 text-slate-950 font-black text-xs sm:text-base flex items-center justify-center shadow-lg shadow-amber-500/25 border-2 border-white dark:border-slate-900 shrink-0 animate-pulse">
+                  <span>🧰</span>
+                </div>
+
+                {/* Alet Çantası Kartı */}
+                <div className="flex-1 min-w-0 bg-gradient-to-r from-amber-500/10 via-purple-600/15 to-pink-500/10 dark:from-amber-500/15 dark:via-purple-900/30 dark:to-slate-900 border-2 border-amber-400/70 dark:border-amber-400/60 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-3.5">
+                  <div className="flex items-center space-x-3.5 min-w-0 flex-1">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-tr from-amber-400 to-yellow-200 text-slate-950 flex items-center justify-center text-2xl sm:text-3xl shadow-md shrink-0 border-2 border-white/60 dark:border-slate-800">
+                      🎁
+                    </div>
+                    <div className="space-y-1 min-w-0 flex-1">
+                      <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+                        <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 shadow-xs">
+                          Ön Hazırlık & Teçhizat
+                        </span>
+                        <span className="text-[11px] sm:text-xs font-bold text-amber-700 dark:text-amber-300">
+                          5 Efsanevi Konuşma Kalıbı
+                        </span>
+                      </div>
+                      <h4 className="text-sm sm:text-base font-black text-slate-900 dark:text-white truncate">
+                        Maceracının Büyülü Teçhizat Sandığı ⚔️
+                      </h4>
+                      <p className="text-xs text-slate-600 dark:text-pink-100/90 leading-relaxed max-w-2xl">
+                        Bölümlere başlamadan önce teçhizatlarını kuşan: Cümle nasıl kurulur? Soru nasıl sorulur? İstek ve ricada hangi kalıplar kullanılır?
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center shrink-0 w-full md:w-auto">
+                    <button
+                      type="button"
+                      onClick={() => setIsToolboxModalOpen(true)}
+                      className="w-full md:w-auto px-4 py-2.5 sm:px-5 sm:py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-slate-950 font-black text-xs sm:text-sm shadow-md flex items-center justify-center space-x-2 cursor-pointer transition-all hover:scale-105 active:scale-95"
+                    >
+                      <span>Sandığı Aç & Kalıpları Öğren</span>
+                      <Sparkles className="w-4 h-4 fill-slate-950 text-slate-950" />
+                    </button>
+                  </div>
+                </div>
+              </div>
 
               {/* -------------------- 1. İSTASYON: HIZLI ISINMA KAPISI -------------------- */}
               <div className="relative flex items-start gap-2.5 sm:gap-4 min-w-0">
@@ -962,7 +1008,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                   ✨
                 </span>
                 <h3 className="text-xs sm:text-base font-black text-slate-800 dark:text-white truncate">
-                  Hızlı Pratik Araçları (12 Araç)
+                  Hızlı Pratik Araçları (13 Araç)
                 </h3>
               </div>
               <button
@@ -975,6 +1021,16 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 min-w-0">
+              {/* 0. Teçhizat Sandığı / Alet Çantası */}
+              <button
+                type="button"
+                onClick={() => setIsToolboxModalOpen(true)}
+                className="w-full min-w-0 p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 font-black text-xs transition-all cursor-pointer flex items-center space-x-1.5 shadow-xs hover:scale-105 active:scale-95"
+              >
+                <span>🧰</span>
+                <span className="truncate">Teçhizat Sandığı</span>
+              </button>
+
               {/* 1. 3 Saniye Refleks */}
               <button
                 type="button"
@@ -1525,6 +1581,13 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
       <ChirmoGermanGenderMasteryModal
         isOpen={isGermanGenderModalOpen}
         onClose={() => setIsGermanGenderModalOpen(false)}
+      />
+
+      {/* Maceracının Büyülü Teçhizat Sandığı / Alet Çantası Modalı */}
+      <ChirmoSpeakingToolboxModal
+        isOpen={isToolboxModalOpen}
+        onClose={() => setIsToolboxModalOpen(false)}
+        onRewardXP={(xp) => LearningStorageService.addXP(xp)}
       />
     </div>
   );
