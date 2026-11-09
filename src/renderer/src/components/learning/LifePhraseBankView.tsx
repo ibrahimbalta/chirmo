@@ -190,8 +190,8 @@ export const LifePhraseBankView: React.FC<LifePhraseBankViewProps> = ({
               Hayat Kurtaran Konuşma Deposu
             </h1>
             <p className="text-white/80 text-xs sm:text-sm mt-1 max-w-2xl font-medium">
-              Türkiye’de neden İngilizce/Almanca konuşulamıyor? Çünkü kelime kelime çevirmeye çalışılıyor. 
-              Buradaki hazır Lego kalıplarını dinle ve sesli tekrar et; beynin düşünmeden otomatik yanıt vermeye başlasın!
+              Kelime kelime çeviri yapmak yerine buradaki hazır cümle kalıplarını dinleyin ve sesli tekrar edin; 
+              günlük yaşamda düşünmeden doğal ve akıcı yanıtlar verin!
             </p>
           </div>
 

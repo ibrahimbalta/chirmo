@@ -48,6 +48,27 @@ describe('LifePhraseBankService (Daily Life Phrases & Vocabulary Repository)', (
       expect(p.logicTip.length).toBeGreaterThan(0);
       expect(['starter', 'daily', 'fluent']).toContain(p.difficulty);
     });
+
+    // Her kategoride hem İngilizce hem Almanca için her 3 seviyede (starter, daily, fluent) en az 1 metin bulunmalı
+    const categories = LifePhraseBankService.getCategories();
+    const difficulties: Array<'starter' | 'daily' | 'fluent'> = ['starter', 'daily', 'fluent'];
+    const langs: Array<'en' | 'de'> = ['en', 'de'];
+
+    for (const cat of categories) {
+      for (const lang of langs) {
+        for (const diff of difficulties) {
+          const list = LifePhraseBankService.getPhrases({
+            category: cat.id,
+            targetLang: lang,
+            difficulty: diff
+          });
+          expect(
+            list.length,
+            `Missing phrase for category=${cat.id}, lang=${lang}, difficulty=${diff}`
+          ).toBeGreaterThanOrEqual(1);
+        }
+      }
+    }
   });
 
   it('filters phrases accurately by category and difficulty', () => {
