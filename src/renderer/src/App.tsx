@@ -271,9 +271,15 @@ export const App: React.FC = () => {
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#FAF9FE] text-slate-800 select-none font-sans">
       {/* ==================== ÜST KUSURSUZ SİMETRİK & TAM SIĞAN MODERN ANA BAŞLIK ==================== */}
-      <header className="h-14 px-2.5 sm:px-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-1.5 sm:gap-3 z-30 shrink-0 select-none">
+      <header className="h-14 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-start z-30 shrink-0 select-none">
         {/* Sol: Temiz Logo + Mobilde Modül Açılır Menüsü */}
-        <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
+        <div
+          className={`flex items-center justify-between h-full px-3 sm:px-4 shrink-0 transition-all duration-300 ${
+            activeTab === 'search' && isLeftSidebarOpen
+              ? 'md:w-64 md:border-r md:border-slate-200/90 dark:md:border-slate-800'
+              : 'w-auto'
+          }`}
+        >
           <div
             onClick={handleGoHome}
             className="cursor-pointer flex items-center hover:opacity-90 transition-opacity shrink-0"
@@ -578,134 +584,136 @@ export const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Orta: SIFIR KAFA KARIŞIKLIĞI — TÜM ÖĞRENME MODÜLLERİ TEK SIRADA AÇIK VE ERİŞİLEBİLİR */}
-        <nav className="hidden md:flex items-center bg-slate-100/90 dark:bg-slate-800/90 p-1 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 gap-0.5 shrink-0 shadow-2xs relative overflow-x-auto max-w-full">
-          {/* 0. Açılış Vitrini */}
-          <button
-            onClick={() => setActiveTab('portal')}
-            className="h-8 px-2.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1 shrink-0 text-slate-600 hover:text-indigo-600 hover:bg-white/60 font-bold"
-            title="Chirmo Açılış Vitrinine Dön"
-          >
-            <Home className="w-3.5 h-3.5 text-slate-400" />
-            <span>Vitrin</span>
-          </button>
+        {/* Orta: SIFIR KAFA KARIŞIKLIĞI — TÜM ÖĞRENME MODÜLLERİ SOL SINIRDAN BAŞLAYARAK AÇIK VE ERİŞİLEBİLİR */}
+        <div className="flex-1 flex items-center justify-start pl-2 sm:pl-3 overflow-x-auto min-w-0 py-1">
+          <nav className="hidden md:flex items-center bg-slate-100/90 dark:bg-slate-800/90 p-1 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 gap-0.5 shrink-0 shadow-2xs relative overflow-x-auto max-w-full">
+            {/* 0. Açılış Vitrini */}
+            <button
+              onClick={() => setActiveTab('portal')}
+              className="h-8 px-2.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1 shrink-0 text-slate-600 hover:text-indigo-600 hover:bg-white/60 font-bold"
+              title="Chirmo Açılış Vitrinine Dön"
+            >
+              <Home className="w-3.5 h-3.5 text-slate-400" />
+              <span>Vitrin</span>
+            </button>
 
-          {/* 1. Ana Sayfa */}
-          <button
-            onClick={() => setActiveTab('search')}
-            className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
-              activeTab === 'search'
-                ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
-            }`}
-            title="Chirmo Stüdyo & Ana Sayfa"
-          >
-            <Sparkles className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'search' ? 'text-indigo-500' : 'text-slate-400'}`} />
-            <span>Chirmo Stüdyo</span>
-          </button>
+            {/* 1. Ana Sayfa */}
+            <button
+              onClick={() => setActiveTab('search')}
+              className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
+                activeTab === 'search'
+                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
+              }`}
+              title="Chirmo Stüdyo & Ana Sayfa"
+            >
+              <Sparkles className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'search' ? 'text-indigo-500' : 'text-slate-400'}`} />
+              <span>Chirmo Stüdyo</span>
+            </button>
 
-          {/* 2. 30 Günlük Kamp */}
-          <button
-            onClick={() => setActiveTab('learn')}
-            className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
-              activeTab === 'learn'
-                ? 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
-            }`}
-            title="30 Günde Günlük Konuşma Kampı & Günün Görevi"
-          >
-            <BookOpen className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'learn' ? 'text-emerald-500' : 'text-slate-400'}`} />
-            <span>30 Günlük Kamp</span>
-          </button>
+            {/* 2. 30 Günlük Kamp */}
+            <button
+              onClick={() => setActiveTab('learn')}
+              className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
+                activeTab === 'learn'
+                  ? 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
+              }`}
+              title="30 Günde Günlük Konuşma Kampı & Günün Görevi"
+            >
+              <BookOpen className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'learn' ? 'text-emerald-500' : 'text-slate-400'}`} />
+              <span>30 Günlük Kamp</span>
+            </button>
 
-          {/* 3. Hayat Kurtaran Konuşma Deposu */}
-          <button
-            onClick={() => setActiveTab('phrases')}
-            className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
-              activeTab === 'phrases'
-                ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
-            }`}
-            title="1000+ Günlük Yaşam Kalıbı & Kelime Deposu"
-          >
-            <Layers className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'phrases' ? 'text-blue-500' : 'text-slate-400'}`} />
-            <span>Konuşma Deposu</span>
-          </button>
+            {/* 3. Hayat Kurtaran Konuşma Deposu */}
+            <button
+              onClick={() => setActiveTab('phrases')}
+              className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
+                activeTab === 'phrases'
+                  ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
+              }`}
+              title="1000+ Günlük Yaşam Kalıbı & Kelime Deposu"
+            >
+              <Layers className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'phrases' ? 'text-blue-500' : 'text-slate-400'}`} />
+              <span>Konuşma Deposu</span>
+            </button>
 
-          {/* 4. Simülatör */}
-          <button
-            onClick={() => setActiveTab('speak')}
-            className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
-              activeTab === 'speak'
-                ? 'bg-white dark:bg-slate-900 text-purple-600 dark:text-purple-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
-            }`}
-            title="Gerçek Yaşam Konuşma Simülatörü"
-          >
-            <Mic className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'speak' ? 'text-purple-500' : 'text-slate-400'}`} />
-            <span>Simülatör</span>
-          </button>
+            {/* 4. Simülatör */}
+            <button
+              onClick={() => setActiveTab('speak')}
+              className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
+                activeTab === 'speak'
+                  ? 'bg-white dark:bg-slate-900 text-purple-600 dark:text-purple-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
+              }`}
+              title="Gerçek Yaşam Konuşma Simülatörü"
+            >
+              <Mic className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'speak' ? 'text-purple-500' : 'text-slate-400'}`} />
+              <span>Simülatör</span>
+            </button>
 
-          {/* 5. Film & Video */}
-          <button
-            onClick={() => setActiveTab('video')}
-            className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
-              activeTab === 'video'
-                ? 'bg-white dark:bg-slate-900 text-rose-600 dark:text-rose-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
-            }`}
-            title="YouTube, Film ve Dizi ile Konuşma Stüdyosu"
-          >
-            <Film className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'video' ? 'text-rose-500' : 'text-slate-400'}`} />
-            <span>Film</span>
-          </button>
+            {/* 5. Film & Video */}
+            <button
+              onClick={() => setActiveTab('video')}
+              className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
+                activeTab === 'video'
+                  ? 'bg-white dark:bg-slate-900 text-rose-600 dark:text-rose-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
+              }`}
+              title="YouTube, Film ve Dizi ile Konuşma Stüdyosu"
+            >
+              <Film className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'video' ? 'text-rose-500' : 'text-slate-400'}`} />
+              <span>Film</span>
+            </button>
 
-          {/* 6. Chirmo Kids (5-17 Yaş) */}
-          <button
-            onClick={() => setActiveTab('kids')}
-            className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
-              activeTab === 'kids'
-                ? 'bg-white dark:bg-slate-900 text-pink-600 dark:text-pink-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
-            }`}
-            title="Chirmo Kids (5-17 Yaş) Çocuk & Genç Alanı"
-          >
-            <Smile className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'kids' ? 'text-pink-500' : 'text-slate-400'}`} />
-            <span>Kids (5-17)</span>
-          </button>
+            {/* 6. Chirmo Kids (5-17 Yaş) */}
+            <button
+              onClick={() => setActiveTab('kids')}
+              className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
+                activeTab === 'kids'
+                  ? 'bg-white dark:bg-slate-900 text-pink-600 dark:text-pink-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
+              }`}
+              title="Chirmo Kids (5-17 Yaş) Çocuk & Genç Alanı"
+            >
+              <Smile className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'kids' ? 'text-pink-500' : 'text-slate-400'}`} />
+              <span>Kids (5-17)</span>
+            </button>
 
-          {/* 7. Eğitici Oyunlar */}
-          <button
-            onClick={() => setActiveTab('games')}
-            className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
-              activeTab === 'games'
-                ? 'bg-white dark:bg-slate-900 text-violet-600 dark:text-violet-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
-            }`}
-            title="Eğitici Dil Oyunları"
-          >
-            <Gamepad2 className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'games' ? 'text-violet-500' : 'text-slate-400'}`} />
-            <span>Oyunlar</span>
-          </button>
+            {/* 7. Eğitici Oyunlar */}
+            <button
+              onClick={() => setActiveTab('games')}
+              className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
+                activeTab === 'games'
+                  ? 'bg-white dark:bg-slate-900 text-violet-600 dark:text-violet-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
+              }`}
+              title="Eğitici Dil Oyunları"
+            >
+              <Gamepad2 className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'games' ? 'text-violet-500' : 'text-slate-400'}`} />
+              <span>Oyunlar</span>
+            </button>
 
-          {/* 8. Hedeflerim & Rapor */}
-          <button
-            onClick={() => setActiveTab('tasks')}
-            className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
-              activeTab === 'tasks'
-                ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
-            }`}
-            title="İş & Günlük Hedeflerim, Raporlar"
-          >
-            <CheckSquare className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'tasks' ? 'text-blue-500' : 'text-slate-400'}`} />
-            <span>Hedeflerim</span>
-          </button>
-        </nav>
+            {/* 8. Hedeflerim & Rapor */}
+            <button
+              onClick={() => setActiveTab('tasks')}
+              className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
+                activeTab === 'tasks'
+                  ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 font-extrabold shadow-xs ring-1 ring-slate-200/80 dark:ring-slate-700'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 font-semibold'
+              }`}
+              title="İş & Günlük Hedeflerim, Raporlar"
+            >
+              <CheckSquare className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'tasks' ? 'text-blue-500' : 'text-slate-400'}`} />
+              <span>Hedeflerim</span>
+            </button>
+          </nav>
+        </div>
 
         {/* Sağ: İlerleme & Modern Rafine Aksiyon Butonları (Öğrenci Paneli / search aktifken bu alanlar altındaki kartta yer aldığı için tekrar etmez) */}
         {activeTab !== 'search' && (
-          <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
+          <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0 ml-auto pr-2.5 sm:pr-4">
             {/* APK İndir - Zarif Ghost Buton */}
             <button
               onClick={() => setIsInstallModalOpen(true)}
