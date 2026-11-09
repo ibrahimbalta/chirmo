@@ -39,7 +39,7 @@ const PITFALL_DATABASE: PitfallItem[] = [
     correct: 'I agree with you.',
     meaningTr: 'Seninle aynı fikirdeyim / Sana katılıyorum.',
     whyWrong: 'Birebir çeviri yaparken "katılmak" eylemi "I am..." sanılıp "am" eklenir. İngilizcede "agree" sıfat değil, doğrudan bir fiildir. Başına "am/is/are" almaz.',
-    teacherSecret: '50 Yıllık Hoca Püf Noktası: "I agree" de geç. "I am agree" dersen "Ben katılmağın kendisiyim" demiş gibi olursun.'
+    teacherSecret: 'Pratik İpucu: Doğrudan "I agree" demeniz yeterlidir. "I am agree" ifadesi dilbilgisi açısından hatalıdır.'
   },
   {
     id: 'pit-2',
@@ -166,7 +166,7 @@ const PITFALL_DATABASE: PitfallItem[] = [
     correct: 'Mir ist warm.',
     meaningTr: 'Bana sıcak bastı / Sıcak hissediyorum.',
     whyWrong: 'ÇOK KRİTİK: Almancada "Ich bin warm" dersen argo olarak "Ben eşcinselim" anlamına gelir! Hava sıcaktan bunaldıysan "BANA sıcak geldi" mantığıyla "Mir ist warm" demelisin.',
-    teacherSecret: '50 Yıllık Almanca Püf Noktası: "Mir ist kalt" (Üşüdüm), "Mir ist warm" (Bana sıcak bastı), "Mir ist schlecht" (Midem bulanıyor). Daima "Mir ist..."!'
+    teacherSecret: 'Almanca İpucu: "Mir ist kalt" (Üşüdüm), "Mir ist warm" (Bana sıcak bastı), "Mir ist schlecht" (Midem bulanıyor). Daima "Mir ist..." kalıbını kullanın.'
   },
   {
     id: 'pit-13',
@@ -246,7 +246,7 @@ export const ChirmoTurkishPitfallsRadarModal: React.FC<ChirmoTurkishPitfallsRada
                   En Sık Yapılan 100 Kritik Hata Radarı
                 </span>
                 <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-white/20 text-white border border-white/20">
-                  50 Yıllık Hoca Koruma Kalkanı
+                  Doğru Kullanım Rehberi
                 </span>
               </div>
               <p className="text-[11px] text-amber-100 font-medium hidden sm:block">
@@ -442,7 +442,7 @@ export const ChirmoTurkishPitfallsRadarModal: React.FC<ChirmoTurkishPitfallsRada
             {/* Açıklama ve Sonraki Butonu */}
             {selectedQuizChoice && (
               <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border border-amber-300 text-xs sm:text-sm text-amber-950 dark:text-amber-200 space-y-1.5 animate-fade-in">
-                <div className="font-black">💡 50 Yıllık Hoca Püf Noktası:</div>
+                <div className="font-black">💡 Pratik İpucu:</div>
                 <p>{currentQuizItem.whyWrong}</p>
                 <div className="text-[11px] font-bold text-amber-800 dark:text-amber-300">
                   {currentQuizItem.teacherSecret}

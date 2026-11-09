@@ -43,7 +43,7 @@ const SHADOWING_DRILLS: ShadowingItem[] = [
     phoneticEn: 'Kud ay pliiz get ən ayst late vit out milk?',
     phoneticDe: 'Könte ih bite aynen Ayskafe mit Hafamilh bekomen?',
     stressWords: ['iced latte', 'oat milk', 'please'],
-    teacherTip: '50 Yıllık Hoca Püf Noktası: "Could I please get..." kalıbı emir kipi yerine geçen en kibar yerel kalıptır. Son kelimelere doğru ses tonunu hafif yükselt.'
+    teacherTip: 'Pratik İpucu: "Could I please get..." kalıbı emir kipi yerine geçen en kibar yerel kalıptır. Son kelimelere doğru ses tonunu hafif yükselt.'
   },
   {
     id: 'sh-2',
@@ -209,7 +209,7 @@ export const ChirmoShadowingEngineModal: React.FC<ChirmoShadowingEngineModalProp
                 </span>
               </div>
               <p className="text-[11px] text-pink-100 font-medium hidden sm:block">
-                50 Yıllık Öğretmen Metodu • Kulak Duyar, Beyin Çevirmeden Ağız Taklit Eder
+                Dinle ve Tekrar Et Metodu • Doğal Konuşma Ritmini Yakala
               </p>
             </div>
           </div>
@@ -328,7 +328,7 @@ export const ChirmoShadowingEngineModal: React.FC<ChirmoShadowingEngineModalProp
             <span className="text-2xl shrink-0">🎓</span>
             <div>
               <div className="font-black text-amber-800 dark:text-amber-300 uppercase text-[11px] tracking-wide">
-                50 Yıllık Hocanın Konuşma Püf Noktası
+                Konuşma ve Telaffuz İpucu
               </div>
               <p className="mt-0.5 leading-relaxed font-medium">{currentItem.teacherTip}</p>
             </div>

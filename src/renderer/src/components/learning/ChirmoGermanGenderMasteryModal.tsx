@@ -228,7 +228,7 @@ export const ChirmoGermanGenderMasteryModal: React.FC<ChirmoGermanGenderMasteryM
                 </span>
               </div>
               <p className="text-[11px] text-blue-100 font-medium hidden sm:block">
-                50 Yıllık Hoca Metodu • Görsel Renk Hafızasıyla Artikel Korkusuna Son
+                Görsel Renk Hafızasıyla Kolay ve Kalıcı Artikel Öğrenimi
               </p>
             </div>
           </div>
@@ -362,8 +362,8 @@ export const ChirmoGermanGenderMasteryModal: React.FC<ChirmoGermanGenderMasteryM
         {activeTab === 'rules' && (
           <div className="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1">
             <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 text-xs sm:text-sm text-amber-950 dark:text-amber-200">
-              <span className="font-black text-amber-800 dark:text-amber-300">💡 50 Yıllık Hoca Sırrı: </span>
-              Almancada binlerce kelimenin son ekine bakarak makine gibi anında artikelini %100 bilirsin! Ezberleme, sonuna bak!
+              <span className="font-black text-amber-800 dark:text-amber-300">💡 Pratik İpucu: </span>
+              Almancada pek çok kelimenin son ekine bakarak artikelini kolayca bulabilirsiniz.
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

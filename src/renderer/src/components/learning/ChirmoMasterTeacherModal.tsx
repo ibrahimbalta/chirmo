@@ -45,7 +45,7 @@ export const ChirmoMasterTeacherModal: React.FC<ChirmoMasterTeacherModalProps> =
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/85 backdrop-blur-md animate-fade-in select-none">
         <div className="bg-white dark:bg-slate-900 border-2 border-amber-500/40 w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
-          {/* Hoca Başlığı & Rozet */}
+          {/* Başlık & Rozet */}
           <div className="px-5 sm:px-8 py-4 bg-gradient-to-r from-amber-600 via-purple-700 to-indigo-800 text-white flex items-center justify-between shadow-lg">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center text-2xl font-black shadow-md shrink-0">
@@ -54,14 +54,14 @@ export const ChirmoMasterTeacherModal: React.FC<ChirmoMasterTeacherModalProps> =
               <div>
                 <div className="flex items-center space-x-2">
                   <h2 className="text-lg sm:text-xl font-black tracking-wide">
-                    50 Yıllık Hocanın Dil Çözüm İstasyonu
+                    Pratik Dil ve Konuşma İstasyonu
                   </h2>
                   <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black uppercase shadow-xs">
-                    Altın Pedagoji
+                    Özel Rehber
                   </span>
                 </div>
                 <p className="text-xs text-amber-100 font-medium mt-0.5">
-                  Dil Öğrenme ve Konuşma Engelini Yıkan 5 Devrimci Güç Bir Arada
+                  Konuşma ve telaffuz pratiğinizi geliştiren 5 temel çalışma alanı
                 </p>
               </div>
             </div>
@@ -74,15 +74,15 @@ export const ChirmoMasterTeacherModal: React.FC<ChirmoMasterTeacherModalProps> =
             </button>
           </div>
 
-          {/* 50 Yıllık Hocanın Manifestosu */}
+          {/* Bilgilendirme Alanı */}
           <div className="p-4 sm:p-6 bg-amber-50/70 dark:bg-amber-950/30 border-b border-amber-200 dark:border-amber-800 flex items-start space-x-3 text-xs sm:text-sm text-amber-950 dark:text-amber-200">
-            <span className="text-2xl shrink-0">📜</span>
+            <span className="text-2xl shrink-0">💡</span>
             <div className="space-y-1">
               <div className="font-black text-amber-900 dark:text-amber-300">
-                "Evladım, 50 yıldır eğitim dünyasındayım. İnsanlar öğrenemediği için değil, dilin sadece 'otopsisi' ve ezberi yapıldığı için konuşamadı!"
+                Kural ezberlemek yerine doğrudan dinleme ve konuşma pratiği yapın
               </div>
               <p className="text-[11px] sm:text-xs text-amber-800 dark:text-amber-300/90 leading-relaxed">
-                Aşağıdaki 5 laboratuvar, zihindeki çeviri alışkanlığını kırar, telaffuzunu yerliler gibi yapar ve hata korkunu sıfırlar. Hangisine ihtiyacın varsa tıkla ve konuşma kasını başlat!
+                Aşağıdaki 5 çalışma aracı; zihinden çeviri yapma alışkanlığını azaltmanıza, doğru telaffuz kazanmanıza ve sık yapılan hataları öğrenmenize yardımcı olur.
               </p>
             </div>
           </div>

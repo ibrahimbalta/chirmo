@@ -666,12 +666,12 @@ export const App: React.FC = () => {
             {/* İnce Dikey Ayırıcı Çizgi */}
             <div className="h-4 w-px bg-slate-300/80 dark:bg-slate-700 mx-0.5 shrink-0" />
 
-            {/* 🎓 50 Yıllık Hoca Masası (Altın Pedagoji) */}
+            {/* 🎓 Hoca Masası (Özel Eğitim Araçları) */}
             <button
               type="button"
               onClick={() => setIsMasterTeacherOpen(true)}
               className="h-8 px-3 rounded-xl text-xs font-black transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white shadow-xs hover:shadow-md active:scale-95 group ring-1 ring-amber-300/60"
-              title="50 Yıllık Hocanın Dil Çözüm İstasyonu (Gölgeleme, 100 Hata Radarı, Almanca Artikel, Cankurtaran Kiti)"
+              title="Pratik Dil ve Konuşma İstasyonu (Gölgeleme, Sık Yapılan Hatalar, Almanca Artikel, Hazır Kalıplar)"
             >
               <GraduationCap className="w-3.5 h-3.5 text-white" />
               <span>Hoca Masası</span>
