@@ -182,92 +182,9 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
         <span>Hayat Kurtaran Kalıplar (8 Durum)</span>
       </div>
 
-      {/* 1. ÜST KONTROL & SİMETRİK HOCA İSTASYONU BARI */}
-      <div className="px-3 sm:px-6 py-2 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-2.5">
-          {/* Sol: Kamp Başlığı & Seri Rozeti */}
-          <div className="flex items-center space-x-2.5 min-w-0">
-            <span className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-xs shrink-0">
-              <Zap className="w-4 h-4 fill-current text-amber-300" />
-            </span>
-            <div className="min-w-0">
-              <div className="flex items-center space-x-2">
-                <span className="text-sm font-black text-slate-900 dark:text-white truncate">
-                  30 Günde {targetLang === 'de' ? 'Almanca ' : ''}Konuşma Parkuru
-                </span>
-                <span className="hidden sm:inline-block px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 text-[10px] font-black border border-amber-300/40">
-                  Gramer Ezberi Yok
-                </span>
-              </div>
-              <div className="flex items-center space-x-2 text-[11px] font-bold text-slate-500 mt-0.5">
-                <span className="text-amber-600 dark:text-amber-400 font-black">🔥 {campProgress.streakDays} Gün Serisi</span>
-                <span>•</span>
-                <span className="text-purple-600 dark:text-purple-400 font-black">⭐ {campProgress.totalXp} XP</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Sağ: Simetrik Hızlı Hoca Araçları */}
-          <div className="flex items-center flex-wrap gap-1.5 shrink-0">
-            {/* 🎓 50 Yıllık Hoca İstasyonu */}
-            <button
-              type="button"
-              onClick={() => setIsMasterTeacherOpen(true)}
-              className="h-8 px-3 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white font-black text-xs transition cursor-pointer shadow-xs hover:shadow-md hover:scale-102 flex items-center space-x-1.5 active:scale-95 ring-1 ring-amber-300/80"
-              title="50 Yıllık Hocanın Dil Çözüm İstasyonu (Gölgeleme, 100 Hata, Almanca Artikel, Cankurtaran Kiti)"
-            >
-              <span>🎓</span>
-              <span>Hoca Masası</span>
-            </button>
-
-            {/* Metot Butonları - Eşit Hizalanmış & Kompakt */}
-            <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 rounded-xl border border-slate-200 dark:border-slate-700 space-x-1">
-              <button
-                type="button"
-                onClick={() => setIsReflexDrillOpen(true)}
-                className="h-7 px-2.5 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:text-amber-600 font-black text-[11px] transition-all cursor-pointer shadow-2xs hover:scale-102 flex items-center space-x-1"
-                title="3 Saniye Refleks Motoru"
-              >
-                <span>⚡</span>
-                <span>3 Sn Refleks</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsLegoModalOpen(true)}
-                className="h-7 px-2.5 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:text-blue-600 font-black text-[11px] transition-all cursor-pointer shadow-2xs hover:scale-102 flex items-center space-x-1"
-                title="Lego Kalıp Sihirbazı"
-              >
-                <span>🧱</span>
-                <span>Lego Kalıp</span>
-              </button>
-              {targetLang === 'de' && (
-                <button
-                  type="button"
-                  onClick={() => setIsGermanGenderModalOpen(true)}
-                  className="h-7 px-2.5 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:text-emerald-600 font-black text-[11px] transition-all cursor-pointer shadow-2xs hover:scale-102 flex items-center space-x-1"
-                  title="der / die / das Renk Laboratuvarı"
-                >
-                  <span>🔵</span>
-                  <span>der/die/das</span>
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={() => setIsCareerModalOpen(true)}
-                className="h-7 px-2.5 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:text-purple-600 font-black text-[11px] transition-all cursor-pointer shadow-2xs hover:scale-102 flex items-center space-x-1"
-                title={targetLang === 'de' ? 'Almanya Vize & Mülakat' : 'Vize & Kariyer Mülakatı'}
-              >
-                <span>💼</span>
-                <span>{targetLang === 'de' ? 'Vize' : 'Mülakat'}</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. DÜNYALAR VE İSTASYONLAR KOMPAKT SEÇİCİ BARI */}
-      <div className="px-3 sm:px-6 py-2 bg-slate-100/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 shrink-0">
-        <div className="max-w-6xl mx-auto space-y-2">
+      {/* MOBİL UYGULAMA TARZI KOMPAKT 4 DÜNYA VE ALT İSTASYON SEÇİCİSİ */}
+      <div className="px-3 sm:px-6 py-2.5 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shrink-0">
+        <div className="max-w-5xl mx-auto space-y-2">
           {/* Ana Dünyalar (4 Simetrik Eşit Sütun) */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {/* 1. Macera Kampı */}
@@ -538,66 +455,36 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
               </>
             )}
 
-            {/* 4. Kelime & Zeka Sandığı İstasyonları */}
-            {['vault', 'flashcards', 'quiz', 'grade'].includes(activeTab) && (
-              <>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('vault')}
-                  className={`py-1 px-2.5 rounded-lg font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
-                    activeTab === 'vault'
-                      ? 'bg-purple-600 text-white shadow-2xs'
-                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  <Bookmark className="w-3 h-3" />
-                  <span>Kişisel Defterim ({words.length})</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveTab('flashcards');
-                    setShowAnswer(false);
-                    setCardIndex(0);
-                  }}
-                  className={`py-1 px-2.5 rounded-lg font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
-                    activeTab === 'flashcards'
-                      ? 'bg-purple-600 text-white shadow-2xs'
-                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  <Layers className="w-3 h-3" />
-                  <span>Kart Çevirmece</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('quiz')}
-                  className={`py-1 px-2.5 rounded-lg font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
-                    activeTab === 'quiz'
-                      ? 'bg-purple-600 text-white shadow-2xs'
-                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  <Award className="w-3 h-3" />
-                  <span>Refleks Testi</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('grade')}
-                  className={`py-1 px-2.5 rounded-lg font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
-                    activeTab === 'grade'
-                      ? 'bg-purple-600 text-white shadow-2xs'
-                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  <Compass className="w-3 h-3" />
-                  <span>Hayat Kurtaran Kalıplar</span>
-                </button>
-              </>
-            )}
+            {/* Sağ Taraf: Hızlı Pedagojik Araç Kısayolları */}
+            <div className="hidden md:flex items-center gap-1 ml-auto pl-2 border-l border-slate-200 dark:border-slate-700 shrink-0">
+              <button
+                type="button"
+                onClick={() => setIsReflexDrillOpen(true)}
+                className="h-8 px-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800 font-black text-xs transition-all cursor-pointer flex items-center space-x-1"
+                title="3 Saniye Refleks Motoru"
+              >
+                <span>⚡</span>
+                <span>3 Sn Refleks</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsLegoModalOpen(true)}
+                className="h-8 px-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/50 text-blue-800 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800 font-black text-xs transition-all cursor-pointer flex items-center space-x-1"
+                title="Lego Kalıp Sihirbazı"
+              >
+                <span>🧱</span>
+                <span>Lego Kalıp</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsCareerModalOpen(true)}
+                className="h-8 px-2.5 rounded-xl bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/50 text-purple-800 dark:text-purple-300 border border-purple-200/80 dark:border-purple-800 font-black text-xs transition-all cursor-pointer flex items-center space-x-1"
+                title="Vize & Kariyer Mülakatı"
+              >
+                <span>💼</span>
+                <span>{targetLang === 'de' ? 'Vize' : 'Mülakat'}</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>

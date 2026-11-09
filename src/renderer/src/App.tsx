@@ -134,8 +134,10 @@ export const App: React.FC = () => {
     };
   }, []);
 
-  // Sol Öğrenme Merkezi Paneli
-  const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true);
+  // Sol Öğrenme Merkezi Paneli (Mobil uygulama sadeliği için varsayılan kapalı)
+  const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(false);
+  // Masaüstü "Diğer Araçlar" kompakt açılır menüsü
+  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
 
   // Seviye ve İhtiyaç Analizi Modalı (Diagnostic Onboarding)
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
@@ -588,220 +590,235 @@ export const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Orta: SIFIR KAFA KARIŞIKLIĞI — TÜM ÖĞRENME MODÜLLERİ SOL SINIRDAN BAŞLAYARAK AÇIK VE ERİŞİLEBİLİR */}
-        <div className="flex-1 flex items-center justify-start pl-2 sm:pl-3 overflow-x-auto no-scrollbar min-w-0 py-1">
-          <nav className="hidden md:flex items-center bg-slate-100/90 dark:bg-slate-800/90 p-1 rounded-2xl border border-purple-100/80 dark:border-purple-950/60 gap-1 shrink-0 shadow-2xs relative overflow-x-auto no-scrollbar max-w-full">
-            {/* 0. Açılış Vitrini */}
-            <button
-              onClick={() => setActiveTab('portal')}
-              className={`h-8 px-2.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
-                activeTab === 'portal'
-                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40 scale-[1.02]'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-white/90 dark:hover:bg-slate-700/70 font-bold active:scale-95'
-              }`}
-              title="Chirmo Açılış Vitrinine Dön"
-            >
-              <Home className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:scale-110 ${activeTab === 'portal' ? 'text-white' : 'text-purple-500/80 group-hover:text-purple-600'}`} />
-              <span>Vitrin</span>
-            </button>
-
-            {/* 1. Ana Sayfa */}
+        {/* Orta: MOBİL UYGULAMA SADELİĞİ — 5 TEMEL SEKME + HOCA MASASI + DİĞER ARAÇLAR */}
+        <div className="flex-1 flex items-center justify-center px-2 sm:px-4 min-w-0 py-1">
+          <nav className="hidden md:flex items-center bg-slate-100/90 dark:bg-slate-800/90 p-1 rounded-2xl border border-purple-100/80 dark:border-purple-950/60 gap-1 shrink-0 shadow-2xs relative">
+            {/* 1. Ana Stüdyo (Bugün) */}
             <button
               onClick={() => setActiveTab('search')}
-              className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
+              className={`h-8 px-3.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
                 activeTab === 'search'
-                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40 scale-[1.02]'
+                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40'
                   : 'text-slate-600 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-white/90 dark:hover:bg-slate-700/70 font-bold active:scale-95'
               }`}
-              title="Chirmo Stüdyo & Ana Sayfa"
+              title="Chirmo Stüdyo & Bugünün Dersi"
             >
-              <Sparkles className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:scale-110 ${activeTab === 'search' ? 'text-white' : 'text-indigo-500/80 group-hover:text-indigo-600'}`} />
+              <Sparkles className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'search' ? 'text-white' : 'text-indigo-500'}`} />
               <span>Chirmo Stüdyo</span>
             </button>
 
             {/* 2. 30 Günlük Kamp */}
             <button
               onClick={() => setActiveTab('learn')}
-              className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
+              className={`h-8 px-3.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
                 activeTab === 'learn'
-                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40 scale-[1.02]'
+                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40'
                   : 'text-slate-600 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-white/90 dark:hover:bg-slate-700/70 font-bold active:scale-95'
               }`}
-              title="30 Günde Günlük Konuşma Kampı & Günün Görevi"
+              title="30 Günde Günlük Konuşma Kampı"
             >
-              <BookOpen className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:scale-110 ${activeTab === 'learn' ? 'text-white' : 'text-purple-500/80 group-hover:text-purple-600'}`} />
+              <BookOpen className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'learn' ? 'text-white' : 'text-emerald-500'}`} />
               <span>30 Günlük Kamp</span>
             </button>
 
-            {/* 3. Hayat Kurtaran Konuşma Deposu */}
-            <button
-              onClick={() => setActiveTab('phrases')}
-              className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
-                activeTab === 'phrases'
-                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40 scale-[1.02]'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-white/90 dark:hover:bg-slate-700/70 font-bold active:scale-95'
-              }`}
-              title="1000+ Günlük Yaşam Kalıbı & Kelime Deposu"
-            >
-              <Layers className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:scale-110 ${activeTab === 'phrases' ? 'text-white' : 'text-indigo-500/80 group-hover:text-indigo-600'}`} />
-              <span>Konuşma Deposu</span>
-            </button>
-
-            {/* 4. Simülatör */}
+            {/* 3. Canlı Simülatör */}
             <button
               onClick={() => setActiveTab('speak')}
-              className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
+              className={`h-8 px-3.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
                 activeTab === 'speak'
-                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40 scale-[1.02]'
+                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40'
                   : 'text-slate-600 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-white/90 dark:hover:bg-slate-700/70 font-bold active:scale-95'
               }`}
               title="Gerçek Yaşam Konuşma Simülatörü"
             >
-              <Mic className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:scale-110 ${activeTab === 'speak' ? 'text-white' : 'text-purple-500/80 group-hover:text-purple-600'}`} />
+              <Mic className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'speak' ? 'text-white' : 'text-purple-500'}`} />
               <span>Simülatör</span>
             </button>
 
-            {/* 5. Film & Video */}
+            {/* 4. Film & Video */}
             <button
               onClick={() => setActiveTab('video')}
-              className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
+              className={`h-8 px-3.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
                 activeTab === 'video'
-                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40 scale-[1.02]'
+                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40'
                   : 'text-slate-600 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-white/90 dark:hover:bg-slate-700/70 font-bold active:scale-95'
               }`}
               title="YouTube, Film ve Dizi ile Konuşma Stüdyosu"
             >
-              <Film className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:scale-110 ${activeTab === 'video' ? 'text-white' : 'text-violet-500/80 group-hover:text-violet-600'}`} />
+              <Film className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'video' ? 'text-white' : 'text-rose-500'}`} />
               <span>Film</span>
             </button>
 
-            {/* 6. Chirmo Kids (5-17 Yaş) */}
+            {/* 5. Chirmo Kids (5-17 Yaş) */}
             <button
               onClick={() => setActiveTab('kids')}
-              className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
+              className={`h-8 px-3.5 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
                 activeTab === 'kids'
-                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40 scale-[1.02]'
+                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40'
                   : 'text-slate-600 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-white/90 dark:hover:bg-slate-700/70 font-bold active:scale-95'
               }`}
               title="Chirmo Kids (5-17 Yaş) Çocuk & Genç Alanı"
             >
-              <Smile className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:scale-110 ${activeTab === 'kids' ? 'text-white' : 'text-pink-500/80 group-hover:text-pink-600'}`} />
+              <Smile className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'kids' ? 'text-white' : 'text-pink-500'}`} />
               <span>Kids (5-17)</span>
-            </button>
-
-            {/* 7. Eğitici Oyunlar */}
-            <button
-              onClick={() => setActiveTab('games')}
-              className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
-                activeTab === 'games'
-                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40 scale-[1.02]'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-white/90 dark:hover:bg-slate-700/70 font-bold active:scale-95'
-              }`}
-              title="Eğitici Dil Oyunları"
-            >
-              <Gamepad2 className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:scale-110 ${activeTab === 'games' ? 'text-white' : 'text-purple-500/80 group-hover:text-purple-600'}`} />
-              <span>Oyunlar</span>
-            </button>
-
-            {/* 8. Hedeflerim & Rapor */}
-            <button
-              onClick={() => setActiveTab('tasks')}
-              className={`h-8 px-3 rounded-xl text-xs transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap group ${
-                activeTab === 'tasks'
-                  ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs shadow-purple-500/30 ring-1 ring-purple-400/40 scale-[1.02]'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-white/90 dark:hover:bg-slate-700/70 font-bold active:scale-95'
-              }`}
-              title="İş & Günlük Hedeflerim, Raporlar"
-            >
-              <CheckSquare className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:scale-110 ${activeTab === 'tasks' ? 'text-white' : 'text-indigo-500/80 group-hover:text-indigo-600'}`} />
-              <span>Hedeflerim</span>
             </button>
 
             {/* İnce Dikey Ayırıcı Çizgi */}
             <div className="h-4 w-px bg-slate-300/80 dark:bg-slate-700 mx-0.5 shrink-0" />
 
-            {/* 9. APK İndir — Efektif Chirmo Tasarımı */}
-            <button
-              type="button"
-              onClick={() => setIsInstallModalOpen(true)}
-              className="h-8 px-3 rounded-xl text-xs font-black transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap bg-purple-50 hover:bg-gradient-to-r hover:from-indigo-600 hover:to-purple-600 text-purple-700 dark:text-purple-300 hover:text-white dark:bg-purple-950/50 dark:hover:bg-purple-900 border border-purple-200/90 dark:border-purple-800/80 shadow-2xs hover:shadow-xs hover:scale-105 active:scale-95 group"
-              title="Chirmo Android APK ve PWA İndir"
-            >
-              <Download className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 group-hover:text-white group-hover:translate-y-0.5 transition-all duration-200" />
-              <span>APK</span>
-            </button>
-
-            {/* 10. 🎓 50 Yıllık Hoca Masası (Altın Pedagoji) */}
+            {/* 🎓 50 Yıllık Hoca Masası (Altın Pedagoji) */}
             <button
               type="button"
               onClick={() => setIsMasterTeacherOpen(true)}
-              className="h-8 px-3 rounded-xl text-xs font-black transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white shadow-xs hover:shadow-md hover:scale-105 active:scale-95 group ring-1 ring-amber-300/60"
+              className="h-8 px-3 rounded-xl text-xs font-black transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white shadow-xs hover:shadow-md active:scale-95 group ring-1 ring-amber-300/60"
               title="50 Yıllık Hocanın Dil Çözüm İstasyonu (Gölgeleme, 100 Hata Radarı, Almanca Artikel, Cankurtaran Kiti)"
             >
-              <GraduationCap className="w-3.5 h-3.5 text-white animate-pulse" />
+              <GraduationCap className="w-3.5 h-3.5 text-white" />
               <span>Hoca Masası</span>
             </button>
+
+            {/* ✨ Diğer Araçlar Açılır Menüsü (Depo, Oyunlar, Hedeflerim, Vitrin, APK) */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
+                className={`h-8 px-3 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer inline-flex items-center space-x-1 shrink-0 whitespace-nowrap ${
+                  ['phrases', 'games', 'tasks', 'portal'].includes(activeTab)
+                    ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-black shadow-xs'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-purple-700 hover:bg-white/90 dark:hover:bg-slate-700/70'
+                }`}
+                title="Diğer Modüller (Konuşma Deposu, Oyunlar, Hedeflerim, APK)"
+              >
+                <span>Diğer</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isMoreMenuOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {isMoreMenuOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setIsMoreMenuOpen(false)}
+                  />
+                  <div className="absolute right-0 top-10 z-50 w-52 p-1.5 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 space-y-1">
+                    <button
+                      onClick={() => {
+                        setActiveTab('phrases');
+                        setIsMoreMenuOpen(false);
+                      }}
+                      className={`w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                        activeTab === 'phrases' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      <Layers className="w-4 h-4 text-blue-500 shrink-0" />
+                      <span>Konuşma Deposu (1000+)</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setActiveTab('games');
+                        setIsMoreMenuOpen(false);
+                      }}
+                      className={`w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                        activeTab === 'games' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      <Gamepad2 className="w-4 h-4 text-purple-500 shrink-0" />
+                      <span>Oyunlar</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setActiveTab('tasks');
+                        setIsMoreMenuOpen(false);
+                      }}
+                      className={`w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                        activeTab === 'tasks' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      <CheckSquare className="w-4 h-4 text-emerald-500 shrink-0" />
+                      <span>Hedeflerim & Rapor</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setActiveTab('portal');
+                        setIsMoreMenuOpen(false);
+                      }}
+                      className="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer"
+                    >
+                      <Home className="w-4 h-4 text-indigo-500 shrink-0" />
+                      <span>Vitrin (Ana Karşılama)</span>
+                    </button>
+
+                    <div className="border-t border-slate-100 dark:border-slate-800 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsMoreMenuOpen(false);
+                          setIsInstallModalOpen(true);
+                        }}
+                        className="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-black text-purple-700 dark:text-purple-300 bg-purple-50/80 dark:bg-purple-950/50 hover:bg-purple-100 transition-all cursor-pointer"
+                      >
+                        <Download className="w-4 h-4 text-purple-600 shrink-0" />
+                        <span>Mobil Uygulama (APK)</span>
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           </nav>
         </div>
 
-        {/* Sağ: İlerleme & Modern Rafine Aksiyon Butonları (Öğrenci Paneli / search aktifken bu alanlar altındaki kartta yer aldığı için tekrar etmez) */}
-        {activeTab !== 'search' && (
-          <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0 ml-auto pr-2.5 sm:pr-4">
-            {/* Gün Serisi & XP Rozeti - Zarif & Kompakt */}
-            <div
-              onClick={() => setActiveTab('learn')}
-              className="hidden sm:flex h-8 px-2.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 items-center space-x-1.5 text-xs font-bold cursor-pointer hover:bg-slate-200/70 dark:hover:bg-slate-700/70 transition-all shrink-0"
-              title="30 Günlük Kamp Kesintisiz Serisi ve Toplam XP"
-            >
-              <div className="flex items-center space-x-1 text-amber-600 dark:text-amber-400 font-black">
-                <span>🔥</span>
-                <span>{campProgress.streakDays}</span>
-              </div>
-              <span className="text-slate-300 dark:text-slate-600 font-light">•</span>
-              <div className="flex items-center space-x-1 text-indigo-600 dark:text-indigo-400 font-black">
-                <span>⭐</span>
-                <span>{campProgress.totalXp} XP</span>
-              </div>
+        {/* Sağ: Tekil ve Tutarlı İlerleme, Dil Seçici & Profil Barı */}
+        <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0 ml-auto pr-2.5 sm:pr-4">
+          {/* Gün Serisi & XP Rozeti */}
+          <div
+            onClick={() => setActiveTab('learn')}
+            className="hidden sm:flex h-8 px-2.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 items-center space-x-1.5 text-xs font-bold cursor-pointer hover:bg-slate-200/70 dark:hover:bg-slate-700/70 transition-all shrink-0"
+            title="30 Günlük Kamp Kesintisiz Serisi ve Toplam XP"
+          >
+            <div className="flex items-center space-x-1 text-amber-600 dark:text-amber-400 font-black">
+              <span>🔥</span>
+              <span>{campProgress.streakDays}</span>
             </div>
-
-            {/* Akıllı Dil Değiştirici Kapsülü (Tek Tıkla Hızlı Geçiş: 🇬🇧 EN / 🇩🇪 DE) */}
-            <button
-              onClick={() => TargetLanguageService.setTargetLanguage(targetLanguage === 'en' ? 'de' : 'en')}
-              className="h-8 px-2 sm:px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 text-xs font-extrabold transition-all flex items-center space-x-1.5 shrink-0 shadow-2xs cursor-pointer text-slate-800 dark:text-slate-100 active:scale-95"
-              title="Çalışma Dilini Değiştir (Tıkla: İngilizce / Almanca)"
-            >
-              <span>{targetLanguage === 'de' ? '🇩🇪' : '🇬🇧'}</span>
-              <span className="hidden sm:inline">{targetLanguage === 'de' ? 'Almanca' : 'İngilizce'}</span>
-              <span className="text-[10px] text-slate-400 font-normal">⇄</span>
-            </button>
-
-            {/* Giriş yapılmışsa profil göstergesi; panelde ayrı giriş butonu gösterilmez (tek giriş portalda) */}
-            {currentUser && (
-              <div className="flex items-center space-x-1 shrink-0">
-                <button
-                  onClick={() => setActiveTab('portal')}
-                  className="h-8 px-2 sm:px-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-extrabold cursor-pointer hover:bg-indigo-100 transition-colors inline-flex items-center space-x-1 whitespace-nowrap"
-                  title={`Kullanıcı Sayfası ve Profil Detayları: @${currentUser.username}`}
-                >
-                  <span>{userProfile.avatarEmoji || '👤'}</span>
-                  <span className="max-w-[70px] truncate hidden md:inline">@{currentUser.username}</span>
-                  {currentUser.plan === 'pro' && (
-                    <span className="text-[8px] sm:text-[9px] px-1 sm:px-1.5 py-0.2 rounded-full bg-indigo-600 text-white font-black">
-                      PRO
-                    </span>
-                  )}
-                </button>
-                <button
-                  onClick={() => PrivacyAuthService.logout()}
-                  className="h-8 w-8 rounded-xl bg-slate-100 hover:bg-rose-100 dark:bg-slate-800 dark:hover:bg-rose-950/50 text-slate-400 hover:text-rose-600 text-xs font-bold transition-colors cursor-pointer flex items-center justify-center shrink-0"
-                  title="Çıkış Yap"
-                >
-                  ✕
-                </button>
-              </div>
-            )}
+            <span className="text-slate-300 dark:text-slate-600 font-light">•</span>
+            <div className="flex items-center space-x-1 text-indigo-600 dark:text-indigo-400 font-black">
+              <span>⭐</span>
+              <span>{campProgress.totalXp} XP</span>
+            </div>
           </div>
-        )}
+
+          {/* Akıllı Dil Değiştirici Kapsülü (🇬🇧 EN / 🇩🇪 DE) */}
+          <button
+            onClick={() => TargetLanguageService.setTargetLanguage(targetLanguage === 'en' ? 'de' : 'en')}
+            className="h-8 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 text-xs font-extrabold transition-all flex items-center space-x-1.5 shrink-0 shadow-2xs cursor-pointer text-slate-800 dark:text-slate-100 active:scale-95"
+            title="Çalışma Dilini Değiştir (Tıkla: İngilizce / Almanca)"
+          >
+            <span>{targetLanguage === 'de' ? '🇩🇪' : '🇬🇧'}</span>
+            <span className="hidden sm:inline">{targetLanguage === 'de' ? 'Almanca' : 'İngilizce'}</span>
+            <span className="text-[10px] text-slate-400 font-normal">⇄</span>
+          </button>
+
+          {/* Kullanıcı Profili */}
+          {currentUser && (
+            <div className="flex items-center space-x-1 shrink-0">
+              <button
+                onClick={() => setActiveTab('portal')}
+                className="h-8 px-2 sm:px-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-extrabold cursor-pointer hover:bg-indigo-100 transition-colors inline-flex items-center space-x-1 whitespace-nowrap"
+                title={`Kullanıcı Sayfası ve Profil Detayları: @${currentUser.username}`}
+              >
+                <span>{userProfile.avatarEmoji || '👤'}</span>
+                <span className="max-w-[70px] truncate hidden md:inline">@{currentUser.username}</span>
+                {currentUser.plan === 'pro' && (
+                  <span className="text-[8px] sm:text-[9px] px-1 sm:px-1.5 py-0.2 rounded-full bg-indigo-600 text-white font-black">
+                    PRO
+                  </span>
+                )}
+              </button>
+            </div>
+          )}
+        </div>
       </header>
 
       {/* ==================== ANA ÇALIŞMA ALANI ==================== */}
@@ -1123,36 +1140,25 @@ export const App: React.FC = () => {
         onRewardXP={() => setLearningProgress({ ...LearningStorageService.getProgress() })}
       />
 
-      {/* ==================== MOBİL ALT MENÜ (SMARTPHONE BOTTOM NAV - 7 TEMEL BÖLÜM) ==================== */}
-      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/90 dark:border-slate-800 shadow-xl px-1 py-1 flex items-center justify-around select-none">
+      {/* ==================== MOBİL ALT MENÜ (SMARTPHONE BOTTOM NAV - 5 SİMETRİK ANA SEKME) ==================== */}
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/90 dark:border-slate-800 shadow-xl px-1.5 py-1 grid grid-cols-5 gap-1 select-none">
         <button
           onClick={() => setActiveTab('search')}
-          className={`flex flex-col items-center justify-center py-1 px-1 rounded-xl flex-1 text-center transition-all cursor-pointer min-h-[46px] active:scale-95 ${
+          className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-center transition-all cursor-pointer min-h-[48px] active:scale-95 ${
             activeTab === 'search'
-              ? 'text-indigo-600 dark:text-indigo-400 font-black bg-indigo-50/80 dark:bg-indigo-950/50 shadow-2xs'
+              ? 'text-indigo-600 dark:text-indigo-400 font-black bg-indigo-50/90 dark:bg-indigo-950/60 shadow-2xs'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
           }`}
         >
           <Sparkles className="w-4 h-4 mb-0.5 shrink-0" />
           <span className="text-[10px] leading-tight truncate">Stüdyo</span>
         </button>
-        <button
-          onClick={() => setActiveTab('video')}
-          className={`flex flex-col items-center justify-center py-1 px-1 rounded-xl flex-1 text-center transition-all cursor-pointer min-h-[46px] active:scale-95 ${
-            activeTab === 'video'
-              ? 'text-rose-600 dark:text-rose-400 font-black bg-rose-50/80 dark:bg-rose-950/50 shadow-2xs'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
-          }`}
-        >
-          <Film className="w-4 h-4 mb-0.5 shrink-0" />
-          <span className="text-[10px] leading-tight truncate">Film</span>
-        </button>
 
         <button
           onClick={() => setActiveTab('learn')}
-          className={`flex flex-col items-center justify-center py-1 px-1 rounded-xl flex-1 text-center transition-all cursor-pointer min-h-[46px] active:scale-95 ${
+          className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-center transition-all cursor-pointer min-h-[48px] active:scale-95 ${
             activeTab === 'learn'
-              ? 'text-emerald-600 dark:text-emerald-400 font-black bg-emerald-50/80 dark:bg-emerald-950/50 shadow-2xs'
+              ? 'text-emerald-600 dark:text-emerald-400 font-black bg-emerald-50/90 dark:bg-emerald-950/60 shadow-2xs'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
           }`}
         >
@@ -1161,34 +1167,10 @@ export const App: React.FC = () => {
         </button>
 
         <button
-          onClick={() => setActiveTab('kids')}
-          className={`flex flex-col items-center justify-center py-1 px-1 rounded-xl flex-1 text-center transition-all cursor-pointer min-h-[46px] active:scale-95 ${
-            activeTab === 'kids'
-              ? 'text-pink-600 dark:text-pink-400 font-black bg-pink-50/80 dark:bg-pink-950/50 shadow-2xs'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
-          }`}
-        >
-          <Smile className="w-4 h-4 mb-0.5 shrink-0" />
-          <span className="text-[10px] leading-tight truncate">Kids</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('games')}
-          className={`flex flex-col items-center justify-center py-1 px-1 rounded-xl flex-1 text-center transition-all cursor-pointer min-h-[46px] active:scale-95 ${
-            activeTab === 'games'
-              ? 'text-amber-500 dark:text-amber-400 font-black bg-amber-50/80 dark:bg-amber-950/50 shadow-2xs'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
-          }`}
-        >
-          <Gamepad2 className="w-4 h-4 mb-0.5 shrink-0" />
-          <span className="text-[10px] leading-tight truncate">Oyun</span>
-        </button>
-
-        <button
           onClick={() => setActiveTab('speak')}
-          className={`flex flex-col items-center justify-center py-1 px-1 rounded-xl flex-1 text-center transition-all cursor-pointer min-h-[46px] active:scale-95 ${
+          className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-center transition-all cursor-pointer min-h-[48px] active:scale-95 ${
             activeTab === 'speak'
-              ? 'text-purple-600 dark:text-purple-400 font-black bg-purple-50/80 dark:bg-purple-950/50 shadow-2xs'
+              ? 'text-purple-600 dark:text-purple-400 font-black bg-purple-50/90 dark:bg-purple-950/60 shadow-2xs'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
           }`}
         >
@@ -1197,15 +1179,27 @@ export const App: React.FC = () => {
         </button>
 
         <button
-          onClick={() => setActiveTab('tasks')}
-          className={`flex flex-col items-center justify-center py-1 px-1 rounded-xl flex-1 text-center transition-all cursor-pointer min-h-[46px] active:scale-95 ${
-            activeTab === 'tasks'
-              ? 'text-blue-600 dark:text-blue-400 font-black bg-blue-50/80 dark:bg-blue-950/50 shadow-2xs'
+          onClick={() => setActiveTab('video')}
+          className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-center transition-all cursor-pointer min-h-[48px] active:scale-95 ${
+            activeTab === 'video'
+              ? 'text-rose-600 dark:text-rose-400 font-black bg-rose-50/90 dark:bg-rose-950/60 shadow-2xs'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
           }`}
         >
-          <CheckSquare className="w-4 h-4 mb-0.5 shrink-0" />
-          <span className="text-[10px] leading-tight truncate">Hedefler</span>
+          <Film className="w-4 h-4 mb-0.5 shrink-0" />
+          <span className="text-[10px] leading-tight truncate">Film</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('kids')}
+          className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-center transition-all cursor-pointer min-h-[48px] active:scale-95 ${
+            activeTab === 'kids'
+              ? 'text-pink-600 dark:text-pink-400 font-black bg-pink-50/90 dark:bg-pink-950/60 shadow-2xs'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold'
+          }`}
+        >
+          <Smile className="w-4 h-4 mb-0.5 shrink-0" />
+          <span className="text-[10px] leading-tight truncate">Kids</span>
         </button>
       </nav>
     </div>
