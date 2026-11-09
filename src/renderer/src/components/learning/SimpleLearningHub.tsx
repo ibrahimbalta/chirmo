@@ -182,96 +182,94 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
         <span>Hayat Kurtaran Kalıplar (8 Durum)</span>
       </div>
 
-      {/* 1. KOMPAKT KONTROL VE HIZLI METOT BARI */}
+      {/* 1. ÜST KONTROL & SİMETRİK HOCA İSTASYONU BARI */}
       <div className="px-3 sm:px-6 py-2 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0">
-        <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-2">
-          {/* Başlık ve Rozet */}
-          <div className="flex items-center space-x-2 min-w-0">
-            <span className="p-1 rounded-lg bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300">
-              <Zap className="w-3.5 h-3.5 fill-current" />
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-2.5">
+          {/* Sol: Kamp Başlığı & Seri Rozeti */}
+          <div className="flex items-center space-x-2.5 min-w-0">
+            <span className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-xs shrink-0">
+              <Zap className="w-4 h-4 fill-current text-amber-300" />
             </span>
             <div className="min-w-0">
-              <div className="flex items-center space-x-1.5">
-                <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white truncate">
+              <div className="flex items-center space-x-2">
+                <span className="text-sm font-black text-slate-900 dark:text-white truncate">
                   30 Günde {targetLang === 'de' ? 'Almanca ' : ''}Konuşma Parkuru
                 </span>
-                <span className="hidden md:inline-block px-1.5 py-0.2 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 text-[10px] font-black">
+                <span className="hidden sm:inline-block px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 text-[10px] font-black border border-amber-300/40">
                   Gramer Ezberi Yok
                 </span>
+              </div>
+              <div className="flex items-center space-x-2 text-[11px] font-bold text-slate-500 mt-0.5">
+                <span className="text-amber-600 dark:text-amber-400 font-black">🔥 {campProgress.streakDays} Gün Serisi</span>
+                <span>•</span>
+                <span className="text-purple-600 dark:text-purple-400 font-black">⭐ {campProgress.totalXp} XP</span>
               </div>
             </div>
           </div>
 
-          {/* İlerleme ve 20 Yıllık Öğretmen Metot Butonları */}
-          <div className="flex items-center flex-wrap gap-1.5 shrink-0 text-xs">
-            {/* Seri & XP */}
-            <span className="px-2 py-0.5 rounded-lg bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-900/60 text-amber-800 dark:text-amber-300 text-[11px] font-black">
-              🔥 {campProgress.streakDays} Gün
-            </span>
-            <span className="px-2 py-0.5 rounded-lg bg-purple-50 dark:bg-purple-950/50 border border-purple-200 dark:border-purple-900/60 text-purple-700 dark:text-purple-300 text-[11px] font-black">
-              ⭐ {campProgress.totalXp} XP
-            </span>
-
+          {/* Sağ: Simetrik Hızlı Hoca Araçları */}
+          <div className="flex items-center flex-wrap gap-1.5 shrink-0">
             {/* 🎓 50 Yıllık Hoca İstasyonu */}
             <button
               type="button"
               onClick={() => setIsMasterTeacherOpen(true)}
-              className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white font-black text-[11px] transition cursor-pointer shadow-xs flex items-center space-x-1 active:scale-95 ring-1 ring-amber-300"
+              className="h-8 px-3 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white font-black text-xs transition cursor-pointer shadow-xs hover:shadow-md hover:scale-102 flex items-center space-x-1.5 active:scale-95 ring-1 ring-amber-300/80"
               title="50 Yıllık Hocanın Dil Çözüm İstasyonu (Gölgeleme, 100 Hata, Almanca Artikel, Cankurtaran Kiti)"
             >
               <span>🎓</span>
               <span>Hoca Masası</span>
             </button>
 
-            {/* Metot Butonları */}
-            <button
-              type="button"
-              onClick={() => setIsReflexDrillOpen(true)}
-              className="px-2.5 py-1 rounded-lg bg-amber-400 hover:bg-amber-500 text-purple-950 font-black text-[11px] transition cursor-pointer shadow-2xs flex items-center space-x-1 active:scale-95"
-              title="3 Saniye Refleks Motoru"
-            >
-              <span>⚡</span>
-              <span className="hidden sm:inline">3 Sn</span>
-              <span>Refleks</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsLegoModalOpen(true)}
-              className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-black text-[11px] transition cursor-pointer shadow-2xs flex items-center space-x-1 active:scale-95"
-              title="Lego Kalıp Sihirbazı"
-            >
-              <span>🧱</span>
-              <span>Lego Kalıp</span>
-            </button>
-            {targetLang === 'de' && (
+            {/* Metot Butonları - Eşit Hizalanmış & Kompakt */}
+            <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 rounded-xl border border-slate-200 dark:border-slate-700 space-x-1">
               <button
                 type="button"
-                onClick={() => setIsGermanGenderModalOpen(true)}
-                className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px] transition cursor-pointer shadow-2xs flex items-center space-x-1 active:scale-95"
-                title="der / die / das"
+                onClick={() => setIsReflexDrillOpen(true)}
+                className="h-7 px-2.5 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:text-amber-600 font-black text-[11px] transition-all cursor-pointer shadow-2xs hover:scale-102 flex items-center space-x-1"
+                title="3 Saniye Refleks Motoru"
               >
-                <span>🔵</span>
-                <span>der/die/das</span>
+                <span>⚡</span>
+                <span>3 Sn Refleks</span>
               </button>
-            )}
-            <button
-              type="button"
-              onClick={() => setIsCareerModalOpen(true)}
-              className="px-2.5 py-1 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-black text-[11px] transition cursor-pointer shadow-2xs flex items-center space-x-1 active:scale-95"
-              title={targetLang === 'de' ? 'Almanya Vize & Mülakat' : 'Vize & Kariyer Mülakatı'}
-            >
-              <span>💼</span>
-              <span>{targetLang === 'de' ? '🇩🇪 Vize' : '🇬🇧 Mülakat'}</span>
-            </button>
+              <button
+                type="button"
+                onClick={() => setIsLegoModalOpen(true)}
+                className="h-7 px-2.5 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:text-blue-600 font-black text-[11px] transition-all cursor-pointer shadow-2xs hover:scale-102 flex items-center space-x-1"
+                title="Lego Kalıp Sihirbazı"
+              >
+                <span>🧱</span>
+                <span>Lego Kalıp</span>
+              </button>
+              {targetLang === 'de' && (
+                <button
+                  type="button"
+                  onClick={() => setIsGermanGenderModalOpen(true)}
+                  className="h-7 px-2.5 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:text-emerald-600 font-black text-[11px] transition-all cursor-pointer shadow-2xs hover:scale-102 flex items-center space-x-1"
+                  title="der / die / das Renk Laboratuvarı"
+                >
+                  <span>🔵</span>
+                  <span>der/die/das</span>
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setIsCareerModalOpen(true)}
+                className="h-7 px-2.5 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:text-purple-600 font-black text-[11px] transition-all cursor-pointer shadow-2xs hover:scale-102 flex items-center space-x-1"
+                title={targetLang === 'de' ? 'Almanya Vize & Mülakat' : 'Vize & Kariyer Mülakatı'}
+              >
+                <span>💼</span>
+                <span>{targetLang === 'de' ? 'Vize' : 'Mülakat'}</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* 2. DÜNYALAR VE İSTASYONLAR KOMPAKT SEÇİCİ BARI */}
-      <div className="px-3 sm:px-6 py-1.5 bg-slate-100/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 shrink-0">
-        <div className="max-w-6xl mx-auto space-y-1.5">
-          {/* Ana Dünyalar (4 Kompakt Sekme) */}
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+      <div className="px-3 sm:px-6 py-2 bg-slate-100/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 shrink-0">
+        <div className="max-w-6xl mx-auto space-y-2">
+          {/* Ana Dünyalar (4 Simetrik Eşit Sütun) */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {/* 1. Macera Kampı */}
             <button
               type="button"
@@ -280,9 +278,9 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
                   setActiveTab('camp');
                 }
               }}
-              className={`px-3 py-1.5 rounded-xl font-black text-xs transition-all cursor-pointer whitespace-nowrap flex items-center space-x-1.5 border ${
+              className={`h-9 sm:h-10 px-3 rounded-xl font-black text-xs transition-all cursor-pointer whitespace-nowrap flex items-center justify-center space-x-2 border text-center ${
                 ['camp', 'simulations', 'studio'].includes(activeTab)
-                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs border-transparent'
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs border-transparent scale-[1.01]'
                   : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50'
               }`}
             >
@@ -298,9 +296,9 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
                   setActiveTab('video');
                 }
               }}
-              className={`px-3 py-1.5 rounded-xl font-black text-xs transition-all cursor-pointer whitespace-nowrap flex items-center space-x-1.5 border ${
+              className={`h-9 sm:h-10 px-3 rounded-xl font-black text-xs transition-all cursor-pointer whitespace-nowrap flex items-center justify-center space-x-2 border text-center ${
                 ['video', 'stories', 'booster'].includes(activeTab)
-                  ? 'bg-gradient-to-r from-rose-600 to-red-600 text-white shadow-xs border-transparent'
+                  ? 'bg-gradient-to-r from-rose-600 to-red-600 text-white shadow-xs border-transparent scale-[1.01]'
                   : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50'
               }`}
             >
@@ -316,9 +314,9 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
                   setActiveTab('builder');
                 }
               }}
-              className={`px-3 py-1.5 rounded-xl font-black text-xs transition-all cursor-pointer whitespace-nowrap flex items-center space-x-1.5 border ${
+              className={`h-9 sm:h-10 px-3 rounded-xl font-black text-xs transition-all cursor-pointer whitespace-nowrap flex items-center justify-center space-x-2 border text-center ${
                 ['builder', 'games', 'kids'].includes(activeTab)
-                  ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-xs border-transparent'
+                  ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-xs border-transparent scale-[1.01]'
                   : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50'
               }`}
             >
@@ -334,9 +332,9 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
                   setActiveTab('vault');
                 }
               }}
-              className={`px-3 py-1.5 rounded-xl font-black text-xs transition-all cursor-pointer whitespace-nowrap flex items-center space-x-1.5 border ${
+              className={`h-9 sm:h-10 px-3 rounded-xl font-black text-xs transition-all cursor-pointer whitespace-nowrap flex items-center justify-center space-x-2 border text-center ${
                 ['vault', 'flashcards', 'quiz', 'grade'].includes(activeTab)
-                  ? 'bg-gradient-to-r from-purple-600 to-violet-700 text-white shadow-xs border-transparent'
+                  ? 'bg-gradient-to-r from-purple-600 to-violet-700 text-white shadow-xs border-transparent scale-[1.01]'
                   : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50'
               }`}
             >
@@ -346,47 +344,47 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
           </div>
 
           {/* Aktif Dünyanın İstasyonları (Kompakt Alt Düğmeler) */}
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+          <div className="flex items-center justify-center sm:justify-start gap-1.5 overflow-x-auto no-scrollbar py-0.5">
             {/* 1. Macera Kampı İstasyonları */}
             {['camp', 'simulations', 'studio'].includes(activeTab) && (
               <>
                 <button
                   type="button"
                   onClick={() => setActiveTab('camp')}
-                  className={`py-1 px-2.5 rounded-lg font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                  className={`h-8 px-3 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs shadow-2xs ${
                     activeTab === 'camp'
-                      ? 'bg-blue-600 text-white shadow-2xs'
-                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                      ? 'bg-blue-600 text-white shadow-xs ring-1 ring-white/30'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700'
                   }`}
                 >
-                  <Zap className="w-3 h-3 text-amber-400" />
-                  <span>30 Günlük {targetLang === 'de' ? 'Almanca ' : ''}Konuşma Kampı</span>
+                  <Zap className="w-3.5 h-3.5 text-amber-400" />
+                  <span>30 Günlük {targetLang === 'de' ? 'Almanca ' : ''}Kamp</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setActiveTab('simulations')}
-                  className={`py-1 px-2.5 rounded-lg font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                  className={`h-8 px-3 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs shadow-2xs ${
                     activeTab === 'simulations'
-                      ? 'bg-emerald-600 text-white shadow-2xs'
-                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                      ? 'bg-emerald-600 text-white shadow-xs ring-1 ring-white/30'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700'
                   }`}
                 >
-                  <Compass className="w-3 h-3 text-emerald-300" />
+                  <Compass className="w-3.5 h-3.5 text-emerald-300" />
                   <span>Gerçek Yaşam Simülatörü 🎭</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setActiveTab('studio')}
-                  className={`py-1 px-2.5 rounded-lg font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                  className={`h-8 px-3 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs shadow-2xs ${
                     activeTab === 'studio'
-                      ? 'bg-indigo-600 text-white shadow-2xs'
-                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                      ? 'bg-indigo-600 text-white shadow-xs ring-1 ring-white/30'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700'
                   }`}
                 >
                   <span>🗣️</span>
-                  <span>Pratik Stüdyosu (Rol Yap & Cümle Kur)</span>
+                  <span>Pratik Stüdyosu (Rol Yap & Konuş)</span>
                 </button>
               </>
             )}
@@ -397,39 +395,39 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
                 <button
                   type="button"
                   onClick={() => setActiveTab('video')}
-                  className={`py-1 px-2.5 rounded-lg font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                  className={`h-8 px-3 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs shadow-2xs ${
                     activeTab === 'video'
-                      ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-2xs'
-                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                      ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-xs ring-1 ring-white/30'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700'
                   }`}
                 >
                   <span>🎬</span>
-                  <span>YouTube & Film ile Konuş (Shadowing)</span>
+                  <span>Film ile Konuş (Shadowing)</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setActiveTab('stories')}
-                  className={`py-1 px-2.5 rounded-lg font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                  className={`h-8 px-3 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs shadow-2xs ${
                     activeTab === 'stories'
-                      ? 'bg-gradient-to-r from-orange-500 to-rose-600 text-white shadow-2xs'
-                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                      ? 'bg-gradient-to-r from-orange-500 to-rose-600 text-white shadow-xs ring-1 ring-white/30'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700'
                   }`}
                 >
-                  <BookOpen className="w-3 h-3 text-amber-300" />
+                  <BookOpen className="w-3.5 h-3.5 text-amber-300" />
                   <span>İnteraktif Hikayeler</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setActiveTab('booster')}
-                  className={`py-1 px-2.5 rounded-lg font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                  className={`h-8 px-3 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs shadow-2xs ${
                     activeTab === 'booster'
-                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-2xs'
-                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-xs ring-1 ring-white/30'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700'
                   }`}
                 >
-                  <Zap className="w-3 h-3 text-amber-300" />
+                  <Zap className="w-3.5 h-3.5 text-amber-300" />
                   <span>3x Hızlı Akıcılık</span>
                 </button>
               </>
@@ -441,10 +439,10 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
                 <button
                   type="button"
                   onClick={() => setActiveTab('builder')}
-                  className={`py-1 px-2.5 rounded-lg font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                  className={`h-8 px-3 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs shadow-2xs ${
                     activeTab === 'builder'
-                      ? 'bg-indigo-600 text-white shadow-2xs'
-                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                      ? 'bg-indigo-600 text-white shadow-xs ring-1 ring-white/30'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700'
                   }`}
                 >
                   <span>🧱</span>
@@ -454,27 +452,88 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
                 <button
                   type="button"
                   onClick={() => setActiveTab('games')}
-                  className={`py-1 px-2.5 rounded-lg font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                  className={`h-8 px-3 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs shadow-2xs ${
                     activeTab === 'games'
-                      ? 'bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600 text-white shadow-2xs'
-                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                      ? 'bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600 text-white shadow-xs ring-1 ring-white/30'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700'
                   }`}
                 >
-                  <Gamepad2 className="w-3 h-3 text-amber-300" />
+                  <Gamepad2 className="w-3.5 h-3.5 text-amber-300" />
                   <span>Oyun Alanı (6 Oyun)</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setActiveTab('kids')}
-                  className={`py-1 px-2.5 rounded-lg font-bold flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs ${
+                  className={`h-8 px-3 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs shadow-2xs ${
                     activeTab === 'kids'
-                      ? 'bg-pink-600 text-white shadow-2xs'
-                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                      ? 'bg-pink-600 text-white shadow-xs ring-1 ring-white/30'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700'
                   }`}
                 >
-                  <Smile className="w-3 h-3 text-amber-300" />
+                  <Smile className="w-3.5 h-3.5 text-amber-300" />
                   <span>Chirmo Kids (5-17 Yaş)</span>
+                </button>
+              </>
+            )}
+
+            {/* 4. Kelime & Zeka Sandığı İstasyonları */}
+            {['vault', 'flashcards', 'quiz', 'grade'].includes(activeTab) && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('vault')}
+                  className={`h-8 px-3 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs shadow-2xs ${
+                    activeTab === 'vault'
+                      ? 'bg-purple-600 text-white shadow-xs ring-1 ring-white/30'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700'
+                  }`}
+                >
+                  <Bookmark className="w-3.5 h-3.5" />
+                  <span>Kişisel Defterim ({words.length})</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('flashcards');
+                    setShowAnswer(false);
+                    setCardIndex(0);
+                  }}
+                  className={`h-8 px-3 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs shadow-2xs ${
+                    activeTab === 'flashcards'
+                      ? 'bg-purple-600 text-white shadow-xs ring-1 ring-white/30'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700'
+                  }`}
+                >
+                  <Layers className="w-3.5 h-3.5" />
+                  <span>Kart Çevirmece</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('quiz')}
+                  className={`h-8 px-3 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs shadow-2xs ${
+                    activeTab === 'quiz'
+                      ? 'bg-purple-600 text-white shadow-xs ring-1 ring-white/30'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700'
+                  }`}
+                >
+                  <Award className="w-3.5 h-3.5" />
+                  <span>Refleks Testi</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('grade')}
+                  className={`h-8 px-3 rounded-xl font-black flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap text-xs shadow-2xs ${
+                    activeTab === 'grade'
+                      ? 'bg-purple-600 text-white shadow-xs ring-1 ring-white/30'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700'
+                  }`}
+                >
+                  <Compass className="w-3.5 h-3.5" />
+                  <span>Hayat Kurtaran Kalıplar</span>
                 </button>
               </>
             )}
