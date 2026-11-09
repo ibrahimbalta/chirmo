@@ -752,11 +752,11 @@ export const App: React.FC = () => {
             {/* Akıllı Dil Değiştirici Kapsülü (Tek Tıkla Hızlı Geçiş: 🇬🇧 EN / 🇩🇪 DE) */}
             <button
               onClick={() => TargetLanguageService.setTargetLanguage(targetLanguage === 'en' ? 'de' : 'en')}
-              className="h-8 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 text-xs font-extrabold transition-all flex items-center space-x-1.5 shrink-0 shadow-2xs cursor-pointer text-slate-800 dark:text-slate-100 active:scale-95"
+              className="h-8 px-2 sm:px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 text-xs font-extrabold transition-all flex items-center space-x-1.5 shrink-0 shadow-2xs cursor-pointer text-slate-800 dark:text-slate-100 active:scale-95"
               title="Çalışma Dilini Değiştir (Tıkla: İngilizce / Almanca)"
             >
               <span>{targetLanguage === 'de' ? '🇩🇪' : '🇬🇧'}</span>
-              <span>{targetLanguage === 'de' ? 'Almanca' : 'İngilizce'}</span>
+              <span className="hidden sm:inline">{targetLanguage === 'de' ? 'Almanca' : 'İngilizce'}</span>
               <span className="text-[10px] text-slate-400 font-normal">⇄</span>
             </button>
 
@@ -765,13 +765,13 @@ export const App: React.FC = () => {
               <div className="flex items-center space-x-1 shrink-0">
                 <button
                   onClick={() => setActiveTab('portal')}
-                  className="h-8 px-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-extrabold cursor-pointer hover:bg-indigo-100 transition-colors inline-flex items-center space-x-1.5 whitespace-nowrap"
+                  className="h-8 px-2 sm:px-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-extrabold cursor-pointer hover:bg-indigo-100 transition-colors inline-flex items-center space-x-1 whitespace-nowrap"
                   title={`Kullanıcı Sayfası ve Profil Detayları: @${currentUser.username}`}
                 >
                   <span>{userProfile.avatarEmoji || '👤'}</span>
-                  <span className="max-w-[70px] truncate">@{currentUser.username}</span>
+                  <span className="max-w-[70px] truncate hidden md:inline">@{currentUser.username}</span>
                   {currentUser.plan === 'pro' && (
-                    <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-indigo-600 text-white font-black">
+                    <span className="text-[8px] sm:text-[9px] px-1 sm:px-1.5 py-0.2 rounded-full bg-indigo-600 text-white font-black">
                       PRO
                     </span>
                   )}

@@ -1884,8 +1884,8 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
             </div>
           </div>
 
-          {/* Orta: Fantastik Navigasyon Butonları */}
-          <nav className="flex items-center flex-wrap gap-1.5 bg-black/30 p-1 rounded-2xl border border-white/10">
+          {/* Orta: Fantastik Navigasyon Butonları - Mobilde Yatay Akıcı Kaydırma */}
+          <nav className="flex items-center gap-1.5 overflow-x-auto no-scrollbar bg-black/30 p-1 rounded-2xl border border-white/10 shrink-0 max-w-full">
             {[
               { id: 'home', label: 'Ana Sayfa', icon: '🏠', isHome: true },
               { id: 'games', label: 'Oyunlar', icon: '🎮', tab: 'games' },
@@ -1907,7 +1907,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                       setActiveTab(navItem.tab as any);
                     }
                   }}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center space-x-1.5 ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
                     isActive
                       ? 'bg-gradient-to-r from-purple-600 to-pink-500 text-white shadow-md scale-105'
                       : 'text-white/80 hover:text-white hover:bg-white/10'
@@ -2920,18 +2920,35 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
           </>
         ) : (
           <div className="space-y-4 animate-fade-in">
-            {/* Level Arena Üst Barı */}
-            <div className="rounded-3xl bg-white/95 dark:bg-slate-900/95 text-slate-900 dark:text-white p-4 shadow-xl border-2 border-amber-400 flex flex-wrap items-center justify-between gap-3">
-              <button
-                type="button"
-                onClick={() => setActiveLevelId(null)}
-                className="px-4 py-2 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-black text-xs flex items-center space-x-1.5 shadow-md hover:scale-105 cursor-pointer transition-all active:scale-95"
-              >
-                <span>← 🏠 Haritaya Dön</span>
-              </button>
+            {/* Level Arena Üst Barı - Mobilde Kompakt & Düzenli */}
+            <div className="rounded-2xl sm:rounded-3xl bg-white/95 dark:bg-slate-900/95 text-slate-900 dark:text-white p-3 sm:p-4 shadow-xl border-2 border-amber-400 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3">
+              <div className="flex items-center justify-between gap-2">
+                <button
+                  type="button"
+                  onClick={() => setActiveLevelId(null)}
+                  className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-black text-xs flex items-center space-x-1.5 shadow-md hover:scale-105 cursor-pointer transition-all active:scale-95 shrink-0"
+                >
+                  <span>← 🏠 Haritaya Dön</span>
+                </button>
 
-              <div className="flex items-center space-x-2">
-                <span className="text-2xl">
+                {/* Mobilde Hızlı Seviye Atlama */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const tabs = ['cards', 'chat', 'patterns', 'stories', 'animals', 'colors', 'simon', 'games'];
+                    const currIdx = tabs.indexOf(activeLevelId);
+                    const nextIdx = (currIdx + 1) % tabs.length;
+                    setActiveLevelId(tabs[nextIdx]);
+                    setActiveTab(tabs[nextIdx] as any);
+                  }}
+                  className="sm:hidden px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs shadow-xs cursor-pointer transition-all shrink-0"
+                >
+                  Sonraki ➔
+                </button>
+              </div>
+
+              <div className="flex items-center space-x-2 min-w-0">
+                <span className="text-xl sm:text-2xl shrink-0">
                   {activeLevelId === 'cards' && '🍃'}
                   {activeLevelId === 'chat' && '💬'}
                   {activeLevelId === 'patterns' && '🏰'}
@@ -2943,9 +2960,9 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                   {activeLevelId === 'songs' && '🎵'}
                   {activeLevelId === 'stickers' && '🏆'}
                 </span>
-                <div>
-                  <div className="text-[10px] font-black uppercase text-amber-500">Aktif Oyun Seviyesi</div>
-                  <div className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
+                <div className="min-w-0 flex-1">
+                  <div className="text-[9px] sm:text-[10px] font-black uppercase text-amber-500">Aktif Oyun Seviyesi</div>
+                  <div className="text-xs sm:text-base font-black text-slate-900 dark:text-white truncate">
                     {activeLevelId === 'cards' && 'Seviye 1: Kelime Ormanı (Kelime Avı)'}
                     {activeLevelId === 'chat' && 'Seviye 2: Konuşma Köyü (Diyalog & Chat)'}
                     {activeLevelId === 'patterns' && 'Seviye 3: Gramer Kalesi (Cümle Legosu & Fabrikası)'}
@@ -2960,8 +2977,8 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                 </div>
               </div>
 
-              {/* Hızlı Seviye Atlama */}
-              <div className="flex items-center space-x-2">
+              {/* Masaüstünde Hızlı Seviye Atlama */}
+              <div className="hidden sm:flex items-center space-x-2 shrink-0">
                 <button
                   type="button"
                   onClick={() => {
@@ -2977,39 +2994,40 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                 </button>
               </div>
             </div>
-{/* ==================== 3. AKTİVİTE VE ÖĞRENME SEKMELERİ ==================== */}
-        <div className="flex flex-wrap items-center gap-2 border-b-2 border-pink-200/60 dark:border-slate-800 pb-2">
-          {[
-            { id: 'games', label: '🎮 Oyunlar & Quizz', icon: Gamepad2, color: 'text-amber-500' },
-            { id: 'cards', label: '🃏 Görsel Kelimeler (30+)', icon: Smile, color: 'text-pink-500' },
-            { id: 'simon', label: '🏃‍♂️ Chirmo Diyor ki! (TPR)', icon: Zap, color: 'text-amber-500' },
-            { id: 'stories', label: '📖 Sihirli Konuşan Hikayeler', icon: BookOpen, color: 'text-purple-500' },
-            { id: 'patterns', label: '🧩 Cümle Legosu & Fabrikası', icon: Puzzle, color: 'text-purple-500' },
-            { id: 'animals', label: '🦁 Konuşan Hayvanlar', icon: Sparkles, color: 'text-emerald-500' },
-            { id: 'colors', label: '🎨 Sihirli Boya & Konuş', icon: Zap, color: 'text-rose-500' },
-            { id: 'chat', label: '💬 Çizgi Karakter Sohbeti', icon: MessageCircle, color: 'text-blue-500' },
-            { id: 'stickers', label: '⭐ Çıkartma Albümü', icon: Award, color: 'text-amber-500' },
-            { id: 'songs', label: '🎵 Şarkılar & Karaoke', icon: Music, color: 'text-rose-500' }
-          ].map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-black transition-all cursor-pointer flex items-center space-x-2 ${
-                  isActive
-                    ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-md scale-102'
-                    : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-pink-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
-                }`}
-              >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-white' : tab.color}`} />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
+
+            {/* ==================== 3. AKTİVİTE VE ÖĞRENME SEKMELERİ (MOBİLDE KAYDIRILABİLİR YATAY ÇUBUK) ==================== */}
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 sm:flex-wrap border-b-2 border-pink-200/60 dark:border-slate-800 pb-2.5">
+              {[
+                { id: 'games', label: '🎮 Oyunlar & Quizz', icon: Gamepad2, color: 'text-amber-500' },
+                { id: 'cards', label: '🃏 Görsel Kelimeler (30+)', icon: Smile, color: 'text-pink-500' },
+                { id: 'simon', label: '🏃‍♂️ Chirmo Diyor ki! (TPR)', icon: Zap, color: 'text-amber-500' },
+                { id: 'stories', label: '📖 Sihirli Konuşan Hikayeler', icon: BookOpen, color: 'text-purple-500' },
+                { id: 'patterns', label: '🧩 Cümle Legosu & Fabrikası', icon: Puzzle, color: 'text-purple-500' },
+                { id: 'animals', label: '🦁 Konuşan Hayvanlar', icon: Sparkles, color: 'text-emerald-500' },
+                { id: 'colors', label: '🎨 Sihirli Boya & Konuş', icon: Zap, color: 'text-rose-500' },
+                { id: 'chat', label: '💬 Çizgi Karakter Sohbeti', icon: MessageCircle, color: 'text-blue-500' },
+                { id: 'stickers', label: '⭐ Çıkartma Albümü', icon: Award, color: 'text-amber-500' },
+                { id: 'songs', label: '🎵 Şarkılar & Karaoke', icon: Music, color: 'text-rose-500' }
+              ].map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveTab(tab.id as any)}
+                    className={`px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-black transition-all cursor-pointer flex items-center space-x-1.5 sm:space-x-2 shrink-0 whitespace-nowrap ${
+                      isActive
+                        ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-md scale-102 ring-1 ring-white/30'
+                        : 'bg-white/90 dark:bg-slate-900/90 text-slate-700 dark:text-slate-300 hover:bg-pink-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800'
+                    }`}
+                  >
+                    <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isActive ? 'text-white' : tab.color}`} />
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
+            </div>
 
         {/* ==================== TAB 1: 🎮 OYUNLAR VE İNTERAKTİF TESTLER ==================== */}
         {activeTab === 'games' && (
@@ -3384,7 +3402,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
         {activeTab === 'cards' && (
           <div className="space-y-4">
             {/* Kategori Filtresi */}
-            <div className="flex items-center space-x-2 overflow-x-auto pb-2">
+            <div className="flex items-center space-x-2 overflow-x-auto no-scrollbar pb-2">
               <span className="text-xs font-black text-slate-400 shrink-0">Kategori:</span>
               {uniqueCategories.map((cat) => (
                 <button
