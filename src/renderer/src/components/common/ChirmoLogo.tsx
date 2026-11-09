@@ -63,15 +63,28 @@ export const ChirmoLogo: React.FC<ChirmoLogoProps> = ({
           draggable={false}
         />
       ) : (
-        <img
-          src="./chirmo-logo.png"
-          alt="Chirmo"
-          className={`${heightClasses} object-contain shrink-0 block`}
-          style={{
-            maxHeight: size === 'md' ? '46px' : size === 'lg' ? '50px' : undefined
-          }}
-          draggable={false}
-        />
+        <>
+          {/* Açık tema (Öğrenci Paneli vb. beyaz arka plan): Koyu indigo yüksek kontrastlı logo */}
+          <img
+            src="./chirmo-logo.png"
+            alt="Chirmo"
+            className={`${heightClasses} object-contain shrink-0 block dark:hidden`}
+            style={{
+              maxHeight: size === 'md' ? '46px' : size === 'lg' ? '50px' : undefined
+            }}
+            draggable={false}
+          />
+          {/* Koyu tema (Karanlık mod): Beyaz yüksek kontrastlı logo */}
+          <img
+            src="./chirmo-header-brand-logo.png"
+            alt="Chirmo"
+            className={`${heightClasses} object-contain shrink-0 hidden dark:block`}
+            style={{
+              maxHeight: size === 'md' ? '46px' : size === 'lg' ? '50px' : undefined
+            }}
+            draggable={false}
+          />
+        </>
       )}
     </div>
   );
