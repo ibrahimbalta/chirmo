@@ -672,12 +672,14 @@ export const GERMAN_SENTENCE_PUZZLES: SentencePuzzle[] = [
   { id: 'de-puz-4', en: 'Ich lerne jeden Tag Deutsch', tr: 'Her gün Almanca öğreniyorum' }
 ];
 
+export const DIALOGUES = DAILY_DIALOGUES;
+
 export const DailyLanguageData = {
   getEverydaySentences(lang: 'en' | 'de' = 'en'): SentenceItem[] {
     return lang === 'de' ? GERMAN_EVERYDAY_SENTENCES : EVERYDAY_SENTENCES;
   },
   getDialogues(lang: 'en' | 'de' = 'en'): DialogueItem[] {
-    return lang === 'de' ? GERMAN_DIALOGUES : DIALOGUES;
+    return lang === 'de' ? GERMAN_DIALOGUES : DAILY_DIALOGUES;
   },
   getSentencePuzzles(lang: 'en' | 'de' = 'en'): SentencePuzzle[] {
     return lang === 'de' ? GERMAN_SENTENCE_PUZZLES : SENTENCE_PUZZLES;
