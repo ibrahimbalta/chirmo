@@ -1,3 +1,5 @@
+import { FirestoreService } from './firestoreService';
+
 export interface UserAccount {
   id: string;
   username: string;
@@ -130,6 +132,15 @@ export class PrivacyAuthService {
       throw new Error(`"${username}" kullanıcı adı zaten kullanılmaktadır. Lütfen başka bir kullanıcı adı seçin.`);
     }
 
+    try {
+      const existingCloud = await FirestoreService.getUser(username);
+      if (existingCloud) {
+        throw new Error(`"${username}" kullanıcı adı zaten kullanılmaktadır. Lütfen başka bir kullanıcı adı seçin.`);
+      }
+    } catch (e: any) {
+      if (e?.message && e.message.includes('kullanılmaktadır')) throw e;
+    }
+
     const salt = generateSalt();
     const passwordHash = await sha256Hex(password + salt);
     const securityAnswerHash = await sha256Hex(answer + salt);
@@ -148,6 +159,7 @@ export class PrivacyAuthService {
 
     accounts[username] = newAccount;
     this.saveAccounts(accounts);
+    FirestoreService.saveUser(newAccount).catch((err) => console.warn('Cloud save user warning:', err));
 
     const safeSession: SafeUserSession = {
       id: newAccount.id,
@@ -172,7 +184,18 @@ export class PrivacyAuthService {
     const password = (passwordRaw || '').trim();
 
     const accounts = this.getAccounts();
-    const account = accounts[username];
+    let account = accounts[username];
+    if (!account) {
+      try {
+        const cloudUser = await FirestoreService.getUser(username);
+        if (cloudUser) {
+          account = cloudUser;
+          accounts[username] = account;
+          this.saveAccounts(accounts);
+        }
+      } catch {}
+    }
+
     if (!account) {
       throw new Error('Kullanıcı adı veya şifre hatalı.');
     }
@@ -185,6 +208,7 @@ export class PrivacyAuthService {
     account.lastLogin = new Date().toISOString();
     accounts[username] = account;
     this.saveAccounts(accounts);
+    FirestoreService.saveUser(account).catch(() => {});
 
     const safeSession: SafeUserSession = {
       id: account.id,
@@ -269,8 +293,76 @@ export class PrivacyAuthService {
     }
   }
 
+  public static async adminCreateUser(
+    usernameRaw: string,
+    passwordRaw: string,
+    plan: 'free' | 'pro' | 'lifetime' = 'free',
+    securityQuestion: string = PRESET_SECURITY_QUESTIONS[0],
+    securityAnswerRaw: string = 'admin'
+  ): Promise<UserAccount> {
+    const username = normalizeUsername(usernameRaw);
+    const password = (passwordRaw || '').trim();
+    const answer = normalizeAnswer(securityAnswerRaw);
+
+    if (!username || username.length < 3) {
+      throw new Error('Kullanıcı adı en az 3 karakter olmalıdır.');
+    }
+    if (!password || password.length < 4) {
+      throw new Error('Şifre en az 4 karakter olmalıdır.');
+    }
+
+    const accounts = this.getAccounts();
+    if (accounts[username]) {
+      throw new Error(`"${username}" kullanıcı adı zaten kullanılmaktadır.`);
+    }
+
+    try {
+      const existingCloud = await FirestoreService.getUser(username);
+      if (existingCloud) {
+        throw new Error(`"${username}" kullanıcı adı zaten mevcuttur.`);
+      }
+    } catch (e: any) {
+      if (e?.message && e.message.includes('mevcuttur')) throw e;
+    }
+
+    const salt = generateSalt();
+    const passwordHash = await sha256Hex(password + salt);
+    const securityAnswerHash = await sha256Hex(answer + salt);
+
+    const newAccount: UserAccount = {
+      id: 'usr_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6),
+      username,
+      passwordHash,
+      salt,
+      securityQuestion,
+      securityAnswerHash,
+      plan,
+      createdAt: new Date().toISOString(),
+      lastLogin: new Date().toISOString()
+    };
+
+    accounts[username] = newAccount;
+    this.saveAccounts(accounts);
+    await FirestoreService.saveUser(newAccount);
+    return newAccount;
+  }
+
   // ==================== ADMIN YÖNETİM METODLARI ====================
-  public static getAllAccounts(): UserAccount[] {
+  public static async getAllAccounts(): Promise<UserAccount[]> {
+    try {
+      const cloudUsers = await FirestoreService.getAllUsers();
+      if (cloudUsers) {
+        const accounts: Record<string, UserAccount> = {};
+        cloudUsers.forEach((u) => {
+          accounts[u.username] = u;
+        });
+        this.saveAccounts(accounts);
+        return cloudUsers;
+      }
+    } catch (e) {
+      console.warn('Could not fetch cloud accounts, falling back to local storage:', e);
+    }
+
     const accounts = this.getAccounts();
     return Object.values(accounts);
   }
@@ -284,6 +376,7 @@ export class PrivacyAuthService {
     account.plan = newPlan;
     accounts[username] = account;
     this.saveAccounts(accounts);
+    FirestoreService.saveUser(account).catch(() => {});
 
     // If this is current user, update session as well
     const session = this.getCurrentUser();
@@ -313,6 +406,7 @@ export class PrivacyAuthService {
     account.passwordHash = await sha256Hex(newPassword + newSalt);
     accounts[username] = account;
     this.saveAccounts(accounts);
+    FirestoreService.saveUser(account).catch(() => {});
     return true;
   }
 
@@ -323,6 +417,7 @@ export class PrivacyAuthService {
 
     delete accounts[username];
     this.saveAccounts(accounts);
+    FirestoreService.deleteUser(username).catch(() => {});
 
     const session = this.getCurrentUser();
     if (session && session.username === username) {
@@ -332,33 +427,7 @@ export class PrivacyAuthService {
   }
 
   public static async seedDemoAccountsIfEmpty(): Promise<void> {
-    const accounts = this.getAccounts();
-    if (Object.keys(accounts).length > 0) return;
-
-    const demoUsers = [
-      { username: 'ahmet_yilmaz', plan: 'pro' as const, question: PRESET_SECURITY_QUESTIONS[0], answer: 'mehmet hoca' },
-      { username: 'ayse_kaya', plan: 'pro' as const, question: PRESET_SECURITY_QUESTIONS[1], answer: 'boncuk' },
-      { username: 'can_demir', plan: 'free' as const, question: PRESET_SECURITY_QUESTIONS[2], answer: 'burak' },
-      { username: 'elif_sari', plan: 'free' as const, question: PRESET_SECURITY_QUESTIONS[3], answer: 'kadikoy' },
-      { username: 'murat_ozkan', plan: 'lifetime' as const, question: PRESET_SECURITY_QUESTIONS[4], answer: 'kucuk prens' }
-    ];
-
-    for (const d of demoUsers) {
-      const salt = generateSalt();
-      const pHash = await sha256Hex('123456' + salt);
-      const aHash = await sha256Hex(d.answer + salt);
-      accounts[d.username] = {
-        id: 'usr_' + Math.random().toString(36).slice(2, 8),
-        username: d.username,
-        passwordHash: pHash,
-        salt,
-        securityQuestion: d.question,
-        securityAnswerHash: aHash,
-        plan: d.plan,
-        createdAt: new Date(Date.now() - Math.floor(Math.random() * 20) * 86400000).toISOString(),
-        lastLogin: new Date().toISOString()
-      };
-    }
-    this.saveAccounts(accounts);
+    // Cloud Firestore canlı veritabanı aktif olduğu için sahte demo hesap oluşturulmaz.
+    return;
   }
 }

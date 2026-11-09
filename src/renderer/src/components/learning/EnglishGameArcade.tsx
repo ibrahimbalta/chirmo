@@ -37,6 +37,7 @@ import {
 } from '../../services/englishGamesData';
 import { LearningStorageService } from '../../services/learningStorage';
 import { TargetLanguageService } from '../../services/targetLanguageService';
+import { ChirmoSpeakingDuelModal } from './ChirmoSpeakingDuelModal';
 
 type AudienceMode = 'kids' | 'adults';
 type GameTab = 'memory' | 'blitz' | 'rocket' | 'voice' | 'listening' | 'speaking30';
@@ -55,6 +56,7 @@ export const EnglishGameArcade: React.FC = () => {
   const [audience, setAudience] = useState<AudienceMode>('kids');
   const [activeGame, setActiveGame] = useState<GameTab>('memory');
   const [stats, setStats] = useState<ArcadeStats>(() => GameStatsService.getStats());
+  const [isSpeakingDuelOpen, setIsSpeakingDuelOpen] = useState(false);
 
   // ==================== 1. HAFIZA KARTLARI OYUNU STATE ====================
   const [memoryCards, setMemoryCards] = useState<MemoryCard[]>([]);
@@ -538,6 +540,41 @@ export const EnglishGameArcade: React.FC = () => {
               <span>🎯 Yetişkin Modu</span>
             </button>
           </div>
+        </div>
+
+        {/* ==================== 1v1 CANLI KONUŞMA DÜELLOSU ARENASI HIZLI GİRİŞ KARTI ==================== */}
+        <div
+          onClick={() => setIsSpeakingDuelOpen(true)}
+          className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-rose-600 via-amber-500 to-yellow-500 text-white shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer hover:brightness-105 transition-all"
+        >
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-black/25 border border-white/30 flex items-center justify-center text-2xl shrink-0">
+              ⚔️
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-base sm:text-lg font-black text-white">
+                  1v1 Canlı Konuşma Düellosu Arenası
+                </h2>
+                <span className="px-2 py-0.5 rounded-full bg-black/30 text-amber-200 text-[10px] font-black uppercase">
+                  Canlı Lig 🏆
+                </span>
+              </div>
+              <p className="text-xs text-white/90 font-medium mt-0.5">
+                Dünya çapındaki rakiplerle 3 raundluk hızlı konuşma maçına gir, sesli yanıtla veya hazır kalıp seçerek +60 XP kazan!
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsSpeakingDuelOpen(true);
+            }}
+            className="px-5 py-2.5 rounded-2xl bg-slate-950 hover:bg-slate-900 text-amber-400 font-black text-xs sm:text-sm shrink-0 shadow-lg cursor-pointer"
+          >
+            ⚔️ 1v1 Arenaya Gir
+          </button>
         </div>
 
         {/* ==================== CANLI SKOR VE ROZET ÇUBUĞU ==================== */}
@@ -1277,6 +1314,13 @@ export const EnglishGameArcade: React.FC = () => {
           </div>
         )}
       </div>
+
+      <ChirmoSpeakingDuelModal
+        isOpen={isSpeakingDuelOpen}
+        onClose={() => setIsSpeakingDuelOpen(false)}
+        initialTab="duel"
+        onRewardXP={(xp) => awardPoints(xp)}
+      />
     </div>
   );
 };

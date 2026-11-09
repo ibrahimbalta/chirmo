@@ -48,6 +48,136 @@ import { TargetLanguageService, SupportedLanguage } from '../../services/targetL
 import { PrivacyAuthService, SafeUserSession } from '../../services/privacyAuthService';
 import { UserProfileService, UserProfile, CEFRLevelSimple } from '../../services/userProfileService';
 import { ChirmoAuthModal } from '../auth/ChirmoAuthModal';
+import { ChirmoSpeakingDuelModal } from '../learning/ChirmoSpeakingDuelModal';
+import { ChirmoPronunciationDoctor } from '../learning/ChirmoPronunciationDoctor';
+import { ChirmoCareerTrackModal } from '../learning/ChirmoCareerTrackModal';
+import { ChirmoVoiceCallSimulatorModal } from '../learning/ChirmoVoiceCallSimulatorModal';
+
+// ==================== KOZMİK UZAY TEMASI ÖZEL VEKTÖREL İKONLARI ====================
+const SpaceshipIcon: React.FC<{ className?: string }> = ({ className = 'w-9 h-9' }) => (
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <defs>
+      <linearGradient id="shipBody" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#34D399" />
+        <stop offset="50%" stopColor="#059669" />
+        <stop offset="100%" stopColor="#064E3B" />
+      </linearGradient>
+      <linearGradient id="cockpit" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#A7F3D0" />
+        <stop offset="100%" stopColor="#10B981" />
+      </linearGradient>
+      <linearGradient id="thruster" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#F59E0B" />
+        <stop offset="100%" stopColor="#EF4444" />
+      </linearGradient>
+    </defs>
+    {/* Warp Alevleri */}
+    <path d="M26 48 L32 62 L38 48 Z" fill="url(#thruster)" className="animate-pulse" />
+    <path d="M29 48 L32 58 L35 48 Z" fill="#FDE047" />
+    {/* Sol & Sağ Kanatlar */}
+    <path d="M10 44 L24 30 L24 46 L12 50 Z" fill="#047857" stroke="#10B981" strokeWidth="1.5" />
+    <path d="M54 44 L40 30 L40 46 L52 50 Z" fill="#047857" stroke="#10B981" strokeWidth="1.5" />
+    {/* Ana Gövde */}
+    <path d="M32 6 C24 18 22 36 24 48 L40 48 C42 36 40 18 32 6 Z" fill="url(#shipBody)" stroke="#6EE7B7" strokeWidth="1.5" />
+    {/* Kokpit Camı */}
+    <ellipse cx="32" cy="24" rx="4.5" ry="8" fill="url(#cockpit)" />
+    {/* Kanat Uç Işıkları */}
+    <circle cx="11" cy="46" r="2" fill="#34D399" className="animate-ping" style={{ animationDuration: '2s' }} />
+    <circle cx="53" cy="46" r="2" fill="#34D399" className="animate-ping" style={{ animationDuration: '2s' }} />
+  </svg>
+);
+
+const PlanetIcon: React.FC<{ className?: string }> = ({ className = 'w-9 h-9' }) => (
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <defs>
+      <linearGradient id="planetBody" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#F472B6" />
+        <stop offset="60%" stopColor="#BE185D" />
+        <stop offset="100%" stopColor="#831843" />
+      </linearGradient>
+      <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#FDE047" />
+        <stop offset="50%" stopColor="#EC4899" />
+        <stop offset="100%" stopColor="#A855F7" />
+      </linearGradient>
+    </defs>
+    {/* Arka Halka */}
+    <path d="M8 32 C12 21 52 21 56 32" stroke="url(#ringGrad)" strokeWidth="4" strokeLinecap="round" opacity="0.5" />
+    {/* Gezegen Küresi */}
+    <circle cx="32" cy="32" r="17" fill="url(#planetBody)" stroke="#FBCFE8" strokeWidth="1.5" />
+    {/* Gezegen Kuşakları */}
+    <path d="M16 28 C22 25 42 25 48 28" stroke="#FBCFE8" strokeWidth="1.5" opacity="0.6" strokeLinecap="round" />
+    <path d="M17 36 C24 33 40 33 47 36" stroke="#9D174D" strokeWidth="2" opacity="0.8" strokeLinecap="round" />
+    {/* Ön Halka */}
+    <path d="M6 32 C8 44 56 44 58 32" stroke="url(#ringGrad)" strokeWidth="4.5" strokeLinecap="round" />
+    {/* Uydu Ay */}
+    <circle cx="51" cy="17" r="3" fill="#E0E7FF" className="animate-pulse" />
+  </svg>
+);
+
+const SpaceStationIcon: React.FC<{ className?: string }> = ({ className = 'w-9 h-9' }) => (
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <defs>
+      <linearGradient id="stationCore" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#818CF8" />
+        <stop offset="60%" stopColor="#4F46E5" />
+        <stop offset="100%" stopColor="#312E81" />
+      </linearGradient>
+      <linearGradient id="solarPanel" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#67E8F9" />
+        <stop offset="100%" stopColor="#0284C7" />
+      </linearGradient>
+    </defs>
+    {/* Yörünge Halkası */}
+    <circle cx="32" cy="32" r="26" stroke="#6366F1" strokeWidth="1" strokeDasharray="3 3" opacity="0.4" className="animate-spin" style={{ animationDuration: '24s' }} />
+    {/* Sol Güneş Paneli */}
+    <rect x="6" y="27" width="16" height="10" rx="1.5" fill="url(#solarPanel)" stroke="#38BDF8" strokeWidth="1" />
+    <line x1="14" y1="27" x2="14" y2="37" stroke="#0C4A6E" strokeWidth="1" />
+    <line x1="6" y1="32" x2="22" y2="32" stroke="#0C4A6E" strokeWidth="1" />
+    {/* Bağlantı Kirişi */}
+    <line x1="22" y1="32" x2="42" y2="32" stroke="#CBD5E1" strokeWidth="2.5" />
+    {/* Sağ Güneş Paneli */}
+    <rect x="42" y="27" width="16" height="10" rx="1.5" fill="url(#solarPanel)" stroke="#38BDF8" strokeWidth="1" />
+    <line x1="50" y1="27" x2="50" y2="37" stroke="#0C4A6E" strokeWidth="1" />
+    <line x1="42" y1="32" x2="58" y2="32" stroke="#0C4A6E" strokeWidth="1" />
+    {/* Merkez Yaşam Modülü */}
+    <circle cx="32" cy="32" r="8" fill="url(#stationCore)" stroke="#A5B4FC" strokeWidth="1.5" />
+    {/* Anten ve Telemetri */}
+    <line x1="32" y1="24" x2="32" y2="14" stroke="#A5B4FC" strokeWidth="1.5" />
+    <circle cx="32" cy="13" r="2.5" fill="#38BDF8" className="animate-ping" style={{ animationDuration: '2s' }} />
+    <circle cx="32" cy="32" r="3" fill="#E0E7FF" />
+  </svg>
+);
+
+const MeteorIcon: React.FC<{ className?: string }> = ({ className = 'w-9 h-9' }) => (
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <defs>
+      <linearGradient id="meteorTail" x1="100%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#F59E0B" stopOpacity="0" />
+        <stop offset="50%" stopColor="#F97316" stopOpacity="0.8" />
+        <stop offset="100%" stopColor="#EF4444" />
+      </linearGradient>
+      <linearGradient id="meteorCore" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#FBBF24" />
+        <stop offset="50%" stopColor="#D97706" />
+        <stop offset="100%" stopColor="#78350F" />
+      </linearGradient>
+    </defs>
+    {/* Alev Kuyruğu */}
+    <path d="M58 8 L32 26 L16 46 L38 34 Z" fill="url(#meteorTail)" />
+    <path d="M54 12 L36 28 L22 44 L40 32 Z" fill="#FDE047" opacity="0.6" />
+    {/* Kozmik Kıvılcımlar */}
+    <circle cx="50" cy="14" r="1.5" fill="#FEF08A" />
+    <circle cx="44" cy="22" r="2" fill="#F97316" />
+    <circle cx="36" cy="18" r="1" fill="#F59E0B" />
+    {/* Meteor Çekirdeği */}
+    <circle cx="20" cy="44" r="11" fill="url(#meteorCore)" stroke="#FDE68A" strokeWidth="1.5" />
+    {/* Kraterler */}
+    <circle cx="17" cy="41" r="2.5" fill="#92400E" />
+    <circle cx="23" cy="47" r="2" fill="#92400E" />
+    <circle cx="23" cy="39" r="1.5" fill="#B45309" />
+  </svg>
+);
 
 export interface ChirmoHeroLandingPortalProps {
   onEnterStudentPanel: () => void;
@@ -75,7 +205,7 @@ interface DemoScenario {
 const DEMO_SCENARIOS: DemoScenario[] = [
   {
     id: 'cafe',
-    category: 'Kafede Sipariş',
+    category: 'Kafede Sipariş 🪐',
     icon: '☕',
     title: 'Kahve Siparişi Verme',
     tr: 'Lütfen büyük boy bir sade kahve alabilir miyim?',
@@ -86,7 +216,7 @@ const DEMO_SCENARIOS: DemoScenario[] = [
   },
   {
     id: 'airport',
-    category: 'Havalimanı',
+    category: 'Havalimanı 🚀',
     icon: '✈️',
     title: 'Uçuş Kapısı Sorma',
     tr: 'Berlin uçuşunun kapısı nerede acaba?',
@@ -97,7 +227,7 @@ const DEMO_SCENARIOS: DemoScenario[] = [
   },
   {
     id: 'hotel',
-    category: 'Otel & Tatil',
+    category: 'Otel & Tatil 🛰️',
     icon: '🏨',
     title: 'Otelde Check-in Yapma',
     tr: 'Merhaba, iki gecelik rezervasyonum vardı.',
@@ -108,7 +238,7 @@ const DEMO_SCENARIOS: DemoScenario[] = [
   },
   {
     id: 'shopping',
-    category: 'Alışveriş',
+    category: 'Alışveriş 🛸',
     icon: '🛍️',
     title: 'Beden & Fiyat Sorma',
     tr: 'Bunun bir küçük bedeni var mı elinizde?',
@@ -119,7 +249,7 @@ const DEMO_SCENARIOS: DemoScenario[] = [
   },
   {
     id: 'career',
-    category: 'İş & Mülakat',
+    category: 'İş & Mülakat 🌌',
     icon: '💼',
     title: 'Deneyim Belirtme',
     tr: 'Proje yönetimi alanında beş yıllık deneyimim var.',
@@ -130,7 +260,7 @@ const DEMO_SCENARIOS: DemoScenario[] = [
   },
   {
     id: 'restaurant',
-    category: 'Restoran',
+    category: 'Restoran ☄️',
     icon: '🍽️',
     title: 'Hesap İsteme',
     tr: 'Hesabı alabilir miyiz lütfen?',
@@ -163,6 +293,10 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
+  const [isSpeakingDuelOpen, setIsSpeakingDuelOpen] = useState(false);
+  const [isPronunciationDoctorOpen, setIsPronunciationDoctorOpen] = useState(false);
+  const [isCareerTrackOpen, setIsCareerTrackOpen] = useState(false);
+  const [isVoiceCallOpen, setIsVoiceCallOpen] = useState(false);
 
   // Giriş Yapılmadan Hiçbir Link Doğrudan Panele Girmesin: Korumalı Eylem Yöneticisi
   const handleProtectedAction = (action: () => void) => {
@@ -533,12 +667,12 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
             </button>
           </div>
 
-          {/* KISAYOL 4: 🎙️ CANLI AI SİMÜLATÖR -> Ses Simülatörü (speak) */}
+          {/* KISAYOL 4: 🎙️ CANLI AI SİMÜLATÖR -> Canlı Sesli Arama Modalı */}
           <div className="absolute top-1/2 -translate-y-1/2 right-0 sm:right-2 md:right-4 z-20 group">
             <button
-              onClick={() => handleProtectedAction(onEnterSimulator)}
+              onClick={() => setIsVoiceCallOpen(true)}
               className="relative w-22 h-22 sm:w-26 sm:h-26 md:w-30 md:h-30 rounded-full p-1 bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-900 shadow-[0_0_30px_rgba(16,185,129,0.6)] hover:shadow-[0_0_50px_rgba(16,185,129,0.95)] hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center text-center border-2 border-emerald-300/80 animate-[bounce_6.5s_ease-in-out_infinite]"
-              title="Canlı Konuşma Simülatörü"
+              title="Canlı Konuşma Simülatörü (Canlı Arama)"
             >
               <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-emerald-950/70 border border-emerald-400/60 flex items-center justify-center text-base sm:text-xl mb-0.5 shadow-inner">
                 🎙️
@@ -552,12 +686,12 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
             </button>
           </div>
 
-          {/* KISAYOL 5: ⚔️ KONUŞMA DÜELLOSU -> Oyunlar & Düello (games) */}
+          {/* KISAYOL 5: ⚔️ KONUŞMA DÜELLOSU -> Doğrudan 1v1 Canlı Düello Arenası */}
           <div className="absolute bottom-4 left-2 sm:bottom-8 sm:left-10 md:bottom-10 md:left-14 z-20 group">
             <button
-              onClick={() => handleProtectedAction(() => (onEnterGames ? onEnterGames() : onEnterStudentPanel()))}
+              onClick={() => setIsSpeakingDuelOpen(true)}
               className="relative w-22 h-22 sm:w-26 sm:h-26 md:w-30 md:h-30 rounded-full p-1 bg-gradient-to-br from-rose-500 via-fuchsia-600 to-purple-900 shadow-[0_0_30px_rgba(244,63,94,0.6)] hover:shadow-[0_0_50px_rgba(244,63,94,0.95)] hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center text-center border-2 border-rose-300/80 animate-[bounce_7.5s_ease-in-out_infinite]"
-              title="Speaking Düellosu & Oyunlar"
+              title="1v1 Canlı Konuşma Düellosu Arenası"
             >
               <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-rose-950/70 border border-rose-400/60 flex items-center justify-center text-base sm:text-xl mb-0.5 shadow-inner">
                 ⚔️
@@ -590,12 +724,12 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
             </button>
           </div>
 
-          {/* KISAYOL 7: 🩺 TELAFFUZ DOKTORU -> Simülatör / Fonetik (speak) */}
+          {/* KISAYOL 7: 🩺 TELAFFUZ DOKTORU -> Doğrudan AI Fonetik Telaffuz Doktoru */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 sm:top-1 md:top-2 z-20 group">
             <button
-              onClick={() => handleProtectedAction(onEnterSimulator)}
+              onClick={() => setIsPronunciationDoctorOpen(true)}
               className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full p-1 bg-gradient-to-br from-teal-500 via-cyan-600 to-indigo-900 shadow-[0_0_30px_rgba(20,184,166,0.6)] hover:shadow-[0_0_50px_rgba(20,184,166,0.95)] hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center text-center border-2 border-teal-300/80 animate-[bounce_6.8s_ease-in-out_infinite]"
-              title="Telaffuz Doktoru"
+              title="Telaffuz Doktoru (AI Fonetik)"
             >
               <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-teal-950/70 border border-teal-400/60 flex items-center justify-center text-sm sm:text-xl mb-0.5 shadow-inner">
                 🩺
@@ -609,10 +743,10 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
             </button>
           </div>
 
-          {/* KISAYOL 8: 🎯 KARİYER ROTASI -> Hedefler (tasks) */}
+          {/* KISAYOL 8: 🎯 KARİYER ROTASI -> Doğrudan Kariyer ve İş İngilizcesi Modalı */}
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 sm:bottom-1 md:bottom-2 z-20 group">
             <button
-              onClick={() => handleProtectedAction(() => (onEnterTasks ? onEnterTasks() : onEnterCamp()))}
+              onClick={() => setIsCareerTrackOpen(true)}
               className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full p-1 bg-gradient-to-br from-purple-500 via-indigo-600 to-violet-950 shadow-[0_0_30px_rgba(168,85,247,0.6)] hover:shadow-[0_0_50px_rgba(168,85,247,0.95)] hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center text-center border-2 border-purple-300/80 animate-[bounce_7.2s_ease-in-out_infinite]"
               title="Kariyer ve Mülakat İngilizcesi"
             >
@@ -660,155 +794,168 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
           </div>
         </div>
 
-        {/* ==================== 3. DAHA ESTETİK, KOMPAKT 4 KOMUTA MERKEZİ ==================== */}
+        {/* ==================== 3. KOZMİK 4 KOMUTA MERKEZİ (UZAY GEMİSİ, GEZEGEN, YÖRÜNGE, METEOR) ==================== */}
         <section className="w-full max-w-4xl my-6 text-left">
           <div className="text-center mb-5">
-            <span className="text-[10px] font-black uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-pink-400 to-cyan-300">
-              ⚡ ETKİLEŞİMLİ DİL MODÜLLERİ
+            <span className="text-[10px] font-black uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-pink-400 to-cyan-300 flex items-center justify-center space-x-1.5">
+              <Orbit className="w-3.5 h-3.5 text-cyan-400 animate-spin" />
+              <span>🌌 KOZMİK ETKİLEŞİMLİ DİL MODÜLLERİ</span>
+              <Orbit className="w-3.5 h-3.5 text-pink-400 animate-spin" />
             </span>
-            <h2 className="text-xl sm:text-2xl font-black text-white mt-0.5 tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-black text-white mt-1 tracking-tight">
               Yapay Zekâ ile Doğrudan Konuşmaya Başlayın
             </h2>
+            <p className="text-xs text-purple-200/80 mt-1 max-w-xl mx-auto">
+              Galaksinin en gelişmiş 0.2sn yapay zekâ ses motoruyla uzay gemisinde, gezegende veya yörüngede akıcı konuşun.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             
-            {/* KART 1: CANLI AI SESLİ GÖRÜŞME -> speak */}
+            {/* KART 1: UZAY GEMİSİ & WARP TELSİZİ -> speak */}
             <div
               onClick={() => handleProtectedAction(onEnterSimulator)}
-              className="p-4 sm:p-5 rounded-2xl bg-[#1B1044]/80 hover:bg-[#25135C]/90 border border-emerald-400/40 hover:border-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.2)] hover:shadow-[0_0_35px_rgba(16,185,129,0.4)] transition-all duration-200 hover:-translate-y-1 cursor-pointer group flex flex-col justify-between"
+              className="relative p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-[#101B36]/90 via-[#131548]/85 to-[#0B132B]/95 hover:from-[#17254C] hover:to-[#101B36] border-2 border-emerald-400/40 hover:border-emerald-400 shadow-[0_0_25px_rgba(16,185,129,0.25)] hover:shadow-[0_0_45px_rgba(16,185,129,0.5)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer group flex flex-col justify-between overflow-hidden backdrop-blur-xl"
             >
+              <div className="absolute -right-8 -bottom-8 w-36 h-36 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none group-hover:bg-emerald-500/25 transition-all" />
+              
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-400/50 text-emerald-300 text-[9px] font-black flex items-center space-x-1">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-400/60 text-emerald-300 text-[9px] font-black flex items-center space-x-1.5 shadow-sm">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                    <span>SES MOTORU • 0.2sn TEPKİ</span>
+                    <span>🚀 UZAY GEMİSİ WARP SÜRÜCÜSÜ • 0.2sn TELSİZ</span>
                   </span>
-                  <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 flex items-center justify-center text-base group-hover:scale-110 transition-transform">
-                    🎙️
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-950/80 border border-emerald-400/40 flex items-center justify-center p-1.5 shadow-[0_0_15px_rgba(16,185,129,0.3)] group-hover:scale-110 group-hover:shadow-[0_0_25px_rgba(16,185,129,0.6)] transition-all">
+                    <SpaceshipIcon className="w-9 h-9" />
                   </div>
                 </div>
 
-                <h3 className="text-sm sm:text-base font-black text-white group-hover:text-emerald-300 transition-colors">
-                  Canlı AI Sesli Görüşme & Simülatör
+                <h3 className="text-base sm:text-lg font-black text-white group-hover:text-emerald-300 transition-colors flex items-center gap-2">
+                  <span>Canlı AI Sesli Görüşme & Uzay Gemisi Simülatörü</span>
                 </h3>
-                <p className="text-[11px] text-purple-200/80 font-medium mt-1 leading-snug line-clamp-2">
-                  Telefon araması gibi konuşun. Anlık telaffuz ve akıcılık düzeltmesiyle çekinmeden pratik yapın.
+                <p className="text-[11px] text-purple-200/90 font-medium mt-1.5 leading-relaxed line-clamp-2">
+                  Yıldızlararası telsiz arama gibi anında konuşun. 0.2sn warp ses motoru ve kokpit koçluğuyla akıcı pratik yapın.
                 </p>
               </div>
 
-              <div className="mt-3 pt-2.5 border-t border-emerald-500/20 flex items-center justify-between">
-                <span className="text-[11px] font-black text-emerald-300 flex items-center space-x-1">
-                  <span>Simülatörü Başlat</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              <div className="mt-4 pt-3 border-t border-emerald-500/30 flex items-center justify-between">
+                <span className="text-[11px] font-black text-emerald-300 flex items-center space-x-1.5">
+                  <span>Uzay Gemisine Bağlan</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1.5 transition-transform" />
                 </span>
-                <span className="text-[9px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-md font-bold">
-                  Hemen Ara 🔊
+                <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2.5 py-1 rounded-lg font-black border border-emerald-400/30 flex items-center space-x-1">
+                  <span>Warp Telsizi 🔊</span>
                 </span>
               </div>
             </div>
 
-            {/* KART 2: LINGORIA 3D KIDS -> kids */}
+            {/* KART 2: HALKALI GEZEGEN & LINGORIA KOZİK KOLONİ -> kids */}
             <div
               onClick={() => handleProtectedAction(onEnterKidsWorld)}
-              className="p-4 sm:p-5 rounded-2xl bg-[#261042]/80 hover:bg-[#341459]/90 border border-pink-400/40 hover:border-pink-400 shadow-[0_0_20px_rgba(236,72,153,0.2)] hover:shadow-[0_0_35px_rgba(236,72,153,0.4)] transition-all duration-200 hover:-translate-y-1 cursor-pointer group flex flex-col justify-between"
+              className="relative p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-[#290E38]/90 via-[#321247]/85 to-[#1B0829]/95 hover:from-[#3D1456] hover:to-[#290E38] border-2 border-pink-400/40 hover:border-pink-400 shadow-[0_0_25px_rgba(236,72,153,0.25)] hover:shadow-[0_0_45px_rgba(236,72,153,0.5)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer group flex flex-col justify-between overflow-hidden backdrop-blur-xl"
             >
+              <div className="absolute -right-8 -bottom-8 w-36 h-36 bg-pink-500/10 rounded-full blur-2xl pointer-events-none group-hover:bg-pink-500/25 transition-all" />
+
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="px-2.5 py-0.5 rounded-full bg-pink-950/80 border border-pink-400/50 text-pink-300 text-[9px] font-black flex items-center space-x-1">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="px-3 py-1 rounded-full bg-pink-950/80 border border-pink-400/60 text-pink-300 text-[9px] font-black flex items-center space-x-1.5 shadow-sm">
                     <span className="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse" />
-                    <span>5-17 YAŞ ÇOCUK PEDAGOJİSİ</span>
+                    <span>🪐 GİZEMLİ LINGORIA GEZEGENİ • 5-17 YAŞ</span>
                   </span>
-                  <div className="w-8 h-8 rounded-xl bg-pink-500/20 text-pink-300 border border-pink-400/30 flex items-center justify-center text-base group-hover:scale-110 transition-transform">
-                    🏰
+                  <div className="w-12 h-12 rounded-2xl bg-pink-950/80 border border-pink-400/40 flex items-center justify-center p-1.5 shadow-[0_0_15px_rgba(236,72,153,0.3)] group-hover:scale-110 group-hover:shadow-[0_0_25px_rgba(236,72,153,0.6)] transition-all">
+                    <PlanetIcon className="w-9 h-9" />
                   </div>
                 </div>
 
-                <h3 className="text-sm sm:text-base font-black text-white group-hover:text-pink-300 transition-colors">
-                  Lingoria Macera Evreni 🎮
+                <h3 className="text-base sm:text-lg font-black text-white group-hover:text-pink-300 transition-colors flex items-center gap-2">
+                  <span>Lingoria Gezegen Macera Evreni 🪐</span>
                 </h3>
-                <p className="text-[11px] text-purple-200/80 font-medium mt-1 leading-snug line-clamp-2">
-                  8 seviyeli krallık haritası ve zırh sandıklarıyla çocukların eğlenerek İngilizce ve Almanca konuştuğu dünya.
+                <p className="text-[11px] text-purple-200/90 font-medium mt-1.5 leading-relaxed line-clamp-2">
+                  8 krallıklı gizemli uzay gezegenini keşfedin; çocukların kristal sandıklar ve uzay kalkanlarıyla eğlenerek konuştuğu dünya.
                 </p>
               </div>
 
-              <div className="mt-3 pt-2.5 border-t border-pink-500/20 flex items-center justify-between">
-                <span className="text-[11px] font-black text-pink-300 flex items-center space-x-1">
-                  <span>Lingoria Dünyasını Aç</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              <div className="mt-4 pt-3 border-t border-pink-500/30 flex items-center justify-between">
+                <span className="text-[11px] font-black text-pink-300 flex items-center space-x-1.5">
+                  <span>Gezegene İniş Yap</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1.5 transition-transform" />
                 </span>
-                <span className="text-[9px] bg-pink-500/20 text-pink-300 px-2 py-0.5 rounded-md font-bold">
-                  Oyna & Konuş ⚔️
+                <span className="text-[10px] bg-pink-500/20 text-pink-300 px-2.5 py-1 rounded-lg font-black border border-pink-400/30 flex items-center space-x-1">
+                  <span>Gezegeni Keşfet 🛸</span>
                 </span>
               </div>
             </div>
 
-            {/* KART 3: 30 GÜNLÜK KAMP -> learn */}
+            {/* KART 3: YÖRÜNGE İSTASYONU & ASTRONOT KAMPI -> learn */}
             <div
               onClick={() => handleProtectedAction(onEnterCamp)}
-              className="p-4 sm:p-5 rounded-2xl bg-[#17134A]/80 hover:bg-[#201A63]/90 border border-indigo-400/40 hover:border-indigo-400 shadow-[0_0_20px_rgba(99,102,241,0.2)] hover:shadow-[0_0_35px_rgba(99,102,241,0.4)] transition-all duration-200 hover:-translate-y-1 cursor-pointer group flex flex-col justify-between"
+              className="relative p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-[#101A48]/90 via-[#181858]/85 to-[#0B1035]/95 hover:from-[#172468] hover:to-[#101A48] border-2 border-indigo-400/40 hover:border-indigo-400 shadow-[0_0_25px_rgba(99,102,241,0.25)] hover:shadow-[0_0_45px_rgba(99,102,241,0.5)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer group flex flex-col justify-between overflow-hidden backdrop-blur-xl"
             >
+              <div className="absolute -right-8 -bottom-8 w-36 h-36 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none group-hover:bg-indigo-500/25 transition-all" />
+
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="px-2.5 py-0.5 rounded-full bg-indigo-950/80 border border-indigo-400/50 text-indigo-300 text-[9px] font-black flex items-center space-x-1">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="px-3 py-1 rounded-full bg-indigo-950/80 border border-indigo-400/60 text-indigo-300 text-[9px] font-black flex items-center space-x-1.5 shadow-sm">
                     <Flame className="w-3 h-3 text-amber-400" />
-                    <span>YETİŞKİN & KARİYER KAMPI</span>
+                    <span>🛰️ YÖRÜNGE İSTASYONU • 30 GÜNLÜK MİSYON</span>
                   </span>
-                  <div className="w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 flex items-center justify-center text-base group-hover:scale-110 transition-transform">
-                    🏕️
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-950/80 border border-indigo-400/40 flex items-center justify-center p-1.5 shadow-[0_0_15px_rgba(99,102,241,0.3)] group-hover:scale-110 group-hover:shadow-[0_0_25px_rgba(99,102,241,0.6)] transition-all">
+                    <SpaceStationIcon className="w-9 h-9" />
                   </div>
                 </div>
 
-                <h3 className="text-sm sm:text-base font-black text-white group-hover:text-indigo-300 transition-colors">
-                  30 Günde Kendini İfade Etme Kampı
+                <h3 className="text-base sm:text-lg font-black text-white group-hover:text-indigo-300 transition-colors flex items-center gap-2">
+                  <span>30 Günde Yörünge & Astronot Kampı</span>
                 </h3>
-                <p className="text-[11px] text-purple-200/80 font-medium mt-1 leading-snug line-clamp-2">
-                  Günde 15 dakikalık mikro-görevlerle sıfırdan yurt dışında rahatça konuşma seviyesine ulaşın.
+                <p className="text-[11px] text-purple-200/90 font-medium mt-1.5 leading-relaxed line-clamp-2">
+                  Günde 15 dakikalık uzay görevleriyle yörüngeye çıkın. Dünyanın her yerinde rahatça konuşacak astronot refleksi kazanın.
                 </p>
               </div>
 
-              <div className="mt-3 pt-2.5 border-t border-indigo-500/20 flex items-center justify-between">
-                <span className="text-[11px] font-black text-indigo-300 flex items-center space-x-1">
-                  <span>Öğrenci Paneline Başla</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              <div className="mt-4 pt-3 border-t border-indigo-500/30 flex items-center justify-between">
+                <span className="text-[11px] font-black text-indigo-300 flex items-center space-x-1.5">
+                  <span>Uzay İstasyonuna Başla</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1.5 transition-transform" />
                 </span>
-                <span className="text-[9px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-md font-bold">
-                  Kampa Katıl 🚀
+                <span className="text-[10px] bg-indigo-500/20 text-indigo-300 px-2.5 py-1 rounded-lg font-black border border-indigo-400/30 flex items-center space-x-1">
+                  <span>Misyonu Başlat 🚀</span>
                 </span>
               </div>
             </div>
 
-            {/* KART 4: 1V1 SPEAKING DÜELLOSU -> games */}
+            {/* KART 4: ALEVLİ METEOR ARENASI & HIZ DÜELLOSU -> Doğrudan 1v1 Konuşma Düellosu */}
             <div
-              onClick={() => handleProtectedAction(() => (onEnterGames ? onEnterGames() : onEnterStudentPanel()))}
-              className="p-4 sm:p-5 rounded-2xl bg-[#280F33]/80 hover:bg-[#381447]/90 border border-amber-400/40 hover:border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.2)] hover:shadow-[0_0_35px_rgba(245,158,11,0.4)] transition-all duration-200 hover:-translate-y-1 cursor-pointer group flex flex-col justify-between"
+              onClick={() => setIsSpeakingDuelOpen(true)}
+              className="relative p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-[#2E1222]/90 via-[#381622]/85 to-[#200A15]/95 hover:from-[#441829] hover:to-[#2E1222] border-2 border-amber-400/40 hover:border-amber-400 shadow-[0_0_25px_rgba(245,158,11,0.25)] hover:shadow-[0_0_45px_rgba(245,158,11,0.5)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer group flex flex-col justify-between overflow-hidden backdrop-blur-xl"
             >
+              <div className="absolute -right-8 -bottom-8 w-36 h-36 bg-amber-500/10 rounded-full blur-2xl pointer-events-none group-hover:bg-amber-500/25 transition-all" />
+
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="px-2.5 py-0.5 rounded-full bg-amber-950/80 border border-amber-400/50 text-amber-300 text-[9px] font-black flex items-center space-x-1">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="px-3 py-1 rounded-full bg-amber-950/80 border border-amber-400/60 text-amber-300 text-[9px] font-black flex items-center space-x-1.5 shadow-sm">
                     <Award className="w-3 h-3 text-amber-400" />
-                    <span>HAFTALIK ELMAS LİGİ</span>
+                    <span>☄️ METEOR YAĞMURU • HAFTALIK ELMAS LİGİ</span>
                   </span>
-                  <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-400/30 flex items-center justify-center text-base group-hover:scale-110 transition-transform">
-                    ⚔️
+                  <div className="w-12 h-12 rounded-2xl bg-amber-950/80 border border-amber-400/40 flex items-center justify-center p-1.5 shadow-[0_0_15px_rgba(245,158,11,0.3)] group-hover:scale-110 group-hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] transition-all">
+                    <MeteorIcon className="w-9 h-9" />
                   </div>
                 </div>
 
-                <h3 className="text-sm sm:text-base font-black text-white group-hover:text-amber-300 transition-colors">
-                  1v1 Konuşma Düellosu & Oyunlar
+                <h3 className="text-base sm:text-lg font-black text-white group-hover:text-amber-300 transition-colors flex items-center gap-2">
+                  <span>1v1 Meteor Konuşma Düellosu & Oyunlar</span>
                 </h3>
-                <p className="text-[11px] text-purple-200/80 font-medium mt-1 leading-snug line-clamp-2">
-                  Gerçek zamanlı rakiplerle kelime hızı ve doğru telaffuz yarışına girin, elmas liginde yükselin.
+                <p className="text-[11px] text-purple-200/90 font-medium mt-1.5 leading-relaxed line-clamp-2">
+                  Alevli meteorlar arasında gerçek rakiplerle kelime hızı ve sesli telaffuz yarışına girin, elmas liginde yükselin.
                 </p>
               </div>
 
-              <div className="mt-3 pt-2.5 border-t border-amber-500/20 flex items-center justify-between">
-                <span className="text-[11px] font-black text-amber-300 flex items-center space-x-1">
-                  <span>Düello Arenasına Gir</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              <div className="mt-4 pt-3 border-t border-amber-500/30 flex items-center justify-between">
+                <span className="text-[11px] font-black text-amber-300 flex items-center space-x-1.5">
+                  <span>Meteor Arenasına Gir</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1.5 transition-transform" />
                 </span>
-                <span className="text-[9px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-md font-bold">
-                  Meydan Oku 🏆
+                <span className="text-[10px] bg-amber-500/20 text-amber-300 px-2.5 py-1 rounded-lg font-black border border-amber-400/30 flex items-center space-x-1">
+                  <span>Meydan Oku 🏆</span>
                 </span>
               </div>
             </div>
@@ -816,30 +963,31 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
           </div>
         </section>
 
-        {/* ==================== 4. KOMPAKT CANLI MİKROFON ALANI ==================== */}
+        {/* ==================== 4. KOZMİK CANLI MİKROFON ALANI ==================== */}
         <div className="relative w-full max-w-3xl my-6">
-          <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-b from-[#1E0F47]/90 via-[#160A38]/90 to-[#10062B]/95 border-2 border-cyan-400/40 shadow-[0_0_40px_rgba(6,182,212,0.25)] backdrop-blur-xl">
-            
+          <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-b from-[#1E0F47]/90 via-[#160A38]/90 to-[#10062B]/95 border-2 border-cyan-400/50 shadow-[0_0_45px_rgba(6,182,212,0.3)] backdrop-blur-xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+
             {/* Üst Başlık */}
-            <div className="flex flex-col sm:flex-row items-center justify-between pb-3 mb-3 border-b border-cyan-500/30 gap-2">
-              <span className="text-xs font-black uppercase tracking-wider text-cyan-300 flex items-center space-x-1.5">
-                <Orbit className="w-4 h-4 text-amber-300 animate-spin" />
-                <span>CANLI MİKROFON ARENASI (SESİNİ TEST ET)</span>
+            <div className="flex flex-col sm:flex-row items-center justify-between pb-3 mb-3 border-b border-cyan-500/30 gap-2 relative">
+              <span className="text-xs font-black uppercase tracking-wider text-cyan-300 flex items-center space-x-2">
+                <Orbit className="w-4 h-4 text-cyan-400 animate-spin" />
+                <span>KOZMİK CANLI SES TELSİZİ (SES FREKANSINI TEST ET)</span>
               </span>
               <button
                 onClick={() => handleSpeak(currentSamplePhrase, selectedLanguage)}
-                className="text-xs font-bold text-slate-200 hover:text-white flex items-center space-x-1 cursor-pointer bg-cyan-950/80 px-3 py-1 rounded-full border border-cyan-400/30 shadow-xs"
+                className="text-xs font-bold text-slate-200 hover:text-white flex items-center space-x-1 cursor-pointer bg-cyan-950/80 px-3 py-1 rounded-full border border-cyan-400/40 shadow-xs hover:border-cyan-400 transition-all"
                 title="Örnek Telaffuzu Dinle"
               >
                 <Volume2 className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Örnek Cümleyi Dinle 🔊</span>
+                <span>Kozmik Telsiz Sesi Dinle 🔊</span>
               </button>
             </div>
 
             {/* Test Cümlesi */}
-            <div className="text-center mb-4">
-              <span className="text-[11px] text-slate-300 font-medium">
-                Mikrofona basıp cümleyi sesli oku:
+            <div className="text-center mb-4 relative">
+              <span className="text-[11px] text-cyan-200/80 font-medium">
+                Telsiz butonuna basıp frekansı sesli aktar:
               </span>
               <div className="text-base sm:text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-200 to-pink-200 mt-1 tracking-tight">
                 "{currentSamplePhrase}"
@@ -847,45 +995,45 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
             </div>
 
             {/* KOMPAKT MİKROFON BUTONU */}
-            <div className="flex flex-col items-center justify-center gap-2">
+            <div className="flex flex-col items-center justify-center gap-2 relative">
               <button
                 onClick={handleStartMicTest}
                 disabled={isListening}
-                className={`relative w-20 h-20 sm:w-22 sm:h-22 rounded-full font-black text-xs flex flex-col items-center justify-center transition-all duration-300 cursor-pointer shadow-xl ${
+                className={`relative w-22 h-22 sm:w-24 sm:h-24 rounded-full font-black text-xs flex flex-col items-center justify-center transition-all duration-300 cursor-pointer shadow-xl ${
                   isListening
-                    ? 'bg-rose-600 text-white animate-pulse shadow-[0_0_35px_rgba(244,63,94,0.85)] scale-105'
-                    : 'bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-white shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:scale-105 active:scale-95'
+                    ? 'bg-rose-600 text-white animate-pulse shadow-[0_0_40px_rgba(244,63,94,0.9)] scale-105'
+                    : 'bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-white shadow-[0_0_35px_rgba(6,182,212,0.6)] hover:scale-105 active:scale-95 border-2 border-cyan-300/60'
                 }`}
-                title="Mikrofona Konuş"
+                title="Telsiz Mikrofona Konuş"
               >
-                <Mic className={`w-7 h-7 sm:w-8 sm:h-8 ${isListening ? 'animate-bounce' : ''}`} />
-                <span className="text-[10px] font-black mt-0.5 leading-tight text-center px-1">
-                  {isListening ? 'Dinliyor...' : 'KONUŞ & TEST ET'}
+                <Mic className={`w-8 h-8 ${isListening ? 'animate-bounce' : ''}`} />
+                <span className="text-[10px] font-black mt-1 leading-tight text-center px-1">
+                  {isListening ? 'Bağlanıyor...' : 'TELSİZE KONUŞ'}
                 </span>
               </button>
 
               {score !== null && (
                 <div className="mt-2 px-4 py-2 rounded-full bg-emerald-950/95 border border-emerald-400 text-emerald-300 text-xs font-black flex items-center space-x-1.5 animate-in fade-in zoom-in-95 shadow-md">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>Harika Telaffuz! Akıcılık Skoru: %{score} • +25 XP</span>
+                  <span>Harika Frekans! Akıcılık Skoru: %{score} • +25 XP</span>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        {/* ==================== 5. KOMPAKT KALIP DOKU TESTİ ==================== */}
+        {/* ==================== 5. KOZMİK KALIP DOKU TESTİ ==================== */}
         <section className="w-full max-w-4xl my-6 text-center relative">
           
           <div className="mb-4">
-            <span className="text-[10px] font-black uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-pink-400 to-cyan-300">
-              CANLI KALIP DOKU TESTİ
+            <span className="text-[10px] font-black uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-pink-400 to-cyan-300 flex items-center justify-center space-x-1.5">
+              <span>🪐 GEZEGENLER ARASI ZİHİNSEL FORMÜLLER</span>
             </span>
-            <h2 className="text-xl sm:text-2xl font-black text-white mt-0.5">
+            <h2 className="text-xl sm:text-2xl font-black text-white mt-1">
               Kalıp Mantığını 10 Saniyede Görün
             </h2>
             <p className="text-[11px] text-purple-200/80 mt-0.5 max-w-md mx-auto">
-              Ezber yok; zihinsel Lego gibi birbirine kenetlenen hazır şablonlarla anında konuşun.
+              Ezber yok; zihinsel Lego gibi birbirine kenetlenen hazır uzay şablonlarıyla anında konuşun.
             </p>
           </div>
 
@@ -895,7 +1043,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
               <button
                 key={sc.id}
                 onClick={() => setActiveDemo(sc)}
-                className={`relative px-3.5 py-1.5 rounded-full text-xs font-black transition-all duration-200 cursor-pointer flex items-center space-x-1.5 ${
+                className={`relative px-4 py-1.5 rounded-full text-xs font-black transition-all duration-200 cursor-pointer flex items-center space-x-1.5 ${
                   activeDemo.id === sc.id
                     ? 'bg-gradient-to-r from-pink-600 via-purple-600 to-cyan-600 text-white shadow-[0_0_20px_rgba(236,72,153,0.6)] border border-white scale-105'
                     : 'bg-[#22104A] text-purple-200 hover:bg-[#301666] border border-purple-400/30'
@@ -907,14 +1055,14 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
             ))}
           </div>
 
-          {/* KOMPAKT 3 KÜRE KARTLARI */}
+          {/* KOMPAKT 3 KOZMİK KÜRE KARTLARI */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-left">
             
-            {/* KÜRE 1: KONUŞMA VE SES KÜRESİ */}
-            <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-b from-[#22104C]/90 to-[#160B36]/95 border border-purple-400/40 shadow-lg flex flex-col justify-between">
+            {/* KÜRE 1: UZAY İSTASYONU KONUŞMA ŞABLONU */}
+            <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-b from-[#22104C]/90 to-[#160B36]/95 border-2 border-pink-400/40 shadow-lg flex flex-col justify-between relative overflow-hidden">
               <div>
                 <span className="text-[9px] font-black text-pink-400 uppercase tracking-wider block mb-1">
-                  1. KONUŞMA ŞABLONU
+                  🛰️ 1. KOZMİK KONUŞMA ŞABLONU
                 </span>
                 <div className="text-[11px] font-semibold text-slate-200 mb-1">
                   🇹🇷 "{activeDemo.tr}"
@@ -939,10 +1087,10 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
               </button>
             </div>
 
-            {/* KÜRE 2: ZİHİNSEL KURAL & FORMÜL KÜRESİ */}
-            <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-b from-[#22104C]/90 to-[#160B36]/95 border border-purple-400/40 shadow-lg flex flex-col justify-center">
+            {/* KÜRE 2: HALKALI GEZEGEN ZİHİNSEL KURAL */}
+            <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-b from-[#22104C]/90 to-[#160B36]/95 border-2 border-amber-400/40 shadow-lg flex flex-col justify-center relative overflow-hidden">
               <span className="text-[9px] font-black text-amber-300 uppercase tracking-wider block mb-1.5">
-                2. ZİHİNSEL KURAL / FORMÜL
+                🪐 2. GEZEGEN ZİHİNSEL FORMÜLÜ
               </span>
               <div className="p-2.5 rounded-xl bg-purple-950/80 border border-purple-400/40 text-purple-200 font-bold text-xs leading-relaxed">
                 {activeDemo.formula}
@@ -952,22 +1100,22 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
               </span>
             </div>
 
-            {/* KÜRE 3: PRATİK KONUŞMA PÜF NOKTASI KÜRESİ */}
-            <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-b from-[#22104C]/90 to-[#160B36]/95 border border-cyan-400/40 shadow-lg flex flex-col justify-center">
+            {/* KÜRE 3: ASTRONOT PÜF NOKTASI */}
+            <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-b from-[#22104C]/90 to-[#160B36]/95 border-2 border-cyan-400/40 shadow-lg flex flex-col justify-center relative overflow-hidden">
               <span className="text-[9px] font-black text-cyan-300 uppercase tracking-wider block mb-1.5">
-                3. PRATİK KONUŞMA PÜF NOKTASI
+                🚀 3. ASTRONOT KONUŞMA PÜF NOKTASI
               </span>
               <div className="p-2.5 rounded-xl bg-cyan-950/80 border border-cyan-400/40 text-cyan-100 font-semibold text-xs leading-relaxed">
                 {activeDemo.tip}
               </div>
               <span className="text-[9px] text-cyan-200/80 font-medium mt-2 block">
-                💡 Doğal akıcılığı sağlayan en önemli refleks.
+                💡 Doğal akıcılığı sağlayan en önemli uzay refleksi.
               </span>
             </div>
           </div>
         </section>
 
-        {/* ==================== 6. KOMPAKT KÖK NEDEN ÇÖZÜMÜ ==================== */}
+        {/* ==================== 6. KOZMİK KARŞILAŞTIRMA (KARA DELİK VS SÜPERNOVA) ==================== */}
         <section className="w-full max-w-4xl my-6 text-center">
           <div className="mb-4">
             <span className="text-[9px] font-black uppercase tracking-widest text-pink-400">
@@ -980,12 +1128,12 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left text-xs">
             {/* KARA DELİK */}
-            <div className="p-4 sm:p-5 rounded-2xl bg-rose-950/50 border border-rose-500/40 shadow-lg text-rose-200">
-              <div className="w-8 h-8 rounded-lg bg-rose-900/60 border border-rose-400/50 flex items-center justify-center text-base mb-2">
-                ❌
-              </div>
-              <div className="font-black text-sm text-rose-300 mb-1">
-                Geleneksel Kurs & Kitap Çıkmazı
+            <div className="p-5 sm:p-6 rounded-3xl bg-rose-950/50 border-2 border-rose-500/40 shadow-lg text-rose-200 relative overflow-hidden">
+              <div className="flex items-center space-x-2.5 mb-2">
+                <span className="text-2xl">🕳️</span>
+                <div className="font-black text-sm text-rose-300">
+                  KARA DELİK: Geleneksel Kurs & Kitap Çıkmazı
+                </div>
               </div>
               <p className="leading-relaxed text-rose-200/90 font-medium">
                 Yıllarca Tense formülleri ve kurallar ezberletilir; hata yapınca küçük düşme korkusuyla zihindeki konuşma refleksi kilitlenir.
@@ -993,12 +1141,12 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
             </div>
 
             {/* SÜPERNOVA */}
-            <div className="p-4 sm:p-5 rounded-2xl bg-emerald-950/50 border border-emerald-400/40 shadow-lg text-emerald-200">
-              <div className="w-8 h-8 rounded-lg bg-emerald-900/60 border border-emerald-400/50 flex items-center justify-center text-base mb-2">
-                ✅
-              </div>
-              <div className="font-black text-sm text-emerald-300 mb-1">
-                Chirmo Zihinsel Lego & AI Koçluğu
+            <div className="p-5 sm:p-6 rounded-3xl bg-emerald-950/50 border-2 border-emerald-400/40 shadow-lg text-emerald-200 relative overflow-hidden">
+              <div className="flex items-center space-x-2.5 mb-2">
+                <span className="text-2xl">🌟</span>
+                <div className="font-black text-sm text-emerald-300">
+                  SÜPERNOVA: Chirmo Zihinsel Lego & AI Koçluğu
+                </div>
               </div>
               <p className="leading-relaxed text-emerald-200/90 font-medium">
                 Cümle Kılıcı ve Soru Asası ile zihinsel Lego kalıpları birleştirilir. 7/24 yargılamayan canlı sesli AI koçluğuyla korkusuzca konuşulur.
@@ -1222,6 +1370,28 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
             onEnterStudentPanel();
           }
         }}
+      />
+
+      {/* ==================== 10. DOĞRUDAN AÇILAN ETKİLEŞİMLİ YÖRÜNGE MODALLARI ==================== */}
+      <ChirmoSpeakingDuelModal
+        isOpen={isSpeakingDuelOpen}
+        onClose={() => setIsSpeakingDuelOpen(false)}
+        initialTab="duel"
+      />
+
+      <ChirmoPronunciationDoctor
+        isOpen={isPronunciationDoctorOpen}
+        onClose={() => setIsPronunciationDoctorOpen(false)}
+      />
+
+      <ChirmoCareerTrackModal
+        isOpen={isCareerTrackOpen}
+        onClose={() => setIsCareerTrackOpen(false)}
+      />
+
+      <ChirmoVoiceCallSimulatorModal
+        isOpen={isVoiceCallOpen}
+        onClose={() => setIsVoiceCallOpen(false)}
       />
     </div>
   );

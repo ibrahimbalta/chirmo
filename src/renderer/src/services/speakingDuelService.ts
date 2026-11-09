@@ -1,3 +1,5 @@
+import { SupportedLanguage, TargetLanguageService } from './targetLanguageService';
+
 export type LeagueTierId = 'bronze' | 'silver' | 'gold' | 'diamond' | 'champions';
 
 export interface LeagueTier {
@@ -28,6 +30,13 @@ export interface DuelOpponent {
   avatar: string;
   skillRating: number;
   badge: string;
+  specialtyTr: string;
+}
+
+export interface QuickDuelReply {
+  level: string;
+  text: string;
+  tr: string;
 }
 
 export interface DuelRound {
@@ -37,12 +46,18 @@ export interface DuelRound {
   promptTr: string;
   timeLimitSeconds: number;
   suggestedKeyword: string;
+  opponentSampleAnswer: string;
+  opponentSampleAnswerTr: string;
+  quickReplies: QuickDuelReply[];
 }
 
 export interface DuelRoundResult {
   roundNumber: number;
   userScore: number;
   opponentScore: number;
+  fluencyScore: number;
+  vocabScore: number;
+  speedBonus: number;
   winner: 'user' | 'opponent' | 'tie';
   feedback: string;
   feedbackTr: string;
@@ -96,42 +111,186 @@ export const LEAGUE_TIERS: LeagueTier[] = [
   }
 ];
 
-export const DUEL_ROUNDS: DuelRound[] = [
+export const DUEL_ROUNDS_EN: DuelRound[] = [
   {
     roundNumber: 1,
-    topic: 'Quick Opinion (Hızlı Fikir)',
+    topic: '1. Raund • Hızlı Fikir (Quick Opinion)',
     prompt: 'Do you prefer working remotely from home or at an office, and what is your top reason?',
     promptTr: 'Evden uzaktan çalışmayı mı yoksa ofiste çalışmayı mı tercih edersin, en önemli sebebin nedir?',
-    timeLimitSeconds: 20,
-    suggestedKeyword: 'flexibility'
+    timeLimitSeconds: 25,
+    suggestedKeyword: 'flexibility',
+    opponentSampleAnswer: 'I prefer working from home because it saves commuting time and gives me flexibility.',
+    opponentSampleAnswerTr: 'Evden çalışmayı tercih ederim çünkü yol süresinden tasarruf sağlıyor ve bana esneklik veriyor.',
+    quickReplies: [
+      {
+        level: 'Kolay (A1-A2)',
+        text: 'I prefer working from home because it is very comfortable and quiet.',
+        tr: 'Evden çalışmayı tercih ederim çünkü çok rahat ve sessiz.'
+      },
+      {
+        level: 'Orta (B1)',
+        text: 'I prefer remote work because flexibility helps me focus better every day.',
+        tr: 'Uzaktan çalışmayı tercih ederim çünkü esneklik her gün daha iyi odaklanmama yardımcı oluyor.'
+      },
+      {
+        level: 'İleri (B2-C1)',
+        text: 'Ideally, I prefer a hybrid model that combines home flexibility with office collaboration.',
+        tr: 'İdeal olarak, ev esnekliğini ofis iş birliğiyle birleştiren hibrit bir modeli tercih ederim.'
+      }
+    ]
   },
   {
     roundNumber: 2,
-    topic: 'Speed Imagination (Hızlı Hayal Gücü)',
+    topic: '2. Raund • Seyahat & Hayal Gücü (Travel & Vision)',
     prompt: 'If you could travel anywhere in the world tomorrow for free, where would you go and why?',
     promptTr: 'Yarın dünyanın herhangi bir yerine ücretsiz seyahat edebilseydin nereye giderdin ve neden?',
-    timeLimitSeconds: 20,
-    suggestedKeyword: 'explore'
+    timeLimitSeconds: 25,
+    suggestedKeyword: 'explore',
+    opponentSampleAnswer: 'I would fly to Tokyo tomorrow to explore the culture and try authentic sushi.',
+    opponentSampleAnswerTr: 'Kültürü keşfetmek ve gerçek suşi denemek için yarın Tokyo’ya uçardım.',
+    quickReplies: [
+      {
+        level: 'Kolay (A1-A2)',
+        text: 'I would go to Italy to see Rome and eat delicious pizza.',
+        tr: 'Roma’yı görmek ve lezzetli pizza yemek için İtalya’ya giderdim.'
+      },
+      {
+        level: 'Orta (B1)',
+        text: 'I would travel to London to explore historical places and practice my English.',
+        tr: 'Tarihi yerleri keşfetmek ve İngilizcemi pratik yapmak için Londra’ya seyahat ederdim.'
+      },
+      {
+        level: 'İleri (B2-C1)',
+        text: 'I would definitely choose Japan to explore how ancient traditions blend with modern technology.',
+        tr: 'Kadim geleneklerin modern teknolojiyle nasıl harmanlandığını keşfetmek için kesinlikle Japonya’yı seçerdim.'
+      }
+    ]
   },
   {
     roundNumber: 3,
-    topic: 'Fast Persuasion (Hızlı İkna)',
-    prompt: 'Convince your best friend to spend 15 minutes a day speaking English!',
-    promptTr: 'En yakın arkadaşını günde 15 dakika İngilizce konuşmaya ikna et!',
-    timeLimitSeconds: 20,
-    suggestedKeyword: 'practice'
+    topic: '3. Raund • Hızlı İkna (Fast Persuasion)',
+    prompt: 'How would you convince your best friend to practice speaking a new language for 15 minutes every day?',
+    promptTr: 'En yakın arkadaşını her gün 15 dakika yabancı dil konuşma pratiği yapmaya nasıl ikna edersin?',
+    timeLimitSeconds: 25,
+    suggestedKeyword: 'practice',
+    opponentSampleAnswer: 'Just 15 minutes of daily practice builds real confidence and opens global career doors!',
+    opponentSampleAnswerTr: 'Günde sadece 15 dakikalık pratik gerçek özgüven inşa eder ve küresel kariyer kapılarını açar!',
+    quickReplies: [
+      {
+        level: 'Kolay (A1-A2)',
+        text: 'Fifteen minutes a day is very easy and we can practice speaking together!',
+        tr: 'Günde on beş dakika çok kolay ve birlikte konuşma pratiği yapabiliriz!'
+      },
+      {
+        level: 'Orta (B1)',
+        text: 'Daily practice for just 15 minutes removes speaking fear and makes you fluent.',
+        tr: 'Günde sadece 15 dakika pratik yapmak konuşma korkusunu yok eder ve seni akıcı yapar.'
+      },
+      {
+        level: 'İleri (B2-C1)',
+        text: 'Consistent 15-minute daily practice rewires your brain for natural fluency without exhausting you.',
+        tr: 'Düzenli 15 dakikalık günlük pratik, seni yormadan beynini doğal akıcılık için yeniden programlar.'
+      }
+    ]
   }
 ];
+
+export const DUEL_ROUNDS_DE: DuelRound[] = [
+  {
+    roundNumber: 1,
+    topic: '1. Raund • Hızlı Fikir (Schnelle Meinung)',
+    prompt: 'Arbeitest du lieber von zu Hause aus oder im Büro, und was ist dein wichtigster Grund?',
+    promptTr: 'Evden çalışmayı mı yoksa ofiste çalışmayı mı tercih edersin, en önemli sebebin nedir?',
+    timeLimitSeconds: 25,
+    suggestedKeyword: 'Flexibilität',
+    opponentSampleAnswer: 'Ich arbeite lieber im Homeoffice, weil mir die Flexibilität viel Zeit spart.',
+    opponentSampleAnswerTr: 'Homeoffice çalışmayı tercih ederim çünkü esneklik bana çok zaman kazandırıyor.',
+    quickReplies: [
+      {
+        level: 'Kolay (A1-A2)',
+        text: 'Ich arbeite lieber zu Hause, weil es sehr ruhig und bequem ist.',
+        tr: 'Evde çalışmayı tercih ederim çünkü çok sakin ve rahat.'
+      },
+      {
+        level: 'Orta (B1)',
+        text: 'Ich bevorzuge das Homeoffice, weil mir die Flexibilität hilft, mich besser zu konzentrieren.',
+        tr: 'Evden çalışmayı tercih ederim çünkü esneklik daha iyi odaklanmama yardımcı oluyor.'
+      },
+      {
+        level: 'İleri (B2-C1)',
+        text: 'Idealerweise bevorzuge ich ein hybrides Modell, das Flexibilität und Teamarbeit verbindet.',
+        tr: 'İdeal olarak esneklik ile ekip çalışmasını birleştiren hibrit bir modeli tercih ederim.'
+      }
+    ]
+  },
+  {
+    roundNumber: 2,
+    topic: '2. Raund • Seyahat & Hayal Gücü (Reise & Fantasie)',
+    prompt: 'Wenn du morgen kostenlos irgendwohin auf der Welt reisen könntest, wohin würdest du fliegen?',
+    promptTr: 'Yarın dünyanın herhangi bir yerine ücretsiz seyahat edebilseydin nereye uçardın?',
+    timeLimitSeconds: 25,
+    suggestedKeyword: 'entdecken',
+    opponentSampleAnswer: 'Ich würde morgen nach Berlin fliegen, um die Geschichte und Kultur zu entdecken.',
+    opponentSampleAnswerTr: 'Tarihi ve kültürü keşfetmek için yarın Berlin’e uçardım.',
+    quickReplies: [
+      {
+        level: 'Kolay (A1-A2)',
+        text: 'Ich würde nach Wien reisen, um schöne Museen zu sehen und Kaffee zu trinken.',
+        tr: 'Güzel müzeleri görmek ve kahve içmek için Viyana’ya seyahat ederdim.'
+      },
+      {
+        level: 'Orta (B1)',
+        text: 'Ich würde nach München fliegen, um neue Orte zu entdecken und mein Deutsch zu üben.',
+        tr: 'Yeni yerler keşfetmek ve Almancamı pratik yapmak için Münih’e uçardım.'
+      },
+      {
+        level: 'İleri (B2-C1)',
+        text: 'Ich würde definitiv die Schweiz wählen, um die beeindruckende Natur in den Alpen zu entdecken.',
+        tr: 'Alplerdeki etkileyici doğayı keşfetmek için kesinlikle İsviçre’yi seçerdim.'
+      }
+    ]
+  },
+  {
+    roundNumber: 3,
+    topic: '3. Raund • Hızlı İkna (Schnelle Überzeugung)',
+    prompt: 'Wie würdest du deinen besten Freund überzeugen, jeden Tag 15 Minuten Deutsch zu sprechen?',
+    promptTr: 'En yakın arkadaşını her gün 15 dakika Almanca konuşmaya nasıl ikna edersin?',
+    timeLimitSeconds: 25,
+    suggestedKeyword: 'Übung',
+    opponentSampleAnswer: 'Nur 15 Minuten tägliche Übung reichen aus, um ohne Angst flüssig zu sprechen!',
+    opponentSampleAnswerTr: 'Korkmadan akıcı konuşmak için günde sadece 15 dakika pratik yeterlidir!',
+    quickReplies: [
+      {
+        level: 'Kolay (A1-A2)',
+        text: 'Fünfzehn Minuten pro Tag sind einfach und wir können zusammen üben!',
+        tr: 'Günde on beş dakika çok kolay ve birlikte pratik yapabiliriz!'
+      },
+      {
+        level: 'Orta (B1)',
+        text: 'Tägliche Übung für 15 Minuten nimmt die Angst und macht dich schnell sicher.',
+        tr: 'Günde 15 dakika pratik korkuyu alır ve seni hızla özgüvenli yapar.'
+      },
+      {
+        level: 'İleri (B2-C1)',
+        text: 'Durch regelmäßige Übung von nur 15 Minuten entwickelt man natürliche Sprachreflexe.',
+        tr: 'Sadece 15 dakikalık düzenli pratikle doğal konuşma refleksleri gelişir.'
+      }
+    ]
+  }
+];
+
+export const DUEL_ROUNDS = DUEL_ROUNDS_EN;
 
 export const OPPONENT_POOL: DuelOpponent[] = [
   {
     id: 'opp_1',
     name: 'Liam Smith',
-    city: 'London',
+    city: 'Londra',
     countryFlag: '🇬🇧',
     avatar: '👨‍💼',
-    skillRating: 84,
-    badge: 'Fluency Master'
+    skillRating: 78,
+    badge: 'Akıcılık Ustası',
+    specialtyTr: 'Günlük & İş Diyalogları'
   },
   {
     id: 'opp_2',
@@ -139,35 +298,39 @@ export const OPPONENT_POOL: DuelOpponent[] = [
     city: 'New York',
     countryFlag: '🇺🇸',
     avatar: '👩‍💻',
-    skillRating: 86,
-    badge: 'Streak Hero'
+    skillRating: 82,
+    badge: 'Hızlı Refleks',
+    specialtyTr: 'Teknoloji & Seyahat'
   },
   {
     id: 'opp_3',
-    name: 'Marco Rossi',
-    city: 'Milan',
-    countryFlag: '🇮🇹',
-    avatar: '🧑‍🎨',
-    skillRating: 78,
-    badge: 'Vocab Champ'
+    name: 'Lukas Weber',
+    city: 'Berlin',
+    countryFlag: '🇩🇪',
+    avatar: '🧑‍🏫',
+    skillRating: 79,
+    badge: 'Kalıp Şampiyonu',
+    specialtyTr: 'Almanca & İngilizce Pratik'
   },
   {
     id: 'opp_4',
+    name: 'Marco Rossi',
+    city: 'Milano',
+    countryFlag: '🇮🇹',
+    avatar: '🧑‍🎨',
+    skillRating: 74,
+    badge: 'Kelime Avcısı',
+    specialtyTr: 'Kültür & Sosyal Sohbet'
+  },
+  {
+    id: 'opp_5',
     name: 'Kenji Tanaka',
     city: 'Tokyo',
     countryFlag: '🇯🇵',
     avatar: '👨‍🔬',
     skillRating: 80,
-    badge: 'Polyglot'
-  },
-  {
-    id: 'opp_5',
-    name: 'Elena Petrov',
-    city: 'Prague',
-    countryFlag: '🇨🇿',
-    avatar: '👩‍🏫',
-    skillRating: 82,
-    badge: 'Grammar Pro'
+    badge: 'Poliglot',
+    specialtyTr: 'Hızlı Cevap & Telaffuz'
   }
 ];
 
@@ -189,16 +352,15 @@ export class SpeakingDuelService {
     const botProfiles = [
       { name: 'Sarah Miller', flag: '🇺🇸', avatar: '👩‍💻' },
       { name: 'Kenji Tanaka', flag: '🇯🇵', avatar: '👨‍🔬' },
-      { name: 'Marco Rossi', flag: '🇮🇹', avatar: '🧑‍🎨' },
+      { name: 'Lukas Weber', flag: '🇩🇪', avatar: '🧑‍🏫' },
       { name: 'Elena Petrov', flag: '🇨🇿', avatar: '👩‍🏫' },
       { name: 'Liam Smith', flag: '🇬🇧', avatar: '👨‍💼' },
       { name: 'Aylin Kaya', flag: '🇹🇷', avatar: '👩‍🎓' },
       { name: 'David Kim', flag: '🇰🇷', avatar: '🧑‍🚀' },
       { name: 'Sofia Rodriguez', flag: '🇪🇸', avatar: '👩‍⚕️' },
-      { name: 'Lucas Dubois', flag: '🇫🇷', avatar: '👨‍🍳' }
+      { name: 'Marco Rossi', flag: '🇮🇹', avatar: '🧑‍🎨' }
     ];
 
-    // Seed XP offsets around user
     const entries: Array<{
       name: string;
       avatar: string;
@@ -206,7 +368,6 @@ export class SpeakingDuelService {
       xp: number;
       isUser: boolean;
     }> = botProfiles.map((bot, index) => {
-      // Predictable varied values
       const factor = (9 - index) / 10;
       const botXP = Math.round(base + diff * factor * 0.95);
       return {
@@ -218,19 +379,16 @@ export class SpeakingDuelService {
       };
     });
 
-    // Add current user
     entries.push({
-      name: 'Sen (Kullanıcı)',
+      name: 'Sen (Oyuncu)',
       avatar: '🌟',
-      countryFlag: '🇹🇷',
+      countryFlag: '🏆',
       xp: userXP,
       isUser: true
     });
 
-    // Sort descending
     entries.sort((a, b) => b.xp - a.xp);
 
-    // Format with rank and promotion status
     return entries.slice(0, 10).map((entry, idx) => {
       const rank = idx + 1;
       let status: 'promote' | 'stay' | 'demote' = 'stay';
@@ -245,35 +403,51 @@ export class SpeakingDuelService {
     });
   }
 
-  public static generateOpponent(): DuelOpponent {
+  public static generateOpponent(preferredId?: string): DuelOpponent {
+    if (preferredId) {
+      const found = OPPONENT_POOL.find((o) => o.id === preferredId);
+      if (found) return found;
+    }
     const randomIndex = Math.floor(Math.random() * OPPONENT_POOL.length);
     return OPPONENT_POOL[randomIndex];
   }
 
-  public static getDuelRounds(): DuelRound[] {
-    return DUEL_ROUNDS;
+  public static getDuelRounds(lang?: SupportedLanguage): DuelRound[] {
+    const activeLang = lang || TargetLanguageService.getTargetLanguage();
+    return activeLang === 'de' ? DUEL_ROUNDS_DE : DUEL_ROUNDS_EN;
   }
 
   public static evaluateDuelRound(
     round: DuelRound,
     speechText: string,
-    opponent: DuelOpponent
+    opponent: DuelOpponent,
+    secondsRemaining: number = 10
   ): DuelRoundResult {
     const text = (speechText || '').trim();
     const wordCount = text.split(/\s+/).filter(Boolean).length;
 
-    let userScore = 60;
-    if (wordCount >= 4) userScore += 10;
-    if (wordCount >= 8) userScore += 12;
-    if (wordCount >= 14) userScore += 10;
-    if (text.toLowerCase().includes(round.suggestedKeyword.toLowerCase())) {
-      userScore += 8;
-    }
-    userScore = Math.min(98, Math.max(40, userScore));
+    let fluencyScore = 68;
+    if (wordCount >= 4) fluencyScore += 10;
+    if (wordCount >= 8) fluencyScore += 10;
+    if (wordCount >= 12) fluencyScore += 8;
+    fluencyScore = Math.min(98, fluencyScore);
 
-    // Opponent score based on skill rating +/- 4 jitter
-    const jitter = Math.floor(Math.random() * 9) - 4;
-    const opponentScore = Math.min(95, Math.max(60, opponent.skillRating + jitter));
+    let vocabScore = 70;
+    if (text.toLowerCase().includes(round.suggestedKeyword.toLowerCase())) {
+      vocabScore += 18;
+    } else if (wordCount >= 7) {
+      vocabScore += 12;
+    }
+    vocabScore = Math.min(98, vocabScore);
+
+    const speedBonus = Math.min(12, Math.max(4, Math.round(secondsRemaining / 2)));
+
+    let userScore = Math.round((fluencyScore * 0.55) + (vocabScore * 0.35) + speedBonus);
+    userScore = Math.min(99, Math.max(55, userScore));
+
+    // Opponent score based on skill rating +/- 3 jitter
+    const jitter = Math.floor(Math.random() * 7) - 3;
+    const opponentScore = Math.min(92, Math.max(62, opponent.skillRating + jitter));
 
     let winner: 'user' | 'opponent' | 'tie' = 'tie';
     if (userScore > opponentScore) winner = 'user';
@@ -281,18 +455,21 @@ export class SpeakingDuelService {
 
     const feedback =
       winner === 'user'
-        ? `Impressive agility! You outscored ${opponent.name} with fluent, prompt speaking.`
-        : `Close round! ${opponent.name} was slightly faster, but your sentence structure was solid.`;
+        ? `Impressive agility! You outscored ${opponent.name} (${userScore} vs ${opponentScore}).`
+        : `Close round! ${opponent.name} scored ${opponentScore} vs your ${userScore}, great sentence structure!`;
 
     const feedbackTr =
       winner === 'user'
-        ? `Müthiş refleks! Akıcı ve hızlı konuşmanla ${opponent.name} karşısında bu raundu kazandın.`
-        : `Başa baş bir mücadele! ${opponent.name} biraz daha hızlı yanıt verdi, ancak cümle yapın gayet güçlüydü.`;
+        ? `Harika refleks! Akıcı ve net cümlenle ${opponent.name} karşısında bu raundu kazandın (${userScore} - ${opponentScore}).`
+        : `Başa baş bir mücadele! ${opponent.name} çok az farkla önde (${opponentScore} - ${userScore}), ancak kurduğun cümle gayet güçlüydü.`;
 
     return {
       roundNumber: round.roundNumber,
       userScore,
       opponentScore,
+      fluencyScore,
+      vocabScore,
+      speedBonus,
       winner,
       feedback,
       feedbackTr

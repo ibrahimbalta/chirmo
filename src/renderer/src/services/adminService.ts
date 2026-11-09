@@ -65,7 +65,7 @@ export class AdminService {
   // ==================== SAAS & GELİR METRİKLERİ ====================
   public static async getMetrics(): Promise<AdminMetrics> {
     await PrivacyAuthService.seedDemoAccountsIfEmpty();
-    const accounts = PrivacyAuthService.getAllAccounts();
+    const accounts = await PrivacyAuthService.getAllAccounts();
 
     let free = 0;
     let pro = 0;
@@ -100,7 +100,15 @@ export class AdminService {
   // ==================== KULLANICI YÖNETİMİ ====================
   public static async getAllUsers(): Promise<UserAccount[]> {
     await PrivacyAuthService.seedDemoAccountsIfEmpty();
-    return PrivacyAuthService.getAllAccounts();
+    return await PrivacyAuthService.getAllAccounts();
+  }
+
+  public static async createUser(
+    username: string,
+    password: string,
+    plan: 'free' | 'pro' | 'lifetime' = 'free'
+  ): Promise<UserAccount> {
+    return PrivacyAuthService.adminCreateUser(username, password, plan);
   }
 
   public static updateUserPlan(username: string, plan: 'free' | 'pro' | 'lifetime'): boolean {
