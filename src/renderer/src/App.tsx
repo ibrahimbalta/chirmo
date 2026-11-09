@@ -743,72 +743,74 @@ export const App: React.FC = () => {
           </div>
         </nav>
 
-        {/* Sağ: İlerleme & Modern Rafine Aksiyon Butonları (Sade, Dengeli & Prestijli) */}
-        <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
-          {/* APK İndir - Zarif Ghost Buton */}
-          <button
-            onClick={() => setIsInstallModalOpen(true)}
-            className="hidden lg:inline-flex h-8 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/90 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 text-xs font-bold shadow-2xs cursor-pointer transition-all items-center space-x-1.5 whitespace-nowrap shrink-0"
-            title="Chirmo Android APK ve PWA İndir"
-          >
-            <Download className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-            <span>APK</span>
-          </button>
+        {/* Sağ: İlerleme & Modern Rafine Aksiyon Butonları (Öğrenci Paneli / search aktifken bu alanlar altındaki kartta yer aldığı için tekrar etmez) */}
+        {activeTab !== 'search' && (
+          <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
+            {/* APK İndir - Zarif Ghost Buton */}
+            <button
+              onClick={() => setIsInstallModalOpen(true)}
+              className="hidden lg:inline-flex h-8 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/90 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 text-xs font-bold shadow-2xs cursor-pointer transition-all items-center space-x-1.5 whitespace-nowrap shrink-0"
+              title="Chirmo Android APK ve PWA İndir"
+            >
+              <Download className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+              <span>APK</span>
+            </button>
 
-          {/* Gün Serisi & XP Rozeti - Zarif & Kompakt */}
-          <div
-            onClick={() => setActiveTab('learn')}
-            className="hidden sm:flex h-8 px-2.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 items-center space-x-1.5 text-xs font-bold cursor-pointer hover:bg-slate-200/70 dark:hover:bg-slate-700/70 transition-all shrink-0"
-            title="30 Günlük Kamp Kesintisiz Serisi ve Toplam XP"
-          >
-            <div className="flex items-center space-x-1 text-amber-600 dark:text-amber-400 font-black">
-              <span>🔥</span>
-              <span>{campProgress.streakDays}</span>
+            {/* Gün Serisi & XP Rozeti - Zarif & Kompakt */}
+            <div
+              onClick={() => setActiveTab('learn')}
+              className="hidden sm:flex h-8 px-2.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 items-center space-x-1.5 text-xs font-bold cursor-pointer hover:bg-slate-200/70 dark:hover:bg-slate-700/70 transition-all shrink-0"
+              title="30 Günlük Kamp Kesintisiz Serisi ve Toplam XP"
+            >
+              <div className="flex items-center space-x-1 text-amber-600 dark:text-amber-400 font-black">
+                <span>🔥</span>
+                <span>{campProgress.streakDays}</span>
+              </div>
+              <span className="text-slate-300 dark:text-slate-600 font-light">•</span>
+              <div className="flex items-center space-x-1 text-indigo-600 dark:text-indigo-400 font-black">
+                <span>⭐</span>
+                <span>{campProgress.totalXp} XP</span>
+              </div>
             </div>
-            <span className="text-slate-300 dark:text-slate-600 font-light">•</span>
-            <div className="flex items-center space-x-1 text-indigo-600 dark:text-indigo-400 font-black">
-              <span>⭐</span>
-              <span>{campProgress.totalXp} XP</span>
-            </div>
+
+            {/* Akıllı Dil Değiştirici Kapsülü (Tek Tıkla Hızlı Geçiş: 🇬🇧 EN / 🇩🇪 DE) */}
+            <button
+              onClick={() => TargetLanguageService.setTargetLanguage(targetLanguage === 'en' ? 'de' : 'en')}
+              className="h-8 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 text-xs font-extrabold transition-all flex items-center space-x-1.5 shrink-0 shadow-2xs cursor-pointer text-slate-800 dark:text-slate-100 active:scale-95"
+              title="Çalışma Dilini Değiştir (Tıkla: İngilizce / Almanca)"
+            >
+              <span>{targetLanguage === 'de' ? '🇩🇪' : '🇬🇧'}</span>
+              <span>{targetLanguage === 'de' ? 'Almanca' : 'İngilizce'}</span>
+              <span className="text-[10px] text-slate-400 font-normal">⇄</span>
+            </button>
+
+            {/* Giriş yapılmışsa profil göstergesi; panelde ayrı giriş butonu gösterilmez (tek giriş portalda) */}
+            {currentUser && (
+              <div className="flex items-center space-x-1 shrink-0">
+                <button
+                  onClick={() => setActiveTab('portal')}
+                  className="h-8 px-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-extrabold cursor-pointer hover:bg-indigo-100 transition-colors inline-flex items-center space-x-1.5 whitespace-nowrap"
+                  title={`Kullanıcı Sayfası ve Profil Detayları: @${currentUser.username}`}
+                >
+                  <span>{userProfile.avatarEmoji || '👤'}</span>
+                  <span className="max-w-[70px] truncate">@{currentUser.username}</span>
+                  {currentUser.plan === 'pro' && (
+                    <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-indigo-600 text-white font-black">
+                      PRO
+                    </span>
+                  )}
+                </button>
+                <button
+                  onClick={() => PrivacyAuthService.logout()}
+                  className="h-8 w-8 rounded-xl bg-slate-100 hover:bg-rose-100 dark:bg-slate-800 dark:hover:bg-rose-950/50 text-slate-400 hover:text-rose-600 text-xs font-bold transition-colors cursor-pointer flex items-center justify-center shrink-0"
+                  title="Çıkış Yap"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
           </div>
-
-          {/* Akıllı Dil Değiştirici Kapsülü (Tek Tıkla Hızlı Geçiş: 🇬🇧 EN / 🇩🇪 DE) */}
-          <button
-            onClick={() => TargetLanguageService.setTargetLanguage(targetLanguage === 'en' ? 'de' : 'en')}
-            className="h-8 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 text-xs font-extrabold transition-all flex items-center space-x-1.5 shrink-0 shadow-2xs cursor-pointer text-slate-800 dark:text-slate-100 active:scale-95"
-            title="Çalışma Dilini Değiştir (Tıkla: İngilizce / Almanca)"
-          >
-            <span>{targetLanguage === 'de' ? '🇩🇪' : '🇬🇧'}</span>
-            <span>{targetLanguage === 'de' ? 'Almanca' : 'İngilizce'}</span>
-            <span className="text-[10px] text-slate-400 font-normal">⇄</span>
-          </button>
-
-          {/* Giriş yapılmışsa profil göstergesi; panelde ayrı giriş butonu gösterilmez (tek giriş portalda) */}
-          {currentUser && (
-            <div className="flex items-center space-x-1 shrink-0">
-              <button
-                onClick={() => setActiveTab('portal')}
-                className="h-8 px-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-extrabold cursor-pointer hover:bg-indigo-100 transition-colors inline-flex items-center space-x-1.5 whitespace-nowrap"
-                title={`Kullanıcı Sayfası ve Profil Detayları: @${currentUser.username}`}
-              >
-                <span>{userProfile.avatarEmoji || '👤'}</span>
-                <span className="max-w-[70px] truncate">@{currentUser.username}</span>
-                {currentUser.plan === 'pro' && (
-                  <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-indigo-600 text-white font-black">
-                    PRO
-                  </span>
-                )}
-              </button>
-              <button
-                onClick={() => PrivacyAuthService.logout()}
-                className="h-8 w-8 rounded-xl bg-slate-100 hover:bg-rose-100 dark:bg-slate-800 dark:hover:bg-rose-950/50 text-slate-400 hover:text-rose-600 text-xs font-bold transition-colors cursor-pointer flex items-center justify-center shrink-0"
-                title="Çıkış Yap"
-              >
-                ✕
-              </button>
-            </div>
-          )}
-        </div>
+        )}
       </header>
 
       {/* ==================== ANA ÇALIŞMA ALANI ==================== */}
@@ -863,6 +865,7 @@ export const App: React.FC = () => {
                     onNavigateToGames={() => setActiveTab('games')}
                     onNavigateToSpeak={() => setActiveTab('speak')}
                     onNavigateToTasks={() => setActiveTab('tasks')}
+                    onNavigateToPortal={() => setActiveTab('portal')}
                     onOpenInstallModal={() => setIsInstallModalOpen(true)}
                     userLevel={learningProgress.currentLevel}
                     pendingTaskCount={pendingTaskCount}

@@ -28,10 +28,13 @@ import {
   Eye,
   Briefcase,
   Smile,
-  MessageCircle
+  MessageCircle,
+  Download
 } from 'lucide-react';
 import { LearningStorageService } from '../../services/learningStorage';
 import { TargetLanguageService, SupportedLanguage } from '../../services/targetLanguageService';
+import { PrivacyAuthService, SafeUserSession } from '../../services/privacyAuthService';
+import { UserProfileService, UserProfile } from '../../services/userProfileService';
 import { ChirmoSubscriptionModal } from '../subscription/ChirmoSubscriptionModal';
 import { ChirmoAiChatModal } from './ChirmoAiChatModal';
 import { ChirmoFluencyBooster } from '../learning/ChirmoFluencyBooster';
@@ -57,6 +60,7 @@ export interface ChirmoVirtualTutorStudioProps {
   onNavigateToGames?: () => void;
   onNavigateToSpeak?: () => void;
   onNavigateToTasks?: () => void;
+  onNavigateToPortal?: () => void;
   onOpenInstallModal?: () => void;
   userLevel?: CEFRLevel;
   pendingTaskCount?: number;
@@ -69,6 +73,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   onNavigateToGames,
   onNavigateToSpeak,
   onNavigateToTasks,
+  onNavigateToPortal,
   onOpenInstallModal
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -90,6 +95,16 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   const [currentAccent, setCurrentAccent] = useState(LearningStorageService.getSelectedAccent());
   const [targetLang, setTargetLang] = useState<SupportedLanguage>(() => TargetLanguageService.getTargetLanguage());
   
+  // Kullanıcı ve Oturum Durumu (1. Görsel ile Tam Entegrasyon)
+  const [currentUser, setCurrentUser] = useState<SafeUserSession | null>(() =>
+    PrivacyAuthService.getCurrentUser()
+  );
+  const [userProfile, setUserProfile] = useState<UserProfile>(() =>
+    UserProfileService.getProfile()
+  );
+  const [streakDays, setStreakDays] = useState(() => LearningStorageService.getStreakDays());
+  const [totalXp, setTotalXp] = useState(() => LearningStorageService.getXP());
+
   // Görünüm modu: 'parkour' (Oyun Parkuru) veya 'quick' (Hızlı Araç Listesi)
   const [viewMode, setViewMode] = useState<'parkour' | 'quick'>('parkour');
 
@@ -97,10 +112,20 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   const [chestOpened, setChestOpened] = useState(false);
 
   useEffect(() => {
-    const unsub = TargetLanguageService.subscribe((lang) => {
+    const unsubLang = TargetLanguageService.subscribe((lang) => {
       setTargetLang(lang);
     });
-    return unsub;
+    const unsubAuth = PrivacyAuthService.onAuthStateChanged((u) => {
+      setCurrentUser(u);
+    });
+    const unsubProfile = UserProfileService.subscribe((p) => {
+      setUserProfile(p);
+    });
+    return () => {
+      unsubLang();
+      unsubAuth();
+      unsubProfile();
+    };
   }, []);
 
   // AI Teacher Speech State
@@ -167,7 +192,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
         <header className="w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-indigo-100 dark:border-slate-800 rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 shadow-sm flex flex-col gap-2.5 min-w-0">
           
           {/* Üst Sıra: Profil + Dil Seçici + Görünüm + Bildirim */}
-          <div className="flex items-center justify-between gap-2 min-w-0 w-full">
+          <div className="flex items-center justify-between gap-2 min-w-0 w-full flex-wrap sm:flex-nowrap">
             {/* Sol: Oyuncu Profili & Seviye */}
             <div className="flex items-center gap-2 sm:gap-3 min-w-0">
               <div
@@ -177,7 +202,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
               >
                 <div className="w-full h-full rounded-[10px] sm:rounded-2xl bg-white dark:bg-slate-900 overflow-hidden flex items-center justify-center">
                   <img
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
+                    src={userProfile.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"}
                     alt="Profil Avatar"
                     className="w-full h-full object-cover"
                     onError={(e) => {
@@ -186,16 +211,30 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                   />
                 </div>
                 <span className="absolute -bottom-1 -right-1 px-1 sm:px-1.5 py-0.2 rounded-full bg-amber-400 text-purple-950 font-black text-[9px] sm:text-[10px] border-2 border-white dark:border-slate-900 shadow-2xs">
-                  LVL 4
+                  LVL {userLevel || 4}
                 </span>
               </div>
 
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-1.5 min-w-0">
-                  <h2 className="text-xs sm:text-base font-black text-slate-900 dark:text-white truncate">
-                    Gezgin Öğrenci
+                  <h2 className="text-xs sm:text-base font-black text-slate-900 dark:text-white truncate flex items-center gap-1.5">
+                    {currentUser ? (
+                      <>
+                        <span className="text-indigo-600 dark:text-indigo-400">@{currentUser.username}</span>
+                        <span className="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 hidden xs:inline">
+                          ({userProfile.title || 'Gezgin Öğrenci'})
+                        </span>
+                        {currentUser.plan === 'pro' && (
+                          <span className="text-[8px] sm:text-[9px] px-1.5 py-0.2 rounded-full bg-indigo-600 text-white font-black shrink-0">
+                            PRO
+                          </span>
+                        )}
+                      </>
+                    ) : (
+                      <span>{userProfile.title || 'Gezgin Öğrenci'}</span>
+                    )}
                   </h2>
-                  <span className="hidden xs:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 text-[10px] sm:text-[11px] font-black border border-indigo-200/60 dark:border-indigo-800 shrink-0">
+                  <span className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 text-[10px] sm:text-[11px] font-black border border-indigo-200/60 dark:border-indigo-800 shrink-0">
                     <Compass className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                     <span>Bölüm 4</span>
                   </span>
@@ -207,9 +246,20 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
               </div>
             </div>
 
-            {/* Sağ: Dil Değiştirici & Görünüm Modu & Bildirim */}
-            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-              {/* Canlı Dil Seçici */}
+            {/* Sağ: 1. Görseldeki Alanlar + Dil Seçici & Görünüm & Bildirim */}
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 flex-wrap justify-end">
+              {/* 1. Görseldeki APK İndir Butonu */}
+              <button
+                type="button"
+                onClick={() => onOpenInstallModal && onOpenInstallModal()}
+                className="h-8 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/90 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 text-xs font-bold shadow-2xs cursor-pointer transition-all inline-flex items-center space-x-1.5 whitespace-nowrap shrink-0 active:scale-95"
+                title="Chirmo Android APK ve PWA İndir"
+              >
+                <Download className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                <span>APK</span>
+              </button>
+
+              {/* Canlı Dil Seçici (Daha fazla yazan tam hali: İngilizce | Almanca) */}
               <div className="inline-flex items-center p-0.5 sm:p-1 rounded-xl sm:rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
                 <button
                   type="button"
@@ -239,7 +289,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 </button>
               </div>
 
-              {/* Görünüm Modu Değiştirici: Hem Mobilde Hem Masaüstünde Kullanışlı */}
+              {/* Görünüm Modu Değiştirici */}
               <div className="inline-flex items-center p-0.5 sm:p-1 rounded-xl sm:rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
                 <button
                   type="button"
@@ -269,6 +319,19 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 </button>
               </div>
 
+              {/* 1. Görseldeki Kullanıcı Profil Butonu */}
+              {currentUser && (
+                <button
+                  type="button"
+                  onClick={() => onNavigateToPortal ? onNavigateToPortal() : (onNavigateToTasks && onNavigateToTasks())}
+                  className="h-8 px-2 sm:px-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-extrabold cursor-pointer hover:bg-indigo-100 transition-colors inline-flex items-center space-x-1.5 whitespace-nowrap shrink-0 active:scale-95"
+                  title={`Kullanıcı Sayfası ve Profil Detayları: @${currentUser.username}`}
+                >
+                  <span>🎓</span>
+                  <span className="max-w-[75px] truncate">@{currentUser.username}</span>
+                </button>
+              )}
+
               {/* Bildirim Çanı */}
               <button
                 type="button"
@@ -284,14 +347,14 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
             </div>
           </div>
 
-          {/* Alt Sıra: Oyun İstatistikleri (Mobilde Taşırmayan Yatay Kaydırmalı HUD) */}
+          {/* Alt Sıra: Oyun İstatistikleri (Daha Fazla Yazan Alanlar: SERİ: {streakDays} Gün, XP: {totalXp} XP) */}
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 w-full min-w-0">
             {/* Günlük Seri */}
             <div className="px-2.5 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/80 flex items-center gap-1.5 shrink-0 shadow-2xs">
               <Flame className="w-3.5 h-3.5 text-amber-500" />
               <div className="flex items-baseline gap-1">
                 <span className="text-[9px] uppercase font-bold text-amber-800 dark:text-amber-400">Seri:</span>
-                <span className="text-xs font-black text-amber-950 dark:text-amber-200">12 Gün</span>
+                <span className="text-xs font-black text-amber-950 dark:text-amber-200">{streakDays} Gün</span>
               </div>
             </div>
 
@@ -309,7 +372,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
               <Star className="w-3.5 h-3.5 text-purple-600 fill-purple-600" />
               <div className="flex items-baseline gap-1">
                 <span className="text-[9px] uppercase font-bold text-purple-800 dark:text-purple-400">XP:</span>
-                <span className="text-xs font-black text-purple-950 dark:text-purple-200">850</span>
+                <span className="text-xs font-black text-purple-950 dark:text-purple-200">{totalXp} XP</span>
               </div>
             </div>
 
