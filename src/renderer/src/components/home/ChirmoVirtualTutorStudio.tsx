@@ -102,8 +102,26 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   const [userProfile, setUserProfile] = useState<UserProfile>(() =>
     UserProfileService.getProfile()
   );
-  const [streakDays, setStreakDays] = useState(() => LearningStorageService.getStreakDays());
-  const [totalXp, setTotalXp] = useState(() => LearningStorageService.getXP());
+  const [streakDays, setStreakDays] = useState(() => {
+    try {
+      if (typeof LearningStorageService.getStreakDays === 'function') {
+        return LearningStorageService.getStreakDays();
+      }
+      return LearningStorageService.getProgress()?.streakDays || 1;
+    } catch {
+      return 1;
+    }
+  });
+  const [totalXp, setTotalXp] = useState(() => {
+    try {
+      if (typeof LearningStorageService.getXP === 'function') {
+        return LearningStorageService.getXP();
+      }
+      return LearningStorageService.getProgress()?.xp || 450;
+    } catch {
+      return 450;
+    }
+  });
 
   // Görünüm modu: 'parkour' (Oyun Parkuru) veya 'quick' (Hızlı Araç Listesi)
   const [viewMode, setViewMode] = useState<'parkour' | 'quick'>('parkour');

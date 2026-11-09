@@ -322,6 +322,14 @@ export class LearningStorageService {
     return p;
   }
 
+  public static getStreakDays(): number {
+    return this.getProgress().streakDays || 1;
+  }
+
+  public static getXP(): number {
+    return this.getProgress().xp || 450;
+  }
+
   // --- Learning Mode ---
   public static getLearningMode(): LearningMode {
     return (localStorage.getItem(STORAGE_KEYS.MODE) as LearningMode) || 'reading';
