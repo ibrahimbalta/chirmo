@@ -23,6 +23,7 @@ import {
   LIFE_CATEGORIES
 } from '../../services/lifePhraseBankService';
 import { TargetLanguageService, SupportedLanguage } from '../../services/targetLanguageService';
+import { InteractiveSentence } from './InteractiveSentence';
 
 interface LifePhraseBankViewProps {
   initialCategory?: LifeCategoryKey;
@@ -404,22 +405,20 @@ export const LifePhraseBankView: React.FC<LifePhraseBankViewProps> = ({
                       </button>
                     </div>
 
-                    {/* Ana Cümle (Hedef Dil) */}
+                    {/* Ana Cümle (Hedef Dil) & İnteraktif Kelime Çevirisi */}
                     <div className="mt-2 flex items-start justify-between gap-3">
                       <div className="flex-1">
-                        <div className="text-base sm:text-lg font-black text-slate-900 dark:text-white leading-snug">
-                          {item.phrase}
-                        </div>
+                        <InteractiveSentence
+                          sentence={item.phrase}
+                          translation={item.tr}
+                          language={item.targetLang}
+                          showDictionaryBreakdown={true}
+                        />
 
                         {/* Türkçe Fonetik / Okunuş İpucu */}
-                        <div className="mt-1 inline-flex items-center space-x-1 text-xs text-blue-600 dark:text-blue-400 font-semibold bg-blue-50 dark:bg-blue-950/50 px-2.5 py-0.5 rounded-lg">
+                        <div className="mt-2 inline-flex items-center space-x-1 text-xs text-blue-600 dark:text-blue-400 font-semibold bg-blue-50 dark:bg-blue-950/50 px-2.5 py-0.5 rounded-lg">
                           <span>🗣️</span>
                           <span>{item.phonetic}</span>
-                        </div>
-
-                        {/* Türkçe Karşılığı */}
-                        <div className="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 mt-2">
-                          👉 {item.tr}
                         </div>
                       </div>
 

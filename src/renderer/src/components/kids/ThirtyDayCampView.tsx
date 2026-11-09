@@ -28,6 +28,7 @@ import { LearningStorageService } from '../../services/learningStorage';
 import { UserProfileService, UserProfile } from '../../services/userProfileService';
 import { CampComparisonModal } from '../learning/CampComparisonModal';
 import { ChirmoInteractiveGraduationDialogueModal } from '../learning/ChirmoInteractiveGraduationDialogueModal';
+import { InteractiveSentence } from '../learning/InteractiveSentence';
 
 interface ThirtyDayCampViewProps {
   onDayCompleted?: (newProgress: StudentCampProgress) => void;
@@ -325,12 +326,12 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
               </button>
             </div>
 
-            <p className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
-              "{selectedMission.suggestedAnswer}"
-            </p>
-            <p className="text-xs text-slate-600 dark:text-slate-300 italic">
-              Türkçesi: {selectedMission.suggestedAnswerTr}
-            </p>
+            <InteractiveSentence
+              sentence={selectedMission.suggestedAnswer}
+              translation={selectedMission.suggestedAnswerTr}
+              language={selectedMission.language as ('en' | 'de')}
+              showDictionaryBreakdown={true}
+            />
 
             {/* Blok Kalıplar */}
             <div className="flex items-center flex-wrap gap-1.5 pt-2">

@@ -21,6 +21,7 @@ import { CurriculumService, RealLifeScenario } from '../../services/curriculumDa
 import { TargetLanguageService } from '../../services/targetLanguageService';
 import { LearningStorageService } from '../../services/learningStorage';
 import { AnalyticsService } from '../../services/analyticsService';
+import { InteractiveSentence } from './InteractiveSentence';
 
 export const RealLifeSimulatorStudio: React.FC = () => {
   const activeScenarios = CurriculumService.getScenarios();
@@ -223,12 +224,11 @@ export const RealLifeSimulatorStudio: React.FC = () => {
                 </button>
               </div>
 
-              <div className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 break-words">
-                "{selectedScenario.interactiveChallenge.aiQuestion}"
-              </div>
-              <div className="text-xs text-slate-500 dark:text-slate-400 break-words">
-                Türkçesi: {selectedScenario.interactiveChallenge.aiQuestionTr}
-              </div>
+              <InteractiveSentence
+                sentence={selectedScenario.interactiveChallenge.aiQuestion}
+                translation={selectedScenario.interactiveChallenge.aiQuestionTr}
+                showDictionaryBreakdown={true}
+              />
             </div>
 
             {/* OYUNCUNUN HAMLESİ (SESLİ VEYA YAZILI YANIT) */}
@@ -314,21 +314,14 @@ export const RealLifeSimulatorStudio: React.FC = () => {
                   {feedback.coachNote}
                 </div>
 
-                <div className="pt-2 border-t border-emerald-200/80 dark:border-emerald-800 text-xs">
-                  <span className="font-black text-emerald-950 dark:text-emerald-200">
+                <div className="pt-2 border-t border-emerald-200/80 dark:border-emerald-800 text-xs space-y-2">
+                  <span className="font-black text-emerald-950 dark:text-emerald-200 block">
                     Yerli Gibi En Doğal Cümle:
                   </span>
-                  <div className="text-indigo-600 dark:text-indigo-400 font-bold mt-1 flex items-center justify-between gap-2">
-                    <span className="break-words">"{feedback.naturalAlternative}"</span>
-                    <button
-                      type="button"
-                      onClick={() => handleSpeak(feedback.naturalAlternative)}
-                      className="cursor-pointer hover:scale-110 transition-transform p-1 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-600 shrink-0"
-                      title="Dinle"
-                    >
-                      <Volume2 className="w-4 h-4" />
-                    </button>
-                  </div>
+                  <InteractiveSentence
+                    sentence={feedback.naturalAlternative}
+                    showDictionaryBreakdown={true}
+                  />
                 </div>
               </div>
             )}
