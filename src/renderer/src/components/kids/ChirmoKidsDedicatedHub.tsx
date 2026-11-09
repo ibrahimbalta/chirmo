@@ -1855,7 +1855,11 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
       <div className="max-w-7xl mx-auto w-full space-y-5">
 
         {/* ==================== 1. LINGORIA TOP NAVIGATION & BRAND BAR ==================== */}
-        <header className="rounded-3xl bg-white/10 dark:bg-black/30 backdrop-blur-xl border border-white/20 shadow-2xl px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+        <header
+          className={`rounded-2xl sm:rounded-3xl bg-white/10 dark:bg-black/30 backdrop-blur-xl border border-white/20 shadow-2xl p-2.5 sm:px-4 sm:py-3 ${
+            activeLevelId !== null ? 'hidden sm:flex' : 'flex'
+          } flex-wrap items-center justify-between gap-2.5 sm:gap-3`}
+        >
           {/* Sol: Lingoria by Chirmo Kids Logo */}
           <div className="flex items-center space-x-3 cursor-pointer group" onClick={() => setActiveTab('games')}>
             <div className="relative">
@@ -2738,7 +2742,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
             {[
               { level: 1, tab: 'cards', name: 'Kelime Ormanı', icon: '🍃', desc: 'Görsel Kelime Kartları & Kelime Avı', stars: '⭐⭐⭐', color: 'from-emerald-500 to-green-600' },
               { level: 2, tab: 'chat', name: 'Konuşma Köyü', icon: '💬', desc: 'Çizgi Karakter Sohbeti & Canlı Diyalog', stars: '⭐⭐⭐', color: 'from-blue-500 to-indigo-600' },
@@ -2751,21 +2755,21 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
             ].map((lvl) => (
               <div
                 key={lvl.level}
-                className="rounded-3xl p-4 bg-white/95 dark:bg-slate-900/95 text-slate-900 dark:text-white border-2 border-purple-300 dark:border-slate-800 shadow-xl flex flex-col justify-between space-y-3 hover:border-amber-400 transition-all hover:scale-102"
+                className="rounded-2xl sm:rounded-3xl p-3 sm:p-4 bg-white/95 dark:bg-slate-900/95 text-slate-900 dark:text-white border-2 border-purple-300 dark:border-slate-800 shadow-xl flex flex-col justify-between space-y-2 sm:space-y-3 hover:border-amber-400 transition-all hover:scale-102"
               >
                 <div className="flex items-center justify-between">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 text-white flex items-center justify-center text-xl shadow-md">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 text-white flex items-center justify-center text-lg sm:text-xl shadow-md">
                     {lvl.icon}
                   </div>
                   <div className="flex flex-col items-end">
-                    <span className="text-[10px] font-black uppercase text-amber-500">Seviye {lvl.level}</span>
-                    <span className="text-[10px] text-amber-400 font-bold">{lvl.stars}</span>
+                    <span className="text-[9px] sm:text-[10px] font-black uppercase text-amber-500">Seviye {lvl.level}</span>
+                    <span className="text-[9px] sm:text-[10px] text-amber-400 font-bold">{lvl.stars}</span>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-black text-slate-900 dark:text-white">{lvl.name}</h3>
-                  <p className="text-[11px] text-slate-500 leading-snug line-clamp-2 mt-0.5">{lvl.desc}</p>
+                  <h3 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white truncate">{lvl.name}</h3>
+                  <p className="text-[10px] sm:text-[11px] text-slate-500 leading-tight line-clamp-2 mt-0.5">{lvl.desc}</p>
                 </div>
 
                 <button
@@ -2775,10 +2779,10 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                     setActiveTab(lvl.tab as any);
                     handleAwardStars(5, `${lvl.name} Bölümüne Giriş Yaptın!`);
                   }}
-                  className="w-full py-2 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white font-black text-xs shadow-md transition-all flex items-center justify-center space-x-1 cursor-pointer active:scale-95"
+                  className="w-full py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white font-black text-[11px] sm:text-xs shadow-md transition-all flex items-center justify-center space-x-1 cursor-pointer active:scale-95"
                 >
-                  <span>Bölüme Başla</span>
-                  <Play className="w-3.5 h-3.5 fill-current" />
+                  <span>Başla</span>
+                  <Play className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
                 </button>
               </div>
             ))}
@@ -3421,16 +3425,16 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
             </div>
 
             {/* Zengin Kart Izgarası */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
               {filteredVocab.map((card) => (
                 <div
                   key={card.id}
-                  className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-pink-100 dark:border-slate-800 shadow-md hover:shadow-xl transition-all flex flex-col justify-between space-y-3 group hover:scale-[1.02] relative overflow-hidden"
+                  className="p-3 sm:p-5 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border-2 border-pink-100 dark:border-slate-800 shadow-md hover:shadow-xl transition-all flex flex-col justify-between space-y-2 sm:space-y-3 group hover:scale-[1.02] relative overflow-hidden"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-4xl group-hover:scale-125 transition-transform">{card.emoji}</span>
-                    <div className="flex items-center space-x-1.5">
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-pink-50 dark:bg-pink-950 text-pink-600 dark:text-pink-300">
+                    <span className="text-3xl sm:text-4xl group-hover:scale-125 transition-transform">{card.emoji}</span>
+                    <div className="flex items-center space-x-1 sm:space-x-1.5">
+                      <span className="text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-pink-50 dark:bg-pink-950 text-pink-600 dark:text-pink-300">
                         {card.category}
                       </span>
                       <button
@@ -3439,30 +3443,30 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                           handleSpeak(card.en);
                           handleAwardStars(2, 'Kelime Dinlendi');
                         }}
-                        className="w-9 h-9 rounded-full bg-pink-100 dark:bg-pink-950 text-pink-600 dark:text-pink-300 flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-xs cursor-pointer"
+                        className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-pink-100 dark:bg-pink-950 text-pink-600 dark:text-pink-300 flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-xs cursor-pointer"
                         title="Kelimeyi Dinle"
                       >
-                        <Volume2 className="w-4 h-4" />
+                        <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       </button>
                     </div>
                   </div>
 
                   <div>
-                    <div className="text-xl font-black text-slate-900 dark:text-white">
+                    <div className="text-base sm:text-xl font-black text-slate-900 dark:text-white">
                       {card.en}
                     </div>
-                    <div className="text-xs font-bold text-pink-600 dark:text-pink-400 mt-0.5">
+                    <div className="text-[11px] sm:text-xs font-bold text-pink-600 dark:text-pink-400 mt-0.5">
                       {card.tr}
                     </div>
                   </div>
 
-                  <div className="p-3 rounded-2xl bg-amber-50 dark:bg-slate-800/80 text-[11px] text-slate-700 dark:text-slate-300 font-medium">
+                  <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-amber-50 dark:bg-slate-800/80 text-[10px] sm:text-[11px] text-slate-700 dark:text-slate-300 font-medium">
                     <span className="font-bold text-amber-700 dark:text-amber-400">💡 Biliyor musun?</span> {card.funFact}
                   </div>
 
-                  <div className="p-2.5 rounded-xl bg-purple-50/70 dark:bg-slate-800/50 border border-purple-100 dark:border-slate-800 text-[11px]">
+                  <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-purple-50/70 dark:bg-slate-800/50 border border-purple-100 dark:border-slate-800 text-[10px] sm:text-[11px]">
                     <div className="font-bold text-purple-700 dark:text-purple-300">"{card.soundText}"</div>
-                    <div className="text-slate-500 text-[10px]">{card.exampleTr}</div>
+                    <div className="text-slate-500 text-[9px] sm:text-[10px]">{card.exampleTr}</div>
                   </div>
 
                   <button
@@ -3471,10 +3475,10 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                       handleSpeak(card.soundText);
                       handleAwardStars(3, 'Cümle Tekrarı Yapıldı');
                     }}
-                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-black text-xs shadow-xs transition-all cursor-pointer flex items-center justify-center space-x-1"
+                    className="w-full py-1.5 sm:py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-black text-[11px] sm:text-xs shadow-xs transition-all cursor-pointer flex items-center justify-center space-x-1"
                   >
-                    <Volume2 className="w-3.5 h-3.5" />
-                    <span>Cümleyi Dinle & Tekrar Et! 🎤</span>
+                    <Volume2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                    <span className="truncate">Cümleyi Dinle 🎤</span>
                   </button>
                 </div>
               ))}
@@ -3876,8 +3880,8 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                   </button>
                 </div>
 
-                {/* 4 Kolon */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {/* 4 Kolon (Mobilde 2x2 Izgara) */}
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
                   {/* Kolon 1: Özne */}
                   <div className="p-3.5 rounded-2xl bg-blue-50/80 dark:bg-slate-800/80 border border-blue-200 dark:border-blue-900/50 space-y-2">
                     <span className="text-[11px] font-black text-blue-700 dark:text-blue-300 uppercase flex items-center space-x-1">
@@ -4030,7 +4034,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
         {activeTab === 'animals' && (() => {
           const currentAnimals = targetLang === 'de' ? GERMAN_SAFARI_ANIMALS : SAFARI_ANIMALS;
           return (
-            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border-2 border-emerald-200 dark:border-slate-800 shadow-xl space-y-6">
+            <div className="p-3.5 sm:p-8 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border-2 border-emerald-200 dark:border-slate-800 shadow-xl space-y-4 sm:space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
                 <div>
                   <span className="text-[11px] font-black uppercase text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-2.5 py-1 rounded-full">
@@ -4100,7 +4104,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
           const activeColor = currentColors.find((c) => c.id === activeColorId) || currentColors[0];
 
           return (
-            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border-2 border-rose-200 dark:border-slate-800 shadow-xl space-y-6">
+            <div className="p-3.5 sm:p-8 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border-2 border-rose-200 dark:border-slate-800 shadow-xl space-y-4 sm:space-y-6">
               <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
                 <span className="text-[11px] font-black uppercase text-rose-600 bg-rose-50 dark:bg-rose-950 px-2.5 py-1 rounded-full">
                   🎨 Renkler & Nesneler
