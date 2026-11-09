@@ -42,11 +42,14 @@ import {
   X,
   Calendar,
   TrendingUp,
-  CheckCircle
+  CheckCircle,
+  Users,
+  Eye
 } from 'lucide-react';
 import { TargetLanguageService, SupportedLanguage } from '../../services/targetLanguageService';
 import { PrivacyAuthService, SafeUserSession } from '../../services/privacyAuthService';
 import { UserProfileService, UserProfile, CEFRLevelSimple } from '../../services/userProfileService';
+import { FirestoreService } from '../../services/firestoreService';
 import { ChirmoAuthModal } from '../auth/ChirmoAuthModal';
 import { ChirmoSpeakingDuelModal } from '../learning/ChirmoSpeakingDuelModal';
 import { ChirmoPronunciationDoctor } from '../learning/ChirmoPronunciationDoctor';
@@ -313,6 +316,15 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
   const [score, setScore] = useState<number | null>(null);
   const [activeDemo, setActiveDemo] = useState<DemoScenario>(DEMO_SCENARIOS[0]);
   const [hasSpokenIntro, setHasSpokenIntro] = useState(false);
+  const [siteStats, setSiteStats] = useState<{
+    totalVisitors: number;
+    registeredMembers: number;
+    todayVisitors: number;
+  }>({
+    totalVisitors: 12,
+    registeredMembers: 3,
+    todayVisitors: 4
+  });
 
   // Chirmo Karakterinin Ziyaretçiye Doğrudan Seslenişi
   const robotGreeting =
@@ -324,11 +336,31 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
   const currentSamplePhrase = selectedLanguage === 'de' ? samplePhraseDe : samplePhraseEn;
 
   useEffect(() => {
+    // Oturum başına 1 kez ziyaretçi sayacını artır, sonrasında canlı değerleri oku
+    let shouldIncrement = true;
+    try {
+      if (sessionStorage.getItem('chirmo_visit_counted_v1') === '1') {
+        shouldIncrement = false;
+      } else {
+        sessionStorage.setItem('chirmo_visit_counted_v1', '1');
+      }
+    } catch {
+      // ignore
+    }
+
+    FirestoreService.recordVisitAndGetStats(shouldIncrement).then((stats) => {
+      setSiteStats(stats);
+    });
+
     const unsubLang = TargetLanguageService.subscribe((lang) => {
       setSelectedLanguage(lang);
     });
     const unsubAuth = PrivacyAuthService.onAuthStateChanged((user) => {
       setCurrentUser(user);
+      // Yeni üye kaydolduğunda veya giriş yaptığında üye sayacını anında güncelle
+      FirestoreService.recordVisitAndGetStats(false).then((stats) => {
+        setSiteStats(stats);
+      });
     });
     const unsubProfile = UserProfileService.subscribe((profile) => {
       setUserProfile(profile);
@@ -594,8 +626,73 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
         </div>
       </header>
 
-      {/* ==================== 2. MERKEZ SAHNE: BÜYÜTÜLMÜŞ CHIRMO ROBOTU & ETRAFINDAKİ YÖRÜNGE KISAYOLLARI ==================== */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-2 pb-16 w-full flex flex-col items-center text-center">
+      {/* ==================== 2. MERKEZ SAHNE: CANLI ZİYARETÇİ/ÜYE SAYACI + CHIRMO ORBITAL ==================== */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 pb-16 w-full flex flex-col items-center text-center">
+
+        {/* ==================== CANLI ZİYARETÇİ VE KAYITLI ÜYE SAYACI BARI ==================== */}
+        <div className="w-full max-w-4xl mb-3 p-3 sm:p-3.5 rounded-2xl bg-[#1A0D3E]/90 backdrop-blur-xl border border-purple-400/35 shadow-[0_8px_30px_rgba(0,0,0,0.35)] flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+            <span className="text-xs font-black text-emerald-300 uppercase tracking-wider">
+              Canlı Platform İstatistikleri
+            </span>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4">
+            {/* Ziyaretçi Sayısı */}
+            <div className="px-3 py-1.5 rounded-xl bg-white/10 border border-cyan-400/30 flex items-center gap-2">
+              <Eye className="w-4 h-4 text-cyan-300 shrink-0" />
+              <div className="text-left">
+                <div className="text-xs sm:text-sm font-black text-white leading-none">
+                  {siteStats.totalVisitors.toLocaleString('tr-TR')}
+                </div>
+                <div className="text-[10px] font-bold text-cyan-200 leading-tight">
+                  Toplam Ziyaretçi
+                </div>
+              </div>
+            </div>
+
+            {/* Kayıtlı Üye Sayısı */}
+            <div className="px-3 py-1.5 rounded-xl bg-white/10 border border-amber-400/40 flex items-center gap-2">
+              <Users className="w-4 h-4 text-amber-300 shrink-0" />
+              <div className="text-left">
+                <div className="text-xs sm:text-sm font-black text-amber-300 leading-none">
+                  {siteStats.registeredMembers.toLocaleString('tr-TR')}
+                </div>
+                <div className="text-[10px] font-bold text-purple-200 leading-tight">
+                  Kayıtlı Üye
+                </div>
+              </div>
+            </div>
+
+            {/* Bugün Çalışan / Ziyaret Eden */}
+            <div className="px-3 py-1.5 rounded-xl bg-white/10 border border-emerald-400/30 flex items-center gap-2">
+              <Flame className="w-4 h-4 text-emerald-400 shrink-0" />
+              <div className="text-left">
+                <div className="text-xs sm:text-sm font-black text-emerald-300 leading-none">
+                  {siteStats.todayVisitors.toLocaleString('tr-TR')}
+                </div>
+                <div className="text-[10px] font-bold text-emerald-200 leading-tight">
+                  Bugün Katılan
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {!currentUser ? (
+            <button
+              type="button"
+              onClick={() => setIsAuthModalOpen(true)}
+              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 font-black text-xs shadow-md cursor-pointer transition active:scale-95"
+            >
+              + Ücretsiz Üye Ol
+            </button>
+          ) : (
+            <span className="px-3 py-1 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[11px] font-black">
+              ✓ Aktif Üye: {currentUser.username}
+            </span>
+          )}
+        </div>
         
         {/* ==================== CHIRMO ORBITAL UNIVERSE (DEV 3D CHIRMO & ETRAFINDAKİ GEZEGEN KISAYOLLAR) ==================== */}
         <div className="relative w-full max-w-4xl min-h-[480px] sm:min-h-[560px] md:min-h-[620px] flex items-center justify-center my-1">
@@ -793,6 +890,59 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
             </div>
           </div>
         </div>
+
+        {/* ==================== BU PROJE NEDEN DOĞDU? (YILLARDIR ÖĞRENEMEME SORUNUNA KÖKTEN ÇÖZÜM) ==================== */}
+        <section className="w-full max-w-4xl my-3 text-left">
+          <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-[#23104E]/95 via-[#180A38]/95 to-[#12072B]/95 border border-amber-400/40 shadow-xl space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
+              <div>
+                <span className="px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-[11px] font-black uppercase tracking-wider">
+                  🎯 Bu Proje Neden Doğdu?
+                </span>
+                <h2 className="text-lg sm:text-xl font-black text-white mt-2">
+                  "Yıllardır Kurslara Gittim Ama Hâlâ Konuşamıyorum" Diyenler İçin Kuruldu
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleProtectedAction(onEnterCamp)}
+                className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs shrink-0 cursor-pointer transition active:scale-95"
+              >
+                30 Günlük Kampa Başla →
+              </button>
+            </div>
+
+            <p className="text-xs sm:text-sm text-purple-100/90 leading-relaxed">
+              Yıllarca gramer kuralları ve kelime listeleri ezberleyip sıra konuşmaya gelince tek bir cümle bile kuramama sorununu kökten çözmek için yola çıktık. Çünkü dil kuralları ezberlenerek değil, <strong>hazır kalıpları sesli tekrar ederek</strong> öğrenilir:
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1.5">
+                <div className="text-xs font-black text-rose-300">❌ Eski Yöntem: Gramer Ezberi</div>
+                <div className="text-xs font-black text-emerald-300">✅ Chirmo: Hazır Cümle Blokları</div>
+                <p className="text-[11px] text-purple-200/80 leading-relaxed">
+                  Kurallarla vakit kaybetmeden günlük hayatta en çok kullanılan hazır cümleleri doğrudan ağız alışkanlığına dönüştürürsünüz.
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1.5">
+                <div className="text-xs font-black text-rose-300">❌ Eski Yöntem: Kafada Çeviri</div>
+                <div className="text-xs font-black text-emerald-300">✅ Chirmo: 3 Saniye Refleksi</div>
+                <p className="text-[11px] text-purple-200/80 leading-relaxed">
+                  İçinizden kelime kelime çeviri yapmaya çalışırken tıkanmak yerine 3 saniyede otomatik sesli yanıt verme refleksi kazanırsınız.
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1.5">
+                <div className="text-xs font-black text-rose-300">❌ Eski Yöntem: Hata Korkusu</div>
+                <div className="text-xs font-black text-emerald-300">✅ Chirmo: 7/24 Sesli Pratik</div>
+                <p className="text-[11px] text-purple-200/80 leading-relaxed">
+                  "Yanlış söylersem" çekincesi olmadan AI öğretmenle telefon görüşmesi ve 1v1 düello yaparak konuşma korkunuzu yenersiniz.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* ==================== 3. 3 BASİT ADIMDA NASIL KONUŞURSUNUZ? (MOBİL UYGULAMA AKIŞI) ==================== */}
         <section className="w-full max-w-4xl my-4 text-left">

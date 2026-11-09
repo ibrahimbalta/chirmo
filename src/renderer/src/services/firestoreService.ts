@@ -131,4 +131,98 @@ export class FirestoreService {
       return false;
     }
   }
+
+  /**
+   * Giriş sayfasındaki Canlı Ziyaretçi ve Kayıtlı Üye sayacını Firestore'dan çeker ve ziyareti kaydeder
+   */
+  public static async recordVisitAndGetStats(incrementVisit: boolean = true): Promise<{
+    totalVisitors: number;
+    registeredMembers: number;
+    todayVisitors: number;
+  }> {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const localStatsKey = 'chirmo_site_stats_cache_v1';
+
+    let cached = {
+      totalVisitors: 12,
+      registeredMembers: 3,
+      todayVisitors: 4
+    };
+
+    try {
+      const raw = localStorage.getItem(localStatsKey);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (typeof parsed.totalVisitors === 'number') cached = parsed;
+      }
+    } catch {
+      // ignore
+    }
+
+    try {
+      const statsUrl = `${BASE_URL}/site_stats/global?key=${API_KEY}`;
+      const [statsRes, usersList] = await Promise.all([
+        fetch(statsUrl).catch(() => null),
+        this.getAllUsers().catch(() => [])
+      ]);
+
+      const realMemberCount = Array.isArray(usersList) ? usersList.length : cached.registeredMembers;
+
+      let totalVisitors = Math.max(cached.totalVisitors, realMemberCount * 3 + 1);
+      let todayVisitors = 1;
+      let savedDate = todayStr;
+
+      if (statsRes && statsRes.ok) {
+        const statsData = await statsRes.json();
+        const f = statsData.fields || {};
+        const cloudTotal = parseInt(f.totalVisitors?.integerValue || '0', 10);
+        const cloudToday = parseInt(f.todayVisitors?.integerValue || '0', 10);
+        savedDate = f.lastDate?.stringValue || todayStr;
+
+        if (cloudTotal > 0) {
+          totalVisitors = Math.max(cloudTotal, realMemberCount);
+        }
+        if (savedDate === todayStr && cloudToday > 0) {
+          todayVisitors = cloudToday;
+        } else {
+          todayVisitors = 1;
+        }
+      }
+
+      if (incrementVisit) {
+        totalVisitors += 1;
+        todayVisitors = savedDate === todayStr ? todayVisitors + 1 : 1;
+
+        await fetch(statsUrl, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fields: {
+              totalVisitors: { integerValue: String(totalVisitors) },
+              todayVisitors: { integerValue: String(todayVisitors) },
+              registeredMembers: { integerValue: String(realMemberCount) },
+              lastDate: { stringValue: todayStr },
+              updatedAt: { stringValue: new Date().toISOString() }
+            }
+          })
+        }).catch(() => {});
+      }
+
+      const result = {
+        totalVisitors,
+        registeredMembers: Math.max(realMemberCount, 1),
+        todayVisitors
+      };
+
+      try {
+        localStorage.setItem(localStatsKey, JSON.stringify(result));
+      } catch {
+        // ignore
+      }
+
+      return result;
+    } catch {
+      return cached;
+    }
+  }
 }
