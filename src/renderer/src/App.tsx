@@ -22,7 +22,8 @@ import {
   Compass,
   Smile,
   Film,
-  Layers
+  Layers,
+  GraduationCap
 } from 'lucide-react';
 import { ChirmoLogo } from './components/common/ChirmoLogo';
 import { BrowserContainer, PageSentenceItem } from './components/browser/BrowserContainer';
@@ -43,6 +44,7 @@ import { ChirmoKidsDedicatedHub } from './components/kids/ChirmoKidsDedicatedHub
 import { WatchingView } from './components/learning/WatchingView';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { LifePhraseBankView } from './components/learning/LifePhraseBankView';
+import { ChirmoMasterTeacherModal } from './components/learning/ChirmoMasterTeacherModal';
 import { LearningStorageService } from './services/learningStorage';
 import { UserProfileService, UserProfile } from './services/userProfileService';
 import { PrivacyAuthService, SafeUserSession } from './services/privacyAuthService';
@@ -82,6 +84,8 @@ export const App: React.FC = () => {
 
   // Mobil Uygulama & APK İndirme Modalı
   const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
+  // 50 Yıllık Hoca Masası Modalı
+  const [isMasterTeacherOpen, setIsMasterTeacherOpen] = useState(false);
 
   // Kişiye Özel Kullanıcı Profili (Her tarayıcıda bağımsız ve özel)
   const [userProfile, setUserProfile] = useState<UserProfile>(() => UserProfileService.getProfile());
@@ -726,6 +730,17 @@ export const App: React.FC = () => {
               <Download className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 group-hover:text-white group-hover:translate-y-0.5 transition-all duration-200" />
               <span>APK</span>
             </button>
+
+            {/* 10. 🎓 50 Yıllık Hoca Masası (Altın Pedagoji) */}
+            <button
+              type="button"
+              onClick={() => setIsMasterTeacherOpen(true)}
+              className="h-8 px-3 rounded-xl text-xs font-black transition-all duration-200 cursor-pointer inline-flex items-center space-x-1.5 shrink-0 whitespace-nowrap bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white shadow-xs hover:shadow-md hover:scale-105 active:scale-95 group ring-1 ring-amber-300/60"
+              title="50 Yıllık Hocanın Dil Çözüm İstasyonu (Gölgeleme, 100 Hata Radarı, Almanca Artikel, Cankurtaran Kiti)"
+            >
+              <GraduationCap className="w-3.5 h-3.5 text-white animate-pulse" />
+              <span>Hoca Masası</span>
+            </button>
           </nav>
         </div>
 
@@ -1099,6 +1114,13 @@ export const App: React.FC = () => {
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
         onProfileUpdated={(updated) => setUserProfile(updated)}
+      />
+
+      {/* 50 Yıllık Hocanın Dil Çözüm İstasyonu (Gölgeleme, 100 Hata Radarı, Almanca Artikel, Cankurtaran Kiti, Alet Çantası) */}
+      <ChirmoMasterTeacherModal
+        isOpen={isMasterTeacherOpen}
+        onClose={() => setIsMasterTeacherOpen(false)}
+        onRewardXP={() => setLearningProgress({ ...LearningStorageService.getProgress() })}
       />
 
       {/* ==================== MOBİL ALT MENÜ (SMARTPHONE BOTTOM NAV - 7 TEMEL BÖLÜM) ==================== */}

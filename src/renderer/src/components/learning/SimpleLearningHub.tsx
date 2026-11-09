@@ -39,6 +39,7 @@ import { ChirmoReflexDrillModal } from './ChirmoReflexDrillModal';
 import { ChirmoLegoChunkingModal } from './ChirmoLegoChunkingModal';
 import { ChirmoGermanGenderMasteryModal } from './ChirmoGermanGenderMasteryModal';
 import { ChirmoCareerTrackModal } from './ChirmoCareerTrackModal';
+import { ChirmoMasterTeacherModal } from './ChirmoMasterTeacherModal';
 
 export type LearningHubTab =
   | 'camp'
@@ -79,6 +80,7 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
   const [isLegoModalOpen, setIsLegoModalOpen] = useState(false);
   const [isGermanGenderModalOpen, setIsGermanGenderModalOpen] = useState(false);
   const [isCareerModalOpen, setIsCareerModalOpen] = useState(false);
+  const [isMasterTeacherOpen, setIsMasterTeacherOpen] = useState(false);
 
   useEffect(() => {
     return TargetLanguageService.subscribe((lang) => setTargetLang(lang));
@@ -209,6 +211,17 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
             <span className="px-2 py-0.5 rounded-lg bg-purple-50 dark:bg-purple-950/50 border border-purple-200 dark:border-purple-900/60 text-purple-700 dark:text-purple-300 text-[11px] font-black">
               ⭐ {campProgress.totalXp} XP
             </span>
+
+            {/* 🎓 50 Yıllık Hoca İstasyonu */}
+            <button
+              type="button"
+              onClick={() => setIsMasterTeacherOpen(true)}
+              className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white font-black text-[11px] transition cursor-pointer shadow-xs flex items-center space-x-1 active:scale-95 ring-1 ring-amber-300"
+              title="50 Yıllık Hocanın Dil Çözüm İstasyonu (Gölgeleme, 100 Hata, Almanca Artikel, Cankurtaran Kiti)"
+            >
+              <span>🎓</span>
+              <span>Hoca Masası</span>
+            </button>
 
             {/* Metot Butonları */}
             <button
@@ -970,6 +983,13 @@ export const SimpleLearningHub: React.FC<SimpleLearningHubProps> = ({
       <ChirmoCareerTrackModal
         isOpen={isCareerModalOpen}
         onClose={() => setIsCareerModalOpen(false)}
+      />
+
+      {/* 50 Yıllık Hocanın Dil Çözüm İstasyonu */}
+      <ChirmoMasterTeacherModal
+        isOpen={isMasterTeacherOpen}
+        onClose={() => setIsMasterTeacherOpen(false)}
+        onRewardXP={() => setCampProgress(CampStorageService.getProgress())}
       />
     </div>
   );
