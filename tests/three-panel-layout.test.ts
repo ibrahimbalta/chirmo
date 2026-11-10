@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 
-describe('Chirmo 3-Column Learning Dashboard & Sidebar Layout', () => {
+describe('Chirmo Learning Dashboard & Sidebar Layout', () => {
   it('has LearningCenterSidebar component with navigation items and daily goal', () => {
     const filePath = path.resolve(__dirname, '../src/renderer/src/components/home/LearningCenterSidebar.tsx');
     expect(fs.existsSync(filePath)).toBe(true);
@@ -19,7 +19,7 @@ describe('Chirmo 3-Column Learning Dashboard & Sidebar Layout', () => {
     expect(content).toContain('Hafıza Testleri');
     expect(content).toContain('Gelişim Raporum');
     expect(content).toContain('Günlük Hedefim');
-    expect(content).toContain('Chirmo Pro\'ya Geç');
+    expect(content).toContain("Chirmo Pro'ya Geç");
   });
 
   it('has ChirmoAiTeacherSidebar component with greeting, daily word, and recommendations', () => {
@@ -36,32 +36,21 @@ describe('Chirmo 3-Column Learning Dashboard & Sidebar Layout', () => {
     expect(content).toContain('Chirmo Önerisi');
   });
 
-  it('integrates 3-panel dashboard in App.tsx with responsive desktop/mobile containers', () => {
+  it('integrates Executive Pro Student Panel and core learning hubs in App.tsx', () => {
     const appPath = path.resolve(__dirname, '../src/renderer/src/App.tsx');
     const content = fs.readFileSync(appPath, 'utf-8');
 
-    expect(content).toContain('<LearningCenterSidebar');
     expect(content).toContain('<SimpleSearchHome');
-    expect(content).toContain('<ChirmoAiTeacherSidebar');
+    expect(content).toContain('<SimpleLearningHub');
+    expect(content).toContain('<LifePhraseBankView');
+    expect(content).toContain('<RealLifeSimulatorStudio');
   });
 
-  it('provides accordion sliding buttons to smoothly expand and collapse left & right sidebars', () => {
+  it('provides AI Tutor drawer toggle and mobile/desktop navigation in App.tsx', () => {
     const appPath = path.resolve(__dirname, '../src/renderer/src/App.tsx');
     const content = fs.readFileSync(appPath, 'utf-8');
 
-    // Sol panel akordiyon geçişleri ve kaydırma butonu
-    expect(content).toContain('isLeftSidebarOpen ? \'w-64\' : \'w-0\'');
-    expect(content).toContain('isLeftSidebarOpen ? \'left-64\' : \'left-0\'');
-    expect(content).toContain('setIsLeftSidebarOpen(!isLeftSidebarOpen)');
-    expect(content).toContain('Öğrenme Merkezini Sağa Kaydırarak Aç');
-
-    // Sağ panel akordiyon geçişleri ve kaydırma butonu
-    expect(content).toContain('isTutorOpen ? \'w-72\' : \'w-0\'');
-    expect(content).toContain('isTutorOpen ? \'right-72\' : \'right-0\'');
-    expect(content).toContain('setIsTutorOpen(!isTutorOpen)');
-    expect(content).toContain('Chirmo AI Öğretmeni Sola Kaydırarak Aç');
-
-    // Orta panelin akordiyon kapanınca genişlemesi
-    expect(content).toContain('transition-all duration-300');
+    expect(content).toContain('setIsTutorOpen');
+    expect(content).toContain('<SimpleAiTutorDrawer');
   });
 });

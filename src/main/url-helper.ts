@@ -29,8 +29,12 @@ export function resolveUrlOrSearch(input: string, searchEngine = 'google'): stri
   }
 
   // Check if it's localhost or an IP address
-  if (LOCALHOST_REGEX.test(trimmed) || IP_REGEX.test(trimmed)) {
-    return buildSearchUrl(trimmed, searchEngine);
+  if (LOCALHOST_REGEX.test(trimmed)) {
+    return `http://${trimmed}`;
+  }
+
+  if (IP_REGEX.test(trimmed)) {
+    return `http://${trimmed}`;
   }
 
   // Check if it looks like a domain name without spaces

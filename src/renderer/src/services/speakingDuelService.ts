@@ -401,7 +401,10 @@ export class SpeakingDuelService {
       { name: 'Lukas Weber', flag: '🇩🇪', avatar: '🧑‍🏫' },
       { name: 'Elena Petrov', flag: '🇨🇿', avatar: '👩‍🏫' },
       { name: 'Liam Smith', flag: '🇬🇧', avatar: '👨‍💼' },
-      { name: 'Marco Rossi', flag: '🇮🇹', avatar: '🧑‍🎨' }
+      { name: 'Marco Rossi', flag: '🇮🇹', avatar: '🧑‍🎨' },
+      { name: 'Sofia Garcia', flag: '🇪🇸', avatar: '👩‍🎨' },
+      { name: 'Lucas Martin', flag: '🇫🇷', avatar: '👨‍🍳' },
+      { name: 'Hanna Müller', flag: '🇦🇹', avatar: '👩‍⚕️' }
     ];
 
     const entries: Array<{
@@ -413,7 +416,7 @@ export class SpeakingDuelService {
       isRealUser?: boolean;
       level?: string;
     }> = botProfiles.map((bot, index) => {
-      const factor = (6 - index) / 7;
+      const factor = (9 - index) / 10;
       const botXP = Math.round(base + diff * factor * 0.92);
       return {
         name: bot.name,
@@ -453,7 +456,7 @@ export class SpeakingDuelService {
 
     entries.sort((a, b) => b.xp - a.xp);
 
-    return entries.slice(0, 12).map((entry, idx) => {
+    return entries.slice(0, 10).map((entry, idx) => {
       const rank = idx + 1;
       let status: 'promote' | 'stay' | 'demote' = 'stay';
       if (rank <= 3) status = 'promote';
