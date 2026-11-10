@@ -1133,7 +1133,7 @@ export class ComprehensiveDictionaryService {
   /**
    * Kelimeyi sözlükten arar, bulunamazsa ekleri temizleyip kökü bulur.
    */
-  public static lookup(rawWord: string, _lang: 'en' | 'de' = 'en'): ComprehensiveWordEntry {
+  public static lookup(rawWord: string, _lang: 'en' | 'de' | 'fr' = 'en'): ComprehensiveWordEntry {
     if (!rawWord) {
       return {
         word: '',
@@ -1304,7 +1304,7 @@ export class ComprehensiveDictionaryService {
    * "Excuse me, I actually ordered an iced coffee."
    * -> [Excuse me, actually, ordered, iced, coffee]
    */
-  public static analyzeSentence(sentence: string, lang: 'en' | 'de' = 'en'): ComprehensiveWordEntry[] {
+  public static analyzeSentence(sentence: string, lang: 'en' | 'de' | 'fr' = 'en'): ComprehensiveWordEntry[] {
     if (!sentence || typeof sentence !== 'string') return [];
 
     const results: ComprehensiveWordEntry[] = [];

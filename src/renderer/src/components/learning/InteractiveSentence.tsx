@@ -6,7 +6,7 @@ import { LearningStorageService } from '../../services/learningStorage';
 interface InteractiveSentenceProps {
   sentence: string;
   translation?: string;
-  language?: 'en' | 'de';
+  language?: 'en' | 'de' | 'fr';
   showDictionaryBreakdown?: boolean;
   className?: string;
   sentenceClassName?: string;
@@ -39,7 +39,7 @@ export const InteractiveSentence: React.FC<InteractiveSentenceProps> = ({
 
   const handleWordClick = (token: string, index: number, e: React.MouseEvent) => {
     e.stopPropagation();
-    const clean = token.trim().toLowerCase().replace(/[^a-zäöüß]/gi, '');
+    const clean = token.trim().toLowerCase().replace(/[^a-zäöüßéèêëàâîïôùûüÿçæœ]/gi, '');
     if (!clean) return;
 
     const entry = ComprehensiveDictionaryService.lookup(clean, language);

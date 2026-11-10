@@ -17,7 +17,23 @@ import {
   GERMAN_PATTERN_OPTIONS
 } from '../src/renderer/src/services/germanKidsData';
 
-describe('Chirmo Kids Dual-Language (English 🇬🇧 & German 🇩🇪) Pedagogy', () => {
+import {
+  FRENCH_AGE_VOCABULARY,
+  FRENCH_LISTENING_QUIZZES,
+  FRENCH_PUZZLE_CHALLENGES,
+  FRENCH_VOICE_CHALLENGES,
+  FRENCH_TPR_SIMON_ACTIONS,
+  FRENCH_STORYBOOK_SCENES,
+  FRENCH_KIDS_SONGS,
+  FRENCH_SAFARI_ANIMALS,
+  FRENCH_MAGIC_COLORS,
+  FRENCH_KIDS_CHAT_STEPS,
+  FRENCH_FACTORY_OPTIONS,
+  FRENCH_AGE_SPEAKING_CHALLENGES,
+  FRENCH_PATTERN_OPTIONS
+} from '../src/renderer/src/services/frenchKidsData';
+
+describe('Chirmo Kids Multi-Language (English 🇬🇧, German 🇩🇪 & French 🇫🇷) Pedagogy', () => {
   const componentPath = path.resolve(__dirname, '../src/renderer/src/components/kids/ChirmoKidsDedicatedHub.tsx');
   const content = fs.readFileSync(componentPath, 'utf-8');
 
@@ -38,11 +54,13 @@ describe('Chirmo Kids Dual-Language (English 🇬🇧 & German 🇩🇪) Pedagog
     expect(content).toContain('TargetLanguageService');
   });
 
-  it('provides kid-friendly direct language switcher buttons for English and German', () => {
+  it('provides kid-friendly direct language switcher buttons for English, German and French', () => {
     expect(content).toContain('handleSwitchLanguage');
     expect(content).toContain('🇬🇧');
     expect(content).toContain('🇩🇪');
+    expect(content).toContain('🇫🇷');
     expect(content).toContain('Almanca');
+    expect(content).toContain('Fransızca');
   });
 
   it('guarantees rich German vocabulary for all 4 age brackets without English leakage', () => {
@@ -120,5 +138,72 @@ describe('Chirmo Kids Dual-Language (English 🇬🇧 & German 🇩🇪) Pedagog
     const deChat = GERMAN_KIDS_CHAT_STEPS['5-7'];
     expect(deChat.length).toBeGreaterThanOrEqual(2);
     expect(deChat[0].chirmoEn).toContain('Hallo kleiner Superstar!');
+  });
+  it('guarantees rich French vocabulary for all 4 age brackets without English leakage', () => {
+    const age5to7 = FRENCH_AGE_VOCABULARY['5-7'];
+    const age8to10 = FRENCH_AGE_VOCABULARY['8-10'];
+    const age11to13 = FRENCH_AGE_VOCABULARY['11-13'];
+    const age14to17 = FRENCH_AGE_VOCABULARY['14-17'];
+
+    expect(age5to7.length).toBeGreaterThanOrEqual(15);
+    expect(age8to10.length).toBeGreaterThanOrEqual(15);
+    expect(age11to13.length).toBeGreaterThanOrEqual(10);
+    expect(age14to17.length).toBeGreaterThanOrEqual(7);
+
+    // Verify French key words
+    const french5to7Words = age5to7.map(v => v.en);
+    expect(french5to7Words).toContain('Le Chat');
+    expect(french5to7Words).toContain('Le Chien');
+    expect(french5to7Words).toContain('La Pomme');
+    expect(french5to7Words).toContain("L'Eau");
+    expect(french5to7Words).toContain('Le Grand Arbre');
+    expect(french5to7Words).toContain('Le Lapin');
+
+    // Make sure no English words leak into French vocab
+    expect(french5to7Words).not.toContain('Cat');
+    expect(french5to7Words).not.toContain('Dog');
+    expect(french5to7Words).not.toContain('Apple');
+  });
+
+  it('provides French detective listening quizzes, sentence puzzles, and TPR Simon Says ("Chirmo dit!")', () => {
+    const frQuizzes = FRENCH_LISTENING_QUIZZES['5-7'];
+    expect(frQuizzes.length).toBeGreaterThanOrEqual(4);
+    expect(frQuizzes[0].options.some(o => o.label.includes('Le Chat'))).toBe(true);
+
+    const frPuzzles = FRENCH_PUZZLE_CHALLENGES['5-7'];
+    expect(frPuzzles.length).toBeGreaterThanOrEqual(3);
+    expect(frPuzzles[0].targetEn).toContain("l'eau");
+
+    const frSimon = FRENCH_TPR_SIMON_ACTIONS['5-7'];
+    expect(frSimon.length).toBeGreaterThanOrEqual(4);
+    expect(frSimon[0].listenAudio).toContain('Chirmo dit: Touche ton nez!');
+    expect(content).toContain('Chirmo dit ! (Simon Says)');
+  });
+
+  it('provides French interactive storybooks, pattern builders, 4-block sentence factory, and songs', () => {
+    const frScenes = FRENCH_STORYBOOK_SCENES['5-7'];
+    expect(frScenes.length).toBeGreaterThanOrEqual(2);
+    expect(frScenes[0].nameEn).toBe('La Forêt Magique du Pique-nique');
+
+    const frPatterns = FRENCH_PATTERN_OPTIONS['5-7'];
+    expect(frPatterns.prefixes).toContain('Je voudrais');
+    expect(frPatterns.objects).toContain("de l'eau");
+    expect(frPatterns.suffixes).toContain("s'il vous plaît");
+
+    const frFactory = FRENCH_FACTORY_OPTIONS['5-7'];
+    expect(frFactory.subjects).toContain('Mon chien amical');
+    expect(frFactory.actions).toContain('joue volontiers avec');
+
+    expect(FRENCH_KIDS_SONGS.length).toBeGreaterThanOrEqual(3);
+    expect(FRENCH_KIDS_SONGS[0].title).toContain('Frère Jacques');
+
+    expect(FRENCH_SAFARI_ANIMALS.length).toBeGreaterThanOrEqual(6);
+    expect(FRENCH_SAFARI_ANIMALS[0].nameEn).toBe('Le Lion');
+    expect(FRENCH_MAGIC_COLORS.length).toBeGreaterThanOrEqual(6);
+    expect(FRENCH_MAGIC_COLORS[0].nameEn).toBe('Rouge');
+
+    const frChat = FRENCH_KIDS_CHAT_STEPS['5-7'];
+    expect(frChat.length).toBeGreaterThanOrEqual(2);
+    expect(frChat[0].chirmoEn).toContain('Bonjour petite superstar!');
   });
 });

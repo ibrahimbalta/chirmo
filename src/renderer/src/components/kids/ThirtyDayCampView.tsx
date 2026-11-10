@@ -107,7 +107,7 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
     if (SpeechRecognition) {
       try {
         const recognition = new SpeechRecognition();
-        recognition.lang = targetLang === 'de' ? 'de-DE' : 'en-US';
+        recognition.lang = targetLang === 'de' ? 'de-DE' : targetLang === 'fr' ? 'fr-FR' : 'en-US';
         recognition.interimResults = false;
         recognition.maxAlternatives = 1;
 
@@ -163,6 +163,12 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
             'Süpersin! Konuşurken ses tonundaki özgüven çok iyi!',
             'Mükemmel! Doğrudan Almanca refleks verdin.'
           ]
+        : targetLang === 'fr'
+        ? [
+            'Harika telaffuz! Çok doğal ve akıcı bir Fransızca cümle kurdun.',
+            'Süpersin! Konuşurken ses tonundaki özgüven çok iyi!',
+            'Mükemmel! Doğrudan Fransızca refleks verdin.'
+          ]
         : [
             'Harika telaffuz! Çok doğal ve akıcı bir cümle kurdun.',
             'Süpersin! Konuşurken ses tonundaki özgüven çok iyi!',
@@ -172,6 +178,8 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
     const aiReplyEn =
       targetLang === 'de'
         ? 'Ausgezeichnet! Du klingst sehr natürlich!'
+        : targetLang === 'fr'
+        ? 'Excellent ! Tu as une prononciation très naturelle !'
         : 'Brilliant! You sound so natural, keep it up!';
 
     setScoreResult({
@@ -342,7 +350,7 @@ export const ThirtyDayCampView: React.FC<ThirtyDayCampViewProps> = ({ onDayCompl
             <InteractiveSentence
               sentence={selectedMission.suggestedAnswer}
               translation={selectedMission.suggestedAnswerTr}
-              language={selectedMission.language as 'en' | 'de'}
+              language={selectedMission.language as 'en' | 'de' | 'fr'}
               showDictionaryBreakdown={true}
             />
           </div>

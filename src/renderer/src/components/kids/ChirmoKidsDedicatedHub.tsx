@@ -150,32 +150,38 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
   const [simonCompletedActions, setSimonCompletedActions] = useState<string[]>([]);
 
   // Interactive Storybooks State
-  const [activeStorySceneId, setActiveStorySceneId] = useState<string>(() =>
-    TargetLanguageService.getTargetLanguage() === 'de' ? 'de-forest' : 'forest'
-  );
+  const [activeStorySceneId, setActiveStorySceneId] = useState<string>(() => {
+    const lang = TargetLanguageService.getTargetLanguage();
+    return lang === 'de' ? 'de-forest' : lang === 'fr' ? 'fr-forest' : 'forest';
+  });
   const [selectedStoryItemId, setSelectedStoryItemId] = useState<string | null>(null);
 
   // 4-Block Sentence Factory 2.0 State
-  const [factorySubject, setFactorySubject] = useState<string>(() =>
-    TargetLanguageService.getTargetLanguage() === 'de' ? 'Mein freundlicher Hund' : 'My friendly dog'
-  );
-  const [factoryAction, setFactoryAction] = useState<string>(() =>
-    TargetLanguageService.getTargetLanguage() === 'de' ? 'spielt gerne mit' : 'is playing with'
-  );
-  const [factoryObject, setFactoryObject] = useState<string>(() =>
-    TargetLanguageService.getTargetLanguage() === 'de' ? 'einem bunten Ball' : 'a colorful ball'
-  );
-  const [factoryContext, setFactoryContext] = useState<string>(() =>
-    TargetLanguageService.getTargetLanguage() === 'de' ? 'im sonnigen Park' : 'in the sunny park'
-  );
+  const [factorySubject, setFactorySubject] = useState<string>(() => {
+    const lang = TargetLanguageService.getTargetLanguage();
+    return lang === 'de' ? 'Mein freundlicher Hund' : lang === 'fr' ? 'Mon chien amical' : 'My friendly dog';
+  });
+  const [factoryAction, setFactoryAction] = useState<string>(() => {
+    const lang = TargetLanguageService.getTargetLanguage();
+    return lang === 'de' ? 'spielt gerne mit' : lang === 'fr' ? 'joue volontiers avec' : 'is playing with';
+  });
+  const [factoryObject, setFactoryObject] = useState<string>(() => {
+    const lang = TargetLanguageService.getTargetLanguage();
+    return lang === 'de' ? 'einem bunten Ball' : lang === 'fr' ? 'un ballon coloré' : 'a colorful ball';
+  });
+  const [factoryContext, setFactoryContext] = useState<string>(() => {
+    const lang = TargetLanguageService.getTargetLanguage();
+    return lang === 'de' ? 'im sonnigen Park' : lang === 'fr' ? 'dans le parc ensoleillé' : 'in the sunny park';
+  });
 
   // Kids Safari Animals State
   const [selectedAnimalId, setSelectedAnimalId] = useState<string | null>(null);
 
   // Kids Magic Colors State
-  const [activeColorId, setActiveColorId] = useState<string>(() =>
-    TargetLanguageService.getTargetLanguage() === 'de' ? 'de-c-red' : 'c-red'
-  );
+  const [activeColorId, setActiveColorId] = useState<string>(() => {
+    const lang = TargetLanguageService.getTargetLanguage();
+    return lang === 'de' ? 'de-c-red' : lang === 'fr' ? 'fr-c-red' : 'c-red';
+  });
 
   // Kids Cartoon Chat State
   const [chatStepIndex, setChatStepIndex] = useState<number>(0);
@@ -229,15 +235,18 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
   const [voiceScore, setVoiceScore] = useState<number | null>(null);
 
   // Pattern Builder for Kids State
-  const [builderPrefix, setBuilderPrefix] = useState<string>(() =>
-    TargetLanguageService.getTargetLanguage() === 'de' ? 'Ich möchte' : 'I want'
-  );
-  const [builderObject, setBuilderObject] = useState<string>(() =>
-    TargetLanguageService.getTargetLanguage() === 'de' ? 'Wasser' : 'water'
-  );
-  const [builderSuffix, setBuilderSuffix] = useState<string>(() =>
-    TargetLanguageService.getTargetLanguage() === 'de' ? 'bitte' : 'please'
-  );
+  const [builderPrefix, setBuilderPrefix] = useState<string>(() => {
+    const lang = TargetLanguageService.getTargetLanguage();
+    return lang === 'de' ? 'Ich möchte' : lang === 'fr' ? 'Je voudrais' : 'I want';
+  });
+  const [builderObject, setBuilderObject] = useState<string>(() => {
+    const lang = TargetLanguageService.getTargetLanguage();
+    return lang === 'de' ? 'Wasser' : lang === 'fr' ? "de l'eau" : 'water';
+  });
+  const [builderSuffix, setBuilderSuffix] = useState<string>(() => {
+    const lang = TargetLanguageService.getTargetLanguage();
+    return lang === 'de' ? 'bitte' : lang === 'fr' ? "s'il vous plaît" : 'please';
+  });
 
   // Songs & Karaoke State
   const [playingSongId, setPlayingSongId] = useState<string | null>(null);
@@ -1123,7 +1132,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
       }, 2000);
     } else {
       setQuizAnswerState('wrong');
-      handleSpeak(targetLang === 'de' ? 'Versuche es noch einmal! Bir kez daha dene!' : 'Try again friend! Bir kez daha dene!');
+      handleSpeak(targetLang === 'de' ? 'Versuche es noch einmal! Bir kez daha dene!' : targetLang === 'fr' ? 'Essaie encore une fois ! Bir kez daha dene!' : 'Try again friend! Bir kez daha dene!');
       setTimeout(() => {
         setQuizAnswerState('idle');
         setSelectedOptionId(null);
@@ -1145,7 +1154,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
       if (builtSentence === activePuzzle.targetEn) {
         setPuzzleSuccess(true);
         handleAwardStars(15, 'Cümleyi Doğru Kurdun!');
-        handleSpeak(targetLang === 'de' ? `Wunderbar! ${activePuzzle.targetEn}` : `Awesome! ${activePuzzle.targetEn}`);
+        handleSpeak(targetLang === 'de' ? `Wunderbar! ${activePuzzle.targetEn}` : targetLang === 'fr' ? `Magnifique ! ${activePuzzle.targetEn}` : `Awesome! ${activePuzzle.targetEn}`);
         setTimeout(() => {
           setPuzzleSuccess(false);
           setSelectedPuzzleWords([]);
@@ -1170,7 +1179,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
       setVoiceStatus('scored');
       setVoiceScore(96);
       handleAwardStars(20, 'Harika Telaffuz!');
-      handleSpeak(targetLang === 'de' ? `Sehr gute Aussprache! ${activeVoice.en}` : `Very good pronunciation! ${activeVoice.en}`);
+      handleSpeak(targetLang === 'de' ? `Sehr gute Aussprache! ${activeVoice.en}` : targetLang === 'fr' ? `Très bonne prononciation ! ${activeVoice.en}` : `Very good pronunciation! ${activeVoice.en}`);
     }, 1800);
   };
 
@@ -1822,7 +1831,94 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
     'in weltweiten Gipfeltreffen': 'dünya çapındaki zirve toplantılarında',
     'zur Stärkung von Gemeinschaften': 'toplulukları güçlendirmek amacıyla',
     'durch moderne digitale Medien': 'modern dijital medya aracılığıyla',
-    'mit langfristiger globaler Wirkung': 'uzun vadeli küresel etkiyle'
+    'mit langfristiger globaler Wirkung': 'uzun vadeli küresel etkiyle',
+    // Fransızca 5-7
+    'Mon chien amical': 'Benim sevimli köpeğim',
+    'Le robot intelligent': 'Akıllı robot',
+    'Le petit lapin': 'Küçük tavşan',
+    'Mon meilleur ami': 'Benim en iyi arkadaşım',
+    'Un astronaute courageux': 'Cesur bir astronot',
+    'joue volontiers avec': 'ile oynamayı çok sever',
+    'adore manger': 'en çok yemeyi sever',
+    'souhaite découvrir': 'keşfetmek istiyor',
+    'regarde joyeusement': 'neşeyle izliyor',
+    'danse en rythme avec': 'ile ritimle dans ediyor',
+    'un ballon coloré': 'renkli bir topla',
+    'une pomme sucrée': 'tatlı bir elmayla',
+    'un magnifique arc-en-ciel': 'harika bir gökkuşağıyla',
+    'une fusée rapide': 'hızlı bir roketle',
+    'un délicieux biscuit': 'lezzetli bir kurabiyeyle',
+    'dans le parc ensoleillé': 'güneşli parkta',
+    'chaque beau matin': 'her güzel sabah',
+    'sous le grand arbre vert': 'büyük yeşil ağacın altında',
+    'dans la chambre douillette': 'rahat odasında',
+    'avec un large sourire': 'kocaman bir gülümsemeyle',
+
+    // Fransızca 8-10
+    "L'équipe de football de l'école": 'Okul futbol takımımız',
+    'La jeune étudiante curieuse': 'Meraklı genç öğrenci',
+    'Mon professeur créatif': 'Yaratıcı öğretmenim',
+    'Un musicien plein de talent': 'Yetenekli bir müzisyen',
+    'Le jeune programmeur': 'Genç programcı',
+    "s'entraîne chaque jour pour": 'için her gün antrenman yapıyor',
+    "a remporté un trophée d'or pour": 'için altın kupa kazandı',
+    'partage des idées brillantes sur': 'hakkında harika fikirler paylaşıyor',
+    'développe un beau projet avec': 'ile harika bir proje geliştiriyor',
+    'a marqué un but spectaculaire dans': 'içinde muhteşem bir gol attı',
+    'le grand match de finale': 'büyük final maçı',
+    'un nouveau télescope astronomique': 'yepyeni bir gökbilim teleskobu',
+    'le salon des sciences scolaires': 'okul fen fuarı',
+    'une chanson entraînante': 'neşeli bir şarkı',
+    'le tournoi de robotique': 'robotik turnuvası',
+    'au centre sportif municipal': 'şehrin spor merkezinde',
+    'pendant la récréation': 'teneffüs boyunca',
+    'avec un grand enthousiasme': 'büyük bir coşkuyla',
+    "devant toute l'école": 'tüm okulun önünde',
+    'chaque samedi après-midi': 'her cumartesi öğleden sonra',
+
+    // Fransızca 11-13
+    'Le club des jeunes chercheurs': 'Genç araştırmacılar kulübü',
+    'Notre correspondant international': 'Uluslararası mektup arkadaşımız',
+    "L'équipe environnementale": 'Çevre takımı',
+    'Une jeune inventrice géniale': 'Dahi genç bir kadın mucit',
+    'Mon partenaire de débat': 'Münazara partnerim',
+    'mène des recherches sur': 'üzerine araştırmalar yürütüyor',
+    "encourage l'exploration de": 'keşfedilmesini teşvik ediyor',
+    'organise un événement sur': 'hakkında bir etkinlik düzenliyor',
+    'a conçu un modèle pour': 'için bir model tasarladı',
+    'propose des solutions pour': 'için çözümler öneriyor',
+    "l'énergie propre et durable": 'temiz ve sürdürülebilir enerji',
+    'la protection des océans': 'okyanusların korunması',
+    'les applications éducatives interactives': 'interaktif eğitici uygulamalar',
+    'les systèmes de navigation spatiale': 'uzay navigasyon sistemleri',
+    'les ressources documentaires modernes': 'modern kütüphane kaynakları',
+    'à la conférence scientifique': 'bilim konferansında',
+    'sur les plateformes numériques': 'dijital platformlar üzerinde',
+    'avec des mentors passionnés': 'özverili mentorlarla',
+    'dans plusieurs capitales européennes': 'çeşitli Avrupa başkentlerinde',
+    'avec une grande détermination': 'büyük bir kararlılıkla',
+
+    // Fransızca 14-17
+    'De jeunes pionniers en technologie': 'Genç teknoloji öncüleri',
+    "L'équipe de débat du lycée": 'Lise münazara takımı',
+    'Les futurs concepteurs de logiciels': 'Geleceğin yazılım tasarımcıları',
+    'Les défenseurs du climat': 'İklim savunucuları',
+    'Des créateurs de contenu inspirants': 'İlham veren içerik üreticileri',
+    "s'investissent activement dans": 'içinde aktif olarak rol alıyor',
+    'présentent avec clarté': 'hakkında net ve etkili sunumlar yapıyor',
+    'analysent avec rigueur': 'konusunu derinlemesine analiz ediyor',
+    'conçoivent des solutions pour': 'için çözümler üretiyor',
+    'captivent le public international avec': 'ile uluslararası izleyicileri büyülüyor',
+    "l'éthique de l'intelligence artificielle": 'yapay zekanın etik temelleri',
+    "l'architecture web de demain": 'geleceğin web mimarisi',
+    "l'égalité éducative mondiale": 'küresel eğitim adaleti',
+    'les écosystèmes urbains durables': 'sürdürülebilir kentsel ekosistemler',
+    "l'éloquence linguistique interculturelle": 'kültürlerarası akıcı dil yetkinliği',
+    'lors de hackathons mondiaux': 'küresel yazılım maratonlarında',
+    'au cours de sommets internationaux': 'uluslararası zirveler süresince',
+    'pour valoriser les communautés locales': 'toplulukları güçlendirmek amacıyla',
+    'par le biais de médias numériques': 'dijital medya araçları kanalıyla',
+    'avec un impact durable et mesurable': 'ölçülebilir ve kalıcı bir etkiyle'
   };
 
   const getFactoryFullTr = () => {
@@ -1890,23 +1986,23 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
     setChatStepIndex(0);
     setChildAnswerText(null);
 
-    const patternOpts = (lang === 'de' ? GERMAN_PATTERN_OPTIONS[selectedAge] : PATTERN_OPTIONS[selectedAge]) || (lang === 'de' ? GERMAN_PATTERN_OPTIONS['5-7'] : PATTERN_OPTIONS['5-7']);
+    const patternOpts = (lang === 'de' ? GERMAN_PATTERN_OPTIONS[selectedAge] : lang === 'fr' ? FRENCH_PATTERN_OPTIONS[selectedAge] : PATTERN_OPTIONS[selectedAge]) || (lang === 'de' ? GERMAN_PATTERN_OPTIONS['5-7'] : lang === 'fr' ? FRENCH_PATTERN_OPTIONS['5-7'] : PATTERN_OPTIONS['5-7']);
     setBuilderPrefix(patternOpts.prefixes[0]);
     setBuilderObject(patternOpts.objects[0]);
     setBuilderSuffix(patternOpts.suffixes[0]);
 
-    const factoryOpts = (lang === 'de' ? GERMAN_FACTORY_OPTIONS[selectedAge] : FACTORY_OPTIONS[selectedAge]) || (lang === 'de' ? GERMAN_FACTORY_OPTIONS['5-7'] : FACTORY_OPTIONS['5-7']);
+    const factoryOpts = (lang === 'de' ? GERMAN_FACTORY_OPTIONS[selectedAge] : lang === 'fr' ? FRENCH_FACTORY_OPTIONS[selectedAge] : FACTORY_OPTIONS[selectedAge]) || (lang === 'de' ? GERMAN_FACTORY_OPTIONS['5-7'] : lang === 'fr' ? FRENCH_FACTORY_OPTIONS['5-7'] : FACTORY_OPTIONS['5-7']);
     setFactorySubject(factoryOpts.subjects[0]);
     setFactoryAction(factoryOpts.actions[0]);
     setFactoryObject(factoryOpts.objects[0]);
     setFactoryContext(factoryOpts.contexts[0]);
 
-    const scenes = (lang === 'de' ? GERMAN_STORYBOOK_SCENES[selectedAge] : STORYBOOK_SCENES[selectedAge]) || (lang === 'de' ? GERMAN_STORYBOOK_SCENES['5-7'] : STORYBOOK_SCENES['5-7']);
+    const scenes = (lang === 'de' ? GERMAN_STORYBOOK_SCENES[selectedAge] : lang === 'fr' ? FRENCH_STORYBOOK_SCENES[selectedAge] : STORYBOOK_SCENES[selectedAge]) || (lang === 'de' ? GERMAN_STORYBOOK_SCENES['5-7'] : lang === 'fr' ? FRENCH_STORYBOOK_SCENES['5-7'] : STORYBOOK_SCENES['5-7']);
     if (scenes && scenes.length > 0) {
       setActiveStorySceneId(scenes[0].id);
     }
 
-    setActiveColorId(lang === 'de' ? 'de-c-red' : 'c-red');
+    setActiveColorId(lang === 'de' ? 'de-c-red' : lang === 'fr' ? 'fr-c-red' : 'c-red');
     setSelectedAnimalId(null);
   };
 
@@ -1986,7 +2082,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
           {/* Sağ: Oyuncu Profili & Dil & Geri Butonu */}
           <div className="flex items-center space-x-2.5">
-            {/* Dil Seçimi (🇬🇧 İngilizce / 🇩🇪 Almanca) */}
+            {/* Dil Seçimi (🇬🇧 İngilizce / 🇩🇪 Almanca / 🇫🇷 Fransızca) */}
             <div className="flex items-center bg-black/40 p-1 rounded-2xl border border-white/15">
               <button
                 type="button"
@@ -2011,6 +2107,18 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
               >
                 <span>🇩🇪</span>
                 <span className="hidden sm:inline">Almanca</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSwitchLanguage('fr')}
+                className={`px-2.5 py-1 rounded-xl text-xs font-black transition-all flex items-center space-x-1 cursor-pointer ${
+                  targetLang === 'fr'
+                    ? 'bg-amber-400 text-slate-950 shadow-md font-black scale-102'
+                    : 'text-white/70 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                <span>🇫🇷</span>
+                <span className="hidden sm:inline">Fransızca</span>
               </button>
             </div>
 
@@ -2105,7 +2213,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                 <div className="text-3xl shrink-0">🎁</div>
                 <div>
                   <div className="text-xs font-black text-slate-800 dark:text-white">
-                    {targetLang === 'de' ? 'Ormandaki 5 kayıp kelimeyi bul!' : 'Ormandaki 5 kayıp kelimeyi bul!'}
+                    {targetLang === 'de' ? 'Finde die 5 verlorenen Wörter im Wald!' : targetLang === 'fr' ? 'Trouve les 5 mots perdus dans la forêt !' : 'Ormandaki 5 kayıp kelimeyi bul!'}
                   </div>
                   <div className="text-[10px] text-slate-500 font-medium">
                     Doğru kartları seç, sesleri dinle ve ödülü kap!
@@ -2337,14 +2445,14 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
               {/* 5 Kelime Kartı */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                 {[
-                  { id: 'qw1', en: 'Apple', de: 'Der Apfel', tr: 'Elma', emoji: '🍎' },
-                  { id: 'qw2', en: 'Tree', de: 'Der Baum', tr: 'Ağaç', emoji: '🌳' },
-                  { id: 'qw3', en: 'Bird', de: 'Der Vogel', tr: 'Kuş', emoji: '🐦' },
-                  { id: 'qw4', en: 'Flower', de: 'Die Blume', tr: 'Çiçek', emoji: '🌸' },
-                  { id: 'qw5', en: 'Butterfly', de: 'Der Schmetterling', tr: 'Kelebek', emoji: '🦋' }
+                  { id: 'qw1', en: 'Apple', de: 'Der Apfel', fr: 'La pomme', tr: 'Elma', emoji: '🍎' },
+                  { id: 'qw2', en: 'Tree', de: 'Der Baum', fr: "L'arbre", tr: 'Ağaç', emoji: '🌳' },
+                  { id: 'qw3', en: 'Bird', de: 'Der Vogel', fr: "L'oiseau", tr: 'Kuş', emoji: '🐦' },
+                  { id: 'qw4', en: 'Flower', de: 'Die Blume', fr: 'La fleur', tr: 'Çiçek', emoji: '🌸' },
+                  { id: 'qw5', en: 'Butterfly', de: 'Der Schmetterling', fr: 'Le papillon', tr: 'Kelebek', emoji: '🦋' }
                 ].map((item) => {
                   const isCollected = questCollectedWords.includes(item.id);
-                  const wordText = targetLang === 'de' ? item.de : item.en;
+                  const wordText = targetLang === 'de' ? item.de : targetLang === 'fr' ? item.fr : item.en;
                   return (
                     <button
                       key={item.id}
@@ -2359,7 +2467,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                             handleAwardStars(20, 'Günün Görevi Tamamlandı! Ormanın 5 Kayıp Kelimesi Bulundu!');
                             setLingoriaXp((prev) => prev + 50);
                             setCompletedQuests((prev) => Math.min(8, prev + 1));
-                            handleSpeak(targetLang === 'de' ? 'Fantastisch! Du hast alle Wörter gefunden!' : 'Awesome! You found all five words!');
+                            handleSpeak(targetLang === 'de' ? 'Fantastisch! Du hast alle Wörter gefunden!' : targetLang === 'fr' ? 'Fantastique ! Tu as trouvé tous les mots !' : 'Awesome! You found all five words!');
                           }
                         }
                       }}
@@ -2938,7 +3046,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
                 <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/20 text-[11px] font-bold text-pink-100 self-start sm:self-auto">
                   <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                  <span>{targetLang === 'de' ? 'Almanca Konuşma Odaklı Özel İçerik' : 'İngilizce Konuşma Odaklı Özel İçerik'}</span>
+                  <span>{targetLang === 'de' ? 'Almanca Konuşma Odaklı Özel İçerik' : targetLang === 'fr' ? 'Fransızca Konuşma Odaklı Özel İçerik' : 'İngilizce Konuşma Odaklı Özel İçerik'}</span>
                 </div>
               </div>
 
@@ -4298,7 +4406,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
                   {childAnswerText && (
                     <div className="p-3 rounded-2xl bg-blue-100 text-blue-900 text-xs font-black text-center animate-bounce">
-                      {targetLang === 'de' ? '🎉 Chirmo: "Wunderbar gesprochen! Wir gehen zur nächsten Frage..."' : '🎉 Chirmo: "Harika konuştun! Sıradaki soruya geçiyoruz..."'}
+                      {targetLang === 'de' ? '🎉 Chirmo: "Wunderbar gesprochen! Wir gehen zur nächsten Frage..."' : targetLang === 'fr' ? '🎉 Chirmo: "Bravo ! Magnifique prononciation ! Passons à la question suivante..."' : '🎉 Chirmo: "Harika konuştun! Sıradaki soruya geçiyoruz..."'}
                     </div>
                   )}
                 </div>

@@ -56,7 +56,11 @@ export const FRENCH_AGE_VOCABULARY: Record<AgeGroup, KidVocabItem[]> = {
     { id: 'fr-v19', en: 'La Technologie Mobile', tr: 'Mobil Teknoloji', emoji: '📱', category: 'Technologie', soundText: 'La technologie moderne nous permet de communiquer partout dans le monde.', exampleTr: 'Modern teknoloji dünyanın her yeriyle iletişim kurmamızı sağlar.', funFact: 'İlk akıllı telefonlar 2000\'li yılların başında hayatımıza girdi.' },
     { id: 'fr-v20', en: 'Le Trophée Doré', tr: 'Altın Kupa', emoji: '🏆', category: 'Succès (Başarı)', soundText: 'Notre équipe a remporté le grand trophée d\'or du tournoi!', exampleTr: 'Takımımız turnuvanın büyük altın kupasını kazandı!', funFact: 'Kupalar azim ve disiplinli çalışmanın somut ödülleridir.' },
     { id: 'fr-v21', en: 'Les Étoiles de la Galaxie', tr: 'Galaksi Yıldızları', emoji: '🌌', category: 'Astronomie', soundText: 'La Voie lactée contient des centaines de milliards d\'étoiles lumineuses.', exampleTr: 'Samanyolu yüz milyarlarca parlak yıldız içerir.', funFact: 'Işığın bir galaksiden diğerine geçmesi binlerce yıl sürer.' },
-    { id: 'fr-v22', en: "L'Énergie Renouvelable", tr: 'Temiz Enerji', emoji: '⚡', category: 'Environnement', soundText: "L'énergie solaire et l'énergie éolienne protègent notre belle planète.", exampleTr: 'Güneş ve rüzgar enerjisi güzel gezegenimizi korur.', funFact: 'Güneş enerjisi tükenmez ve sıfır karbon üretir.' }
+    { id: 'fr-v22', en: "L'Énergie Renouvelable", tr: 'Temiz Enerji', emoji: '⚡', category: 'Environnement', soundText: "L'énergie solaire et l'énergie éolienne protègent notre belle planète.", exampleTr: 'Güneş ve rüzgar enerjisi güzel gezegenimizi korur.', funFact: 'Güneş enerjisi tükenmez ve sıfır karbon üretir.' },
+    { id: 'fr-v22b', en: "L'Exploration Spatiale", tr: 'Uzay Keşfi', emoji: '🚀', category: 'Astronomie', soundText: "L'exploration spatiale ouvre de nouveaux horizons pour l'humanité.", exampleTr: 'Uzay keşfi insanlık için yeni ufuklar açar.', funFact: 'Gelecekte Mars’a insanlı yolculuklar hedeflenmektedir.' },
+    { id: 'fr-v22c', en: "L'Océan Bleu", tr: 'Mavi Okyanus', emoji: '🌊', category: 'Environnement', soundText: "L'océan bleu abrite des créatures marines extraordinaires.", exampleTr: 'Mavi okyanus olağanüstü deniz canlılarına ev sahipliği yapar.', funFact: 'Dünya yüzeyinin yüzde yetmişi sularla kaplıdır.' },
+    { id: 'fr-v22d', en: 'Le Livre Numérique', tr: 'Dijital Kitap', emoji: '📚', category: 'Éducation', soundText: 'Je lis des livres numériques passionnants sur ma tablette.', exampleTr: 'Tabletimde sürükleyici dijital kitaplar okuyorum.', funFact: 'Elektronik kitaplar binlerce eseri tek cihazda saklar.' },
+    { id: 'fr-v22e', en: "L'Énergie Éolienne", tr: 'Rüzgar Enerjisi', emoji: '💨', category: 'Environnement', soundText: 'Les éoliennes produisent de l\'électricité grâce au vent.', exampleTr: 'Rüzgar türbinleri esen rüzgarla elektrik üretir.', funFact: 'Rüzgar enerjisi temiz ve yenilenebilir bir kaynaktır.' }
   ],
 
   '14-17': [
@@ -65,7 +69,8 @@ export const FRENCH_AGE_VOCABULARY: Record<AgeGroup, KidVocabItem[]> = {
     { id: 'fr-v25', en: 'Innovation Créative', tr: 'Yaratıcı Girişim', emoji: '💡', category: 'Innovation', soundText: 'Une idée innovante peut apporter un changement positif dans la société.', exampleTr: 'Yenilikçi bir fikir toplumda olumlu bir değişim yaratabilir.', funFact: 'En büyük buluşlar merak ve problem çözme tutkusuyla doğmuştur.' },
     { id: 'fr-v26', en: 'Grande Ambition', tr: 'Gelecek Hedefi', emoji: '🌟', category: 'Avenir (Gelecek)', soundText: 'Fixe-toi de grands objectifs et travaille avec passion chaque jour.', exampleTr: 'Kendine büyük hedefler koy ve her gün tutkuyla çalış.', funFact: 'Hedeflerini yazıya döken insanların başarma oranı %42 daha fazladır.' },
     { id: 'fr-v27', en: 'Émission Podcast', tr: 'Sesli Podcast', emoji: '🎧', category: 'Média', soundText: "J'écoute un podcast scientifique passionnant pour enrichir mon français.", exampleTr: 'Fransızcamı geliştirmek için büyüleyici bir bilim podcasti dinliyorum.', funFact: 'Yabancı dilde ses dinlemek telaffuz kaslarını hızla eğitir.' },
-    { id: 'fr-v28', en: "Travail d'Équipe", tr: 'Takım Çalışması', emoji: '🤝', category: 'Leadership', soundText: 'La collaboration internationale crée des projets d\'une valeur inestimable.', exampleTr: 'Uluslararası iş birliği paha biçilmez değerde projeler yaratır.', funFact: 'En büyük teknoloji ve uzay projeleri binlerce uzmanın takım çalışmasıdır.' }
+    { id: 'fr-v28', en: "Travail d'Équipe", tr: 'Takım Çalışması', emoji: '🤝', category: 'Leadership', soundText: 'La collaboration internationale crée des projets d\'une valeur inestimable.', exampleTr: 'Uluslararası iş birliği paha biçilmez değerde projeler yaratır.', funFact: 'En büyük teknoloji ve uzay projeleri binlerce uzmanın takım çalışmasıdır.' },
+    { id: 'fr-v28b', en: 'Le Sommet Mondial', tr: 'Küresel Zirve', emoji: '🌍', category: 'Diplomatie', soundText: 'Les leaders discutent de solutions d\'avenir lors du sommet mondial.', exampleTr: 'Liderler küresel zirvede gelecek çözümlerini tartışıyor.', funFact: 'Gençlik zirveleri küresel politikalara yön verir.' }
   ]
 };
 
@@ -92,6 +97,30 @@ export const FRENCH_LISTENING_QUIZZES: Record<AgeGroup, KidListeningQuizItem[]> 
         { id: 'opt3', label: 'Le Biscuit 🍪', emoji: '🍪', isCorrect: false }
       ],
       praise: "Magnifique! C'est la pomme rouge!"
+    },
+    {
+      id: 'fr-lq1b',
+      questionAudio: "Le Chien",
+      promptTr: 'Sesi dinle! Chirmo hangi sadık dostumuzu söyledi?',
+      options: [
+        { id: 'opt1', label: 'Le Chien 🐶', emoji: '🐶', isCorrect: true },
+        { id: 'opt2', label: 'Le Chat 🐱', emoji: '🐱', isCorrect: false },
+        { id: 'opt3', label: 'Le Lion 🦁', emoji: '🦁', isCorrect: false },
+        { id: 'opt4', label: 'Le Lapin 🐰', emoji: '🐰', isCorrect: false }
+      ],
+      praise: "Fantastique ! Le chien aboie joyeusement !"
+    },
+    {
+      id: 'fr-lq2b',
+      questionAudio: "L'Arc-en-ciel",
+      promptTr: 'Sesi dinle! Gökyüzündeki renkli güzellik hangisi?',
+      options: [
+        { id: 'opt1', label: 'Le Ballon ⚽', emoji: '⚽', isCorrect: false },
+        { id: 'opt2', label: "L'Arc-en-ciel 🌈", emoji: '🌈', isCorrect: true },
+        { id: 'opt3', label: 'Le Soleil ☀️', emoji: '☀️', isCorrect: false },
+        { id: 'opt4', label: "L'Étoile ⭐", emoji: '⭐', isCorrect: false }
+      ],
+      praise: "Merveilleux ! L'arc-en-ciel a sept magnifiques couleurs !"
     }
   ],
   '8-10': [
@@ -143,6 +172,20 @@ export const FRENCH_PUZZLE_CHALLENGES: Record<AgeGroup, KidSentencePuzzleItem[]>
       targetTr: 'Su istiyorum lütfen.',
       words: ['Je', 'veux', 'de l\'eau,', 's\'il', 'vous', 'plaît.'],
       hint: 'Fransızca kibarca bir şey isterken "s\'il vous plaît" deriz.'
+    },
+    {
+      id: 'fr-pz1b',
+      targetEn: "J'aime la pomme rouge.",
+      targetTr: 'Kırmızı elmayı severim.',
+      words: ["J'aime", 'la', 'pomme', 'rouge.'],
+      hint: '"J\'aime" kalıbı sevdiğin şeyleri anlatır.'
+    },
+    {
+      id: 'fr-pz1c',
+      targetEn: "Le chat dort sous l'arbre.",
+      targetTr: 'Kedi ağacın altında uyuyor.',
+      words: ['Le', 'chat', 'dort', 'sous', "l'arbre."],
+      hint: '"sous" altında demektir.'
     }
   ],
   '8-10': [
@@ -198,6 +241,7 @@ export const FRENCH_TPR_SIMON_ACTIONS: Record<AgeGroup, {
   emoji: string;
 }[]> = {
   '5-7': [
+    { id: 'fr-tpr0', listenAudio: 'Chirmo dit: Touche ton nez!', actionTr: 'İşaret parmağınla burnuna dokun! 👃', replyEn: 'Bravo! Tu as touché ton nez!', emoji: '👃' },
     { id: 'fr-tpr1', listenAudio: 'Chirmo dit: Tape des mains!', actionTr: 'Ellerini üç kez kuvvetlice çırp! 👏', replyEn: 'Bravo! Tu as bien tapé des mains!', emoji: '👏' },
     { id: 'fr-tpr2', listenAudio: 'Chirmo dit: Saute comme un lapin!', actionTr: 'Tavşan gibi iki kez yukarı zıpla! 🐰', replyEn: 'Super saut! Tu as sauté comme un vrai lapin!', emoji: '🐰' },
     { id: 'fr-tpr3', listenAudio: 'Chirmo dit: Fais un grand sourire!', actionTr: 'Kocaman ve aydınlık gülümse! 😊', replyEn: 'Quel sourire magnifique!', emoji: '😊' }
@@ -216,57 +260,123 @@ export const FRENCH_TPR_SIMON_ACTIONS: Record<AgeGroup, {
 
 export const FRENCH_STORYBOOK_SCENES: Record<AgeGroup, {
   id: string;
-  title: string;
-  theme: string;
+  name: string;
+  nameEn: string;
+  emoji: string;
   bgGradient: string;
-  items: { id: string; nameEn: string; nameTr: string; phraseEn: string; phraseTr: string; emoji: string }[];
+  description: string;
+  hotspots: {
+    id: string;
+    nameEn: string;
+    nameTr: string;
+    phraseEn: string;
+    phraseTr: string;
+    emoji: string;
+  }[];
 }[]> = {
   '5-7': [
     {
       id: 'fr-forest',
-      title: 'La Forêt Enchantée de Lingoria',
-      theme: 'Doğa & Sevimli Hayvanlar',
-      bgGradient: 'from-emerald-500/20 to-teal-500/30',
-      items: [
-        { id: 'it1', nameEn: 'Le Petit Oiseau', nameTr: 'Küçük Kuş', phraseEn: 'Le petit oiseau chante gaiement.', phraseTr: 'Küçük kuş neşeyle şarkı söyler.', emoji: '🐦' },
-        { id: 'it2', nameEn: 'Le Grand Chêne', nameTr: 'Büyük Meşe Ağacı', phraseEn: 'Le grand chêne offre une ombre douce.', phraseTr: 'Büyük meşe tatlı bir gölge sunar.', emoji: '🌳' },
-        { id: 'it3', nameEn: 'Le Champignon Rouge', nameTr: 'Kırmızı Mantar', phraseEn: 'Un joli champignon rouge pousse sous les feuilles.', phraseTr: 'Yaprakların altında sevimli kırmızı bir mantar büyür.', emoji: '🍄' }
+      name: 'La Forêt Magique du Pique-nique',
+      nameEn: 'La Forêt Magique du Pique-nique',
+      emoji: '🌳',
+      bgGradient: 'from-emerald-500 via-green-600 to-teal-700',
+      description: 'Une journée ensoleillée dans la forêt enchantée avec nos amis les animaux !',
+      hotspots: [
+        { id: 'fr-h1', nameEn: 'Le Petit Écureuil', nameTr: 'Sevimli Sincap', phraseEn: "L'écureuil mignon grignote des noisettes sous l'arbre.", phraseTr: 'Sevimli sincap ağacın altında çıtır fındıklar yiyor.', emoji: '🐿️' },
+        { id: 'fr-h2', nameEn: 'Panier de Pique-nique', nameTr: 'Piknik Sepeti', phraseEn: 'Regarde le panier de pique-nique rempli de pommes rouges et de biscuits !', phraseTr: 'Tatlı kırmızı elmalar ve kurabiyelerle dolu piknik sepetine bak!', emoji: '🧺' },
+        { id: 'fr-h3', nameEn: 'Oiseau Chanteur', nameTr: 'Öten Kuş', phraseEn: 'Le petit oiseau bleu chante une douce mélodie matinale.', phraseTr: 'Minik mavi kuş tatlı bir sabah melodisi söylüyor.', emoji: '🐦' },
+        { id: 'fr-h4', nameEn: 'Papillon Doré', nameTr: 'Altın Kelebek', phraseEn: 'Un papillon magique danse au-dessus des fleurs parfumées.', phraseTr: 'Büyülü altın bir kelebek mis kokulu çiçeklerin üzerinde dans ediyor.', emoji: '🦋' }
+      ]
+    },
+    {
+      id: 'fr-space',
+      name: 'La Mission Spatiale',
+      nameEn: 'La Mission Spatiale',
+      emoji: '🚀',
+      bgGradient: 'from-indigo-900 via-purple-900 to-slate-900',
+      description: 'Un voyage inoubliable dans la station spatiale parmi les étoiles scintillantes !',
+      hotspots: [
+        { id: 'fr-h5', nameEn: 'Astronaute Courageux', nameTr: 'Cesur Astronot', phraseEn: "L'astronaute courageux flotte en apesanteur dans la station.", phraseTr: 'Cesur astronot uzay istasyonunda yerçekimsiz süzülüyor.', emoji: '👨‍🚀' },
+        { id: 'fr-h6', nameEn: 'Fusée Spatiale', nameTr: 'Uzay Roketi', phraseEn: 'La fusée brillante vole à travers la Voie lactée étincelante !', phraseTr: 'Parlak roket ışıldayan Samanyolu galaksisinde hızla ilerliyor!', emoji: '🚀' },
+        { id: 'fr-h7', nameEn: 'Planète Saturne', nameTr: 'Halkalı Gezegen Satürn', phraseEn: 'Saturne a des anneaux magnifiques faits de glace et de poussière.', phraseTr: 'Satürn buz ve kozmik tozdan oluşan parlak ışıltılı halkalara sahiptir.', emoji: '🪐' },
+        { id: 'fr-h8', nameEn: 'Extraterrestre Amical', nameTr: 'Dost Uzaylı', phraseEn: 'Le petit extraterrestre vert fait coucou : Bienvenue dans notre galaxie !', phraseTr: 'Dost canlısı yeşil uzaylı el sallıyor ve "Galaksimize hoş geldin!" diyor.', emoji: '👽' }
+      ]
+    },
+    {
+      id: 'fr-ocean',
+      name: "Le Royaume de l'Océan Bleu",
+      nameEn: "Le Royaume de l'Océan Bleu",
+      emoji: '🐬',
+      bgGradient: 'from-cyan-600 via-blue-700 to-indigo-800',
+      description: 'Récifs de corail et créatures marines fascinantes dans les profondeurs bleues !',
+      hotspots: [
+        { id: 'fr-h9', nameEn: 'Dauphin Joyeux', nameTr: 'Oyuncu Yunus', phraseEn: 'Le dauphin joueur saute avec élégance au-dessus des vagues turquoises !', phraseTr: 'Neşeli yunus turkuaz dalgaların üzerinde zarifçe sıçrıyor!', emoji: '🐬' },
+        { id: 'fr-h10', nameEn: 'Tortue Marine Sage', nameTr: 'Bilge Deniz Kaplumbağası', phraseEn: 'La tortue marine nage paisiblement le long du récif corallien.', phraseTr: 'Bilge deniz kaplumbağası renkli mercan kayalıklarının arasında sakince süzülüyor.', emoji: '🐢' },
+        { id: 'fr-h11', nameEn: 'Récif de Corail', nameTr: 'Renkli Mercan Resifi', phraseEn: 'Les coraux multicolores offrent un abri chaleureux aux petits poissons.', phraseTr: 'Canlı mercan oluşumları minik tropik balıklar için sıcak yuvalar sunar.', emoji: '🪸' },
+        { id: 'fr-h12', nameEn: 'Perle Scintillante', nameTr: 'Parlak İnci İstiridyesi', phraseEn: 'Dans le coquillage repose un trésor marin rare et précieux.', phraseTr: 'İstiridyenin içinde denizin nadide, parıldayan bir hazinesi yatıyor.', emoji: '🦪' }
+      ]
+    },
+    {
+      id: 'fr-dino',
+      name: 'Safari des Dinosaures',
+      nameEn: 'Safari des Dinosaures',
+      emoji: '🦖',
+      bgGradient: 'from-amber-600 via-orange-600 to-rose-700',
+      description: 'Voyage dans le temps il y a des millions d\'années chez les géants préhistoriques !',
+      hotspots: [
+        { id: 'fr-h13', nameEn: 'Brachiosaure Paisible', nameTr: 'Sevimli Brakiyozor', phraseEn: 'Le grand dinosaure au long cou cueille de tendres feuilles vertes.', phraseTr: 'Sevimli uzun boyunlu dinozor yüksek dallardaki yeşil yapraklara uzanıyor.', emoji: '🦕' },
+        { id: 'fr-h14', nameEn: 'Puissant T-Rex', nameTr: 'Güçlü T-Rex', phraseEn: 'Le redoutable T-Rex pousse un rugissement puissant dans la jungle !', phraseTr: 'Güçlü T-Rex tarih öncesi ormanda enerjik bir kükreme bırakıyor!', emoji: '🦖' },
+        { id: 'fr-h15', nameEn: 'Ptérodactyle Volant', nameTr: 'Uçan Terodaktil', phraseEn: 'Le ptérodactyle survole les sommets volcaniques enfumés avec grâce.', phraseTr: 'Terodaktil sisli volkanik tepelerin üzerinde pürüzsüzce süzülüyor.', emoji: '🦅' },
+        { id: 'fr-h16', nameEn: 'Bébé Dinosaure', nameTr: 'Bebek Dinozor Yumurtası', phraseEn: 'Regarde ! Un adorable bébé dinosaure sort de son coquille géante !', phraseTr: 'Çat çat! Bak, yumurtadan sevimli bir yavru dinozor çıkıyor!', emoji: '🥚' }
       ]
     }
   ],
   '8-10': [
     {
-      id: 'fr-space',
-      title: 'Voyage dans la Station Spatiale',
-      theme: 'Uzay & Bilim',
-      bgGradient: 'from-indigo-600/20 to-purple-600/30',
-      items: [
-        { id: 'it4', nameEn: 'La Navette Spatiale', nameTr: 'Uzay Mekiği', phraseEn: 'La navette spatiale orbite autour de la Terre.', phraseTr: 'Uzay mekiği Dünya çevresinde yörüngede döner.', emoji: '🚀' },
-        { id: 'it5', nameEn: 'Le Casque Astronaute', nameTr: 'Astronot Kaskı', phraseEn: "L'astronaute admire la beauté de la Terre bleue.", phraseTr: 'Astronot mavi Dünya’nın güzelliğini hayranlıkla izler.', emoji: '👨‍🚀' }
+      id: 'fr-school_lab',
+      name: 'Le Laboratoire Scolaire Intelligent',
+      nameEn: 'Le Laboratoire Scolaire Intelligent',
+      emoji: '🔬',
+      bgGradient: 'from-blue-600 via-indigo-600 to-purple-700',
+      description: 'Découvertes passionnantes et expériences scientifiques au laboratoire !',
+      hotspots: [
+        { id: 'fr-h17', nameEn: 'Microscope de Précision', nameTr: 'Hassas Mikroskop', phraseEn: 'Au microscope, nous observons les cellules végétales en détail.', phraseTr: 'Mikroskopla minik bitki hücrelerini inceliyoruz.', emoji: '🔬' },
+        { id: 'fr-h18', nameEn: 'Robot Programmable', nameTr: 'Programlanabilir Robot', phraseEn: 'Notre robot scolaire exécute des boucles et des algorithmes précis.', phraseTr: 'Okul robotumuz algoritmaları takip ediyor.', emoji: '🤖' },
+        { id: 'fr-h19', nameEn: 'Télescope Numérique', nameTr: 'Dijital Teleskop', phraseEn: 'Nous observons les cratères de la Lune lors du club d\'astronomie.', phraseTr: 'Kulüpte Ay kraterlerini inceliyoruz.', emoji: '🔭' },
+        { id: 'fr-h20', nameEn: 'Panneau Solaire Miniature', nameTr: 'Güneş Paneli', phraseEn: "L'énergie solaire alimente le ventilateur du projet écologique.", phraseTr: 'Güneş paneli vantilatörü çalıştırıyor.', emoji: '⚡' }
       ]
     }
   ],
   '11-13': [
     {
-      id: 'fr-ocean',
-      title: 'Les Mystères de l\'Océan Bleu',
-      theme: 'Denizler & Çevre',
-      bgGradient: 'from-cyan-600/20 to-blue-700/30',
-      items: [
-        { id: 'it6', nameEn: 'Le Grand Dauphin', nameTr: 'Yunus', phraseEn: 'Les dauphins nagent ensemble avec grâce.', phraseTr: 'Yunuslar zarafetle birlikte yüzer.', emoji: '🐬' },
-        { id: 'it7', nameEn: 'Le Récif de Corail', nameTr: 'Mercan Resifi', phraseEn: 'Les récifs de corail abritent des milliers d\'espèces.', phraseTr: 'Mercan resifleri binlerce türe ev sahipliği yapar.', emoji: '🪸' }
+      id: 'fr-airport',
+      name: "L'Aéroport International & Les Voyages",
+      nameEn: "L'Aéroport International & Les Voyages",
+      emoji: '✈️',
+      bgGradient: 'from-sky-700 via-indigo-800 to-slate-900',
+      description: "Terminaux mondiaux, passeports et vols internationaux vers l'Europe et au-delà !",
+      hotspots: [
+        { id: 'fr-h21', nameEn: 'Tableau des Départs', nameTr: 'Uçuş Bilgi Ekranı', phraseEn: 'Le vol à destination de Paris Charles-de-Gaulle embarque porte 12.', phraseTr: 'Paris uçağı 12 numaralı kapıdan alınıyor.', emoji: '🛫' },
+        { id: 'fr-h22', nameEn: 'Passeport Électronique', nameTr: 'Biyometrik Pasaport', phraseEn: "Le contrôle des passeports biométriques est rapide et sécurisé.", phraseTr: 'Pasaport kontrolü hızlı ve güvenli.', emoji: '🛂' },
+        { id: 'fr-h23', nameEn: 'Pilote de Ligne', nameTr: 'Kaptan Pilot', phraseEn: "Le commandant de bord accueille les passagers à bord de l'Airbus.", phraseTr: 'Kaptan pilot yolcuları uçakta selamlar.', emoji: '👨‍✈️' },
+        { id: 'fr-h24', nameEn: 'Bagage Voyageur', nameTr: 'Sert Seyahat Valizi', phraseEn: 'La valise sur roulettes passe sur le tapis roulant.', phraseTr: 'Bavul bagaj bandında ilerliyor.', emoji: '🧳' }
       ]
     }
   ],
   '14-17': [
     {
-      id: 'fr-future',
-      title: 'La Cité Écologique du Futur',
-      theme: 'Gelecek & İnovasyon',
-      bgGradient: 'from-violet-600/20 to-fuchsia-600/30',
-      items: [
-        { id: 'it8', nameEn: 'Le Hub d\'Innovation', nameTr: 'İnovasyon Merkezi', phraseEn: 'Le hub réunit des esprits brillants du monde entier.', phraseTr: 'Merkez dünyanın dört bir yanından parlak zihinleri bir araya getirir.', emoji: '🏛️' },
-        { id: 'it9', nameEn: "L'Arbre Solaire", nameTr: 'Güneş Ağacı', phraseEn: "L'arbre solaire génère de l'énergie propre pour toute la ville.", phraseTr: 'Güneş ağacı tüm şehir için temiz enerji üretir.', emoji: '⚡' }
+      id: 'fr-tech_hub',
+      name: 'Le Hub Technologique de Paris',
+      nameEn: 'Le Hub Technologique de Paris',
+      emoji: '🏙️',
+      bgGradient: 'from-purple-900 via-slate-900 to-black',
+      description: 'Startups innovantes, intelligence artificielle et projets européens du futur !',
+      hotspots: [
+        { id: 'fr-h25', nameEn: 'Serveur Cloud IA', nameTr: 'Bulut Yapay Zeka Sunucusu', phraseEn: 'Les serveurs exécutent des réseaux de neurones pour l\'analyse multilingue.', phraseTr: 'Sunucular çok dilli analiz için sinir ağlarını çalıştırır.', emoji: '🖥️' },
+        { id: 'fr-h26', nameEn: 'Amphithéâtre de Conférence', nameTr: 'Konferans Amfisi', phraseEn: 'Des jeunes développeurs présentent des solutions pour le climat.', phraseTr: 'Genç geliştiriciler iklim çözümlerini sunar.', emoji: '🎤' },
+        { id: 'fr-h27', nameEn: 'Casque Réalité Virtuelle', nameTr: 'Sanal Gerçeklik Başlığı', phraseEn: "La réalité augmentée facilite l'apprentissage immersif des langues.", phraseTr: 'Sanal gerçeklik dil öğrenimini derinleştirir.', emoji: '🥽' },
+        { id: 'fr-h28', nameEn: 'Espace Coworking', nameTr: 'Girişimcilik Alanı', phraseEn: "Des mentors internationaux guident la nouvelle génération d'innovateurs.", phraseTr: 'Uluslararası mentorlar yeni nesil girişimcilere rehberlik eder.', emoji: '💡' }
       ]
     }
   ]
@@ -349,6 +459,22 @@ export const FRENCH_SAFARI_ANIMALS = [
     emoji: '🐬',
     soundText: "Plouf! Je nage à toute vitesse dans le bel océan bleu!",
     funTr: 'Yunuslar denizde taklalar atan çok zeki dostlardır.'
+  },
+  {
+    id: 'fr-an-owl',
+    nameEn: 'Le Hibou',
+    nameTr: 'Bilge Baykuş',
+    emoji: '🦉',
+    soundText: 'Hou hou! Je lis des livres savants sous le ciel étoilé!',
+    funTr: 'Baykuşlar gece uyanır ve kocaman gözleriyle her şeyi görür.'
+  },
+  {
+    id: 'fr-an-frog',
+    nameEn: 'La Grenouille',
+    nameTr: 'Zıpzıp Kurbağa',
+    emoji: '🐸',
+    soundText: 'Croâ croâ! Je saute joyeusement de nénuphar en nénuphar!',
+    funTr: 'Kurbağalar göletlerde zıplar ve su sineklerini yakalar.'
   }
 ];
 
