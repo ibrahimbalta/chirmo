@@ -4,6 +4,7 @@ import {
   VoiceAccentConfig,
   VoiceAccentId
 } from '../../services/learningStorage';
+import { TargetLanguageService } from '../../services/targetLanguageService';
 
 interface ChirmoAccentVoiceSelectorModalProps {
   isOpen: boolean;
@@ -30,6 +31,14 @@ export const ChirmoAccentVoiceSelectorModal: React.FC<ChirmoAccentVoiceSelectorM
       setAccents(LearningStorageService.getAvailableAccents());
       setSelectedAccentId(LearningStorageService.getSelectedAccent());
       setSpeechRate(LearningStorageService.getSpeechRate());
+      const lang = TargetLanguageService.getTargetLanguage();
+      setCustomTestSentence(
+        lang === 'de'
+          ? 'Deutsch lernen mit Chirmo macht großen Spaß und fühlt sich ganz natürlich an!'
+          : lang === 'fr'
+            ? 'Apprendre le français avec Chirmo est si naturel et stimulant !'
+            : 'Learning English with Chirmo feels so natural and engaging!'
+      );
     }
   }, [isOpen]);
 

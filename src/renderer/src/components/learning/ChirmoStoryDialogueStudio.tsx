@@ -18,6 +18,7 @@ import {
   MessageSquare
 } from 'lucide-react';
 import { LearningStorageService } from '../../services/learningStorage';
+import { TargetLanguageService, SupportedLanguage } from '../../services/targetLanguageService';
 
 export interface DialogueExchange {
   id: string;
@@ -375,8 +376,246 @@ export const ChirmoStoryDialogueStudio: React.FC<ChirmoStoryDialogueStudioProps>
     }
   ];
 
+
+  const GERMAN_STORIES: StoryAdventure[] = [
+    {
+      id: 'de-story-cafe',
+      titleEn: 'Das geheimnisvolle Café in Berlin',
+      titleTr: 'Berlin\'de Gizemli Kafe',
+      tag: 'Gizem & Günlük Konuşma',
+      level: 'A1 - A2 Başlangıç',
+      emoji: '☕ 🕵️',
+      bgGradient: 'from-amber-600 via-orange-600 to-rose-600',
+      synopsisTr: 'Berlin\'de yağmurlu bir akşam. Sıcak bir fincan kahve içmek ve müzeyi bulmak için kafeye giriyorsun.',
+      exchanges: [
+        {
+          id: 'de-c1',
+          speaker: 'npc',
+          speakerName: 'Lukas (Kellner)',
+          avatar: '☕',
+          fullEn: 'Guten Abend! Willkommen im Café Berlin. Was darf ich Ihnen bringen?',
+          fullTr: 'İyi akşamlar! Café Berlin\'e hoş geldiniz. Size ne getirebilirim?',
+          explanationTr: 'Almanya\'da garsonlar "Was darf ich Ihnen bringen?" ile çok kibar şekilde sipariş sorar.'
+        },
+        {
+          id: 'de-c2',
+          speaker: 'user',
+          speakerName: 'Sen',
+          avatar: '🧑',
+          fullEn: 'Guten Abend! Ich möchte bitte einen warmen Cappuccino bestellen.',
+          fullTr: 'İyi akşamlar! Sıcak bir kapuçino sipariş etmek istiyorum lütfen.',
+          blankTemplateEn: 'Guten Abend! Ich [BLANK1] bitte einen warmen Cappuccino [BLANK2].',
+          blanks: [
+            { id: 'b1', correctWord: 'möchte', options: ['möchte', 'gehe', 'habe'] },
+            { id: 'b2', correctWord: 'bestellen', options: ['bestellen', 'kaufen', 'sehen'] }
+          ],
+          explanationTr: '"Ich möchte ... bestellen" kalıbı en doğal sipariş verme kalıbıdır.'
+        },
+        {
+          id: 'de-c3',
+          speaker: 'npc',
+          speakerName: 'Lukas (Kellner)',
+          avatar: '☕',
+          fullEn: 'Sehr gerne! Mit Hafermilch oder normaler Milch? Möchten Sie auch etwas essen?',
+          fullTr: 'Memnuniyetle! Yulaf sütüyle mi yoksa normal sütle mi? Yanında bir şey yemek ister misiniz?',
+          explanationTr: '"Mit Hafermilch oder normaler Milch?" kafelerde sıkça duyacağın sorudur.'
+        },
+        {
+          id: 'de-c4',
+          speaker: 'user',
+          speakerName: 'Sen',
+          avatar: '🧑',
+          fullEn: 'Mit Hafermilch bitte. Und wo ist das nächste Museum?',
+          fullTr: 'Yulaf sütlü lütfen. Ve en yakın müze nerede?',
+          blankTemplateEn: 'Mit Hafermilch bitte. Und wo [BLANK1] das nächste [BLANK2]?',
+          blanks: [
+            { id: 'b1', correctWord: 'ist', options: ['ist', 'sind', 'hat'] },
+            { id: 'b2', correctWord: 'Museum', options: ['Museum', 'Auto', 'Zimmer'] }
+          ],
+          explanationTr: '"Wo ist das nächste...?" yön tariflerinde en temel ve pratik kalıptır.'
+        },
+        {
+          id: 'de-c5',
+          speaker: 'npc',
+          speakerName: 'Lukas (Kellner)',
+          avatar: '☕',
+          fullEn: 'Das Museum ist direkt um die Ecke, nur zwei Minuten zu Fuß!',
+          fullTr: 'Müze hemen köşeyi dönünce, yürüyerek sadece iki dakika!',
+          explanationTr: '"Direkt um die Ecke" hemen köşede çok yakın anlamına gelir.'
+        },
+        {
+          id: 'de-c6',
+          speaker: 'user',
+          speakerName: 'Sen',
+          avatar: '🧑',
+          fullEn: 'Vielen Dank für Ihre Hilfe! Einen schönen Abend noch!',
+          fullTr: 'Yardımınız için çok teşekkür ederim! İyi akşamlar dilerim!',
+          blankTemplateEn: 'Vielen [BLANK1] für Ihre Hilfe! Einen schönen [BLANK2] noch!',
+          blanks: [
+            { id: 'b1', correctWord: 'Dank', options: ['Dank', 'Tag', 'Gruß'] },
+            { id: 'b2', correctWord: 'Abend', options: ['Abend', 'Morgen', 'Kaffee'] }
+          ],
+          explanationTr: '"Einen schönen Abend noch!" Almanya\'da veda ederken en yaygın nezaket cümlesidir.'
+        }
+      ]
+    },
+    {
+      id: 'de-story-hotel',
+      titleEn: 'Check-in im Hotel München',
+      titleTr: 'Münih Otelinde Giriş (Check-in)',
+      tag: 'Seyahat & Otel',
+      level: 'A2 - B1 Temel',
+      emoji: '🏨 🛎️',
+      bgGradient: 'from-blue-600 via-indigo-600 to-purple-600',
+      synopsisTr: 'Münih\'te rezervasyon yaptırdığın otele vardın. Resepsiyondaki görevliyle konuşup anahtar kartını almalısın.',
+      exchanges: [
+        {
+          id: 'de-h1',
+          speaker: 'npc',
+          speakerName: 'Frau Weber (Rezeptionistin)',
+          avatar: '🛎️',
+          fullEn: 'Guten Abend! Herzlich willkommen im Hotel München. Haben Sie eine Reservierung?',
+          fullTr: 'İyi akşamlar! Hotel München\'e hoş geldiniz. Rezervasyonunuz var mı?',
+          explanationTr: 'Otel girişlerinde ilk soru her zaman "Haben Sie eine Reservierung?" olur.'
+        },
+        {
+          id: 'de-h2',
+          speaker: 'user',
+          speakerName: 'Sen',
+          avatar: '🧑',
+          fullEn: 'Guten Abend! Ja, ich habe eine Reservierung auf den Namen Ali.',
+          fullTr: 'İyi akşamlar! Evet, Ali ismi üzerine rezervasyonum var.',
+          blankTemplateEn: 'Guten Abend! Ja, ich [BLANK1] eine Reservierung auf den [BLANK2] Ali.',
+          blanks: [
+            { id: 'b1', correctWord: 'habe', options: ['habe', 'bin', 'gehe'] },
+            { id: 'b2', correctWord: 'Namen', options: ['Namen', 'Pass', 'Zug'] }
+          ],
+          explanationTr: '"Ich habe eine Reservierung auf den Namen..." kalıbı otellerde anahtar ifadedir.'
+        },
+        {
+          id: 'de-h3',
+          speaker: 'npc',
+          speakerName: 'Frau Weber',
+          avatar: '🛎️',
+          fullEn: 'Wunderbar! Zimmer 304 im dritten Stock. Hier ist Ihre Schlüsselkarte. Das Frühstück ist um sieben Uhr.',
+          fullTr: 'Harika! Üçüncü katta 304 numaralı oda. İşte anahtar kartınız. Kahvaltı saat yedide.',
+          explanationTr: 'Resepsiyonist kat ve oda numarasını söylerken "Hier ist Ihre Schlüsselkarte" der.'
+        },
+        {
+          id: 'de-h4',
+          speaker: 'user',
+          speakerName: 'Sen',
+          avatar: '🧑',
+          fullEn: 'Vielen Dank! Wie lautet das WLAN-Passwort bitte?',
+          fullTr: 'Teşekkür ederim! Wifi şifresi nedir lütfen?',
+          blankTemplateEn: 'Vielen Dank! Wie lautet das [BLANK1] bitte?',
+          blanks: [
+            { id: 'b1', correctWord: 'WLAN-Passwort', options: ['WLAN-Passwort', 'Zimmer', 'Frühstück'] }
+          ],
+          explanationTr: '"Wie lautet das WLAN-Passwort?" otelde veya kafede şifre sormanın en nazik yoludur.'
+        }
+      ]
+    }
+  ];
+
+  const FRENCH_STORIES: StoryAdventure[] = [
+    {
+      id: 'fr-story-cafe',
+      titleEn: 'Le Café Mystérieux à Paris',
+      titleTr: 'Paris\'te Gizemli Kafe',
+      tag: 'Gizem & Günlük Konuşma',
+      level: 'A1 - A2 Başlangıç',
+      emoji: '☕ 🥐',
+      bgGradient: 'from-amber-600 via-orange-600 to-rose-600',
+      synopsisTr: 'Paris\'te yağmurlu bir akşam. Sıcak bir fincan kahve içmek ve müzeyi bulmak için kafeye giriyorsun.',
+      exchanges: [
+        {
+          id: 'fr-c1',
+          speaker: 'npc',
+          speakerName: 'Pierre (Serveur)',
+          avatar: '☕',
+          fullEn: 'Bonsoir ! Bienvenue au Café Parisien. Que puis-je vous servir ?',
+          fullTr: 'İyi akşamlar! Café Parisien\'e hoş geldiniz. Size ne ikram edebilirim?',
+          explanationTr: 'Fransız kafelerinde garsonlar "Que puis-je vous servir ?" ile söze başlar.'
+        },
+        {
+          id: 'fr-c2',
+          speaker: 'user',
+          speakerName: 'Sen',
+          avatar: '🧑',
+          fullEn: 'Bonsoir ! Je voudrais un café au lait et un croissant, s\'il vous plaît.',
+          fullTr: 'İyi akşamlar! Sütlü bir kahve ve kruvasan rica ediyorum, lütfen.',
+          blankTemplateEn: 'Bonsoir ! Je [BLANK1] un café au lait et un [BLANK2], s\'il vous plaît.',
+          blanks: [
+            { id: 'b1', correctWord: 'voudrais', options: ['voudrais', 'peux', 'vais'] },
+            { id: 'b2', correctWord: 'croissant', options: ['croissant', 'livre', 'train'] }
+          ],
+          explanationTr: '"Je voudrais..." kalıbı Fransa\'da en kibar istek ifadesidir.'
+        },
+        {
+          id: 'fr-c3',
+          speaker: 'npc',
+          speakerName: 'Pierre (Serveur)',
+          avatar: '☕',
+          fullEn: 'Très bien ! Avec plaisir. Souhaitez-vous autre chose ?',
+          fullTr: 'Çok iyi! Memnuniyetle. Başka bir şey arzu eder misiniz?',
+          explanationTr: '"Souhaitez-vous autre chose ?" başka bir şey ister misiniz demektir.'
+        },
+        {
+          id: 'fr-c4',
+          speaker: 'user',
+          speakerName: 'Sen',
+          avatar: '🧑',
+          fullEn: 'Non merci. Où se trouve le musée le plus proche, s\'il vous plaît ?',
+          fullTr: 'Hayır teşekkürler. En yakın müze nerede bulunuyor lütfen?',
+          blankTemplateEn: 'Non merci. Où se [BLANK1] le [BLANK2] le plus proche, s\'il vous plaît ?',
+          blanks: [
+            { id: 'b1', correctWord: 'trouve', options: ['trouve', 'mange', 'parle'] },
+            { id: 'b2', correctWord: 'musée', options: ['musée', 'pain', 'soleil'] }
+          ],
+          explanationTr: '"Où se trouve... ?" yön sorarken en kibar Fransızca yapıdır.'
+        },
+        {
+          id: 'fr-c5',
+          speaker: 'npc',
+          speakerName: 'Pierre (Serveur)',
+          avatar: '☕',
+          fullEn: 'Le musée est juste au coin de la rue, à deux minutes à pied !',
+          fullTr: 'Müze hemen köşeyi dönünce, yürüyerek iki dakika!',
+          explanationTr: '"À deux minutes à pied" yürüyerek iki dakika uzaklıkta demektir.'
+        },
+        {
+          id: 'fr-c6',
+          speaker: 'user',
+          speakerName: 'Sen',
+          avatar: '🧑',
+          fullEn: 'Merci beaucoup pour votre aide ! Passez une excellente soirée !',
+          fullTr: 'Yardımınız için çok teşekkür ederim! Harika bir akşam geçirin!',
+          blankTemplateEn: 'Merci beaucoup pour votre [BLANK1] ! Passez une excellente [BLANK2] !',
+          blanks: [
+            { id: 'b1', correctWord: 'aide', options: ['aide', 'table', 'voiture'] },
+            { id: 'b2', correctWord: 'soirée', options: ['soirée', 'pomme', 'rue'] }
+          ],
+          explanationTr: '"Passez une excellente soirée !" çok nazik bir akşam vedasıdır.'
+        }
+      ]
+    }
+  ];
+
+
+  const [targetLang, setTargetLang] = useState<SupportedLanguage>(() =>
+    TargetLanguageService.getTargetLanguage()
+  );
+
+  const activeStories =
+    targetLang === 'de'
+      ? GERMAN_STORIES
+      : targetLang === 'fr'
+        ? FRENCH_STORIES
+        : STORIES;
+
   // Aktif Hikaye ve Adım Durumu
-  const [selectedStoryId, setSelectedStoryId] = useState<string>('story-cafe');
+  const [selectedStoryId, setSelectedStoryId] = useState<string>(() => activeStories[0].id);
   const [exchangeIndex, setExchangeIndex] = useState<number>(0);
   const [userBlanks, setUserBlanks] = useState<Record<string, string>>({});
   const [isExchangeComplete, setIsExchangeComplete] = useState<boolean>(false);
@@ -386,7 +625,19 @@ export const ChirmoStoryDialogueStudio: React.FC<ChirmoStoryDialogueStudioProps>
     return saved ? parseInt(saved, 10) : 40;
   });
 
-  const activeStory = STORIES.find((s) => s.id === selectedStoryId) || STORIES[0];
+  useEffect(() => {
+    return TargetLanguageService.subscribe((lang) => {
+      setTargetLang(lang);
+      const newStories = lang === 'de' ? GERMAN_STORIES : lang === 'fr' ? FRENCH_STORIES : STORIES;
+      setSelectedStoryId(newStories[0].id);
+      setExchangeIndex(0);
+      setUserBlanks({});
+      setIsExchangeComplete(false);
+      setStoryCompleted(false);
+    });
+  }, []);
+
+  const activeStory = activeStories.find((s) => s.id === selectedStoryId) || activeStories[0];
   const currentExchange = activeStory.exchanges[exchangeIndex];
 
   const handleSpeak = (text: string) => {
@@ -486,7 +737,7 @@ export const ChirmoStoryDialogueStudio: React.FC<ChirmoStoryDialogueStudioProps>
       <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-5 space-y-6">
         {/* HİKAYE SEÇİCİ KARTLARI */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {STORIES.map((story) => {
+          {activeStories.map((story) => {
             const isSelected = story.id === selectedStoryId;
             return (
               <button

@@ -43,6 +43,22 @@ export const ChirmoPronunciationDoctor: React.FC<ChirmoPronunciationDoctorProps>
 
   const activeLang = TargetLanguageService.getTargetLanguage();
 
+  useEffect(() => {
+    if (isOpen) {
+      const defaultForLang =
+        activeLang === 'de'
+          ? 'Ich hätte gerne einen Cappuccino mit Hafermilch, bitte.'
+          : activeLang === 'fr'
+            ? 'Je voudrais un café au lait et un croissant, s\'il vous plaît.'
+            : 'I think this is the best decision for our future.';
+      setCurrentSentence(initialSentence !== 'I think this is the best decision for our future.' ? initialSentence : defaultForLang);
+      setSpokenTranscript('');
+      setEvaluatedWords([]);
+      setSelectedWord(null);
+      setOverallScore(null);
+    }
+  }, [isOpen, activeLang]);
+
   // Örnek Zorlu Telaffuz Cümleleri
   const sampleChallenges =
     activeLang === 'de'
@@ -101,7 +117,46 @@ export const ChirmoPronunciationDoctor: React.FC<ChirmoPronunciationDoctorProps>
 
   // Fonetik İpucu Kütüphanesi
   const getPhoneticTip = (word: string): string => {
-    const clean = word.toLowerCase().replace(/[^a-z]/g, '');
+    const lower = word.toLowerCase();
+    if (activeLang === 'de') {
+      if (lower.includes('ü')) {
+        return "Almanca 'ü': Dudaklarını 'u' gibi öne doğru yuvarla ama dilini 'i' diyecek gibi konumlandır.";
+      }
+      if (lower.includes('ö')) {
+        return "Almanca 'ö': Dudaklarını yuvarlak 'o' yap, dilini 'e' der gibi damağına yakın tutarak ses ver.";
+      }
+      if (lower.includes('ä')) {
+        return "Almanca 'ä': Ağzını 'a' ile 'e' arasında genişçe açarak açık bir sesle telaffuz et.";
+      }
+      if (lower.includes('ch')) {
+        return "Almanca 'ch': 'i/e' seslilerinden sonra fısıltılı nefes ('ich'), 'a/o/u' sonrasında boğazdan yumuşak hırıltıyla ('ach') çıkar.";
+      }
+      if (lower.includes('sch') || lower.startsWith('st') || lower.startsWith('sp')) {
+        return "Almancada 'sch' ve kelime başındaki 'st/sp' harfleri güçlü bir 'ş' sesiyle söylenir (örn: sprechen = şprehın).";
+      }
+      if (lower.includes('r')) {
+        return "Almanca 'r' harfi gırtlaktan hafif titreşir; kelime sonundaki 'er' ise zayıf bir 'a' gibi duyulur.";
+      }
+      return "Bu Almanca kelimede ilk hece vurgusuna ve ünlü seslerin uzunluğuna dikkat et.";
+    }
+
+    if (activeLang === 'fr') {
+      if (lower.includes('an') || lower.includes('en') || lower.includes('on') || lower.includes('in')) {
+        return "Fransızca nazal sesi ağzını fazla kapatmadan, havanın bir kısmını burnundan vererek çıkar.";
+      }
+      if (lower.includes('r')) {
+        return "Fransızca 'r' sesinde dil ucunu damağa değdirme; boğazındaki küçük dili hafif titreterek çıkar.";
+      }
+      if (lower.includes('ou')) {
+        return "Dudaklarını öne doğru iyice büzerek derin ve yuvarlak bir 'u' sesi ver.";
+      }
+      if (lower.includes('eu')) {
+        return "Ağzını 'ö' der gibi büz, boğazını sıkmadan rahat ve akıcı bir nefes ver.";
+      }
+      return "Fransızcada kelime sonundaki sessiz harfler genellikle okunmaz, sesleri birbirine bağla (liaison).";
+    }
+
+    const clean = lower.replace(/[^a-z]/g, '');
     if (clean.includes('th')) {
       return "Dilini üst ve alt ön dişlerinin arasına hafifçe yerleştirip nefes ver. 's' veya 't' sesi çıkarmamaya dikkat et.";
     }
@@ -143,7 +198,7 @@ export const ChirmoPronunciationDoctor: React.FC<ChirmoPronunciationDoctorProps>
     let totalScore = 0;
 
     const evaluated: EvaluatedWord[] = targetWords.map((word) => {
-      const cleanWord = word.toLowerCase().replace(/[^a-z]/g, '');
+      const cleanWord = word.toLowerCase().replace(/[^a-zäöüßéèêëàâôûîïç]/g, '');
       const isExactMatch = spokenWords.includes(cleanWord);
       const isPartialMatch = spokenWords.some((sw) => sw.includes(cleanWord) || cleanWord.includes(sw));
 

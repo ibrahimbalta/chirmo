@@ -18,7 +18,7 @@ const STORAGE_KEYS = {
   VOICE_RATE: 'chirmo_voice_rate'
 };
 
-export type VoiceAccentId = 'us' | 'uk' | 'au' | 'robot';
+export type VoiceAccentId = 'us' | 'uk' | 'au' | 'de' | 'fr' | 'robot';
 
 export interface VoiceAccentConfig {
   id: VoiceAccentId;

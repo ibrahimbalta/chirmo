@@ -1,3 +1,4 @@
+import { TargetLanguageService, SupportedLanguage } from './targetLanguageService';
 /**
  * sentencePatternEngine.ts
  * CHIRMO — Kalıptan Cümle Üretme Motoru (Pattern-Based Sentence Generator)
@@ -365,11 +366,125 @@ export const INTERACTIVE_BUILDER_EXERCISES: PracticeExercise[] = [
   }
 ];
 
+
+export const CORE_GERMAN_SENTENCE_PATTERNS: SentencePattern[] = [
+  {
+    id: 'pattern-de-want',
+    category: 'want',
+    categoryTitle: 'İstek Bildirme (Ich möchte)',
+    pattern: 'Ich möchte...',
+    patternTr: '... istiyorum (kibar)',
+    explanation: 'Almancada bir şey istemenin en kibar ve doğal yoludur. İsimden önce doğrudan gelir ("Ich möchte einen Kaffee"), fiilden önce ise fiil cümlenin sonuna mastar olarak gider ("Ich möchte schlafen").',
+    pedagogicalTip: 'Türkçede istek bildiren fiil en sondayken ("Kahve istiyorum"), Almancada kip fiil ("Ich möchte") hemen özneden sonra 2. pozisyondadır.',
+    compatibleWords: [
+      { id: 'de-w1', en: 'einen Kaffee', tr: 'kahve', type: 'noun', phonetic: '/ˈkafe/' },
+      { id: 'de-w2', en: 'Wasser', tr: 'su', type: 'noun', phonetic: '/ˈvasɐ/' },
+      { id: 'de-w3', en: 'schlafen', tr: 'uyumak', type: 'verb', phonetic: '/ˈʃlaːfn̩/' },
+      { id: 'de-w4', en: 'die Speisekarte', tr: 'menü', type: 'noun', phonetic: '/ˈʃpaɪ̯zəˌkaʁtə/' },
+      { id: 'de-w5', en: 'zahlen', tr: 'hesap ödemek', type: 'verb', phonetic: '/ˈtsaːlən/' },
+      { id: 'de-w6', en: 'helfen', tr: 'yardım etmek', type: 'verb', phonetic: '/ˈhɛlfn̩/' }
+    ]
+  },
+  {
+    id: 'pattern-de-need',
+    category: 'need',
+    categoryTitle: 'İhtiyaç & Aciliyet (Ich brauche)',
+    pattern: 'Ich brauche...',
+    patternTr: '... ihtiyacım var',
+    explanation: 'Zorunluluk ve aciliyet belirten en kritik kurtarıcı kalıptır. Seyahatte, otelde veya sokakta kaybolduğunuzda derdinizi anında anlatır.',
+    pedagogicalTip: '"Ich brauche" kalıbı doğrudan Akkusativ (ismin -i hali) alır: "Ich brauche ein Taxi", "Ich brauche Hilfe".',
+    compatibleWords: [
+      { id: 'de-w7', en: 'Hilfe', tr: 'yardım', type: 'noun', phonetic: '/ˈhɪlfə/' },
+      { id: 'de-w8', en: 'ein Taxi', tr: 'taksi', type: 'noun', phonetic: '/aɪ̯n ˈtaksi/' },
+      { id: 'de-w9', en: 'ein Hotelzimmer', tr: 'otel odası', type: 'noun', phonetic: '/ˈhoːtɛlˌtsɪmɐ/' },
+      { id: 'de-w10', en: 'einen Arzt', tr: 'doktor', type: 'noun', phonetic: '/ˈaːɐ̯tst/' },
+      { id: 'de-w11', en: 'Zeit', tr: 'zaman', type: 'noun', phonetic: '/tsaɪ̯t/' }
+    ]
+  },
+  {
+    id: 'pattern-de-like',
+    category: 'like',
+    categoryTitle: 'Beğeni & Tercih (Ich mag)',
+    pattern: 'Ich mag...',
+    patternTr: '... severim / hoşlanırım',
+    explanation: 'Zevklerinizi, hobilerinizi ve beğendiğiniz şeyleri anlatmanın en pratik yoludur.',
+    pedagogicalTip: 'İsimler için "Ich mag..." (Ich mag diese Stadt), eylemler için ise fiilin yanına "gerne" eklenir: "Ich lerne gerne Deutsch".',
+    compatibleWords: [
+      { id: 'de-w12', en: 'diese Stadt', tr: 'bu şehir', type: 'noun', phonetic: '/ˈdiːzə ʃtat/' },
+      { id: 'de-w13', en: 'Deutsch', tr: 'Almanca', type: 'noun', phonetic: '/dɔɪ̯tʃ/' },
+      { id: 'de-w14', en: 'Musik', tr: 'müzik', type: 'noun', phonetic: '/muˈziːk/' },
+      { id: 'de-w15', en: 'Reisen', tr: 'seyahat etmek', type: 'noun', phonetic: '/ˈʁaɪ̯zn̩/' }
+    ]
+  },
+  {
+    id: 'pattern-de-have',
+    category: 'have',
+    categoryTitle: 'Sahiplik (Ich habe)',
+    pattern: 'Ich habe...',
+    patternTr: '... sahibim / ... var',
+    explanation: 'Hem somut eşyaları ("ein Auto") hem de durumları ("eine Frage", "Zeit") anlatmak için kullanılır.',
+    pedagogicalTip: 'Türkçedeki "Sorum var" cümlesi Almancada "Ben bir soruya sahibim" (Ich habe eine Frage) şeklinde özneyle başlar.',
+    compatibleWords: [
+      { id: 'de-w16', en: 'eine Frage', tr: 'bir soru', type: 'noun', phonetic: '/ˈfʁaːɡə/' },
+      { id: 'de-w17', en: 'keine Zeit', tr: 'zamanım yok', type: 'noun', phonetic: '/tsaɪ̯t/' },
+      { id: 'de-w18', en: 'ein Problem', tr: 'bir sorun', type: 'noun', phonetic: '/pʁoˈbleːm/' },
+      { id: 'de-w19', en: 'Hunger', tr: 'açlık (açım)', type: 'noun', phonetic: '/ˈhʊŋɐ/' }
+    ]
+  },
+  {
+    id: 'pattern-de-can',
+    category: 'can',
+    categoryTitle: 'Yetenek & İzin (Ich kann)',
+    pattern: 'Ich kann...',
+    patternTr: '... yapabilirim',
+    explanation: 'Yetenek, olasılık veya izin bildirmek için kullanılan en temel modal fiildir.',
+    pedagogicalTip: '"kann" kip fiili öznenin hemen yanında çekimlenir, esas fiil cümlenin en sonuna mastar olarak gider: "Ich kann Deutsch sprechen".',
+    compatibleWords: [
+      { id: 'de-w20', en: 'Deutsch sprechen', tr: 'Almanca konuşmak', type: 'verb', phonetic: '/ˈʃpʁɛçn̩/' },
+      { id: 'de-w21', en: 'helfen', tr: 'yardım etmek', type: 'verb', phonetic: '/ˈhɛlfn̩/' },
+      { id: 'de-w22', en: 'verstehen', tr: 'anlamak', type: 'verb', phonetic: '/fɛɐ̯ˈʃteːən/' },
+      { id: 'de-w23', en: 'kommen', tr: 'gelmek', type: 'verb', phonetic: '/ˈkɔmən/' }
+    ]
+  },
+  {
+    id: 'pattern-de-question',
+    category: 'question',
+    categoryTitle: 'Soru Sorma (Wo / Was / Wie viel)',
+    pattern: 'Wo ist...?',
+    patternTr: 'Nerede / Nedir / Ne kadar?',
+    explanation: 'Seyahatte ve günlük hayatta bilgi edinmenin en hayati soru kalıpları.',
+    pedagogicalTip: 'Almanca soru kelimeleri daima cümlenin 1. sırasına geçer: Wo ist der Bahnhof? Was kostet das?',
+    compatibleWords: [
+      { id: 'de-w24', en: 'der Bahnhof', tr: 'tren garı', type: 'noun', phonetic: '/ˈbaːnˌhoːf/' },
+      { id: 'de-w25', en: 'das Hotel', tr: 'otel', type: 'noun', phonetic: '/hoˈtɛl/' },
+      { id: 'de-w26', en: 'die Toilette', tr: 'tuvalet', type: 'noun', phonetic: '/toaˈlɛtə/' },
+      { id: 'de-w27', en: 'die Apotheke', tr: 'eczane', type: 'noun', phonetic: '/apoˈteːkə/' }
+    ]
+  },
+  {
+    id: 'pattern-de-survival',
+    category: 'survival',
+    categoryTitle: 'Hayat Kurtaran İfadeler',
+    pattern: 'Diyaloğu Kurtaran İfadeler',
+    patternTr: 'Diyaloğu Kurtaran İfadeler',
+    explanation: 'Karşı taraf hızlı konuştuğunda veya anlamadığınızda hayatınızı kurtaran Almanca kalıplar.',
+    pedagogicalTip: 'Bir şeyi anlamadığınızda susmayın! "Könnten Sie bitte langsamer sprechen?" deyin, karşınızdaki anlayış gösterecektir.',
+    compatibleWords: [
+      { id: 'de-w28', en: 'Ich verstehe nicht', tr: 'Anlamıyorum', type: 'noun', phonetic: '/fɛɐ̯ˈʃteːə nɪçt/' },
+      { id: 'de-w29', en: 'Bitte sprechen Sie langsamer', tr: 'Lütfen daha yavaş konuşun', type: 'noun', phonetic: '/ˈlaŋzaːmɐ/' },
+      { id: 'de-w30', en: 'Kein Problem', tr: 'Sorun değil / Rica ederim', type: 'noun', phonetic: '/kaɪ̯n pʁoˈbleːm/' },
+      { id: 'de-w31', en: 'Entschuldigung', tr: 'Affedersiniz', type: 'noun', phonetic: '/ɛntˈʃʊldɪɡʊŋ/' }
+    ]
+  }
+];
+
 export class SentencePatternEngine {
   /**
    * Tüm kalıpları listeler
    */
-  static getAllPatterns(): SentencePattern[] {
+  static getAllPatterns(lang?: SupportedLanguage): SentencePattern[] {
+    const active = lang || (typeof window !== 'undefined' ? TargetLanguageService.getTargetLanguage() : 'en');
+    if (active === 'de') return CORE_GERMAN_SENTENCE_PATTERNS;
     return CORE_SENTENCE_PATTERNS;
   }
 

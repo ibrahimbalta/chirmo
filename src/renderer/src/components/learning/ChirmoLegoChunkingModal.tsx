@@ -88,14 +88,20 @@ export const ChirmoLegoChunkingModal: React.FC<ChirmoLegoChunkingModalProps> = (
         setIsSuccess(true);
         LearningStorageService.addXP(25);
         onRewardXP?.(25);
-        handleSpeak(targetLang === 'de' ? 'Perfekt ausgesprochen!' : 'Perfect chunking!');
+        handleSpeak(
+          targetLang === 'de'
+            ? 'Perfekt ausgesprochen!'
+            : targetLang === 'fr'
+              ? 'Parfaitement prononcé !'
+              : 'Perfect chunking!'
+        );
       }, 1600);
       return;
     }
 
     try {
       const recognition = new SpeechRecognition();
-      recognition.lang = targetLang === 'de' ? 'de-DE' : 'en-US';
+      recognition.lang = targetLang === 'de' ? 'de-DE' : targetLang === 'fr' ? 'fr-FR' : 'en-US';
       recognition.interimResults = false;
 
       recognition.onresult = (event: any) => {
@@ -105,7 +111,13 @@ export const ChirmoLegoChunkingModal: React.FC<ChirmoLegoChunkingModalProps> = (
         setIsSuccess(true);
         LearningStorageService.addXP(25);
         onRewardXP?.(25);
-        handleSpeak(targetLang === 'de' ? 'Großartig!' : 'Well done!');
+        handleSpeak(
+          targetLang === 'de'
+            ? 'Großartig!'
+            : targetLang === 'fr'
+              ? 'Magnifique !'
+              : 'Well done!'
+        );
       };
 
       recognition.onerror = () => {
@@ -141,7 +153,7 @@ export const ChirmoLegoChunkingModal: React.FC<ChirmoLegoChunkingModalProps> = (
                   Lego Kalıp Sihirbazı 🧱
                 </span>
                 <span className="px-2 py-0.5 rounded-full bg-white/25 text-[10px] font-black uppercase">
-                  {targetLang === 'de' ? '🇩🇪 Almanca' : '🇬🇧 İngilizce'}
+                  {targetLang === 'de' ? '🇩🇪 Almanca' : targetLang === 'fr' ? '🇫🇷 Fransızca' : '🇬🇧 İngilizce'}
                 </span>
               </div>
               <p className="text-xs text-indigo-100 font-medium">

@@ -25,15 +25,43 @@ import {
 } from '../../services/sentencePatternEngine';
 import { LearningStorageService } from '../../services/learningStorage';
 import { AnalyticsService } from '../../services/analyticsService';
+import { TargetLanguageService, SupportedLanguage } from '../../services/targetLanguageService';
 
 export const SentenceBuilderStudio: React.FC = () => {
+  const [targetLang, setTargetLang] = useState<SupportedLanguage>(() =>
+    TargetLanguageService.getTargetLanguage()
+  );
+
+  const initialPatterns = SentencePatternEngine.getAllPatterns(TargetLanguageService.getTargetLanguage());
+
   // Aktif Seçili Kalıp
-  const [selectedPattern, setSelectedPattern] = useState<SentencePattern>(CORE_SENTENCE_PATTERNS[0]);
-  const [selectedWord, setSelectedWord] = useState(CORE_SENTENCE_PATTERNS[0].compatibleWords[0]);
+  const [selectedPattern, setSelectedPattern] = useState<SentencePattern>(initialPatterns[0]);
+  const [selectedWord, setSelectedWord] = useState(initialPatterns[0].compatibleWords[0]);
 
   // Oluşturulan Cümle Durumu
-  const [builtSentence, setBuiltSentence] = useState<string>('I want water.');
-  const [builtSentenceTr, setBuiltSentenceTr] = useState<string>('Ben su istiyorum.');
+  const [builtSentence, setBuiltSentence] = useState<string>(() =>
+    TargetLanguageService.getTargetLanguage() === 'de' ? 'Ich möchte einen Kaffee.' : 'I want water.'
+  );
+  const [builtSentenceTr, setBuiltSentenceTr] = useState<string>(() =>
+    TargetLanguageService.getTargetLanguage() === 'de' ? 'Ben kahve istiyorum.' : 'Ben su istiyorum.'
+  );
+
+  useEffect(() => {
+    return TargetLanguageService.subscribe((lang) => {
+      setTargetLang(lang);
+      const patterns = SentencePatternEngine.getAllPatterns(lang);
+      setSelectedPattern(patterns[0]);
+      const defaultWord = patterns[0].compatibleWords[0];
+      setSelectedWord(defaultWord);
+      if (lang === 'de') {
+        setBuiltSentence('Ich möchte ' + defaultWord.en + '.');
+        setBuiltSentenceTr('Ben ' + defaultWord.tr + ' istiyorum.');
+      } else {
+        setBuiltSentence('I want ' + defaultWord.en + '.');
+        setBuiltSentenceTr('Ben ' + defaultWord.tr + ' istiyorum.');
+      }
+    });
+  }, []);
 
   // Mikrofon & Ses Durumu
   const [isListening, setIsListening] = useState(false);
@@ -55,30 +83,55 @@ export const SentenceBuilderStudio: React.FC = () => {
     let en = '';
     let tr = '';
 
-    if (selectedPattern.category === 'want') {
-      en = `I want ${word.en}.`;
-      tr = `Ben ${word.tr} istiyorum.`;
-    } else if (selectedPattern.category === 'need') {
-      en = `I need ${word.en}.`;
-      tr = `Benim ${word.tr} ihtiyacım var.`;
-    } else if (selectedPattern.category === 'like') {
-      en = `I like ${word.en}.`;
-      tr = `Ben ${word.tr} severim.`;
-    } else if (selectedPattern.category === 'have') {
-      en = `I have ${word.en}.`;
-      tr = `Benim ${word.tr} var.`;
-    } else if (selectedPattern.category === 'can') {
-      en = `I can ${word.en}.`;
-      tr = `Ben ${word.tr} yapabilirim.`;
-    } else if (selectedPattern.category === 'question') {
-      en = `Where is ${word.en}?`;
-      tr = `${word.tr} nerede?`;
-    } else if (selectedPattern.category === 'tense') {
-      en = `I will ${word.en}.`;
-      tr = `Ben ${word.tr} yapacağım.`;
+    if (targetLang === 'de') {
+      if (selectedPattern.category === 'want') {
+        en = `Ich möchte ${word.en}.`;
+        tr = `Ben ${word.tr} istiyorum.`;
+      } else if (selectedPattern.category === 'need') {
+        en = `Ich brauche ${word.en}.`;
+        tr = `Benim ${word.tr} ihtiyacım var.`;
+      } else if (selectedPattern.category === 'like') {
+        en = `Ich mag ${word.en}.`;
+        tr = `Ben ${word.tr} severim.`;
+      } else if (selectedPattern.category === 'have') {
+        en = `Ich habe ${word.en}.`;
+        tr = `Benim ${word.tr} var.`;
+      } else if (selectedPattern.category === 'can') {
+        en = `Ich kann ${word.en}.`;
+        tr = `Ben ${word.tr} yapabilirim.`;
+      } else if (selectedPattern.category === 'question') {
+        en = `Wo ist ${word.en}?`;
+        tr = `${word.tr} nerede?`;
+      } else {
+        en = word.en;
+        tr = word.tr;
+      }
     } else {
-      en = word.en;
-      tr = word.tr;
+      if (selectedPattern.category === 'want') {
+        en = `I want ${word.en}.`;
+        tr = `Ben ${word.tr} istiyorum.`;
+      } else if (selectedPattern.category === 'need') {
+        en = `I need ${word.en}.`;
+        tr = `Benim ${word.tr} ihtiyacım var.`;
+      } else if (selectedPattern.category === 'like') {
+        en = `I like ${word.en}.`;
+        tr = `Ben ${word.tr} severim.`;
+      } else if (selectedPattern.category === 'have') {
+        en = `I have ${word.en}.`;
+        tr = `Benim ${word.tr} var.`;
+      } else if (selectedPattern.category === 'can') {
+        en = `I can ${word.en}.`;
+        tr = `Ben ${word.tr} yapabilirim.`;
+      } else if (selectedPattern.category === 'question') {
+        en = `Where is ${word.en}?`;
+        tr = `${word.tr} nerede?`;
+      } else if (selectedPattern.category === 'tense') {
+        en = `I will ${word.en}.`;
+        tr = `Ben ${word.tr} yapacağım.`;
+      } else {
+        en = word.en;
+        tr = word.tr;
+      }
     }
 
     setBuiltSentence(en);
@@ -115,7 +168,7 @@ export const SentenceBuilderStudio: React.FC = () => {
     if (SpeechRecognition) {
       try {
         const recognition = new SpeechRecognition();
-        recognition.lang = 'en-US';
+        recognition.lang = targetLang === 'de' ? 'de-DE' : targetLang === 'fr' ? 'fr-FR' : 'en-US';
         recognition.interimResults = false;
         recognition.maxAlternatives = 1;
 

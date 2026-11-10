@@ -262,11 +262,24 @@ export const ChirmoAiChatModal: React.FC<ChirmoAiChatModalProps> = ({
           </div>
 
           <div className="flex items-center space-x-2 overflow-x-auto pb-1">
-            {[
-              { level: '🟢 Kolay', text: 'Water, please.', tr: 'Su lütfen.' },
-              { level: '🟡 Doğal', text: 'Can I have the menu, please?', tr: 'Menüyü alabilir miyim?' },
-              { level: '🔵 İleri', text: 'What do you recommend today?', tr: 'Bugün ne tavsiye edersiniz?' }
-            ].map((tip) => (
+            {(targetLang === 'de'
+              ? [
+                  { level: '🟢 Kolay', text: 'Ein Wasser, bitte.', tr: 'Su lütfen.' },
+                  { level: '🟡 Doğal', text: 'Könnte ich bitte die Speisekarte haben?', tr: 'Menüyü alabilir miyim lütfen?' },
+                  { level: '🔵 İleri', text: 'Was können Sie mir heute empfehlen?', tr: 'Bugün bana ne tavsiye edersiniz?' }
+                ]
+              : targetLang === 'fr'
+                ? [
+                    { level: '🟢 Kolay', text: 'De l\'eau, s\'il vous plaît.', tr: 'Su lütfen.' },
+                    { level: '🟡 Doğal', text: 'Puis-je avoir le menu, s\'il vous plaît ?', tr: 'Menüyü alabilir miyim lütfen?' },
+                    { level: '🔵 İleri', text: 'Que me recommandez-vous aujourd\'hui ?', tr: 'Bugün bana ne tavsiye edersiniz?' }
+                  ]
+                : [
+                    { level: '🟢 Kolay', text: 'Water, please.', tr: 'Su lütfen.' },
+                    { level: '🟡 Doğal', text: 'Can I have the menu, please?', tr: 'Menüyü alabilir miyim?' },
+                    { level: '🔵 İleri', text: 'What do you recommend today?', tr: 'Bugün ne tavsiye edersiniz?' }
+                  ]
+            ).map((tip) => (
               <button
                 key={tip.text}
                 type="button"
