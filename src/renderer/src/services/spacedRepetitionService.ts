@@ -1,9 +1,12 @@
 // Chirmo Akıllı Aralıklı Tekrar (SRS - Spaced Repetition System) Motoru
 // Ebbinghaus Unutma Eğrisi ve SuperMemo SM-2 Prensipleri Temel Alınmıştır.
-// Amaç: Kullanıcının öğrendiği İngilizce kelimeleri 3 günde unutmasını engellemek,
-// zorlandığı kelimeleri sık, ustalaştığı kelimeleri aralıklı periyotlarla hatırlatmak.
+// Amaç: Kullanıcının öğrendiği İngilizce, Almanca ve Fransızca kelimeleri ve
+// hata kasasındaki düzeltmeleri kalıcı hafızaya aktarmak; unutulmak üzere olanları
+// 1, 3, 7, 14, 30 günlük aralıklarla kullanıcıya hatırlatmak.
 
-import { VocabularyWord } from '../types';
+import { AiCorrectionService } from './aiCorrectionService';
+import { LearningStorageService } from './learningStorage';
+import { SupportedLanguage } from './targetLanguageService';
 
 export interface SrsWordData {
   id: string;
@@ -22,19 +25,46 @@ export interface SrsWordData {
   masteryLevel: 'learning' | 'reviewing' | 'mastered';
   totalReviews: number;
   correctReviews: number;
+  targetLang?: 'en' | 'de' | 'fr';
 }
 
-const SRS_STORAGE_KEY = 'chirmo_srs_vocabulary_v2';
+export type SrsRating = 1 | 2 | 3 | 4 | 5; // 1: Unuttum, 3: Zor, 4: İyi, 5: Çok Kolay
+
+export interface SrsReviewItem {
+  id: string;
+  sourceType: 'vocabulary' | 'mistake' | 'sentence_chunk';
+  targetLang: 'en' | 'de' | 'fr';
+  frontPrompt: string; // Kartın ön yüzü (Türkçe ipucu veya eksik cümle)
+  frontSubPrompt?: string; // Kontekst ipucu
+  backText: string; // Doğru hedef dildeki ifade/kelime
+  backExplanationTr?: string; // Detaylı açıklama / kural
+  audioText: string; // Dinleme metni
+  repetition: number;
+  intervalDays: number;
+  easeFactor: number;
+  nextReviewDate: string;
+  rawItem?: any;
+}
+
+const SRS_STORAGE_KEY = 'chirmo_srs_vocabulary_v3';
 const EVENT_NAME = 'chirmo_srs_updated';
 
 export const SpacedRepetitionService = {
-  getAllWords(): SrsWordData[] {
+  getAllWords(targetLang?: 'en' | 'de' | 'fr'): SrsWordData[] {
     try {
       if (typeof localStorage === 'undefined') return [];
       const raw = localStorage.getItem(SRS_STORAGE_KEY);
-      if (!raw) return this.getInitialWords();
-      const parsed: SrsWordData[] = JSON.parse(raw);
-      return Array.isArray(parsed) && parsed.length > 0 ? parsed : this.getInitialWords();
+      let list: SrsWordData[] = [];
+      if (!raw) {
+        list = this.getInitialWords();
+      } else {
+        const parsed = JSON.parse(raw);
+        list = Array.isArray(parsed) && parsed.length > 0 ? parsed : this.getInitialWords();
+      }
+      if (targetLang) {
+        return list.filter((w) => (w.targetLang || 'en') === targetLang);
+      }
+      return list;
     } catch {
       return this.getInitialWords();
     }
@@ -43,8 +73,9 @@ export const SpacedRepetitionService = {
   getInitialWords(): SrsWordData[] {
     const today = new Date().toISOString();
     const defaults: SrsWordData[] = [
+      // English
       {
-        id: 'srs-1',
+        id: 'srs-en-1',
         word: 'Improve',
         translation: 'Geliştirmek, ilerletmek',
         phonetic: '/ɪmˈpruːv/',
@@ -59,10 +90,11 @@ export const SpacedRepetitionService = {
         nextReviewDate: today,
         masteryLevel: 'reviewing',
         totalReviews: 2,
-        correctReviews: 2
+        correctReviews: 2,
+        targetLang: 'en'
       },
       {
-        id: 'srs-2',
+        id: 'srs-en-2',
         word: 'Confident',
         translation: 'Özgüvenli, kendinden emin',
         phonetic: '/ˈkɒnfɪdənt/',
@@ -77,10 +109,11 @@ export const SpacedRepetitionService = {
         nextReviewDate: today,
         masteryLevel: 'learning',
         totalReviews: 1,
-        correctReviews: 0
+        correctReviews: 0,
+        targetLang: 'en'
       },
       {
-        id: 'srs-3',
+        id: 'srs-en-3',
         word: 'Recommend',
         translation: 'Tavsiye etmek, önermek',
         phonetic: '/ˌrekəˈmend/',
@@ -95,17 +128,38 @@ export const SpacedRepetitionService = {
         nextReviewDate: today,
         masteryLevel: 'reviewing',
         totalReviews: 3,
-        correctReviews: 3
+        correctReviews: 3,
+        targetLang: 'en'
+      },
+      // German
+      {
+        id: 'srs-de-1',
+        word: 'Verbessern',
+        translation: 'Geliştirmek, iyileştirmek',
+        phonetic: '/fɛɐ̯ˈbɛsɐn/',
+        partOfSpeech: 'Verb',
+        level: 'A2',
+        exampleSentence: 'Ich möchte mein Deutsch verbessern.',
+        exampleTranslation: 'Almancamı geliştirmek istiyorum.',
+        repetitionCount: 1,
+        intervalDays: 1,
+        easeFactor: 2.5,
+        lastReviewedAt: today,
+        nextReviewDate: today,
+        masteryLevel: 'reviewing',
+        totalReviews: 1,
+        correctReviews: 1,
+        targetLang: 'de'
       },
       {
-        id: 'srs-4',
-        word: 'Fluently',
-        translation: 'Akıcı bir şekilde',
-        phonetic: '/ˈfluːəntli/',
-        partOfSpeech: 'Zarf',
+        id: 'srs-de-2',
+        word: 'Empfehlen',
+        translation: 'Tavsiye etmek, önermek',
+        phonetic: '/ɛmˈpfeːlən/',
+        partOfSpeech: 'Verb',
         level: 'B1',
-        exampleSentence: 'She speaks English very fluently.',
-        exampleTranslation: 'O çok akıcı bir şekilde İngilizce konuşuyor.',
+        exampleSentence: 'Was können Sie mir empfehlen?',
+        exampleTranslation: 'Bana ne tavsiye edebilirsiniz?',
         repetitionCount: 0,
         intervalDays: 1,
         easeFactor: 2.5,
@@ -113,25 +167,47 @@ export const SpacedRepetitionService = {
         nextReviewDate: today,
         masteryLevel: 'learning',
         totalReviews: 0,
-        correctReviews: 0
+        correctReviews: 0,
+        targetLang: 'de'
+      },
+      // French
+      {
+        id: 'srs-fr-1',
+        word: 'Améliorer',
+        translation: 'Geliştirmek, iyileştirmek',
+        phonetic: '/a.me.ljɔ.ʁe/',
+        partOfSpeech: 'Verbe',
+        level: 'A2',
+        exampleSentence: 'Je veux améliorer mon français.',
+        exampleTranslation: 'Fransızcamı geliştirmek istiyorum.',
+        repetitionCount: 1,
+        intervalDays: 1,
+        easeFactor: 2.5,
+        lastReviewedAt: today,
+        nextReviewDate: today,
+        masteryLevel: 'reviewing',
+        totalReviews: 1,
+        correctReviews: 1,
+        targetLang: 'fr'
       },
       {
-        id: 'srs-5',
-        word: 'Opportunity',
-        translation: 'Fırsat, imkân',
-        phonetic: '/ˌɒpəˈtjuːnəti/',
-        partOfSpeech: 'İsim',
+        id: 'srs-fr-2',
+        word: 'Recommander',
+        translation: 'Tavsiye etmek, önermek',
+        phonetic: '/ʁə.kɔ.mɑ̃.de/',
+        partOfSpeech: 'Verbe',
         level: 'B1',
-        exampleSentence: 'Learning English gives you better career opportunities.',
-        exampleTranslation: 'İngilizce öğrenmek size daha iyi kariyer fırsatları sunar.',
-        repetitionCount: 3,
-        intervalDays: 7,
-        easeFactor: 2.7,
+        exampleSentence: 'Que me recommandez-vous pour le dîner ?',
+        exampleTranslation: 'Akşam yemeği için bana ne tavsiye edersiniz?',
+        repetitionCount: 0,
+        intervalDays: 1,
+        easeFactor: 2.5,
         lastReviewedAt: today,
-        nextReviewDate: new Date(Date.now() + 7 * 86400000).toISOString(),
-        masteryLevel: 'mastered',
-        totalReviews: 4,
-        correctReviews: 4
+        nextReviewDate: today,
+        masteryLevel: 'learning',
+        totalReviews: 0,
+        correctReviews: 0,
+        targetLang: 'fr'
       }
     ];
     this.saveWords(defaults);
@@ -149,11 +225,8 @@ export const SpacedRepetitionService = {
     }
   },
 
-  /**
-   * Bugün tekrar edilmesi gereken kelimeler (Due for review)
-   */
-  getDueWords(): SrsWordData[] {
-    const all = this.getAllWords();
+  getDueWords(targetLang?: 'en' | 'de' | 'fr'): SrsWordData[] {
+    const all = this.getAllWords(targetLang);
     const now = new Date();
     return all.filter((w) => {
       const nextDate = new Date(w.nextReviewDate);
@@ -161,9 +234,6 @@ export const SpacedRepetitionService = {
     });
   },
 
-  /**
-   * Yeni kelime ekle
-   */
   addWord(word: {
     word: string;
     translation: string;
@@ -172,9 +242,13 @@ export const SpacedRepetitionService = {
     level?: string;
     exampleSentence?: string;
     exampleTranslation?: string;
+    targetLang?: 'en' | 'de' | 'fr';
   }): SrsWordData {
     const all = this.getAllWords();
-    const existing = all.find((w) => w.word.toLowerCase() === word.word.toLowerCase().trim());
+    const lang = word.targetLang || 'en';
+    const existing = all.find(
+      (w) => w.word.toLowerCase() === word.word.toLowerCase().trim() && (w.targetLang || 'en') === lang
+    );
     if (existing) return existing;
 
     const today = new Date().toISOString();
@@ -185,16 +259,17 @@ export const SpacedRepetitionService = {
       phonetic: word.phonetic || '/.../',
       partOfSpeech: word.partOfSpeech || 'Kelime',
       level: word.level || 'A1',
-      exampleSentence: word.exampleSentence || `${word.word} is a useful English word.`,
-      exampleTranslation: word.exampleTranslation || `${word.word} faydalı bir İngilizce kelimedir.`,
+      exampleSentence: word.exampleSentence || `${word.word} is a useful word.`,
+      exampleTranslation: word.exampleTranslation || `${word.word} faydalı bir ifadedir.`,
       repetitionCount: 0,
       intervalDays: 1,
       easeFactor: 2.5,
       lastReviewedAt: today,
-      nextReviewDate: today, // Hemen pratik için uygun
+      nextReviewDate: today,
       masteryLevel: 'learning',
       totalReviews: 0,
-      correctReviews: 0
+      correctReviews: 0,
+      targetLang: lang
     };
 
     all.unshift(newWord);
@@ -203,9 +278,9 @@ export const SpacedRepetitionService = {
   },
 
   /**
-   * SM-2 Tekrar Yanıtını Kaydet (isCorrect: true | false, rating: 1 (Zor), 3 (İyi), 5 (Kolay))
+   * SuperMemo SM-2 Tekrar Yanıtını Kaydet
    */
-  recordReview(id: string, isCorrect: boolean, rating: 1 | 3 | 5 = isCorrect ? 3 : 1): SrsWordData | null {
+  recordReview(id: string, isCorrect: boolean, rating: 1 | 2 | 3 | 4 | 5 = isCorrect ? 4 : 1): SrsWordData | null {
     const all = this.getAllWords();
     const index = all.findIndex((w) => w.id === id);
     if (index === -1) return null;
@@ -215,7 +290,7 @@ export const SpacedRepetitionService = {
     const now = new Date();
     item.lastReviewedAt = now.toISOString();
 
-    if (isCorrect) {
+    if (isCorrect && rating >= 3) {
       item.correctReviews += 1;
       if (item.repetitionCount === 0) {
         item.intervalDays = 1;
@@ -226,27 +301,25 @@ export const SpacedRepetitionService = {
       }
       item.repetitionCount += 1;
 
-      // Ease factor güncelleme
+      // SuperMemo SM-2 Ease Factor hesaplama
       item.easeFactor = Math.max(
         1.3,
         item.easeFactor + (0.1 - (5 - rating) * (0.08 + (5 - rating) * 0.02))
       );
 
-      // Mastery derecesi
       if (item.repetitionCount >= 4) {
         item.masteryLevel = 'mastered';
       } else {
         item.masteryLevel = 'reviewing';
       }
     } else {
-      // Yanlış cevapta sıfırlama (Ebbinghaus kuralı)
+      // Unutulduğunda sıfırlama (Ebbinghaus kuralı)
       item.repetitionCount = 0;
       item.intervalDays = 1;
       item.easeFactor = Math.max(1.3, item.easeFactor - 0.2);
       item.masteryLevel = 'learning';
     }
 
-    // Gelecek tekrar tarihi
     const nextDate = new Date(now.getTime() + item.intervalDays * 86400000);
     item.nextReviewDate = nextDate.toISOString();
 
@@ -261,11 +334,74 @@ export const SpacedRepetitionService = {
   },
 
   /**
-   * İstatistikler (Hafıza Kalıcılık Oranı ve Durum)
+   * Birleşik Aralıklı Tekrar Kuyruğu (Unified Review Queue):
+   * 1) Bugün tekrarı gelen kelimeler
+   * 2) Error Vault'taki çözülmemiş kullanıcı hataları
    */
-  getStats() {
-    const all = this.getAllWords();
-    const due = this.getDueWords();
+  getUnifiedReviewQueue(targetLang: 'en' | 'de' | 'fr' = 'en'): SrsReviewItem[] {
+    const queue: SrsReviewItem[] = [];
+
+    // 1. Due kelimeler
+    const dueWords = this.getDueWords(targetLang);
+    for (const w of dueWords) {
+      queue.push({
+        id: `word-${w.id}`,
+        sourceType: 'vocabulary',
+        targetLang: w.targetLang || 'en',
+        frontPrompt: w.translation,
+        frontSubPrompt: w.exampleTranslation,
+        backText: w.word,
+        backExplanationTr: `${w.partOfSpeech} • ${w.phonetic} • Örn: "${w.exampleSentence}"`,
+        audioText: w.word,
+        repetition: w.repetitionCount,
+        intervalDays: w.intervalDays,
+        easeFactor: w.easeFactor,
+        nextReviewDate: w.nextReviewDate,
+        rawItem: w
+      });
+    }
+
+    // 2. Unresolved hatalar
+    const unresolvedMistakes = AiCorrectionService.getUnresolvedMistakes(targetLang);
+    for (const m of unresolvedMistakes) {
+      queue.push({
+        id: `mistake-${m.id}`,
+        sourceType: 'mistake',
+        targetLang: m.targetLang,
+        frontPrompt: `Hatanı Düzelt: "${m.originalText}"`,
+        frontSubPrompt: m.explanationTr,
+        backText: m.correctedText,
+        backExplanationTr: m.nativeAlternative
+          ? `Doğal İfade: "${m.nativeAlternative}" • ${m.explanationTr}`
+          : m.explanationTr,
+        audioText: m.correctedText,
+        repetition: m.reviewCount || 0,
+        intervalDays: 1,
+        easeFactor: 2.5,
+        nextReviewDate: m.lastReviewedAt || new Date().toISOString(),
+        rawItem: m
+      });
+    }
+
+    return queue;
+  },
+
+  /**
+   * Birleşik kuyruktaki öğeyi puanlayıp kaydet
+   */
+  recordUnifiedReview(item: SrsReviewItem, rating: SrsRating): void {
+    if (item.sourceType === 'vocabulary' && item.rawItem?.id) {
+      this.recordReview(item.rawItem.id, rating >= 3, rating);
+    } else if (item.sourceType === 'mistake' && item.rawItem?.id) {
+      if (rating >= 4) {
+        AiCorrectionService.markMistakeAsMastered(item.rawItem.id);
+      }
+    }
+  },
+
+  getStats(targetLang?: 'en' | 'de' | 'fr') {
+    const all = this.getAllWords(targetLang);
+    const due = this.getDueWords(targetLang);
     const mastered = all.filter((w) => w.masteryLevel === 'mastered');
     const reviewing = all.filter((w) => w.masteryLevel === 'reviewing');
     const learning = all.filter((w) => w.masteryLevel === 'learning');

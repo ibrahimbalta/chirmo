@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { SpacedRepetitionService } from '../src/renderer/src/services/spacedRepetitionService';
+import { AiCorrectionService } from '../src/renderer/src/services/aiCorrectionService';
 
 describe('SpacedRepetitionService (SM-2 Ebbinghaus Memory Engine)', () => {
   beforeEach(() => {
@@ -20,12 +21,18 @@ describe('SpacedRepetitionService (SM-2 Ebbinghaus Memory Engine)', () => {
     };
   });
 
-  it('loads initial foundational vocabulary words with default SRS metrics', () => {
+  it('loads initial foundational vocabulary words with default SRS metrics across languages', () => {
     const words = SpacedRepetitionService.getAllWords();
-    expect(words.length).toBeGreaterThanOrEqual(4);
+    expect(words.length).toBeGreaterThanOrEqual(5);
     expect(words[0]).toHaveProperty('easeFactor');
     expect(words[0]).toHaveProperty('intervalDays');
     expect(words[0]).toHaveProperty('nextReviewDate');
+
+    const deWords = SpacedRepetitionService.getAllWords('de');
+    expect(deWords.length).toBeGreaterThanOrEqual(1);
+
+    const frWords = SpacedRepetitionService.getAllWords('fr');
+    expect(frWords.length).toBeGreaterThanOrEqual(1);
   });
 
   it('adds a new word and sets repetition count to 0 and interval to 1 day', () => {
@@ -85,5 +92,18 @@ describe('SpacedRepetitionService (SM-2 Ebbinghaus Memory Engine)', () => {
     expect(stats.totalWords).toBeGreaterThan(0);
     expect(stats.retentionRate).toBeGreaterThanOrEqual(0);
     expect(stats.retentionRate).toBeLessThanOrEqual(100);
+  });
+
+  it('generates a unified review queue including vocabulary and unresolved mistakes from Error Vault', async () => {
+    // Add a mistake via AiCorrectionService
+    const analysis = await AiCorrectionService.analyzeSentence('I am agree with you', 'en');
+    AiCorrectionService.saveMistake(analysis);
+
+    const queue = SpacedRepetitionService.getUnifiedReviewQueue('en');
+    expect(queue.length).toBeGreaterThanOrEqual(1);
+
+    const mistakeItem = queue.find((q) => q.sourceType === 'mistake');
+    expect(mistakeItem).toBeDefined();
+    expect(mistakeItem?.backText.toLowerCase()).toContain('agree');
   });
 });

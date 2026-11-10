@@ -40,6 +40,8 @@ export const ChirmoPronunciationDoctor: React.FC<ChirmoPronunciationDoctorProps>
   const [evaluatedWords, setEvaluatedWords] = useState<EvaluatedWord[]>([]);
   const [selectedWord, setSelectedWord] = useState<EvaluatedWord | null>(null);
   const [overallScore, setOverallScore] = useState<number | null>(null);
+  const [fluencyScore, setFluencyScore] = useState<number | null>(null);
+  const [completenessScore, setCompletenessScore] = useState<number | null>(null);
 
   const activeLang = TargetLanguageService.getTargetLanguage();
 
@@ -56,6 +58,8 @@ export const ChirmoPronunciationDoctor: React.FC<ChirmoPronunciationDoctorProps>
       setEvaluatedWords([]);
       setSelectedWord(null);
       setOverallScore(null);
+      setFluencyScore(null);
+      setCompletenessScore(null);
     }
   }, [isOpen, activeLang]);
 
@@ -196,6 +200,7 @@ export const ChirmoPronunciationDoctor: React.FC<ChirmoPronunciationDoctorProps>
     const spokenWords = spoken.toLowerCase().split(/\s+/);
 
     let totalScore = 0;
+    let matchedCount = 0;
 
     const evaluated: EvaluatedWord[] = targetWords.map((word) => {
       const cleanWord = word.toLowerCase().replace(/[^a-zäöüßéèêëàâôûîïç]/g, '');
@@ -208,9 +213,11 @@ export const ChirmoPronunciationDoctor: React.FC<ChirmoPronunciationDoctorProps>
       if (isExactMatch) {
         score = Math.floor(Math.random() * 8) + 93; // 93 - 100
         status = 'green';
+        matchedCount += 1;
       } else if (isPartialMatch) {
         score = Math.floor(Math.random() * 12) + 78; // 78 - 89
         status = 'yellow';
+        matchedCount += 0.75;
       } else {
         score = Math.floor(Math.random() * 18) + 55; // 55 - 72
         status = 'red';
@@ -227,8 +234,13 @@ export const ChirmoPronunciationDoctor: React.FC<ChirmoPronunciationDoctorProps>
     });
 
     setEvaluatedWords(evaluated);
-    const avg = Math.round(totalScore / (evaluated.length || 1));
-    setOverallScore(avg);
+    const accuracy = Math.round(totalScore / (evaluated.length || 1));
+    const completeness = Math.min(100, Math.round((matchedCount / (targetWords.length || 1)) * 100));
+    const fluency = Math.min(100, Math.max(60, Math.round((accuracy * 0.6) + (completeness * 0.4))));
+
+    setOverallScore(accuracy);
+    setFluencyScore(fluency);
+    setCompletenessScore(completeness);
     setSelectedWord(evaluated.find((w) => w.status === 'red') || evaluated[0] || null);
   };
 
@@ -400,14 +412,26 @@ export const ChirmoPronunciationDoctor: React.FC<ChirmoPronunciationDoctorProps>
           {/* ==================== 3. FONETİK ISI HARİTASI ==================== */}
           {evaluatedWords.length > 0 && (
             <div className="p-4 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-3 animate-fade-in">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-700/60 pb-3">
                 <div className="text-xs font-extrabold text-slate-800 dark:text-white flex items-center space-x-1.5">
                   <span>Isı Haritası (Kelimelere Tıkla ve İncele):</span>
                 </div>
                 {overallScore !== null && (
-                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-black text-xs">
-                    %{overallScore} Doğruluk
-                  </span>
+                  <div className="flex items-center space-x-1.5 flex-wrap gap-1">
+                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-black text-xs">
+                      🎯 %{overallScore} Doğruluk
+                    </span>
+                    {fluencyScore !== null && (
+                      <span className="px-2.5 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300 font-black text-xs">
+                        🌊 %{fluencyScore} Akıcılık
+                      </span>
+                    )}
+                    {completenessScore !== null && (
+                      <span className="px-2.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950 text-purple-800 dark:text-purple-300 font-black text-xs">
+                        📜 %{completenessScore} Bütünlük
+                      </span>
+                    )}
+                  </div>
                 )}
               </div>
 

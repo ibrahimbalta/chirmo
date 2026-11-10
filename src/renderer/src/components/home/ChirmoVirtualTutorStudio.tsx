@@ -13,12 +13,16 @@ import {
   Trophy,
   Star,
   Phone,
-  MessageCircle
+  MessageCircle,
+  BookOpen,
+  Brain
 } from 'lucide-react';
 import { LearningStorageService } from '../../services/learningStorage';
 import { TargetLanguageService, SupportedLanguage } from '../../services/targetLanguageService';
 import { PrivacyAuthService, SafeUserSession } from '../../services/privacyAuthService';
 import { UserProfileService, UserProfile } from '../../services/userProfileService';
+import { AiCorrectionService } from '../../services/aiCorrectionService';
+import { SpacedRepetitionService } from '../../services/spacedRepetitionService';
 import { ChirmoSubscriptionModal } from '../subscription/ChirmoSubscriptionModal';
 import { ChirmoAiChatModal } from './ChirmoAiChatModal';
 import { ChirmoFluencyBooster } from '../learning/ChirmoFluencyBooster';
@@ -34,6 +38,8 @@ import { ChirmoReflexDrillModal } from '../learning/ChirmoReflexDrillModal';
 import { ChirmoLegoChunkingModal } from '../learning/ChirmoLegoChunkingModal';
 import { ChirmoGermanGenderMasteryModal } from '../learning/ChirmoGermanGenderMasteryModal';
 import { ChirmoSpeakingToolboxModal } from '../learning/ChirmoSpeakingToolboxModal';
+import { ChirmoErrorVaultModal } from '../learning/ChirmoErrorVaultModal';
+import { ChirmoDailySrsReviewModal } from '../learning/ChirmoDailySrsReviewModal';
 import { ChirmoTalkingRobotAvatar } from '../avatar/ChirmoTalkingRobotAvatar';
 import { CEFRLevel } from '../../types';
 
@@ -75,6 +81,14 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   const [isToolboxModalOpen, setIsToolboxModalOpen] = useState(false);
   const [isLegoModalOpen, setIsLegoModalOpen] = useState(false);
   const [isGermanGenderModalOpen, setIsGermanGenderModalOpen] = useState(false);
+  const [isErrorVaultOpen, setIsErrorVaultOpen] = useState(false);
+  const [unresolvedMistakesCount, setUnresolvedMistakesCount] = useState<number>(() =>
+    AiCorrectionService.getUnresolvedMistakes().length
+  );
+  const [isSrsModalOpen, setIsSrsModalOpen] = useState(false);
+  const [dueSrsCount, setDueSrsCount] = useState<number>(() =>
+    SpacedRepetitionService.getUnifiedReviewQueue().length
+  );
   const [currentAccent, setCurrentAccent] = useState(LearningStorageService.getSelectedAccent());
   const [targetLang, setTargetLang] = useState<SupportedLanguage>(() => TargetLanguageService.getTargetLanguage());
 
@@ -110,6 +124,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
   useEffect(() => {
     const unsubLang = TargetLanguageService.subscribe((lang) => {
       setTargetLang(lang);
+      setDueSrsCount(SpacedRepetitionService.getUnifiedReviewQueue(lang).length);
     });
     const unsubAuth = PrivacyAuthService.onAuthStateChanged((u) => {
       setCurrentUser(u);
@@ -117,12 +132,21 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
     const unsubProfile = UserProfileService.subscribe((p) => {
       setUserProfile(p);
     });
+    const unsubVault = AiCorrectionService.subscribe((mistakes) => {
+      setUnresolvedMistakesCount(mistakes.filter((m) => !m.mastered).length);
+      setDueSrsCount(SpacedRepetitionService.getUnifiedReviewQueue(targetLang).length);
+    });
+    const unsubSrs = SpacedRepetitionService.subscribe(() => {
+      setDueSrsCount(SpacedRepetitionService.getUnifiedReviewQueue(targetLang).length);
+    });
     return () => {
       unsubLang();
       unsubAuth();
       unsubProfile();
+      unsubVault();
+      unsubSrs();
     };
-  }, []);
+  }, [targetLang]);
 
   const [tutorSpeechText] = useState(
     'Bugün restoranda nasıl sipariş verileceğini öğrenelim mi?'
@@ -617,6 +641,69 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
           </div>
         </section>
 
+        {/* ==================== 5. BİLİMSEL ARALIKLI TEKRAR (SRS) & HATA DEFTERİ ==================== */}
+        <section className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          {/* Sol: Aralıklı Tekrar (SRS Flashcards) */}
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-blue-500/10 border border-purple-300/40 dark:border-purple-800/40 flex items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center text-xl shadow-sm shrink-0">
+                <Brain className="w-5 h-5" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center space-x-2">
+                  <h3 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white truncate">
+                    Günün Aralıklı Tekrarı (SRS)
+                  </h3>
+                  <span className="px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950 text-purple-800 dark:text-purple-300 text-[10px] font-black shrink-0">
+                    {dueSrsCount} Kart Hazır
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium truncate">
+                  Unutma eğrisine giren kelimeleri 3D kartlarla pekiştir.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsSrsModalOpen(true)}
+              className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-black text-xs shrink-0 cursor-pointer active:scale-95 transition-all shadow-sm flex items-center space-x-1"
+            >
+              <span>Tekrar Et</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          {/* Sağ: Kişisel Akıllı Hata Defteri */}
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-rose-500/10 border border-amber-300/40 dark:border-amber-800/40 flex items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center text-xl shadow-sm shrink-0">
+                <BookOpen className="w-5 h-5" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center space-x-2">
+                  <h3 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white truncate">
+                    Kişisel Hata Defteri
+                  </h3>
+                  <span className="px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 text-[10px] font-black shrink-0">
+                    {unresolvedMistakesCount > 0 ? `${unresolvedMistakesCount} Aktif` : '0 Hata'}
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium truncate">
+                  Konuşurken takıldığın cümlelerin doğru ve yerli hali.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsErrorVaultOpen(true)}
+              className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-black text-xs shrink-0 cursor-pointer active:scale-95 transition-all shadow-sm flex items-center space-x-1"
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>Defteri Aç</span>
+            </button>
+          </div>
+        </section>
+
         {/* Gizli arama formu (test uyumluluğu için) */}
         <form onSubmit={handleSearchSubmit} className="sr-only">
           <input
@@ -754,6 +841,16 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
         isOpen={isToolboxModalOpen}
         onClose={() => setIsToolboxModalOpen(false)}
         onRewardXP={(xp) => LearningStorageService.addXP(xp)}
+      />
+
+      <ChirmoErrorVaultModal
+        isOpen={isErrorVaultOpen}
+        onClose={() => setIsErrorVaultOpen(false)}
+      />
+
+      <ChirmoDailySrsReviewModal
+        isOpen={isSrsModalOpen}
+        onClose={() => setIsSrsModalOpen(false)}
       />
     </div>
   );

@@ -8,11 +8,17 @@ import {
   Bot,
   User,
   RotateCcw,
-  Key
+  Key,
+  BookOpen
 } from 'lucide-react';
 import { GeminiAiTeacherService, ChatMessage } from '../../services/geminiAiTeacherService';
 import { LearningStorageService } from '../../services/learningStorage';
 import { TargetLanguageService, SupportedLanguage } from '../../services/targetLanguageService';
+import {
+  AiCorrectionService,
+  SentenceCorrectionAnalysis
+} from '../../services/aiCorrectionService';
+import { ChirmoErrorVaultModal } from '../learning/ChirmoErrorVaultModal';
 
 interface ChirmoAiChatModalProps {
   isOpen: boolean;
@@ -26,9 +32,20 @@ export const ChirmoAiChatModal: React.FC<ChirmoAiChatModalProps> = ({
   initialMessage
 }) => {
   const [targetLang, setTargetLang] = useState<SupportedLanguage>(() => TargetLanguageService.getTargetLanguage());
+  const [corrections, setCorrections] = useState<Record<string, SentenceCorrectionAnalysis>>({});
+  const [isVaultOpen, setIsVaultOpen] = useState(false);
+  const [errorVaultCount, setErrorVaultCount] = useState<number>(() =>
+    AiCorrectionService.getUnresolvedMistakes().length
+  );
 
   useEffect(() => {
     return TargetLanguageService.subscribe((lang) => setTargetLang(lang));
+  }, []);
+
+  useEffect(() => {
+    return AiCorrectionService.subscribe((mistakes) => {
+      setErrorVaultCount(mistakes.filter((m) => !m.mastered).length);
+    });
   }, []);
 
   const defaultGreeting = initialMessage || (
@@ -77,6 +94,14 @@ export const ChirmoAiChatModal: React.FC<ChirmoAiChatModalProps> = ({
     setMessages((prev) => [...prev, userMsg]);
     if (!textToSend) setInputText('');
     setIsLoading(true);
+
+    // Gerçek zamanlı AI cümle analizi ve hata tespiti
+    AiCorrectionService.analyzeSentence(text, targetLang).then((analysis) => {
+      setCorrections((prev) => ({ ...prev, [userMsg.id]: analysis }));
+      if (!analysis.isPerfect) {
+        AiCorrectionService.saveMistake(analysis);
+      }
+    });
 
     try {
       const response = await GeminiAiTeacherService.generateTutorResponse(text, messages);
@@ -146,6 +171,18 @@ export const ChirmoAiChatModal: React.FC<ChirmoAiChatModalProps> = ({
           <div className="flex items-center space-x-1">
             <button
               type="button"
+              onClick={() => setIsVaultOpen(true)}
+              className="px-2.5 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 text-[11px] font-bold flex items-center space-x-1.5 hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors cursor-pointer mr-1"
+              title="Kişisel Akıllı Hata Defteri"
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Hata Defteri</span>
+              <span className="px-1.5 py-0.2 bg-amber-200 dark:bg-amber-800 text-amber-900 dark:text-white rounded-full text-[10px] font-black">
+                {errorVaultCount}
+              </span>
+            </button>
+            <button
+              type="button"
               onClick={() => setIsEditingKey(!isEditingKey)}
               className="p-2 rounded-xl text-slate-400 hover:text-purple-600 hover:bg-white dark:hover:bg-slate-800 transition-colors cursor-pointer"
               title="Gemini API Anahtarını Yönet"
@@ -207,6 +244,34 @@ export const ChirmoAiChatModal: React.FC<ChirmoAiChatModalProps> = ({
                   }`}
                 >
                   <div className="whitespace-pre-line leading-relaxed">{msg.text}</div>
+
+                  {!isChirmo && corrections[msg.id] && (
+                    <div className="mt-2 text-left pt-1 border-t border-white/20">
+                      {!corrections[msg.id].isPerfect ? (
+                        <div className="rounded-xl p-2.5 bg-black/25 text-white text-[11px] space-y-1">
+                          <div className="flex items-center space-x-1 font-bold text-amber-300">
+                            <span>💡 Doğru Hali:</span>
+                            <span className="text-white font-black">{corrections[msg.id].correctedText}</span>
+                          </div>
+                          {corrections[msg.id].nativeAlternative && corrections[msg.id].nativeAlternative !== corrections[msg.id].correctedText && (
+                            <div className="text-purple-200 text-[10px] italic">
+                              Doğal Yerli İfade: &ldquo;{corrections[msg.id].nativeAlternative}&rdquo;
+                            </div>
+                          )}
+                          <div className="text-purple-100 text-[10px]">
+                            {corrections[msg.id].explanationTr}
+                          </div>
+                          <div className="text-[9px] text-amber-300 font-bold pt-0.5">
+                            📖 Hata Defterine eklendi
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full bg-emerald-500/30 text-emerald-200 text-[10px] font-bold">
+                          <span>🌟 Kusursuz İfade!</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   <div className="flex items-center justify-between pt-1">
                     <span
@@ -349,6 +414,12 @@ export const ChirmoAiChatModal: React.FC<ChirmoAiChatModalProps> = ({
         </div>
 
       </div>
+
+      {/* Kişisel Akıllı Hata Defteri Modalı */}
+      <ChirmoErrorVaultModal
+        isOpen={isVaultOpen}
+        onClose={() => setIsVaultOpen(false)}
+      />
     </div>
   );
 };
