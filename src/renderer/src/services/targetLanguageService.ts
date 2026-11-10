@@ -1,7 +1,7 @@
 // Chirmo Target Language Management Service
-// Manages active study language across all platform modules (English / German)
+// Manages active study language across all platform modules (English / German / French)
 
-export type SupportedLanguage = 'en' | 'de';
+export type SupportedLanguage = 'en' | 'de' | 'fr';
 
 export interface LanguageMeta {
   code: SupportedLanguage;
@@ -28,6 +28,14 @@ export const SUPPORTED_LANGUAGES: Record<SupportedLanguage, LanguageMeta> = {
     flag: '🇩🇪',
     speechLang: 'de-DE',
     speechLocale: 'de'
+  },
+  fr: {
+    code: 'fr',
+    name: 'Fransızca',
+    nativeName: 'Français',
+    flag: '🇫🇷',
+    speechLang: 'fr-FR',
+    speechLocale: 'fr'
   }
 };
 
@@ -42,7 +50,7 @@ export const TargetLanguageService = {
     try {
       if (typeof localStorage === 'undefined') return 'en';
       const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored === 'de' || stored === 'en') {
+      if (stored === 'de' || stored === 'en' || stored === 'fr') {
         return stored;
       }
       return 'en';
@@ -73,7 +81,10 @@ export const TargetLanguageService = {
 
   toggleLanguage(): SupportedLanguage {
     const current = this.getTargetLanguage();
-    const next: SupportedLanguage = current === 'en' ? 'de' : 'en';
+    let next: SupportedLanguage = 'en';
+    if (current === 'en') next = 'de';
+    else if (current === 'de') next = 'fr';
+    else next = 'en';
     this.setTargetLanguage(next);
     return next;
   },

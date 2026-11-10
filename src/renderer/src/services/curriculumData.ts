@@ -3,6 +3,7 @@
 
 import { TargetLanguageService, SupportedLanguage } from './targetLanguageService';
 import { GERMAN_REAL_LIFE_SCENARIOS, GERMAN_DAY_MISSIONS } from './germanCurriculumData';
+import { FRENCH_REAL_LIFE_SCENARIOS, FRENCH_DAY_MISSIONS } from './frenchCurriculumData';
 
 export interface RealLifeScenario {
   id: string;
@@ -922,12 +923,16 @@ export const CampStorageService = {
 
   getScenarios(lang?: SupportedLanguage): RealLifeScenario[] {
     const code = lang || TargetLanguageService.getTargetLanguage();
-    return code === 'de' ? GERMAN_REAL_LIFE_SCENARIOS : REAL_LIFE_SCENARIOS;
+    if (code === 'de') return GERMAN_REAL_LIFE_SCENARIOS;
+    if (code === 'fr') return FRENCH_REAL_LIFE_SCENARIOS;
+    return REAL_LIFE_SCENARIOS;
   },
 
   getDayMissions(lang?: SupportedLanguage): DayMission[] {
     const code = lang || TargetLanguageService.getTargetLanguage();
-    return code === 'de' ? GERMAN_DAY_MISSIONS : THIRTY_DAY_MISSIONS;
+    if (code === 'de') return GERMAN_DAY_MISSIONS;
+    if (code === 'fr') return FRENCH_DAY_MISSIONS;
+    return THIRTY_DAY_MISSIONS;
   }
 };
 

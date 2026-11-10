@@ -201,6 +201,7 @@ interface DemoScenario {
   tr: string;
   en: string;
   de: string;
+  fr: string;
   formula: string;
   tip: string;
 }
@@ -214,8 +215,9 @@ const DEMO_SCENARIOS: DemoScenario[] = [
     tr: 'Lütfen büyük boy bir sade kahve alabilir miyim?',
     en: 'Can I have a large black coffee, please?',
     de: 'Kann ich bitte einen großen schwarzen Kaffee haben?',
-    formula: 'Nezaket Kalkanı: Can I have + [İstenen Şey] + please?',
-    tip: 'Öğrenenler genelde "I want..." diyerek zorlanır; oysa yerliler her zaman "Can I have..." kalıbını tercih eder.'
+    fr: 'Pourrais-je avoir un grand café noir, s\'il vous plaît ?',
+    formula: 'Nezaket Kalkanı: Can I have / Je voudrais + [İstenen Şey] + please / s\'il vous plaît',
+    tip: 'Öğrenenler genelde "I want..." diyerek zorlanır; oysa yerliler her zaman nezaket kalıplarını tercih eder.'
   },
   {
     id: 'airport',
@@ -225,8 +227,9 @@ const DEMO_SCENARIOS: DemoScenario[] = [
     tr: 'Berlin uçuşunun kapısı nerede acaba?',
     en: 'Excuse me, where is the departure gate for Berlin?',
     de: 'Entschuldigung, wo ist das Abfluggate nach Berlin?',
+    fr: 'Excusez-moi, où se trouve la porte d\'embarquement pour Berlin ?',
     formula: 'Soru Asası: Excuse me, where is + [Yer / Kapı]?',
-    tip: 'Sorunuza daima "Excuse me" ile başlayarak zihinsel rahatlık sağlayın.'
+    tip: 'Sorunuza daima "Excuse me / Pardon" ile başlayarak zihinsel rahatlık sağlayın.'
   },
   {
     id: 'hotel',
@@ -236,8 +239,9 @@ const DEMO_SCENARIOS: DemoScenario[] = [
     tr: 'Merhaba, iki gecelik rezervasyonum vardı.',
     en: 'Hello, I have a reservation for two nights under my name.',
     de: 'Hallo, ich habe eine Reservierung für zwei Nächte auf meinen Namen.',
-    formula: 'Cümle Kılıcı: I have a reservation for + [Süre / İsim].',
-    tip: 'Karmaşık gramer yok: "I have..." kalıbıyla anında durumunuzu anlatın.'
+    fr: 'Bonjour, j\'ai une réservation pour deux nuits à mon nom.',
+    formula: 'Cümle Kılıcı: I have a reservation for / J\'ai une réservation pour + [Süre / İsim].',
+    tip: 'Karmaşık gramer yok: "I have... / J\'ai..." kalıbıyla anında durumunuzu anlatın.'
   },
   {
     id: 'shopping',
@@ -247,7 +251,8 @@ const DEMO_SCENARIOS: DemoScenario[] = [
     tr: 'Bunun bir küçük bedeni var mı elinizde?',
     en: 'Do you have this in a smaller size?',
     de: 'Haben Sie das in einer kleineren Größe?',
-    formula: 'Soru Asası: Do you have this in + [Özellik]?',
+    fr: 'Avez-vous ce modèle dans une taille plus petite ?',
+    formula: 'Soru Asası: Do you have this in / Avez-vous ce modèle en + [Özellik]?',
     tip: 'Mağazada ihtiyaç duyacağınız en temel ve güçlü soru şablonu.'
   },
   {
@@ -258,6 +263,7 @@ const DEMO_SCENARIOS: DemoScenario[] = [
     tr: 'Proje yönetimi alanında beş yıllık deneyimim var.',
     en: 'I have five years of experience in project management.',
     de: 'Ich habe fünf Jahre Erfahrung im Projektmanagement.',
+    fr: 'J\'ai cinq ans d\'expérience dans la gestion de projets.',
     formula: 'Yetkinlik Kalkanı: I have [Süre] of experience in [Alan].',
     tip: 'İş mülakatlarında kendini tanıtırken en prestijli ve doğrudan giriş şablonudur.'
   },
@@ -269,7 +275,8 @@ const DEMO_SCENARIOS: DemoScenario[] = [
     tr: 'Hesabı alabilir miyiz lütfen?',
     en: 'Could we get the check, please?',
     de: 'Könnten wir bitte die Rechnung haben?',
-    formula: 'Nezaket Asası: Could we get the check, please?',
+    fr: 'Pourrions-nous avoir l\'addition, s\'il vous plaît ?',
+    formula: 'Nezaket Asası: Could we get the check / Pourrions-nous avoir l\'addition, s\'il vous plaît?',
     tip: 'Restorandan ayrılırken en doğal ve kibar hesap isteme refleksidir.'
   }
 ];
@@ -333,7 +340,13 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
   // Canlı Mikrofon Test Cümlesi
   const samplePhraseEn = "Can I have a large black coffee, please?";
   const samplePhraseDe = "Kann ich bitte einen großen schwarzen Kaffee haben?";
-  const currentSamplePhrase = selectedLanguage === 'de' ? samplePhraseDe : samplePhraseEn;
+  const samplePhraseFr = "Pourrais-je avoir un grand café noir, s'il vous plaît ?";
+  const currentSamplePhrase =
+    selectedLanguage === 'de'
+      ? samplePhraseDe
+      : selectedLanguage === 'fr'
+        ? samplePhraseFr
+        : samplePhraseEn;
 
   useEffect(() => {
     // Oturum başına 1 kez ziyaretçi sayacını artır, sonrasında canlı değerleri oku
@@ -406,7 +419,8 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
     if (SpeechRecognition) {
       try {
         const recognition = new SpeechRecognition();
-        recognition.lang = selectedLanguage === 'de' ? 'de-DE' : 'en-US';
+        recognition.lang =
+          selectedLanguage === 'de' ? 'de-DE' : selectedLanguage === 'fr' ? 'fr-FR' : 'en-US';
         recognition.interimResults = false;
         recognition.maxAlternatives = 1;
 
@@ -561,13 +575,25 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
                 onClick={() => handleLanguageToggle('de')}
                 className={`px-2 sm:px-3 py-1 rounded-lg sm:rounded-xl transition-all cursor-pointer flex items-center space-x-1 ${
                   selectedLanguage === 'de'
-                    ? 'bg-gradient-to-r from-pink-600 to-purple-600 text-white shadow-[0_0_15px_rgba(236,72,153,0.6)]'
+                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black shadow-[0_0_15px_rgba(245,158,11,0.6)]'
                     : 'text-purple-300 hover:text-white'
                 }`}
                 title="Almanca Dünyası"
               >
                 <span>🇩🇪</span>
                 <span className="hidden sm:inline">Deutsch</span>
+              </button>
+              <button
+                onClick={() => handleLanguageToggle('fr')}
+                className={`px-2 sm:px-3 py-1 rounded-lg sm:rounded-xl transition-all cursor-pointer flex items-center space-x-1 ${
+                  selectedLanguage === 'fr'
+                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(59,130,246,0.6)]'
+                    : 'text-purple-300 hover:text-white'
+                }`}
+                title="Fransızca Dünyası"
+              >
+                <span>🇫🇷</span>
+                <span className="hidden sm:inline">Français</span>
               </button>
             </div>
 
@@ -951,7 +977,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
               📱 Kullanımı Kolay • Adım Adım Mobil Sistem
             </span>
             <h2 className="text-xl sm:text-2xl font-black text-white mt-2 tracking-tight">
-              3 Basit Adımda {selectedLanguage === 'de' ? 'Almanca' : 'İngilizce'} Konuşmaya Başlayın
+              3 Basit Adımda {selectedLanguage === 'de' ? 'Almanca' : selectedLanguage === 'fr' ? 'Fransızca' : 'İngilizce'} Konuşmaya Başlayın
             </h2>
             <p className="text-xs text-purple-200/80 mt-1 max-w-lg mx-auto">
               Karmaşık kurallar yok. Sırasıyla dinleyin, sesli tekrar edin ve canlı pratikle dili konuşarak öğrenin.
@@ -1074,7 +1100,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
                   🇹🇷 "{activeDemo.tr}"
                 </div>
                 <div className="text-lg sm:text-xl font-black text-cyan-300">
-                  "{selectedLanguage === 'en' ? activeDemo.en : activeDemo.de}"
+                  "{selectedLanguage === 'de' ? activeDemo.de : selectedLanguage === 'fr' ? activeDemo.fr : activeDemo.en}"
                 </div>
                 <div className="text-xs text-amber-300/90 font-semibold pt-1">
                   💡 {activeDemo.formula}
@@ -1085,7 +1111,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
                 <button
                   onClick={() =>
                     handleSpeak(
-                      selectedLanguage === 'en' ? activeDemo.en : activeDemo.de,
+                      selectedLanguage === 'de' ? activeDemo.de : selectedLanguage === 'fr' ? activeDemo.fr : activeDemo.en,
                       selectedLanguage
                     )
                   }
@@ -1226,7 +1252,7 @@ export const ChirmoHeroLandingPortal: React.FC<ChirmoHeroLandingPortalProps> = (
                 <div className="p-3.5 rounded-2xl bg-indigo-950/50 border border-indigo-400/30 text-center">
                   <span className="text-xs text-indigo-300 font-semibold block mb-1">Hedef Dil</span>
                   <span className="text-lg sm:text-xl font-black text-indigo-300">
-                    {selectedLanguage === 'de' ? '🇩🇪 Almanca' : '🇬🇧 İngilizce'}
+                    {selectedLanguage === 'de' ? '🇩🇪 Almanca' : selectedLanguage === 'fr' ? '🇫🇷 Fransızca' : '🇬🇧 İngilizce'}
                   </span>
                 </div>
               </div>

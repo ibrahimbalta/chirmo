@@ -1,4 +1,5 @@
-// Günlük İngilizce Veri Havuzu (Chirmo Entegre Pratik ve Rol Yapma Motoru)
+// Günlük Çok Dilli Veri Havuzu (Chirmo Entegre Pratik ve Rol Yapma Motoru)
+import { SupportedLanguage } from './targetLanguageService';
 
 export interface WordItem {
   category: string;
@@ -672,16 +673,75 @@ export const GERMAN_SENTENCE_PUZZLES: SentencePuzzle[] = [
   { id: 'de-puz-4', en: 'Ich lerne jeden Tag Deutsch', tr: 'Her gün Almanca öğreniyorum' }
 ];
 
+// ==================== FRANSIZCA GÜNLÜK VERİ HAVUZU (FRANÇAIS) ====================
+export const FRENCH_EVERYDAY_SENTENCES: SentenceItem[] = [
+  { en: 'Comment allez-vous ?', tr: 'Nasılsınız?' },
+  { en: 'Enchanté de faire votre connaissance.', tr: 'Tanıştığımıza memnun oldum.' },
+  { en: 'Comment vous vous appelez ?', tr: 'Adınız nedir?' },
+  { en: 'Je ne comprends pas.', tr: 'Anlamıyorum.' },
+  { en: 'Pourriez-vous parler plus lentement ?', tr: 'Daha yavaş konuşabilir misiniz?' },
+  { en: 'Où sont les toilettes ?', tr: 'Tuvalet nerede?' },
+  { en: 'Combien ça coûte ?', tr: 'Bu ne kadar?' },
+  { en: 'Je voudrais un café, s\'il vous plaît.', tr: 'Bir kahve istiyorum, lütfen.' },
+  { en: 'L\'addition, s\'il vous plaît.', tr: 'Hesabı alabilir miyim?' },
+  { en: 'Quelle heure est-il ?', tr: 'Saat kaç?' },
+  { en: 'Je suis perdu(e).', tr: 'Kayboldum.' },
+  { en: 'Pouvez-vous m\'aider ?', tr: 'Bana yardım edebilir misiniz?' },
+  { en: 'À demain !', tr: 'Yarın görüşürüz.' },
+  { en: 'Bonjour ! Comment as-tu dormi ?', tr: 'Günaydın! Nasıl uyudun?' }
+];
+
+export const FRENCH_DIALOGUES: DialogueItem[] = [
+  {
+    id: 'fr-cafe-order',
+    title: 'Au Café (Kafede Sipariş)',
+    category: 'Sipariş & Kafe',
+    lines: [
+      { speaker: 'A', en: 'Bonjour ! Que désirez-vous commander ?', tr: 'İyi günler! Ne sipariş etmek istersiniz?' },
+      { speaker: 'B', en: 'Bonjour ! Je voudrais un café au lait et un croissant.', tr: 'İyi günler! Bir sütlü kahve ve kruvasan rica ediyorum.' },
+      { speaker: 'A', en: 'Très bien. Désirez-vous autre chose ?', tr: 'Çok güzel. Başka bir arzunuz var mı?' },
+      { speaker: 'B', en: 'Non merci, ce sera tout.', tr: 'Hayır teşekkürler, hepsi bu kadar.' },
+      { speaker: 'A', en: 'Ça marche ! Vous payez par carte ?', tr: 'Tamamdır! Kartla mı ödüyorsunuz?' },
+      { speaker: 'B', en: 'Oui, par carte bancaire, s\'il vous plaît.', tr: 'Evet, kredi kartıyla lütfen.' }
+    ]
+  },
+  {
+    id: 'fr-directions',
+    title: 'Demander son chemin (Yol Tarifi)',
+    category: 'Şehir & Yol',
+    lines: [
+      { speaker: 'A', en: 'Pardonnez-moi, pour aller au musée du Louvre ?', tr: 'Afedersiniz, Louvre Müzesi\'ne nasıl gidebilirim?' },
+      { speaker: 'B', en: 'Continuez tout droit, puis prenez la deuxième rue à gauche.', tr: 'Düz devam edin, ardından ikinci sokaktan sola dönün.' },
+      { speaker: 'A', en: 'Est-ce que c\'est loin d\'ici ?', tr: 'Buradan uzak mı?' },
+      { speaker: 'B', en: 'Non, c\'est à seulement cinq minutes à pied.', tr: 'Hayır, yürüyerek sadece beş dakika.' },
+      { speaker: 'A', en: 'Merci infiniment pour votre aide !', tr: 'Yardımınız için çok teşekkürler!' }
+    ]
+  }
+];
+
+export const FRENCH_SENTENCE_PUZZLES: SentencePuzzle[] = [
+  { id: 'fr-puz-1', en: 'Je voudrais un café au lait', tr: 'Sütlü bir kahve rica ediyorum' },
+  { id: 'fr-puz-2', en: 'Comment allez vous aujourd hui', tr: 'Bugün nasılsınız' },
+  { id: 'fr-puz-3', en: 'Où se trouve la gare s il vous plaît', tr: 'Tren garı nerede lütfen' },
+  { id: 'fr-puz-4', en: 'J apprends le français tous les jours', tr: 'Her gün Fransızca öğreniyorum' }
+];
+
 export const DIALOGUES = DAILY_DIALOGUES;
 
 export const DailyLanguageData = {
-  getEverydaySentences(lang: 'en' | 'de' = 'en'): SentenceItem[] {
-    return lang === 'de' ? GERMAN_EVERYDAY_SENTENCES : EVERYDAY_SENTENCES;
+  getEverydaySentences(lang: SupportedLanguage = 'en'): SentenceItem[] {
+    if (lang === 'de') return GERMAN_EVERYDAY_SENTENCES;
+    if (lang === 'fr') return FRENCH_EVERYDAY_SENTENCES;
+    return EVERYDAY_SENTENCES;
   },
-  getDialogues(lang: 'en' | 'de' = 'en'): DialogueItem[] {
-    return lang === 'de' ? GERMAN_DIALOGUES : DAILY_DIALOGUES;
+  getDialogues(lang: SupportedLanguage = 'en'): DialogueItem[] {
+    if (lang === 'de') return GERMAN_DIALOGUES;
+    if (lang === 'fr') return FRENCH_DIALOGUES;
+    return DAILY_DIALOGUES;
   },
-  getSentencePuzzles(lang: 'en' | 'de' = 'en'): SentencePuzzle[] {
-    return lang === 'de' ? GERMAN_SENTENCE_PUZZLES : SENTENCE_PUZZLES;
+  getSentencePuzzles(lang: SupportedLanguage = 'en'): SentencePuzzle[] {
+    if (lang === 'de') return GERMAN_SENTENCE_PUZZLES;
+    if (lang === 'fr') return FRENCH_SENTENCE_PUZZLES;
+    return SENTENCE_PUZZLES;
   }
 };

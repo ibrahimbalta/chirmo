@@ -34,9 +34,8 @@ export const LifePhraseBankView: React.FC<LifePhraseBankViewProps> = ({
   initialCategory,
   onNavigateToSimulator
 }) => {
-  const [activeLang, setActiveLang] = useState<'en' | 'de'>(() => {
-    const current = TargetLanguageService.getTargetLanguage();
-    return current === 'de' ? 'de' : 'en';
+  const [activeLang, setActiveLang] = useState<SupportedLanguage>(() => {
+    return TargetLanguageService.getTargetLanguage();
   });
 
   const [selectedCategory, setSelectedCategory] = useState<LifeCategoryKey | 'all'>(
@@ -226,6 +225,20 @@ export const LifePhraseBankView: React.FC<LifePhraseBankViewProps> = ({
               >
                 <span>🇩🇪</span>
                 <span>Almanca</span>
+              </button>
+              <button
+                onClick={() => {
+                  setActiveLang('fr');
+                  TargetLanguageService.setTargetLanguage('fr');
+                }}
+                className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all flex items-center space-x-1.5 cursor-pointer ${
+                  activeLang === 'fr'
+                    ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md'
+                    : 'text-indigo-200 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                <span>🇫🇷</span>
+                <span>Fransızca</span>
               </button>
             </div>
 

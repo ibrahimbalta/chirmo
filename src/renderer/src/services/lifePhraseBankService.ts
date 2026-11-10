@@ -7,6 +7,8 @@
  * 12 hayati yaşam alanında hazır Lego kalıpları (Chunks) sunan konuşma motoru.
  */
 
+import { SupportedLanguage } from './targetLanguageService';
+
 export type LifeCategoryKey =
   | 'cafe_dining'
   | 'travel_transit'
@@ -32,7 +34,7 @@ export interface LifeCategory {
 export interface LifePhraseItem {
   id: string;
   category: LifeCategoryKey;
-  targetLang: 'en' | 'de';
+  targetLang: SupportedLanguage;
   phrase: string;
   tr: string;
   phonetic: string;
@@ -184,6 +186,192 @@ export const LIFE_PHRASE_BANK: LifePhraseItem[] = [
     logicTip: 'Paket yaptırmak için "package" denmez; her zaman "to go" veya "takeaway" denir.',
     difficulty: 'starter',
     tags: ['paket', 'siparis']
+  },
+
+  // ==================== 1. KAFE & RESTORAN (FRANSIZCA) ====================
+  {
+    id: 'fr-cafe-1',
+    category: 'cafe_dining',
+    targetLang: 'fr',
+    phrase: 'Je voudrais un café au lait et un croissant, s\'il vous plaît.',
+    tr: 'Sütlü bir kahve ve bir kruvasan rica ediyorum, lütfen.',
+    phonetic: 'Jö vudre ö̃ kafe o le e ö̃ kruvasan, sil vu ple.',
+    logicTip: 'Fransızcada "Je veux" (istiyorum) kabalık sayılabilir. Nezaket için her zaman "Je voudrais..." kullanılır.',
+    difficulty: 'starter',
+    tags: ['kahve', 'kruvasan', 'siparis', 'kafe']
+  },
+  {
+    id: 'fr-cafe-2',
+    category: 'cafe_dining',
+    targetLang: 'fr',
+    phrase: 'L\'addition, s\'il vous plaît ! Pouvons-nous payer séparément ?',
+    tr: 'Hesap lütfen! Ayrı ayrı ödeyebilir miyiz?',
+    phonetic: 'Ladisyon sil vu ple! Puvon nu peye separeman?',
+    logicTip: 'Hesabı bölüşmek istediğinizde "payer séparément" kalıbı doğrudan anlaşılır.',
+    difficulty: 'daily',
+    tags: ['hesap', 'odeme', 'restoran']
+  },
+  {
+    id: 'fr-cafe-3',
+    category: 'cafe_dining',
+    targetLang: 'fr',
+    phrase: 'Gardez la monnaie, merci !',
+    tr: 'Üstü kalsın, teşekkürler! (Bahşiş)',
+    phonetic: 'Garde la mone, mersi!',
+    logicTip: 'Para üstünü bahşiş olarak bırakırken söylenecek en doğal Fransız refleksidir.',
+    difficulty: 'starter',
+    tags: ['bahsis', 'odeme']
+  },
+  {
+    id: 'fr-cafe-4',
+    category: 'cafe_dining',
+    targetLang: 'fr',
+    phrase: 'Avez-vous une table pour deux personnes en terrasse ?',
+    tr: 'Teras bölümünde iki kişilik boş bir masanız var mı?',
+    phonetic: 'Ave vu ün tabl pur dö person an teras?',
+    logicTip: 'Fransa kafelerinde "en terrasse" (açık terasta/dışarıda) oturmak en popüler tercihtir.',
+    difficulty: 'starter',
+    tags: ['masa', 'teras', 'restoran']
+  },
+  {
+    id: 'fr-cafe-5',
+    category: 'cafe_dining',
+    targetLang: 'fr',
+    phrase: 'Qu\'est-ce que vous me conseillez comme plat du jour ?',
+    tr: 'Günün yemeği olarak ne tavsiye edersiniz?',
+    phonetic: 'Kes kö vu mö konseye kom pla dü jur?',
+    logicTip: 'Günün yemeği (plat du jour) hem lezzetli hem ekonomiktir; Fransız restoranlarında ilk sorulacak sorudur.',
+    difficulty: 'daily',
+    tags: ['tavsiye', 'menu', 'yemek']
+  },
+
+  // ==================== 2. ULAŞIM & SEYAHAT (FRANSIZCA) ====================
+  {
+    id: 'fr-travel-1',
+    category: 'travel_transit',
+    targetLang: 'fr',
+    phrase: 'Pardon, de quel quai part le train pour Paris ?',
+    tr: 'Afedersiniz, Paris treni hangi perondan kalkıyor?',
+    phonetic: 'Pardon, dö kel ke par lö tren pur Pari?',
+    logicTip: 'Fransa tren garlarında peron için "quai" kelimesi kullanılır.',
+    difficulty: 'starter',
+    tags: ['tren', 'gar', 'peron']
+  },
+  {
+    id: 'fr-travel-2',
+    category: 'travel_transit',
+    targetLang: 'fr',
+    phrase: 'Un ticket de métro aller-retour, s\'il vous plaît.',
+    tr: 'Gidiş-dönüş bir metro bileti lütfen.',
+    phonetic: 'Ö̃ tike dö metro ale-retur, sil vu ple.',
+    logicTip: '"Aller simple" tek yön, "aller-retour" ise gidiş-dönüş biletidir.',
+    difficulty: 'starter',
+    tags: ['metro', 'bilet', 'ulasim']
+  },
+  {
+    id: 'fr-travel-3',
+    category: 'travel_transit',
+    targetLang: 'fr',
+    phrase: 'Pouvez-vous m\'emmener à l\'aéroport Charles de Gaulle ?',
+    tr: 'Beni Charles de Gaulle Havalimanı\'na götürebilir misiniz?',
+    phonetic: 'Puve vu manmene a laeropor Şarl dö Gol?',
+    logicTip: 'Taksiye bindiğinizde "Pouvez-vous m\'emmener à..." en pratik ve zarif ifadedir.',
+    difficulty: 'daily',
+    tags: ['taksi', 'havalimani', 'seyahat']
+  },
+
+  // ==================== 3. ALIŞVERİŞ (FRANSIZCA) ====================
+  {
+    id: 'fr-shop-1',
+    category: 'shopping_bargain',
+    targetLang: 'fr',
+    phrase: 'Combien coûte cette écharpe, s\'il vous plaît ?',
+    tr: 'Bu atkı ne kadar, lütfen?',
+    phonetic: 'Kombiyen kut set eşarp, sil vu ple?',
+    logicTip: 'Fiyat sorarken en hızlı refleks: "Combien coûte... ?" veya sadece "C\'est combien ?".',
+    difficulty: 'starter',
+    tags: ['fiyat', 'alisveris']
+  },
+  {
+    id: 'fr-shop-2',
+    category: 'shopping_bargain',
+    targetLang: 'fr',
+    phrase: 'Puis-je l\'essayer ? Où sont les cabines d\'essayage ?',
+    tr: 'Bunu deneyebilir miyim? Deneme kabinleri nerede?',
+    phonetic: 'Püij lese-ye? U son le kabin dese-yaj?',
+    logicTip: 'Giyim mağazalarında deneme kabini "cabine d\'essayage" olarak adlandırılır.',
+    difficulty: 'daily',
+    tags: ['kabin', 'deneme', 'magaza']
+  },
+  {
+    id: 'fr-shop-3',
+    category: 'shopping_bargain',
+    targetLang: 'fr',
+    phrase: 'Est-ce que vous acceptez les paiements par carte bancaire ?',
+    tr: 'Kredi kartıyla ödeme kabul ediyor musunuz?',
+    phonetic: 'Es kö vu zaksepte le peman par kart bankeer?',
+    logicTip: 'Fransa\'da kartla ödeme için "carte bancaire" (veya kısaca CB) denir.',
+    difficulty: 'starter',
+    tags: ['kart', 'odeme']
+  },
+
+  // ==================== 4. İŞ & TOPLANTI (FRANSIZCA) ====================
+  {
+    id: 'fr-work-1',
+    category: 'work_professional',
+    targetLang: 'fr',
+    phrase: 'Est-ce que la réunion de demain à 10 heures vous convient ?',
+    tr: 'Yarın saat 10\'daki toplantı size uyar mı?',
+    phonetic: 'Es kö la reünyon dö dömen a diiz ör vu konviyen?',
+    logicTip: '"Ça vous convient ?" (Size uyar mı?) profesyonel Fransızcada en yaygın toplantı mutabakatıdır.',
+    difficulty: 'daily',
+    tags: ['toplanti', 'is', 'saat']
+  },
+  {
+    id: 'fr-work-2',
+    category: 'work_professional',
+    targetLang: 'fr',
+    phrase: 'Je vous tiens informé dès que le projet avance.',
+    tr: 'Proje ilerledikçe sizi haberdar edeceğim.',
+    phonetic: 'Jö vu tiyen enforme de kö lö proje avans.',
+    logicTip: '"Je vous tiens informé(e)" Fransız kurumsal kültürünün en güven veren refleksidir.',
+    difficulty: 'fluent',
+    tags: ['bilgilendirme', 'kariyer', 'eposta']
+  },
+  {
+    id: 'fr-work-3',
+    category: 'work_professional',
+    targetLang: 'fr',
+    phrase: 'Veuillez trouver ci-joint les documents nécessaires.',
+    tr: 'Gerekli belgeleri ekte bulabilirsiniz.',
+    phonetic: 'Vöye truve si-juan le doküman neseseer.',
+    logicTip: 'Fransızca resmi e-postalarda ek dosya bildirimi daima "ci-joint" ifadesiyle yapılır.',
+    difficulty: 'daily',
+    tags: ['eposta', 'ek', 'belge']
+  },
+
+  // ==================== 5. SOSYAL & TANIŞMA (FRANSIZCA) ====================
+  {
+    id: 'fr-social-1',
+    category: 'social_making_friends',
+    targetLang: 'fr',
+    phrase: 'Enchanté de faire votre connaissance ! D\'où venez-vous ?',
+    tr: 'Tanıştığımıza çok memnun oldum! Nerelisiniz?',
+    phonetic: 'Anşante dö feer vötr konisans! Du vöne vu?',
+    logicTip: '"Enchanté(e)" Fransız tanışmalarının vazgeçilmez temel taşıdır.',
+    difficulty: 'starter',
+    tags: ['tanisma', 'nerelisin', 'arkadas']
+  },
+  {
+    id: 'fr-social-2',
+    category: 'social_making_friends',
+    targetLang: 'fr',
+    phrase: 'Ça te dirait de prendre un verre ensemble ce soir ?',
+    tr: 'Bu akşam birlikte bir şeyler içmeye ne dersin?',
+    phonetic: 'Sa tö dire dö prandr ö̃ veer ansambl sö suar?',
+    logicTip: '"Prendre un verre" (bir kadeh/bardak bir şeyler içmek) Fransa\'da arkadaş buluşmasının standart tabiridir.',
+    difficulty: 'daily',
+    tags: ['davet', 'arkadaslik', 'aksam']
   },
 
   // ==================== 1. KAFE & RESTORAN (ALMANCA) ====================
@@ -2144,7 +2332,7 @@ export class LifePhraseBankService {
    */
   public static getPhrases(filter?: {
     category?: LifeCategoryKey;
-    targetLang?: 'en' | 'de';
+    targetLang?: SupportedLanguage;
     difficulty?: 'starter' | 'daily' | 'fluent';
   }): LifePhraseItem[] {
     let result = [...LIFE_PHRASE_BANK];
@@ -2167,7 +2355,7 @@ export class LifePhraseBankService {
   /**
    * Arama motoru: Hedef dildeki ifade, Türkçe karşılık, fonetik veya etiketlerde arar
    */
-  public static searchPhrases(query: string, targetLang?: 'en' | 'de'): LifePhraseItem[] {
+  public static searchPhrases(query: string, targetLang?: SupportedLanguage): LifePhraseItem[] {
     const q = query.trim().toLowerCase();
     if (!q) {
       return this.getPhrases({ targetLang });

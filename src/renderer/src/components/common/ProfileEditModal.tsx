@@ -117,7 +117,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
           <div className="space-y-1.5">
             <label className="text-xs font-black text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
               <GraduationCap className="w-3.5 h-3.5 text-purple-600" />
-              <span>{TargetLanguageService.getTargetLanguage() === 'de' ? 'Almanca' : 'İngilizce'} Seviyen</span>
+              <span>{TargetLanguageService.getTargetLanguage() === 'de' ? 'Almanca' : TargetLanguageService.getTargetLanguage() === 'fr' ? 'Fransızca' : 'İngilizce'} Seviyen</span>
             </label>
             <div className="grid grid-cols-4 gap-2">
               {(['A1', 'A2', 'B1', 'B2'] as CEFRLevelSimple[]).map((lvl) => (

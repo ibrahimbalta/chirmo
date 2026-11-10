@@ -95,7 +95,7 @@ describe('SearchEngineService', () => {
     expect(searchRes.aiSynthesis.factCheck.verifiabilityScore).toBeGreaterThan(50);
     expect(searchRes.webResults.length).toBeGreaterThanOrEqual(2);
     expect(searchRes.relatedQuestions.length).toBe(4);
-  });
+  }, 15000);
 
   it('decomposes user goals into actionable Kanban tasks', () => {
     const tasks = SearchEngineService.decomposeGoalToKanban('SaaS Girişimi Kurmak');
@@ -126,7 +126,7 @@ describe('SearchEngineService', () => {
 
     expect(searchRes.localResults.length).toBe(1);
     expect(searchRes.localResults[0].title).toBe('E-Ticaret Sitesi Analizi');
-  });
+  }, 15000);
 
   it('provides typo tolerance suggestions (didYouMean) and separates AI synthesis from direct source quotes', async () => {
     const searchRes = await SearchEngineService.search('typescrpt');

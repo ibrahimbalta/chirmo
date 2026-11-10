@@ -345,8 +345,8 @@ export const App: React.FC = () => {
 
             {/* Açılan Menü (2. Görseldeki 7 Modülün Tümü) */}
             {isMobileNavOpen && (
-              <div className="absolute left-0 top-9.5 z-50 w-56 p-1.5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl shadow-xl border border-slate-200/90 dark:border-slate-800 space-y-1 animate-in fade-in zoom-in-95 duration-150">
-                {/* Dil Seçimi (İngilizce 🇬🇧 / Almanca 🇩🇪) */}
+              <div className="absolute left-0 top-9.5 z-50 w-64 p-1.5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl shadow-xl border border-slate-200/90 dark:border-slate-800 space-y-1 animate-in fade-in zoom-in-95 duration-150">
+                {/* Dil Seçimi (İngilizce 🇬🇧 / Almanca 🇩🇪 / Fransızca 🇫🇷) */}
                 <div className="p-1.5 bg-gradient-to-r from-indigo-50/80 to-purple-50/80 dark:bg-slate-800/80 rounded-xl flex items-center justify-between text-xs font-bold border border-indigo-100 dark:border-slate-700">
                   <span className="text-slate-600 dark:text-slate-300 pl-1 text-[11px] font-black">🎯 Dil:</span>
                   <div className="flex items-center space-x-1">
@@ -355,28 +355,45 @@ export const App: React.FC = () => {
                         TargetLanguageService.setTargetLanguage('en');
                         setIsMobileNavOpen(false);
                       }}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all cursor-pointer flex items-center space-x-1 ${
+                      className={`px-2 py-1 rounded-lg text-xs font-black transition-all cursor-pointer flex items-center space-x-1 ${
                         targetLanguage === 'en'
                           ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-xs'
                           : 'text-slate-600 dark:text-slate-400 hover:bg-white/60 dark:hover:bg-slate-700'
                       }`}
+                      title="İngilizce"
                     >
                       <span>🇬🇧</span>
-                      <span>İngilizce</span>
+                      <span>EN</span>
                     </button>
                     <button
                       onClick={() => {
                         TargetLanguageService.setTargetLanguage('de');
                         setIsMobileNavOpen(false);
                       }}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all cursor-pointer flex items-center space-x-1 ${
+                      className={`px-2 py-1 rounded-lg text-xs font-black transition-all cursor-pointer flex items-center space-x-1 ${
                         targetLanguage === 'de'
                           ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-purple-950 shadow-xs'
                           : 'text-slate-600 dark:text-slate-400 hover:bg-white/60 dark:hover:bg-slate-700'
                       }`}
+                      title="Almanca"
                     >
                       <span>🇩🇪</span>
-                      <span>Almanca</span>
+                      <span>DE</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        TargetLanguageService.setTargetLanguage('fr');
+                        setIsMobileNavOpen(false);
+                      }}
+                      className={`px-2 py-1 rounded-lg text-xs font-black transition-all cursor-pointer flex items-center space-x-1 ${
+                        targetLanguage === 'fr'
+                          ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-xs'
+                          : 'text-slate-600 dark:text-slate-400 hover:bg-white/60 dark:hover:bg-slate-700'
+                      }`}
+                      title="Fransızca"
+                    >
+                      <span>🇫🇷</span>
+                      <span>FR</span>
                     </button>
                   </div>
                 </div>
@@ -795,14 +812,14 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {/* Akıllı Dil Değiştirici Kapsülü (🇬🇧 EN / 🇩🇪 DE) */}
+          {/* Akıllı Dil Değiştirici Kapsülü (🇬🇧 EN / 🇩🇪 DE / 🇫🇷 FR) */}
           <button
-            onClick={() => TargetLanguageService.setTargetLanguage(targetLanguage === 'en' ? 'de' : 'en')}
+            onClick={() => TargetLanguageService.toggleLanguage()}
             className="h-9 px-3 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] border border-white/15 text-xs font-black transition-all flex items-center space-x-1.5 shrink-0 cursor-pointer text-white active:scale-95"
-            title="Çalışma Dilini Değiştir (Tıkla: İngilizce / Almanca)"
+            title="Çalışma Dilini Değiştir (Tıkla: İngilizce / Almanca / Fransızca)"
           >
-            <span>{targetLanguage === 'de' ? '🇩🇪' : '🇬🇧'}</span>
-            <span className="hidden sm:inline">{targetLanguage === 'de' ? 'Deutsch' : 'English'}</span>
+            <span>{targetLanguage === 'de' ? '🇩🇪' : targetLanguage === 'fr' ? '🇫🇷' : '🇬🇧'}</span>
+            <span className="hidden sm:inline">{targetLanguage === 'de' ? 'Deutsch' : targetLanguage === 'fr' ? 'Français' : 'English'}</span>
             <span className="text-[10px] text-cyan-300 font-bold">⇄</span>
           </button>
 

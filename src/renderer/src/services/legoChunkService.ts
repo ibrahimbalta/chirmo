@@ -18,6 +18,112 @@ export interface LegoPatternRoot {
 }
 
 export const LEGO_PATTERNS: LegoPatternRoot[] = [
+  // ==================== FRANSIZCA LEGO KALIPLARI ====================
+  {
+    id: 'fr-pattern-1',
+    pattern: 'Je voudrais...',
+    patternTr: '... rica ediyorum / istiyorum (Kibar İstek)',
+    pedagogicalTip: 'Fransa\'da her türlü sipariş ve istekte "Je veux" yerine bu kalıbı kullanın, en üst düzey nezaket sağlar.',
+    language: 'fr',
+    bricks: [
+      {
+        id: 'fr-b1-1',
+        label: 'un café au lait et un croissant',
+        labelTr: 'sütlü bir kahve ve kruvasan',
+        fullSentence: 'Je voudrais un café au lait et un croissant, s\'il vous plaît.',
+        fullSentenceTr: 'Sütlü bir kahve ve bir kruvasan rica ediyorum, lütfen.'
+      },
+      {
+        id: 'fr-b1-2',
+        label: 'un billet de train pour Paris',
+        labelTr: 'Paris\'e bir tren bileti',
+        fullSentence: 'Je voudrais un billet de train pour Paris pour cet après-midi.',
+        fullSentenceTr: 'Bugün öğleden sonra için Paris\'e bir tren bileti rica ediyorum.'
+      },
+      {
+        id: 'fr-b1-3',
+        label: 'l\'addition',
+        labelTr: 'hesabı (restoranda)',
+        fullSentence: 'Je voudrais l\'addition, s\'il vous plaît.',
+        fullSentenceTr: 'Hesabı rica ediyorum, lütfen.'
+      },
+      {
+        id: 'fr-b1-4',
+        label: 'une table pour deux',
+        labelTr: 'iki kişilik bir masa',
+        fullSentence: 'Je voudrais une table pour deux personnes près de la fenêtre.',
+        fullSentenceTr: 'Pencere kenarında iki kişilik bir masa rica ediyorum.'
+      }
+    ]
+  },
+  {
+    id: 'fr-pattern-2',
+    pattern: 'Pourriez-vous...',
+    patternTr: 'Lütfen ... yapabilir misiniz? (Nezaket İstemi)',
+    pedagogicalTip: 'Birinden yardım veya açıklama isterken "Pourriez-vous" en diplomatik ve saygın ifadedir.',
+    language: 'fr',
+    bricks: [
+      {
+        id: 'fr-b2-1',
+        label: 'parler un peu plus lentement',
+        labelTr: 'biraz daha yavaş konuşmak',
+        fullSentence: 'Pourriez-vous parler un peu plus lentement, s\'il vous plaît ?',
+        fullSentenceTr: 'Lütfen biraz daha yavaş konuşabilir misiniz?'
+      },
+      {
+        id: 'fr-b2-2',
+        label: 'm\'indiquer le chemin',
+        labelTr: 'bana yolu göstermek',
+        fullSentence: 'Pourriez-vous m\'indiquer le chemin vers la gare, s\'il vous plaît ?',
+        fullSentenceTr: 'Lütfen bana tren garına giden yolu tarif edebilir misiniz?'
+      },
+      {
+        id: 'fr-b2-3',
+        label: 'répéter cela',
+        labelTr: 'bunu tekrarlamak',
+        fullSentence: 'Pourriez-vous répéter cela une fois de plus, s\'il vous plaît ?',
+        fullSentenceTr: 'Lütfen bunu bir kez daha tekrar edebilir misiniz?'
+      },
+      {
+        id: 'fr-b2-4',
+        label: 'm\'aider avec cette valise',
+        labelTr: 'bana bu bavulda yardım etmek',
+        fullSentence: 'Pourriez-vous m\'aider avec cette valise, s\'il vous plaît ?',
+        fullSentenceTr: 'Lütfen bu bavulu taşımama yardımcı olabilir misiniz?'
+      }
+    ]
+  },
+  {
+    id: 'fr-pattern-3',
+    pattern: 'À mon avis...',
+    patternTr: 'Bana göre / Benim fikrime göre...',
+    pedagogicalTip: 'Toplantıda veya dost meclisinde fikrinizi zarifçe ve saygıyla ifade etmenin en doğal yoludur.',
+    language: 'fr',
+    bricks: [
+      {
+        id: 'fr-b3-1',
+        label: 'c\'est une excellente idée',
+        labelTr: 'bu mükemmel bir fikir',
+        fullSentence: 'À mon avis, c\'est une excellente idée pour notre projet.',
+        fullSentenceTr: 'Bana göre bu projemiz için gerçekten mükemmel bir fikir.'
+      },
+      {
+        id: 'fr-b3-2',
+        label: 'nous devrions tester cette solution',
+        labelTr: 'bu çözümü test etmeliyiz',
+        fullSentence: 'À mon avis, nous devrions tester cette solution avant la fin du mois.',
+        fullSentenceTr: 'Bence ay sonundan önce bu çözümü test etmeliyiz.'
+      },
+      {
+        id: 'fr-b3-3',
+        label: 'le français est très mélodieux',
+        labelTr: 'Fransızca çok melodik bir dildir',
+        fullSentence: 'À mon avis, le français est une langue magnifique et très mélodieuse.',
+        fullSentenceTr: 'Bana göre Fransızca son derece zarif ve melodik bir dildir.'
+      }
+    ]
+  },
+
   // ==================== ALMANCA LEGO KALIPLARI ====================
   {
     id: 'de-pattern-1',

@@ -15,6 +15,86 @@ export interface ReflexDrillPrompt {
 }
 
 export const REFLEX_DRILLS: ReflexDrillPrompt[] = [
+  // ==================== FRANSIZCA REFLEKS ANTRENMANLARI (FRANÇAIS) ====================
+  {
+    id: 'fr-drill-1',
+    category: 'Kafe',
+    titleTr: 'Garson Yanlış Kahve Getirdi',
+    scenarioTr: 'Garson sana sade kahve getirdi ama sen sütlü istemiştin. Kibarca uyar!',
+    situationPrompt: 'Voici votre café noir. Bonne dégustation !',
+    situationPromptTr: 'İşte sade kahveniz. Afiyet olsun!',
+    expectedKeywords: ['pardon', 'lait', 'café au lait', 'commandé', 'voulais'],
+    suggestedAnswer: 'Pardonnez-moi, mais j\'avais commandé un café au lait.',
+    suggestedAnswerTr: 'Afedersiniz, ama ben sütlü kahve sipariş etmiştim.',
+    coachExplanation: 'Fransızcada "Pardonnez-moi, mais j\'avais commandé..." en kibar düzeltme refleksidir.',
+    language: 'fr'
+  },
+  {
+    id: 'fr-drill-2',
+    category: 'İş & Toplantı',
+    titleTr: 'Toplantı Saatini Onayla',
+    scenarioTr: 'İş arkadaşın yarın saat 14:00 uygun mu diye sordu. Uygun olduğunu ve orada olacağını söyle!',
+    situationPrompt: 'Est-ce que la réunion demain à 14 heures vous convient ?',
+    situationPromptTr: 'Yarın saat 14:00\'teki toplantı size uyar mı?',
+    expectedKeywords: ['convient', 'parfaitement', 'heure', 'demain', 'serai'],
+    suggestedAnswer: 'Oui, 14 heures me convient parfaitement. Je serai là à l\'heure !',
+    suggestedAnswerTr: 'Evet, saat 14 bana mükemmel uyuyor. Tam vaktinde orada olacağım!',
+    coachExplanation: 'Zaman teyidinde en doğal Fransızca refleks: "Ça me convient parfaitement !"',
+    language: 'fr'
+  },
+  {
+    id: 'fr-drill-3',
+    category: 'Seyahat',
+    titleTr: 'Tren Peronunu Acil Sor',
+    scenarioTr: 'Trenin kalkmasına 3 dakika var. Paris treninin hangi perondan kalktığını sor!',
+    situationPrompt: 'Vous cherchez votre TGV dans la gare...',
+    situationPromptTr: 'Garda hızlı treninizi arıyorsunuz...',
+    expectedKeywords: ['quai', 'train', 'paris', 'quel', 'partir'],
+    suggestedAnswer: 'Pardon, de quel quai part le train pour Paris ?',
+    suggestedAnswerTr: 'Afedersiniz, Paris treni hangi perondan kalkıyor?',
+    coachExplanation: 'Fransa garlarında peron kelimesi "quai"dir. "De quel quai part... ?" acil durumlarda hayat kurtarır.',
+    language: 'fr'
+  },
+  {
+    id: 'fr-drill-4',
+    category: 'Sosyal & Tanışma',
+    titleTr: 'İltifata Doğal Teşekkür',
+    scenarioTr: 'Biri Fransızcanın çok iyi olduğunu söyledi. Teşekkür et ve her gün pratik yaptığını söyle!',
+    situationPrompt: 'Votre français est vraiment remarquable et très fluide !',
+    situationPromptTr: 'Fransızcanız gerçekten dikkat çekici ve çok akıcı!',
+    expectedKeywords: ['merci', 'gentil', 'beaucoup', 'pratique', 'tous les jours'],
+    suggestedAnswer: 'Merci beaucoup, c\'est très gentil ! J\'essaie de pratiquer tous les jours.',
+    suggestedAnswerTr: 'Çok teşekkürler, çok naziksiniz! Her gün pratik yapmaya çalışıyorum.',
+    coachExplanation: '"C\'est très gentil à vous !" Fransız kültüründe iltifatlara verilen en sempatik cevaptır.',
+    language: 'fr'
+  },
+  {
+    id: 'fr-drill-5',
+    category: 'Alışveriş',
+    titleTr: 'Fiyat & Kartla Ödeme',
+    scenarioTr: 'Kasadasın. Kredi kartıyla ödeyip ödeyemeyeceğini sor!',
+    situationPrompt: 'Cela fera 24 euros et 50 centimes, s\'il vous plaît.',
+    situationPromptTr: 'Toplam 24 avro 50 sent lütfen.',
+    expectedKeywords: ['carte', 'payer', 'par carte', 'puis-je', 'bancaire'],
+    suggestedAnswer: 'Puis-je payer par carte bancaire, s\'il vous plaît ?',
+    suggestedAnswerTr: 'Kredi kartıyla ödeyebilir miyim lütfen?',
+    coachExplanation: '"Payer par carte" Fransa\'da her alışverişte en çok kullanılan kalıptır.',
+    language: 'fr'
+  },
+  {
+    id: 'fr-drill-6',
+    category: 'Acil Durum',
+    titleTr: 'Yavaş Konuşmasını İste',
+    scenarioTr: 'Karşındaki Fransız çok hızlı konuştu ve anlayamadın. Kibarca yavaşlamasını iste!',
+    situationPrompt: 'Annonce rapide en français au guichet...',
+    situationPromptTr: 'Gişede çok hızlı bir Fransızca anons yapıldı...',
+    expectedKeywords: ['lentement', 'répéter', 'pardon', 's\'il vous plaît', 'compris'],
+    suggestedAnswer: 'Pardon, pourriez-vous parler un peu plus lentement, s\'il vous plaît ?',
+    suggestedAnswerTr: 'Afedersiniz, lütfen biraz daha yavaş konuşabilir misiniz?',
+    coachExplanation: 'Çekinmeden "Un peu plus lentement, s\'il vous plaît" deyin, karşınızdaki hemen anlayış gösterecektir.',
+    language: 'fr'
+  },
+
   // ==================== ALMANCA REFLEKS ANTRENMANLARI (DEUTSCH) ====================
   {
     id: 'de-drill-1',

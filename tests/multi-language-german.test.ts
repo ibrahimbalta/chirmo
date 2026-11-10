@@ -38,14 +38,28 @@ describe('TargetLanguageService (Multi-Language English & German)', () => {
     expect(meta.speechLang).toBe('de-DE');
   });
 
-  it('supports toggle between English and German', () => {
+  it('can set and retrieve French (fr) target language', () => {
+    TargetLanguageService.setTargetLanguage('fr');
+    expect(TargetLanguageService.getTargetLanguage()).toBe('fr');
+    const meta = TargetLanguageService.getLanguageMeta();
+    expect(meta.name).toBe('Fransızca');
+    expect(meta.nativeName).toBe('Français');
+    expect(meta.flag).toBe('🇫🇷');
+    expect(meta.speechLang).toBe('fr-FR');
+  });
+
+  it('supports 3-way toggle between English, German, and French', () => {
     TargetLanguageService.setTargetLanguage('en');
     const next1 = TargetLanguageService.toggleLanguage();
     expect(next1).toBe('de');
     expect(TargetLanguageService.getTargetLanguage()).toBe('de');
 
     const next2 = TargetLanguageService.toggleLanguage();
-    expect(next2).toBe('en');
+    expect(next2).toBe('fr');
+    expect(TargetLanguageService.getTargetLanguage()).toBe('fr');
+
+    const next3 = TargetLanguageService.toggleLanguage();
+    expect(next3).toBe('en');
     expect(TargetLanguageService.getTargetLanguage()).toBe('en');
   });
 
@@ -78,9 +92,27 @@ describe('TargetLanguageService (Multi-Language English & German)', () => {
     expect(deMissions[0].speakingGoal).toContain('heiße');
     expect(deMissions[29].day).toBe(30);
     expect(deMissions[29].suggestedAnswer).toContain('Deutsch');
+
+    const frScenarios = CurriculumService.getScenarios('fr');
+    expect(frScenarios.length).toBeGreaterThan(0);
+    expect(frScenarios[0].id).toContain('scenario-fr');
+
+    const frMissions = CurriculumService.getDayMissions('fr');
+    expect(frMissions.length).toBe(30);
+    expect(frMissions[0].speakingGoal).toContain("m'appelle");
+    expect(frMissions[29].day).toBe(30);
+    expect(frMissions[29].suggestedAnswer).toContain('français');
   });
 
-  it('translates Turkish thought to German when target language is German', async () => {
+  it('provides French duel rounds via SpeakingDuelService', async () => {
+    const { SpeakingDuelService } = await import('../src/renderer/src/services/speakingDuelService');
+    const frRounds = SpeakingDuelService.getDuelRounds('fr');
+    expect(frRounds.length).toBe(3);
+    expect(frRounds[0].prompt).toContain('Préférez-vous');
+    expect(frRounds[0].quickReplies[0].text).toContain('Je préfère');
+  });
+
+  it('translates Turkish thought to German and French when target language is selected', async () => {
     const { GeminiAiTeacherService } = await import('../src/renderer/src/services/geminiAiTeacherService');
     const germanAnswer = await GeminiAiTeacherService.translateTurkishThoughtToTargetLanguage(
       'En sevdiğim hobi hafta sonları bisiklete binmek',
@@ -88,20 +120,39 @@ describe('TargetLanguageService (Multi-Language English & German)', () => {
       'de'
     );
     expect(germanAnswer.toLowerCase()).toMatch(/hobby|radfahren|fahrrad/);
+
+    const frenchAnswer = await GeminiAiTeacherService.translateTurkishThoughtToTargetLanguage(
+      'Bir kruvasan ve kahve lütfen',
+      '',
+      'fr'
+    );
+    expect(frenchAnswer.toLowerCase()).toMatch(/croissant|café|voudrais/);
   });
 
-  it('provides German everyday sentences, dialogues and puzzles via DailyLanguageData', async () => {
+  it('provides German and French everyday sentences, dialogues and puzzles via DailyLanguageData', async () => {
     const { DailyLanguageData } = await import('../src/renderer/src/services/dailyEnglishData');
     const deSentences = DailyLanguageData.getEverydaySentences('de');
     expect(deSentences.length).toBeGreaterThan(0);
     expect(deSentences[0].en).toBe('Wie geht es dir?');
 
+    const frSentences = DailyLanguageData.getEverydaySentences('fr');
+    expect(frSentences.length).toBeGreaterThan(0);
+    expect(frSentences[0].en).toBe('Comment allez-vous ?');
+
     const deDialogues = DailyLanguageData.getDialogues('de');
     expect(deDialogues.length).toBeGreaterThan(0);
     expect(deDialogues[0].id).toBe('de-cafe-order');
 
+    const frDialogues = DailyLanguageData.getDialogues('fr');
+    expect(frDialogues.length).toBeGreaterThan(0);
+    expect(frDialogues[0].id).toBe('fr-cafe-order');
+
     const dePuzzles = DailyLanguageData.getSentencePuzzles('de');
     expect(dePuzzles.length).toBeGreaterThan(0);
     expect(dePuzzles[0].en).toContain('Ich hätte gerne');
+
+    const frPuzzles = DailyLanguageData.getSentencePuzzles('fr');
+    expect(frPuzzles.length).toBeGreaterThan(0);
+    expect(frPuzzles[0].en).toContain('Je voudrais');
   });
 });

@@ -287,6 +287,90 @@ export const DUEL_ROUNDS_DE: DuelRound[] = [
   }
 ];
 
+export const DUEL_ROUNDS_FR: DuelRound[] = [
+  {
+    roundNumber: 1,
+    topic: '1. Raund • Hızlı Fikir (Avis Rapide)',
+    prompt: 'Préférez-vous travailler à distance depuis chez vous ou au bureau, et quelle en est la raison principale ?',
+    promptTr: 'Evden uzaktan çalışmayı mı yoksa ofiste çalışmayı mı tercih edersin, en önemli sebebin nedir?',
+    timeLimitSeconds: 25,
+    suggestedKeyword: 'flexibilité',
+    opponentSampleAnswer: 'Je préfère le télétravail car cela me fait gagner du temps et offre une grande flexibilité.',
+    opponentSampleAnswerTr: 'Evden çalışmayı tercih ederim çünkü bana zaman kazandırıyor ve büyük bir esneklik sunuyor.',
+    quickReplies: [
+      {
+        level: 'Kolay (A1-A2)',
+        text: 'Je préfère travailler à la maison car c’est très calme et confortable.',
+        tr: 'Evde çalışmayı tercih ederim çünkü çok sakin ve rahat.'
+      },
+      {
+        level: 'Orta (B1)',
+        text: 'Je choisis le télétravail parce que la flexibilité m’aide à mieux me concentrer chaque jour.',
+        tr: 'Uzaktan çalışmayı seçiyorum çünkü esneklik her gün daha iyi odaklanmama yardımcı oluyor.'
+      },
+      {
+        level: 'İleri (B2-C1)',
+        text: 'Idéalement, je privilégie un modèle hybride alliant la flexibilité du domicile à la synergie d’équipe.',
+        tr: 'İdeal olarak, ev esnekliğini ekip sinerjisiyle birleştiren hibrit bir modeli tercih ederim.'
+      }
+    ]
+  },
+  {
+    roundNumber: 2,
+    topic: '2. Raund • Seyahat & Hayal Gücü (Voyage & Imagination)',
+    prompt: 'Si vous pouviez voyager gratuitement n’importe où dans le monde demain, où iriez-vous et pourquoi ?',
+    promptTr: 'Yarın dünyanın herhangi bir yerine ücretsiz seyahat edebilseydin nereye giderdin ve neden?',
+    timeLimitSeconds: 25,
+    suggestedKeyword: 'découvrir',
+    opponentSampleAnswer: 'Je partirais demain à Paris pour visiter les musées et savourer la gastronomie.',
+    opponentSampleAnswerTr: 'Müzeleri ziyaret etmek ve gastronominin tadını çıkarmak için yarın Paris’e giderdim.',
+    quickReplies: [
+      {
+        level: 'Kolay (A1-A2)',
+        text: 'J’aimerais aller en Italie pour voir Rome et manger de délicieuses pizzas.',
+        tr: 'Roma’yı görmek ve lezzetli pizzalar yemek için İtalya’ya gitmek isterdim.'
+      },
+      {
+        level: 'Orta (B1)',
+        text: 'Je voyagerais en France pour découvrir de beaux châteaux et pratiquer mon français.',
+        tr: 'Güzel şatoları keşfetmek ve Fransızcamı pratik yapmak için Fransa’ya seyahat ederdim.'
+      },
+      {
+        level: 'İleri (B2-C1)',
+        text: 'Je choisirais sans hésiter le Japon pour découvrir l’harmonie parfaite entre tradition et modernité.',
+        tr: 'Gelenek ve modernite arasındaki mükemmel uyumu keşfetmek için tereddüt etmeden Japonya’yı seçerdim.'
+      }
+    ]
+  },
+  {
+    roundNumber: 3,
+    topic: '3. Raund • Hızlı İkna (Persuasion Rapide)',
+    prompt: 'Comment convaincriez-vous votre meilleur ami de pratiquer le français pendant 15 minutes chaque jour ?',
+    promptTr: 'En yakın arkadaşını her gün 15 dakika Fransızca konuşma pratiği yapmaya nasıl ikna edersin?',
+    timeLimitSeconds: 25,
+    suggestedKeyword: 'pratique',
+    opponentSampleAnswer: 'Seulement quinze minutes de pratique quotidienne suffisent pour parler avec une vraie confiance !',
+    opponentSampleAnswerTr: 'Gerçek bir özgüvenle konuşmak için günde sadece on beş dakikalık pratik yeterlidir!',
+    quickReplies: [
+      {
+        level: 'Kolay (A1-A2)',
+        text: 'Quinze minutes par jour, c’est très facile et nous pouvons pratiquer ensemble !',
+        tr: 'Günde on beş dakika çok kolay ve birlikte pratik yapabiliriz!'
+      },
+      {
+        level: 'Orta (B1)',
+        text: 'Une pratique quotidienne de quinze minutes élimine la peur et permet de progresser rapidement.',
+        tr: 'Günde on beş dakikalık pratik korkuyu ortadan kaldırır ve hızla ilerlemeyi sağlar.'
+      },
+      {
+        level: 'İleri (B2-C1)',
+        text: 'Consacrer seulement 15 minutes quotidiennes automatise les réflexes linguistiques sans fatigue.',
+        tr: 'Günde sadece 15 dakika ayırmak, yorulmadan dil reflekslerini otomatikleştirmeyi sağlar.'
+      }
+    ]
+  }
+];
+
 export const DUEL_ROUNDS = DUEL_ROUNDS_EN;
 
 export const OPPONENT_POOL: DuelOpponent[] = [
@@ -299,6 +383,17 @@ export const OPPONENT_POOL: DuelOpponent[] = [
     skillRating: 74,
     badge: 'AI Partner • Başlangıç',
     specialtyTr: 'Kültür & Sosyal Sohbet',
+    isRealUser: false
+  },
+  {
+    id: 'opp_6',
+    name: 'Lucas Martin',
+    city: 'Paris',
+    countryFlag: '🇫🇷',
+    avatar: '👨‍🍳',
+    skillRating: 77,
+    badge: 'AI Partner • Fransızca',
+    specialtyTr: 'Fransızca & Akıcı Diyalog',
     isRealUser: false
   },
   {
@@ -547,7 +642,9 @@ export class SpeakingDuelService {
 
   public static getDuelRounds(lang?: SupportedLanguage): DuelRound[] {
     const activeLang = lang || TargetLanguageService.getTargetLanguage();
-    return activeLang === 'de' ? DUEL_ROUNDS_DE : DUEL_ROUNDS_EN;
+    if (activeLang === 'de') return DUEL_ROUNDS_DE;
+    if (activeLang === 'fr') return DUEL_ROUNDS_FR;
+    return DUEL_ROUNDS_EN;
   }
 
   public static evaluateDuelRound(

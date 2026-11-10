@@ -145,7 +145,7 @@ export class GeminiAiTeacherService {
     if (!trimmed) return '';
 
     const lang: SupportedLanguage = targetLang || TargetLanguageService.getTargetLanguage();
-    const tlCode = lang === 'de' ? 'de' : 'en';
+    const tlCode = lang === 'de' ? 'de' : lang === 'fr' ? 'fr' : 'en';
 
     const quotaCheck = this.checkRateAndQuotaAllowance();
 
@@ -173,7 +173,12 @@ export class GeminiAiTeacherService {
     const apiKey = this.getApiKey();
     if (apiKey && quotaCheck.allowed) {
       try {
-        const targetLangName = lang === 'de' ? 'Almancasına (Deutsch)' : 'İngilizcesine';
+        const targetLangName =
+          lang === 'de'
+            ? 'Almancasına (Deutsch)'
+            : lang === 'fr'
+            ? 'Fransızcasına (Français)'
+            : 'İngilizcesine (English)';
         const prompt = `Sen Türkçe düşünceyi akıcı, doğal günlük konuşma ${targetLangName} çeviren bir asistansın.
 Chirmo'nun sorduğu soru: "${safeContext}".
 Kullanıcının Türkçe vermek istediği yanıt: "${trimmed}".
@@ -213,6 +218,31 @@ Görev: Bu cevabı A1-B1 seviyesinde, günlük konuşma dilinde son derece doğa
 
     // 3. Akıllı Çevrimdışı / Yerel Kalıp Eşleştirici
     const lower = trimmed.toLowerCase();
+    if (lang === 'fr') {
+      if (lower.includes('hobi') || lower.includes('bisiklet') || lower.includes('müzik')) {
+        return 'Mon passe-temps préféré est de faire du vélo et d\'écouter de la musique.';
+      }
+      if (lower.includes('kahve') || lower.includes('çay') || lower.includes('içmek') || lower.includes('kruvasan')) {
+        return 'Je voudrais une tasse de café avec du lait, s\'il vous plaît.';
+      }
+      if (lower.includes('merhaba') || lower.includes('nasılsın') || lower.includes('iyiyim')) {
+        return 'Bonjour ! Je vais très bien, merci. Et vous, comment allez-vous ?';
+      }
+      if (lower.includes('evet') || lower.includes('katılıyorum')) {
+        return 'Oui, je suis tout à fait d\'accord avec vous.';
+      }
+      if (lower.includes('hayır') || lower.includes('istemiyorum')) {
+        return 'Non, merci beaucoup. Je préfère autre chose.';
+      }
+      if (lower.includes('yemek') || lower.includes('pizza') || lower.includes('lezzetli')) {
+        return 'J\'adore la bonne cuisine française, surtout les plats frais !';
+      }
+      if (lower.includes('iş') || lower.includes('çalış') || lower.includes('okul')) {
+        return 'Je travaille beaucoup aujourd\'hui, mais je prends le temps pour le français.';
+      }
+      return `Je voudrais dire que ${trimmed}, ce qui est très important pour moi.`;
+    }
+
     if (lang === 'de') {
       if (lower.includes('hobi') || lower.includes('bisiklet') || lower.includes('müzik')) {
         return 'Mein liebstes Hobby ist Radfahren und Musik hören.';
@@ -287,7 +317,8 @@ Görev: Bu cevabı A1-B1 seviyesinde, günlük konuşma dilinde son derece doğa
     const safeScenario = sanitizeUserPrompt(scenario, 120);
     const apiKey = this.getApiKey();
     const activeLang = TargetLanguageService.getTargetLanguage();
-    const langLabel = activeLang === 'de' ? 'Almanca' : 'İngilizce';
+    const langLabel =
+      activeLang === 'de' ? 'Almanca' : activeLang === 'fr' ? 'Fransızca' : 'İngilizce';
 
     const quotaCheck = this.checkRateAndQuotaAllowance();
 

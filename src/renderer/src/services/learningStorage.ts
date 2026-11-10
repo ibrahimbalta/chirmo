@@ -557,7 +557,7 @@ export class LearningStorageService {
       const config = BUILTIN_VOICE_ACCENTS.find(a => a.id === accentId) || BUILTIN_VOICE_ACCENTS[0];
 
       const activeLang = TargetLanguageService.getTargetLanguage();
-      const targetSpeechLang = activeLang === 'de' ? 'de-DE' : config.lang;
+      const targetSpeechLang = activeLang === 'de' ? 'de-DE' : activeLang === 'fr' ? 'fr-FR' : config.lang;
 
       utterance.lang = targetSpeechLang;
       utterance.pitch = config.pitch;
