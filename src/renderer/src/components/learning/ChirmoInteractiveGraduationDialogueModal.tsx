@@ -54,10 +54,10 @@ export const ChirmoInteractiveGraduationDialogueModal: React.FC<
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const targetLang = TargetLanguageService.getTargetLanguage();
-  const targetFlag = targetLang === 'de' ? '🇩🇪' : '🇬🇧';
-  const targetLangName = targetLang === 'de' ? 'Almanca' : 'İngilizce';
+  const targetFlag = targetLang === 'de' ? '🇩🇪' : targetLang === 'fr' ? '🇫🇷' : '🇬🇧';
+  const targetLangName = targetLang === 'de' ? 'Almanca' : targetLang === 'fr' ? 'Fransızca' : 'İngilizce';
 
-  // Akıllı Sesli İpucu Örnekleri (İngilizce & Almanca)
+  // Akıllı Sesli İpucu Örnekleri (İngilizce, Almanca & Fransızca)
   const englishStarters = [
     {
       en: 'In my experience, learning English with Chirmo every day was really exciting!',
@@ -104,7 +104,30 @@ export const ChirmoInteractiveGraduationDialogueModal: React.FC<
     }
   ];
 
-  const quickStarterSuggestions = targetLang === 'de' ? germanStarters : englishStarters;
+  const frenchStarters = [
+    {
+      en: 'À mon avis, apprendre le français chaque jour avec Chirmo est vraiment passionnant !',
+      tr: 'Bence Chirmo ile her gün Fransızca öğrenmek gerçekten çok heyecan verici!'
+    },
+    {
+      en: 'Je me sens beaucoup plus confiant pour parler français maintenant.',
+      tr: 'Artık Fransızca konuşurken kendime çok daha fazla güveniyorum.'
+    },
+    {
+      en: 'Ce que je préfère, c\'est pratiquer des conversations de la vie réelle.',
+      tr: 'En sevdiğim şey gerçek hayattaki konuşmaları pratik etmek.'
+    },
+    {
+      en: 'Pourriez-vous me donner un autre défi pour tester ma fluidité ?',
+      tr: 'Akıcılığımı test etmek için bana bir konuşma görevi daha verir misiniz?'
+    },
+    {
+      en: 'Je comprends très bien, mais je veux faire des phrases encore plus naturelles.',
+      tr: 'Çok iyi anlıyorum ama daha da doğal cümleler kurmak istiyorum.'
+    }
+  ];
+
+  const quickStarterSuggestions = targetLang === 'de' ? germanStarters : targetLang === 'fr' ? frenchStarters : englishStarters;
 
   // İlk Açılış Kutlama Mesajı & Türkçe Açıklaması
   useEffect(() => {
@@ -113,17 +136,25 @@ export const ChirmoInteractiveGraduationDialogueModal: React.FC<
         ? (dayNumber >= 30
             ? 'Herzlichen Glückwunsch! Du hast das 30-Tage-Camp erfolgreich abgeschlossen! Wie fühlst du dich heute beim Deutschsprechen?'
             : `Tolle Leistung! Tag ${dayNumber} erreicht! Lass uns live auf Deutsch sprechen. Wie war deine Praxis heute?`)
-        : (dayNumber >= 30
-            ? 'Congratulations! You have completed the 30-Day Speaking Camp! I am so proud of you. How do you feel about speaking English today?'
-            : `Amazing job reaching Day ${dayNumber}! Let's have a live conversation together. Tell me, how was your practice today?`);
+        : targetLang === 'fr'
+          ? (dayNumber >= 30
+              ? 'Félicitations ! Tu as terminé avec succès le camp de 30 jours ! Comment te sens-tu pour parler français aujourd\'hui ?'
+              : `Bravo ! Jour ${dayNumber} atteint ! Parlons en direct en français. Comment s'est passée ta pratique aujourd'hui ?`)
+          : (dayNumber >= 30
+              ? 'Congratulations! You have completed the 30-Day Speaking Camp! I am so proud of you. How do you feel about speaking English today?'
+              : `Amazing job reaching Day ${dayNumber}! Let's have a live conversation together. Tell me, how was your practice today?`);
 
       const welcomeTr = targetLang === 'de'
         ? (dayNumber >= 30
             ? 'Tebrikler! 30 Günlük Almanca Konuşma Kampını başarıyla tamamladın! Seninle gurur duyuyorum. Bugün Almanca konuşurken kendini nasıl hissediyorsun?'
             : `Harika iş! ${dayNumber}. Güne ulaştın! Birlikte canlı Almanca pratik yapalım. Anlat bakalım, bugünkü konuşma pratiğin nasıldı?`)
-        : (dayNumber >= 30
-            ? 'Tebrikler! 30 Günlük Konuşma Kampını başarıyla tamamladın! Seninle gurur duyuyorum. Bugün İngilizce konuşurken kendini nasıl hissediyorsun?'
-            : `Harika iş! ${dayNumber}. Güne ulaştın! Birlikte canlı pratik yapalım. Anlat bakalım, bugünkü konuşma pratiğin nasıldı?`);
+        : targetLang === 'fr'
+          ? (dayNumber >= 30
+              ? 'Tebrikler! 30 Günlük Fransızca Konuşma Kampını başarıyla tamamladın! Seninle gurur duyuyorum. Bugün Fransızca konuşurken kendini nasıl hissediyorsun?'
+              : `Harika iş! ${dayNumber}. Güne ulaştın! Birlikte canlı Fransızca pratik yapalım. Anlat bakalım, bugünkü konuşma pratiğin nasıldı?`)
+          : (dayNumber >= 30
+              ? 'Tebrikler! 30 Günlük Konuşma Kampını başarıyla tamamladın! Seninle gurur duyuyorum. Bugün İngilizce konuşurken kendini nasıl hissediyorsun?'
+              : `Harika iş! ${dayNumber}. Güne ulaştın! Birlikte canlı pratik yapalım. Anlat bakalım, bugünkü konuşma pratiğin nasıldı?`);
 
       const initialChirmoMsg: DialogueMessage = {
         id: 'initial_chirmo',
