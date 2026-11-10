@@ -148,9 +148,12 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
     };
   }, [targetLang]);
 
-  const [tutorSpeechText] = useState(
-    'Bugün restoranda nasıl sipariş verileceğini öğrenelim mi?'
-  );
+  const tutorSpeechText =
+    targetLang === 'de'
+      ? 'Sollen wir heute lernen, wie man im Restaurant bestellt? 🍽️'
+      : targetLang === 'fr'
+        ? 'Voulez-vous apprendre comment commander au restaurant aujourd\'hui ? 🍽️'
+        : 'Bugün restoranda nasıl sipariş verileceğini öğrenelim mi? 🍽️';
   const [, setIsSpeakingTutor] = useState(false);
 
   // Backward-compatibility state required by unit tests

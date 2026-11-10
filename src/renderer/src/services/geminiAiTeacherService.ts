@@ -334,7 +334,7 @@ Kurallar:
 
     // 1. Canlı Google Gemini API Çağrısı Denemesi
     if (apiKey && quotaCheck.allowed && safeUserMessage) {
-      const modelsToTry = ['gemini-2.5-flash', 'gemini-3.8-flash', 'gemini-flash-latest'];
+      const modelsToTry = ['gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro'];
 
       for (const model of modelsToTry) {
         try {
@@ -386,6 +386,18 @@ Kurallar:
         fallbackText = `Ich bin immer für dich da! 🌟 Hab keine Angst vor Fehlern; regelmäßiges Sprechen ist der Schlüssel zum Erfolg. Welches Wort möchtest du lernen? (Her zaman yanındayım! Hata yapmaktan çekinme; konuşmak başarının anahtarıdır.)`;
       } else {
         fallbackText = `Das ist wirklich sehr interessant! 👏 Du hast dich klar ausgedrückt. Lass uns noch einen Satz üben: Was ist dein liebstes Hobby? (Çok ilginç! Kendini çok net ifade ettin. Bir cümle daha pratik yapalım: En sevdiğin hobi nedir?)`;
+      }
+        } else if (activeLang === 'fr') {
+      if (lower.includes('sipariş') || lower.includes('command') || lower.includes('restoran') || lower.includes('menu') || lower.includes('croissant') || lower.includes('café') || lower.includes('eau') || lower.includes('puis-je') || lower.includes('avoir')) {
+        fallbackText = `Bienvenue dans notre charmant restaurant ! 🍽️ Que puis-je vous servir aujourd'hui ? (Hoş geldiniz! Bugün size ne ikram edebilirim?)\n\nÖrnek cevap: *"Je voudrais un café au lait et un croissant, s'il vous plaît."*`;
+      } else if (lower.includes('merhaba') || lower.includes('bonjour') || lower.includes('salut') || lower.includes('coucou') || lower.includes('hi')) {
+        fallbackText = `Bonjour mon cher ami ! 👋 C'est une journée magnifique pour parler français ! Comment te sens-tu aujourd'hui ? (Merhaba değerli dostum! Bugün Fransızca konuşmak için harika bir gün! Kendini nasıl hissediyorsun?)`;
+      } else if (lower.includes('kahve') || lower.includes('café') || lower.includes('çay') || lower.includes('thé') || lower.includes('su') || lower.includes('eau')) {
+        fallbackText = `Excellent choix ! *"Voici votre café bien chaud, bonne dégustation !"* ☕ (Harika bir seçim! İşte taze kahveniz, afiyet olsun!) Vous préférez votre café avec du lait ou du sucre ?`;
+      } else if (lower.includes('yardım') || lower.includes('aide') || lower.includes('nasıl') || lower.includes('comment')) {
+        fallbackText = `Je suis toujours là pour t'aider ! 🌟 N'aie pas peur de faire des erreurs ; la pratique régulière est la clé du succès. Quel mot aimerais-tu apprendre ? (Her zaman yanındayım! Hata yapmaktan asla çekinme; pratik yapmak başarının anahtarıdır.)`;
+      } else {
+        fallbackText = `C'est vraiment très intéressant ! 👏 Tu t'es exprimé très clairement. Entraînons-nous avec une autre phrase : Peux-tu me dire quel est ton passe-temps favori ? (Çok ilginç! Kendini çok net ifade ettin. Bir cümle daha pratik yapalım: Bana en sevdiğin hobini söyleyebilir misin?)`;
       }
     } else {
       if (lower.includes('sipariş') || lower.includes('order') || lower.includes('restoran') || lower.includes('menu')) {

@@ -74,6 +74,30 @@ export const ChirmoAiChatModal: React.FC<ChirmoAiChatModalProps> = ({
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
 
+  useEffect(() => {
+    if (isOpen) {
+      setMessages((prev) => {
+        if (prev.length <= 1) {
+          const greeting =
+            targetLang === 'de'
+              ? 'Sollen wir heute lernen, wie man im Restaurant bestellt? 🍽️'
+              : targetLang === 'fr'
+                ? 'Voulez-vous apprendre comment commander au restaurant aujourd\'hui ? 🍽️'
+                : 'Bugün restoranda nasıl sipariş verileceğini öğrenelim mi? 🍽️';
+          return [
+            {
+              id: 'm1',
+              sender: 'chirmo',
+              text: initialMessage && targetLang === 'en' ? initialMessage : greeting,
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }
+          ];
+        }
+        return prev;
+      });
+    }
+  }, [isOpen, targetLang, initialMessage]);
+
   if (!isOpen) return null;
 
   const handleSpeak = (text: string) => {
@@ -364,12 +388,27 @@ export const ChirmoAiChatModal: React.FC<ChirmoAiChatModalProps> = ({
 
         {/* Hızlı Başlangıç Butonları */}
         <div className="p-2 sm:px-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex items-center space-x-2 overflow-x-auto">
-          {[
-            'Restoranda sipariş verelim 🍽️',
-            'Bana pratik bir soru sor 🌟',
-            'Kendimi nasıl tanıtırım? 🤝',
-            'Cümlemi düzeltir misin? ✍️'
-          ].map((chip) => (
+          {(targetLang === 'de'
+            ? [
+                'Im Restaurant bestellen 🍽️',
+                'Stell mir eine Frage 🌟',
+                'Wie stelle ich mich vor? 🤝',
+                'Korrigiere meinen Satz ✍️'
+              ]
+            : targetLang === 'fr'
+              ? [
+                  'Commander au restaurant 🍽️',
+                  'Pose-moi une question 🌟',
+                  'Comment me présenter ? 🤝',
+                  'Corrige ma phrase ✍️'
+                ]
+              : [
+                  'Restoranda sipariş verelim 🍽️',
+                  'Bana pratik bir soru sor 🌟',
+                  'Kendimi nasıl tanıtırım? 🤝',
+                  'Cümlemi düzeltir misin? ✍️'
+                ]
+          ).map((chip) => (
             <button
               key={chip}
               type="button"

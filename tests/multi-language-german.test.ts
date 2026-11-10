@@ -127,6 +127,14 @@ describe('TargetLanguageService (Multi-Language English & German)', () => {
       'fr'
     );
     expect(frenchAnswer.toLowerCase()).toMatch(/croissant|café|voudrais/);
+    // Test generateTutorResponse in French
+    TargetLanguageService.setTargetLanguage('fr');
+    const frenchTutorResp = await GeminiAiTeacherService.generateTutorResponse(
+      'Puis-je avoir le menu, s\'il vous plaît ?',
+      []
+    );
+    expect(frenchTutorResp.text).toMatch(/Bienvenue|restaurant|café|croissant|français/i);
+    expect(frenchTutorResp.text).not.toContain('Welcome to our cozy restaurant');
   });
 
   it('provides German and French everyday sentences, dialogues and puzzles via DailyLanguageData', async () => {
