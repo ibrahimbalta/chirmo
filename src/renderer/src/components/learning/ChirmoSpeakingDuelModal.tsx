@@ -189,7 +189,7 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
 
     try {
       const recognition = new SpeechRecognition();
-      recognition.lang = targetLang === 'de' ? 'de-DE' : 'en-US';
+      recognition.lang = targetLang === 'de' ? 'de-DE' : targetLang === 'fr' ? 'fr-FR' : 'en-US';
       recognition.interimResults = true;
       recognition.continuous = false;
 
@@ -353,6 +353,17 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
                 }`}
               >
                 🇩🇪 DE
+              </button>
+              <button
+                type="button"
+                onClick={() => handleLanguageSwitch('fr')}
+                className={`px-2.5 py-1 rounded-lg text-xs font-black transition cursor-pointer ${
+                  targetLang === 'fr'
+                    ? 'bg-amber-500 text-black shadow'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                🇫🇷 FR
               </button>
             </div>
 
@@ -739,7 +750,9 @@ export const ChirmoSpeakingDuelModal: React.FC<ChirmoSpeakingDuelModalProps> = (
                         placeholder={
                           targetLang === 'de'
                             ? 'Mikrofonla konuş, aşağıdan hazır kalıp seç veya Almanca cevabını buraya yaz...'
-                            : 'Mikrofonla konuş, aşağıdan hazır kalıp seç veya İngilizce cevabını buraya yaz...'
+                            : targetLang === 'fr'
+                              ? 'Mikrofonla konuş, aşağıdan hazır kalıp seç veya Fransızca cevabını buraya yaz...'
+                              : 'Mikrofonla konuş, aşağıdan hazır kalıp seç veya İngilizce cevabını buraya yaz...'
                         }
                         className="w-full h-14 px-4 rounded-2xl bg-gray-900 border border-gray-700 text-white text-xs sm:text-sm focus:outline-none focus:border-amber-400"
                       />

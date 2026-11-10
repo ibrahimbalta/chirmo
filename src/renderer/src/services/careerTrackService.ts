@@ -281,6 +281,107 @@ export const CAREER_TRACKS: CareerTrack[] = [
   }
 ];
 
+export const FRENCH_CAREER_TRACKS: CareerTrack[] = [
+  // ==================== FRANSA VİZE & KARİYER PAKETLERİ (FRANÇAIS) ====================
+  {
+    id: 'french_visa',
+    title: 'Fransa Konsolosluğu Vize Mülakatı',
+    turkishTitle: '🇫🇷 Fransa Vize & Konsolosluk Mülakatı',
+    icon: '🛂',
+    description: 'Fransa Konsolosluğu vize memurunun seyahat amacı, kalış süresi ve mali güvence sorularına özgüvenle cevap verin.',
+    powerJargon: [
+      {
+        term: 'Titre de séjour',
+        tr: 'Oturma izni / İkamet belgesi',
+        example: 'Je sollicite un passeport talent en tant qu\'ingénieur logiciel.'
+      },
+      {
+        term: 'Assurance maladie',
+        tr: 'Sağlık sigortası',
+        example: 'J\'ai souscrit une assurance maladie complète couvrant toute la durée de mon séjour.'
+      },
+      {
+        term: 'Ressources financières',
+        tr: 'Mali kaynaklar / Geçim güvencesi',
+        example: 'Mes ressources financières sur mon compte bancaire couvrent tous mes frais de subsistance.'
+      }
+    ],
+    scenarios: [
+      {
+        id: 'fr_visa_purpose',
+        title: 'Motif du séjour',
+        turkishTitle: 'Fransa\'ya Gidiş Amacı & Kalış Planı',
+        characterName: 'Monsieur Laurent',
+        characterRole: 'Officier Consulaire (Consulat Général de France)',
+        prompt: 'Bonjour ! Quel est le motif exact de votre voyage en France et combien de temps comptez-vous y séjourner ?',
+        promptTr: 'İyi günler! Fransa seyahatinizin tam amacı nedir ve ne kadar süre kalmayı planlıyorsunuz?',
+        targetKeywords: ['motif', 'séjour', 'travailler', 'études', 'contrat', 'france', 'paris'],
+        suggestedReplies: [
+          'Bonjour ! J\'ai signé un contrat de travail en tant qu\'ingénieur à Paris et je viens pour exercer mon activité professionnelle.',
+          'J\'ai été admis à l\'Université de la Sorbonne pour mon Master et je prévois d\'y étudier pendant deux ans.',
+          'Je voyage pour des raisons professionnelles et l\'ensemble de mes dépenses est pris en charge par mon entreprise.'
+        ]
+      },
+      {
+        id: 'fr_visa_accommodation',
+        title: 'Hébergement et subsistance',
+        turkishTitle: 'Konaklama Yeri ve Yaşam Masrafları',
+        characterName: 'Madame Dubois',
+        characterRole: 'Agente des Visas',
+        prompt: 'Où allez-vous résider durant vos premières semaines et comment comptez-vous financer votre séjour en France ?',
+        promptTr: 'İlk haftalarda nerede ikamet edeceksiniz ve Fransa\'daki yaşam masraflarınızı nasıl finanse edeceksiniz?',
+        targetKeywords: ['logement', 'appartement', 'salaire', 'compte', 'financer', 'assurance'],
+        suggestedReplies: [
+          'J\'ai réservé un logement temporaire à Paris et mon salaire mensuel garanti couvre l\'ensemble de mes frais de vie.',
+          'Mon employeur a déjà organisé mon hébergement et je dispose des justificatifs financiers nécessaires.',
+          'Mes économies et mon compte bancaire couvrent largement les frais demandés pour toute la première année.'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'french_career',
+    title: 'Fransız Şirketleri İçin İş & Mülakat',
+    turkishTitle: '🇫🇷 Fransızca İş Mülakatı & Kariyer',
+    icon: '💼',
+    description: 'Fransız kurumsal dünyasında kendini tanıtma, deneyimlerini aktarma ve mülakat sorularını yanıtlama pratiği.',
+    powerJargon: [
+      {
+        term: 'Valeur ajoutée',
+        tr: 'Katma değer',
+        example: 'Mon expertise apporte une réelle valeur ajoutée à vos processus.'
+      },
+      {
+        term: 'Gestion de projet',
+        tr: 'Proje yönetimi',
+        example: 'J\'ai piloté la gestion de projet de plusieurs applications à fort trafic.'
+      },
+      {
+        term: 'Travail d\'équipe',
+        tr: 'Takım çalışması',
+        example: 'Le travail d\'équipe et l\'entraide sont essentiels dans mon quotidien.'
+      }
+    ],
+    scenarios: [
+      {
+        id: 'fr_career_pitch',
+        title: 'Présentation des Compétences',
+        turkishTitle: 'Yöneticiye Değer Sunumu & Yetkinlikler',
+        characterName: 'Claire Moreau',
+        characterRole: 'Directrice des Ressources Humaines',
+        prompt: 'Merci pour cet échange. Pourriez-vous résumer en quelques phrases pourquoi votre profil correspond parfaitement à ce poste ?',
+        promptTr: 'Bu görüşme için teşekkürler. Profilinizin neden bu pozisyona mükemmel uyduğunu birkaç cümleyle özetleyebilir misiniz?',
+        targetKeywords: ['expérience', 'compétences', 'équipe', 'projet', 'valeur', 'résultats', 'motivé'],
+        suggestedReplies: [
+          'Grâce à mes cinq années d\'expérience en gestion de projets, je peux apporter des solutions concrètes et optimiser nos processus.',
+          'Je suis particulièrement rigoureux, doté d\'un excellent esprit d\'équipe et très motivé pour contribuer à vos objectifs stratégiques.',
+          'Mon adaptabilité et mon sens du résultat me permettent d\'être rapidement opérationnel sur vos projets clés.'
+        ]
+      }
+    ]
+  }
+];
+
 export const GERMAN_CAREER_TRACKS: CareerTrack[] = [
   // ==================== ALMANYA VİZE & KARİYER PAKETLERİ (DEUTSCH) ====================
   {
@@ -387,11 +488,14 @@ export class CareerTrackService {
     if (lang === 'de') {
       return [...GERMAN_CAREER_TRACKS, ...CAREER_TRACKS];
     }
+    if (lang === 'fr') {
+      return [...FRENCH_CAREER_TRACKS, ...CAREER_TRACKS];
+    }
     return CAREER_TRACKS;
   }
 
   public static getTrackById(id: string): CareerTrack | undefined {
-    return [...CAREER_TRACKS, ...GERMAN_CAREER_TRACKS].find(t => t.id === id);
+    return [...CAREER_TRACKS, ...GERMAN_CAREER_TRACKS, ...FRENCH_CAREER_TRACKS].find(t => t.id === id);
   }
 
   public static evaluateCareerSpeech(

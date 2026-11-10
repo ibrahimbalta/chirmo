@@ -98,7 +98,7 @@ export const LifePhraseBankView: React.FC<LifePhraseBankViewProps> = ({
     setPlayingId(id);
 
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = activeLang === 'de' ? 'de-DE' : 'en-US';
+    utterance.lang = activeLang === 'de' ? 'de-DE' : activeLang === 'fr' ? 'fr-FR' : 'en-US';
     utterance.rate = 0.88; // Anlaşılır ve net konuşma hızı
 
     utterance.onend = () => setPlayingId(null);
@@ -127,7 +127,7 @@ export const LifePhraseBankView: React.FC<LifePhraseBankViewProps> = ({
 
     try {
       const recognition = new SpeechRecognition();
-      recognition.lang = activeLang === 'de' ? 'de-DE' : 'en-US';
+      recognition.lang = activeLang === 'de' ? 'de-DE' : activeLang === 'fr' ? 'fr-FR' : 'en-US';
       recognition.interimResults = false;
       recognition.maxAlternatives = 1;
 
@@ -262,7 +262,7 @@ export const LifePhraseBankView: React.FC<LifePhraseBankViewProps> = ({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={`${activeLang === 'de' ? 'Almanca' : 'İngilizce'} veya Türkçe kelime ara (Örn: kahve, latte, hesap, taksi, rechnung, beden)...`}
+            placeholder={`${activeLang === 'de' ? 'Almanca' : activeLang === 'fr' ? 'Fransızca' : 'İngilizce'} veya Türkçe kelime ara (Örn: kahve, latte, hesap, taksi, rechnung, beden)...`}
             className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-2xs font-medium"
           />
           {searchQuery && (

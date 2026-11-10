@@ -34,7 +34,9 @@ export const ChirmoAiChatModal: React.FC<ChirmoAiChatModalProps> = ({
   const defaultGreeting = initialMessage || (
     targetLang === 'de'
       ? 'Sollen wir heute lernen, wie man im Restaurant bestellt? 🍽️'
-      : 'Bugün restoranda nasıl sipariş verileceğini öğrenelim mi? 🍽️'
+      : targetLang === 'fr'
+        ? 'Voulez-vous apprendre comment commander au restaurant aujourd\'hui ? 🍽️'
+        : 'Bugün restoranda nasıl sipariş verileceğini öğrenelim mi? 🍽️'
   );
 
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -136,7 +138,7 @@ export const ChirmoAiChatModal: React.FC<ChirmoAiChatModalProps> = ({
                 </span>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                Sesli, cesaretlendirici ve seviyene özel akıllı {targetLang === 'de' ? 'Almanca' : 'İngilizce'} konuşma arkadaşın
+                Sesli, cesaretlendirici ve seviyene özel akıllı {targetLang === 'de' ? 'Almanca' : targetLang === 'fr' ? 'Fransızca' : 'İngilizce'} konuşma arkadaşın
               </p>
             </div>
           </div>
@@ -311,7 +313,9 @@ export const ChirmoAiChatModal: React.FC<ChirmoAiChatModalProps> = ({
             placeholder={
               targetLang === 'de'
                 ? "Almanca veya Türkçe bir şey yazın (örn: Ich möchte einen Kaffee)..."
-                : "İngilizce veya Türkçe bir şey yazın (örn: I want a coffee)..."
+                : targetLang === 'fr'
+                  ? "Fransızca veya Türkçe bir şey yazın (örn: Je voudrais un café)..."
+                  : "İngilizce veya Türkçe bir şey yazın (örn: I want a coffee)..."
             }
             className="flex-1 py-3 px-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all"
           />

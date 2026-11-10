@@ -201,7 +201,9 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 <h1 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight leading-snug text-white">
                   {targetLang === 'de'
                     ? 'Bugün Almanca Konuşma Kasını Çalıştırıyoruz 🇩🇪'
-                    : 'Bugün İngilizce Konuşma Kasını Çalıştırıyoruz 🇬🇧'}
+                    : targetLang === 'fr'
+                      ? 'Bugün Fransızca Konuşma Kasını Çalıştırıyoruz 🇫🇷'
+                      : 'Bugün İngilizce Konuşma Kasını Çalıştırıyoruz 🇬🇧'}
                 </h1>
                 <p className="text-xs sm:text-sm text-indigo-200/90 font-medium max-w-xl">
                   Gramer ezberlemeden, 4 adımlı konuşma parkurunu sırayla tamamla veya doğrudan yapay zekâ koçunla sesli pratiğe başla.
@@ -213,7 +215,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 <div className="flex items-center justify-between">
                   <div className="text-[11px] font-black text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
                     <MessageCircle className="w-3.5 h-3.5 shrink-0" />
-                    <span>Canlı Koç Cümlesi ({targetLang === 'de' ? 'Deutsch' : 'English'}):</span>
+                    <span>Canlı Koç Cümlesi ({targetLang === 'de' ? 'Deutsch' : targetLang === 'fr' ? 'Français' : 'English'}):</span>
                   </div>
                   <button
                     type="button"
@@ -221,7 +223,9 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                       handleChirmoSpeak(
                         targetLang === 'de'
                           ? 'Lass uns heute zusammen das Bestellen im Café auf Deutsch üben!'
-                          : "Let's practice ordering coffee and delicious snacks together today!"
+                          : targetLang === 'fr'
+                            ? 'Pratiquons aujourd\'hui comment commander un bon café en français !'
+                            : "Let's practice ordering coffee and delicious snacks together today!"
                       )
                     }
                     className="px-2.5 py-0.5 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-bold text-cyan-300 flex items-center gap-1 cursor-pointer transition"
@@ -233,12 +237,16 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                 <div className="text-xs sm:text-sm font-black text-white">
                   {targetLang === 'de'
                     ? '"Lass uns heute zusammen das Bestellen im Café auf Deutsch üben!"'
-                    : '"Let\'s practice ordering coffee and delicious snacks together today!"'}
+                    : targetLang === 'fr'
+                      ? '"Pratiquons aujourd\'hui comment commander un bon café en français !"'
+                      : '"Let\'s practice ordering coffee and delicious snacks together today!"'}
                 </div>
                 <div className="text-[11px] text-indigo-200/90">
                   {targetLang === 'de'
                     ? '🇹🇷 "Bugün kafede Almanca kahve ve atıştırmalık siparişi vermeyi pratik yapalım!"'
-                    : '🇹🇷 "Bugün kafede İngilizce kahve ve atıştırmalık siparişi vermeyi pratik yapalım!"'}
+                    : targetLang === 'fr'
+                      ? '🇹🇷 "Bugün kafede Fransızca kahve ve kruvasan siparişi vermeyi pratik yapalım!"'
+                      : '🇹🇷 "Bugün kafede İngilizce kahve ve atıştırmalık siparişi vermeyi pratik yapalım!"'}
                 </div>
               </div>
 
@@ -276,7 +284,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
                   state={chirmoState}
                   size="md"
                   showStatusBadge={true}
-                  statusText={targetLang === 'de' ? 'Almanca Dinliyor 🇩🇪' : 'İngilizce Dinliyor 🇬🇧'}
+                  statusText={targetLang === 'de' ? 'Almanca Dinliyor 🇩🇪' : targetLang === 'fr' ? 'Fransızca Dinliyor 🇫🇷' : 'İngilizce Dinliyor 🇬🇧'}
                 />
                 <span className="mt-2.5 px-3 py-1 rounded-full bg-amber-400/15 border border-amber-400/30 text-[11px] font-black text-amber-300 group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors">
                   Konuşmak İçin Dokun 👆
@@ -688,7 +696,7 @@ export const ChirmoVirtualTutorStudio: React.FC<ChirmoVirtualTutorStudioProps> =
         isOpen={isRobotDialogueOpen}
         onClose={() => setIsRobotDialogueOpen(false)}
         dayNumber={30}
-        milestoneTitle={targetLang === 'de' ? 'Chirmo ile Canlı Almanca Pratiği' : 'Chirmo ile Canlı Robot Konuşması'}
+        milestoneTitle={targetLang === 'de' ? 'Chirmo ile Canlı Almanca Pratiği' : targetLang === 'fr' ? 'Chirmo ile Canlı Fransızca Pratiği' : 'Chirmo ile Canlı Robot Konuşması'}
       />
 
       <ChirmoVoiceCallSimulatorModal

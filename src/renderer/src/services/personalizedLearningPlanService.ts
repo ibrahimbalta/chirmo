@@ -56,6 +56,10 @@ export const PersonalizedLearningPlanService = {
         return this.getDefaultPlan();
       }
       const parsed: PersonalizedLearningRoadmap = JSON.parse(raw);
+      const activeLang = TargetLanguageService.getTargetLanguage();
+      if (parsed.targetLang !== activeLang) {
+        return this.getDefaultPlan();
+      }
       // Auto-recalc counts
       return this.recalculateMetrics(parsed);
     } catch {
@@ -213,20 +217,23 @@ export const PersonalizedLearningPlanService = {
   }): PersonalizedLearningRoadmap {
     const { ageGroup, level, targetLang, targetFocus = 'daily' } = params;
     const isDe = targetLang === 'de';
+    const isFr = targetLang === 'fr';
 
     let levelTitle = '';
     const steps: PlanStep[] = [];
 
     // ==================== DURUM 1: ÇOCUKLAR (5-11 YAŞ) ====================
     if (ageGroup === 'kids') {
-      levelTitle = isDe ? '🧒 Chirmo Minik Almanca Kaşifi' : '🧒 Chirmo Minik İngilizce Kaşifi';
+      levelTitle = isDe ? '🧒 Chirmo Minik Almanca Kaşifi' : isFr ? '🧒 Chirmo Minik Fransızca Kaşifi' : '🧒 Chirmo Minik İngilizce Kaşifi';
 
       steps.push({
         id: 'step-kids-1',
         order: 1,
-        title: isDe ? 'Chirmo ile Sesli Almanca Selamlaşma' : 'Chirmo ile Sesli İngilizce Selamlaşma',
+        title: isDe ? 'Chirmo ile Sesli Almanca Selamlaşma' : isFr ? 'Chirmo ile Sesli Fransızca Selamlaşma' : 'Chirmo ile Sesli İngilizce Selamlaşma',
         description: isDe
           ? 'Mikrofona "Hallo Chirmo!" de, sevimli robot arkadaşınla ilk Almanca sesli tanışmanı yap.'
+          : isFr
+          ? 'Mikrofona "Bonjour Chirmo!" de, sevimli robot arkadaşınla ilk Fransızca sesli tanışmanı yap.'
           : 'Mikrofona "Hello Chirmo!" de, sevimli robot arkadaşınla ilk sesli tanışmanı yap.',
         whyForYou: '5-11 yaş için en etkili başlangıç, konuşmaktan korkmadan robotla arkadaş olmaktır.',
         targetTab: 'kids',
@@ -259,6 +266,8 @@ export const PersonalizedLearningPlanService = {
         title: 'Arcade: Hızlı Balon & Kelime Eşleştirme Oyunu',
         description: isDe
           ? 'Meyveler, hayvanlar ve renklerin Almancalarını balonları patlatarak yakala.'
+          : isFr
+          ? 'Meyveler, hayvanlar ve renklerin Fransızcalarını balonları patlatarak yakala.'
           : 'Meyveler, hayvanlar ve renkleri balonları patlatarak yakala, rekor kır.',
         whyForYou: 'Oyun oynarken çocuk beyni rekabet ve eğlenceyle kelimeleri kalıcı kaydeder.',
         targetTab: 'games',
@@ -291,6 +300,8 @@ export const PersonalizedLearningPlanService = {
         title: 'Sihirli Kelime Sandığına 3 Yıldız Ekle',
         description: isDe
           ? 'Bugün öğrendiğin en sevdiğin 3 Almanca kelimeyi sandığına kilitle.'
+          : isFr
+          ? 'Bugün öğrendiğin en sevdiğin 3 Fransızca kelimeyi sandığına kilitle.'
           : 'Bugün öğrendiğin en sevdiğin 3 kelimeyi sandığına kilitle ve sesini dinle.',
         whyForYou: 'Kendi kelime koleksiyonunu büyütmek bir başarı rozetidir.',
         targetTab: 'learn',
@@ -309,6 +320,10 @@ export const PersonalizedLearningPlanService = {
         ? level === 'A1'
           ? '🚀 A1 • Sıfırdan Almanca Konuşma Öncüsü'
           : '🚀 A2 • Temel Almanca Konuşkan Gezgin'
+        : isFr
+        ? level === 'A1'
+          ? '🚀 A1 • Sıfırdan Fransızca Konuşma Öncüsü'
+          : '🚀 A2 • Temel Fransızca Konuşkan Gezgin'
         : level === 'A1'
         ? '🚀 A1 • Sıfırdan İngilizce Konuşma Öncüsü'
         : '🚀 A2 • Temel İngilizce Konuşkan Gezgin';
@@ -316,7 +331,7 @@ export const PersonalizedLearningPlanService = {
       steps.push({
         id: 'step-a1-1',
         order: 1,
-        title: isDe ? '30 Günlük Almanca Kampı - 1. Gün Görevi' : '30 Günlük Konuşma Kampı - 1. Gün Görevi',
+        title: isDe ? '30 Günlük Almanca Kampı - 1. Gün Görevi' : isFr ? '30 Günlük Fransızca Kampı - 1. Gün Görevi' : '30 Günlük Konuşma Kampı - 1. Gün Görevi',
         description: isDe
           ? 'Gramer formülü ezberlemeden 5 dakikada ilk doğal tanışma refleksini mikrofona seslendir.'
           : 'Gramer formülü ezberlemeden 5 dakikada ilk doğal tanışma refleksini mikrofona seslendir.',
@@ -335,9 +350,13 @@ export const PersonalizedLearningPlanService = {
         order: 2,
         title: isDe
           ? 'Gerçek Yaşam Simülatörü: Kafede Kahve & Pasta Siparişi'
+          : isFr
+          ? 'Gerçek Yaşam Simülatörü: Paris’te Kruvasan & Kahve Siparişi'
           : 'Gerçek Yaşam Simülatörü: Kafede Kahve Siparişi',
         description: isDe
           ? 'Berlin’de bir kafedesin! "Einen Eiskaffee bitte" kalıbıyla sipariş ver, Chirmo’nun yanıtını dinle.'
+          : isFr
+          ? 'Paris’te bir kafedesin! "Un café et un croissant, s\'il vous plaît" de ve Chirmo ile canlı sipariş simülasyonu yap.'
           : 'Yerliler gibi "Can I get an iced latte to go, please?" de ve Chirmo ile canlı sipariş simülasyonu yap.',
         whyForYou: 'Gerçek hayatta en çok karşılaşacağın senaryoyla ilk günden pratik yapmak dili somutlaştırır.',
         targetTab: 'speak',
@@ -384,6 +403,8 @@ export const PersonalizedLearningPlanService = {
         title: 'Lego Kalıp Sihirbazı ile 3 Yeni Cümle Üret',
         description: isDe
           ? '3 parçayı Lego gibi birleştir: "Ich möchte..." + "gerne..." + "helfen".'
+          : isFr
+          ? '3 parçayı Lego gibi birleştir: "Je voudrais..." + "commander..." + "un café". Kendi cümleni kur.'
           : '3 renkli blok parçasını birleştir: "I would like to..." + "order..." + "dinner". Kendi cümleni kur.',
         whyForYou: 'Kelimeleri tek tek ezberlemek yerine Lego kalıplarıyla sonsuz yeni cümle türetirsin.',
         targetTab: 'learn',
@@ -401,6 +422,8 @@ export const PersonalizedLearningPlanService = {
         title: 'Film Sahnesinden 1 Cümlelik Shadowing (Gölgeleme)',
         description: isDe
           ? 'Almanca kısa film sahnesindeki repliği dinle, mikrofona seslendir ve telaffuz puanı al.'
+          : isFr
+          ? 'Fransızca kısa film sahnesindeki repliği dinle, mikrofona seslendir ve telaffuz puanı al.'
           : 'Steve Jobs veya Dead Poets sahnesinden 1 repliği dinle, mikrofona seslendir, telaffuz puanını gör.',
         whyForYou: 'Doğal telaffuz ve tonlama yerli konuşmacıları birebir taklit ederek (Shadowing) yerleşir.',
         targetTab: 'learn',
@@ -417,6 +440,8 @@ export const PersonalizedLearningPlanService = {
     else if (level === 'B1') {
       levelTitle = isDe
         ? '💬 B1 • Akıcı Almanca Diyalog Ustası'
+        : isFr
+        ? '💬 B1 • Akıcı Fransızca Diyalog Ustası'
         : '💬 B1 • Akıcı İngilizce Diyalog Ustası';
 
       steps.push({
@@ -424,9 +449,13 @@ export const PersonalizedLearningPlanService = {
         order: 1,
         title: isDe
           ? 'Almanca YouTube & Film Shadowing: Doğal Ritim'
+          : isFr
+          ? 'Fransızca YouTube & Film Shadowing: Doğal Ritim'
           : 'YouTube & Film ile Konuşma: Steve Jobs veya Inception Shadowing',
         description: isDe
           ? 'Almanca belgesel veya film konuşmasını aç, çift altyazıyla dinle ve mikrofona seslendir.'
+          : isFr
+          ? 'Fransızca belgesel veya film konuşmasını aç, çift altyazıyla dinle ve mikrofona seslendir.'
           : 'Cümleleri yerli ritmiyle mikrofona seslendir, bağlantılı sesleri (connected speech) yakala.',
         whyForYou: 'B1 seviyesinin en büyük sıçraması kitap İngilizcesinden gerçek hayattaki film ritmine geçmektir.',
         targetTab: 'learn',
@@ -446,6 +475,8 @@ export const PersonalizedLearningPlanService = {
           : 'Havalimanı & Otel Rezervasyon Canlı Rol Yapma Simülatörü',
         description: isDe
           ? 'Otelde oda anahtarının çalışmadığını Almanca anlat ve resepsiyonistle canlı çözüm bul.'
+          : isFr
+          ? 'Paris\'te otel resepsiyonu veya tren garında Chirmo ile canlı konuşarak bilet ve oda çöz.'
           : 'Havalimanında kayıp bavulunu veya otelde oda değişimini Chirmo ile canlı konuşarak çöz.',
         whyForYou: 'Spontane kriz yönetimi ve seyahat diyalogları B1 konuşmacıyı özgüvenle doldurur.',
         targetTab: 'speak',
@@ -496,6 +527,8 @@ export const PersonalizedLearningPlanService = {
         title: 'Speaking Duel: Canlı Karşılaştırmalı Cümle Meydan Okuması',
         description: isDe
           ? 'Almanca günlük kalıpları doğru telaffuzla zamana karşı seslendir.'
+          : isFr
+          ? 'Fransızca günlük kalıpları doğru telaffuzla zamana karşı seslendir.'
           : 'Speaking Duel arenasında Chirmo botuna karşı konuş, doğru sesletimle puanları topla.',
         whyForYou: 'Eğlenceli düellolar konuşurken yaşanan performatif gerginliği tamamen yok eder.',
         targetTab: 'games',
@@ -511,6 +544,8 @@ export const PersonalizedLearningPlanService = {
     else {
       levelTitle = isDe
         ? '🌟 B2/C1 • Profesyonel Almanca Mülakat & Akıcılık'
+        : isFr
+        ? '🌟 B2/C1 • Profesyonel Fransızca Mülakat & Akıcılık'
         : '🌟 B2/C1 • Profesyonel İngilizce Mülakat & Akıcılık';
 
       steps.push({
@@ -518,9 +553,13 @@ export const PersonalizedLearningPlanService = {
         order: 1,
         title: isDe
           ? '🇩🇪 Almanya Vize & Kariyer Mülakat Simülasyonu'
+          : isFr
+          ? '🇫🇷 Fransa Vize & Kariyer Mülakat Simülasyonu'
           : '🇬🇧 Vize, İş ve Kariyer Mülakat Simülatörü',
         description: isDe
           ? 'Konsolosluk veya Alman şirket mülakatı sorularını Chirmo ile yapay zekaya karşı yanıtla.'
+          : isFr
+          ? 'Fransız konsolosluğu veya şirket mülakatı sorularını Chirmo ile yapay zekaya karşı yanıtla.'
           : 'Teknik mülakat ve vize sorularını Chirmo AI Teacher ile simüle et, profesyonel geri bildirim al.',
         whyForYou: 'İleri düzeyde en kritik hedef iş hayatında ve mülakatlarda profesyonel akıcılıktır.',
         targetTab: 'speak',
@@ -554,6 +593,8 @@ export const PersonalizedLearningPlanService = {
         title: 'Cümle Laboratuvarı: Karmaşık Bağlaç & Neden-Sonuç Kalıpları',
         description: isDe
           ? 'Almancanın "obwohl", "insofern", "um... zu" gibi profesyonel bağlaçlarıyla cümle üret.'
+          : isFr
+          ? 'Fransızcanın "bien que", "étant donné que", "afin de" gibi profesyonel bağlaçlarıyla cümle üret.'
           : '"Notwithstanding", "In light of", "Given that" kalıplarıyla kurumsal cümleler inşa et.',
         whyForYou: 'Düşünceleri profesyonelce birbirine bağlamak ileri düzey konuşmanın anahtarıdır.',
         targetTab: 'learn',
@@ -571,6 +612,8 @@ export const PersonalizedLearningPlanService = {
         title: 'Chirmo Canlı Yapay Zeka Öğretmeni ile Serbest Sohbet',
         description: isDe
           ? 'Almanya’da yaşam, teknoloji veya güncel haberler hakkında Chirmo ile sesli tartış.'
+          : isFr
+          ? 'Fransa’da yaşam, gastronomi, sanat veya kariyer hakkında Chirmo ile sesli tartış.'
           : 'Global trendler veya ilgi alanın hakkında Chirmo ile serbest, sınırsız sesli diyalog kur.',
         whyForYou: 'Kalıplardan bağımsız, spontane argüman geliştirme refleksini mükemmelleştirir.',
         targetTab: 'search',

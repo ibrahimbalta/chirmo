@@ -120,7 +120,7 @@ export const ChirmoReflexDrillModal: React.FC<ChirmoReflexDrillModalProps> = ({
     try {
       const recognition = new SpeechRecognition();
       recognitionRef.current = recognition;
-      recognition.lang = targetLang === 'de' ? 'de-DE' : 'en-US';
+      recognition.lang = targetLang === 'de' ? 'de-DE' : targetLang === 'fr' ? 'fr-FR' : 'en-US';
       recognition.interimResults = true;
       recognition.continuous = false;
 
@@ -174,7 +174,11 @@ export const ChirmoReflexDrillModal: React.FC<ChirmoReflexDrillModalProps> = ({
     onRewardXP?.(result.xpEarned);
 
     LearningStorageService.speak(
-      targetLang === 'de' ? 'Ausgezeichneter Reflex!' : 'Brilliant reaction speed!'
+      targetLang === 'de'
+        ? 'Ausgezeichneter Reflex!'
+        : targetLang === 'fr'
+          ? 'Excellent réflexe !'
+          : 'Brilliant reaction speed!'
     );
   };
 
@@ -205,7 +209,7 @@ export const ChirmoReflexDrillModal: React.FC<ChirmoReflexDrillModalProps> = ({
                   3 Saniye Refleks Antrenörü ⚡
                 </span>
                 <span className="px-2 py-0.5 rounded-full bg-white/25 text-[10px] font-black uppercase">
-                  {targetLang === 'de' ? '🇩🇪 Almanca' : '🇬🇧 İngilizce'}
+                  {targetLang === 'de' ? '🇩🇪 Almanca' : targetLang === 'fr' ? '🇫🇷 Fransızca' : '🇬🇧 İngilizce'}
                 </span>
               </div>
               <p className="text-xs text-amber-100 font-medium">

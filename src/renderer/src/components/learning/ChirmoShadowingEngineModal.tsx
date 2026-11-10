@@ -24,9 +24,11 @@ interface ShadowingItem {
   level: 'A1' | 'A2' | 'B1' | 'B2';
   en: string;
   de: string;
+  fr?: string;
   tr: string;
   phoneticEn: string;
   phoneticDe: string;
+  phoneticFr?: string;
   stressWords: string[];
   teacherTip: string;
 }
@@ -39,9 +41,11 @@ const SHADOWING_DRILLS: ShadowingItem[] = [
     level: 'A1',
     en: 'Could I please get an iced latte with oat milk?',
     de: 'Könnte ich bitte einen Eiskaffee mit Hafermilch bekommen?',
+    fr: 'Pourrais-je s\'il vous plaît avoir un café au lait avec du lait d\'avoine ?',
     tr: 'Lütfen yulaf sütlü bir buzlu latte alabilir miyim?',
     phoneticEn: 'Kud ay pliiz get ən ayst late vit out milk?',
     phoneticDe: 'Könte ih bite aynen Ayskafe mit Hafamilh bekomen?',
+    phoneticFr: 'Purej sil vu ple avuar ö̃ kafe o le avek dü le davuan ?',
     stressWords: ['iced latte', 'oat milk', 'please'],
     teacherTip: 'Pratik İpucu: "Could I please get..." kalıbı emir kipi yerine geçen en kibar yerel kalıptır. Son kelimelere doğru ses tonunu hafif yükselt.'
   },
@@ -51,9 +55,11 @@ const SHADOWING_DRILLS: ShadowingItem[] = [
     level: 'A1',
     en: 'It is really nice to finally meet you in person.',
     de: 'Es ist wirklich schön, dich endlich persönlich kennenzulernen.',
+    fr: 'C\'est vraiment agréable de vous rencontrer enfin en personne.',
     tr: 'Sonunda seninle yüz yüze tanışmak gerçekten çok güzel.',
     phoneticEn: 'İt iz riıli nays tu faynıli miit yu in pöırsın.',
     phoneticDe: 'Es ist virklih şöön, dih endlih perzöönlih kenıntsulernen.',
+    phoneticFr: 'Se vremon agreabl dö vu rankontre anfen an person.',
     stressWords: ['really nice', 'finally', 'in person'],
     teacherTip: 'Hoca Notu: "Finally" kelimesini söylerken ilk heceye hafif vurgu yap (FAY-nı-li). Karşı tarafa içten bir samimiyet verir.'
   },
@@ -64,9 +70,11 @@ const SHADOWING_DRILLS: ShadowingItem[] = [
     level: 'A2',
     en: 'Excuse me, is this museum within walking distance from here?',
     de: 'Entschuldigung, ist dieses Museum von hier aus zu Fuß erreichbar?',
+    fr: 'Pardon, est-ce que ce musée est accessible à pied depuis ici ?',
     tr: 'Affedersiniz, bu müze buradan yürüme mesafesinde mi?',
     phoneticEn: 'Ekskyuuz mi, iz dis myuuziyım widin vooking distıns fram hiır?',
     phoneticDe: 'Entşuldikunk, ist dizıs Muzeyum fon hiır aus tsu Fuus er-rayhbar?',
+    phoneticFr: 'Pardon, es kö sö müze e taksesibl a pye döpüi isi ?',
     stressWords: ['walking distance', 'from here', 'museum'],
     teacherTip: '"Within walking distance" bir blok kalıptır; kelimeleri tek tek çevirme, ağzından tek nefeste bir melodi gibi çıksın.'
   },
@@ -76,9 +84,11 @@ const SHADOWING_DRILLS: ShadowingItem[] = [
     level: 'A2',
     en: 'Would it be possible to arrange a late check-out tomorrow?',
     de: 'Wäre es möglich, morgen einen späteren Check-out zu vereinbaren?',
+    fr: 'Serait-il possible de prévoir un départ tardif demain ?',
     tr: 'Yarın geç çıkış ayarlamak mümkün olabilir mi acaba?',
     phoneticEn: 'Vud it bi pasıbıl tu ıreync e leyt çek-aut tumoro?',
     phoneticDe: 'Veere es mööklih, morgen aynen şpeeteren Çek-aut tsu feraynbaaren?',
+    phoneticFr: 'Söretil posibl dö prevuar ö̃ depar tardif dömen ?',
     stressWords: ['possible', 'late check-out', 'tomorrow'],
     teacherTip: '"Would it be possible..." kalıbını öğrenen bir öğrenci dünyanın her otelinde kapıları açar. Sesinde ricacı ve sakin tonu koru.'
   },
@@ -89,9 +99,11 @@ const SHADOWING_DRILLS: ShadowingItem[] = [
     level: 'B1',
     en: 'I specialize in finding efficient solutions under tight deadlines.',
     de: 'Ich habe mich darauf spezialisiert, unter Zeitdruck effiziente Lösungen zu finden.',
+    fr: 'Je suis spécialisé dans la recherche de solutions efficaces sous des délais serrés.',
     tr: 'Kısa teslim süreleri altında verimli çözümler üretme konusunda uzmanım.',
     phoneticEn: 'Ay speşılayz in faynding ifişınt soluuşınz andır tayt dedlaynz.',
     phoneticDe: 'İh habe mih darauf şpetsiyaliziirt, untır Tsaytdruk efitsiyente Löözungen tsu finden.',
+    phoneticFr: 'Jö süi spesyalize dan la röşerş dö solüsyon efikas su de dele sere.',
     stressWords: ['specialize', 'efficient solutions', 'tight deadlines'],
     teacherTip: 'Mülakatlarda duraklamadan, "efficient" ve "tight deadlines" anahtar kelimelerini tok bir sesle vurgulayarak güven aşıla.'
   },
@@ -101,9 +113,11 @@ const SHADOWING_DRILLS: ShadowingItem[] = [
     level: 'B1',
     en: 'From my perspective, focusing on user experience will drive our growth.',
     de: 'Aus meiner Sicht wird der Fokus auf das Nutzererlebnis unser Wachstum vorantreiben.',
+    fr: 'De mon point de vue, se concentrer sur l\'expérience utilisateur stimulera notre croissance.',
     tr: 'Benim bakış açıma göre, kullanıcı deneyimine odaklanmak büyümemizi tetikleyecektir.',
     phoneticEn: 'Fram may pöırspektiv, foukısing an yuuzır ikspiiriyıns vil drayv aur grouf.',
     phoneticDe: 'Aus maynır Ziht virt der Fookus auf das Nutser-erlebnis unzer Vakstum foran-trayben.',
+    phoneticFr: 'Dö mon puen dö vü, sö konsantre sür leksperyans ütilisatör stimülra nötr kruasans.',
     stressWords: ['perspective', 'user experience', 'drive our growth'],
     teacherTip: '"I think" demek yerine "From my perspective" de; konuşmanın entelektüel seviyesi bir anda iki katına çıksın.'
   },
@@ -114,9 +128,11 @@ const SHADOWING_DRILLS: ShadowingItem[] = [
     level: 'B2',
     en: 'To be completely honest, we need to balance innovation with financial stability.',
     de: 'Um ehrlich zu sein, müssen wir Innovation mit finanzieller Stabilität in Einklang bringen.',
+    fr: 'Pour être totalement honnête, nous devons équilibrer innovation et stabilité financière.',
     tr: 'Tamamen dürüst olmak gerekirse, inovasyon ile finansal istikrarı dengelememiz gerekiyor.',
     phoneticEn: 'Tu bi kımpliitli anıst, vi niid tu balıns inovayşın vit faynenşıl stıbiliti.',
     phoneticDe: 'Um eerlih tsu zayn, müsen vir Inovatsiyon mit finantsiyelır Ştabiliteet in Aynklang bringen.',
+    phoneticFr: 'Pur etr totalman onet, nu dövon ekilibre inovasyon e stabilite finansyer.',
     stressWords: ['completely honest', 'balance innovation', 'financial stability'],
     teacherTip: 'Gölgeleme sırrı: Cümleyi konuşurken nefes alış yerini "honest"tan sonraki virgüle sakla. Dil ritimle nefes alır.'
   }
@@ -155,8 +171,18 @@ export const ChirmoShadowingEngineModal: React.FC<ChirmoShadowingEngineModalProp
   );
 
   const currentItem = filteredDrills[currentIndex % filteredDrills.length] || SHADOWING_DRILLS[0];
-  const activeText = targetLang === 'de' ? currentItem.de : currentItem.en;
-  const activePhonetic = targetLang === 'de' ? currentItem.phoneticDe : currentItem.phoneticEn;
+  const activeText =
+    targetLang === 'de'
+      ? currentItem.de
+      : targetLang === 'fr'
+        ? (currentItem.fr || currentItem.en)
+        : currentItem.en;
+  const activePhonetic =
+    targetLang === 'de'
+      ? currentItem.phoneticDe
+      : targetLang === 'fr'
+        ? (currentItem.phoneticFr || currentItem.phoneticEn)
+        : currentItem.phoneticEn;
 
   const handlePlayNative = (speed = playbackSpeed) => {
     setIsPlaying(true);
@@ -217,7 +243,7 @@ export const ChirmoShadowingEngineModal: React.FC<ChirmoShadowingEngineModalProp
           <div className="flex items-center space-x-2">
             {/* Dil Göstergesi */}
             <span className="px-2.5 py-1 rounded-xl bg-black/30 text-xs font-black border border-white/20">
-              {targetLang === 'de' ? '🇩🇪 Almanca' : '🇬🇧 İngilizce'}
+              {targetLang === 'de' ? '🇩🇪 Almanca' : targetLang === 'fr' ? '🇫🇷 Fransızca' : '🇬🇧 İngilizce'}
             </span>
             <button
               onClick={onClose}

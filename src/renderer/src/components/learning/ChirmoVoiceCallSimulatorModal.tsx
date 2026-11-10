@@ -388,6 +388,129 @@ const CALL_SCENARIOS_BY_LANG: Record<SupportedLanguage, CallScenarioConfig[]> = 
         }
       ]
     }
+  ],
+  fr: [
+    {
+      id: 'fr-coffee',
+      badge: '☕ Pause Café',
+      title: 'Pause Café de 2 Minutes (Günlük Kahve Molası)',
+      callerTitle: 'Chirmo AI • Ton Partenaire Quotidien',
+      turns: [
+        {
+          chirmoText: "Salut mon ami ! C'est Chirmo pendant ma pause-café. Comment se passe ta journée jusqu'ici ?",
+          chirmoTr: 'Selam arkadaşım! Kahve molamda aradım. Günün şu ana kadar nasıl geçiyor?',
+          replies: [
+            {
+              level: 'Kolay',
+              text: 'Ma journée se passe très bien, merci ! Et toi ?',
+              tr: 'Günüm çok iyi geçiyor, teşekkürler! Ya sen?'
+            },
+            {
+              level: 'Doğal',
+              text: 'Tout va très bien aujourd\'hui. Je fais une petite pause pour boire un bon café.',
+              tr: 'Bugün her şey yolunda. Güzel bir kahve içmek için kısa bir mola verdim.'
+            },
+            {
+              level: 'Akıcı',
+              text: 'J\'ai été bien occupé par mon travail, mais je suis toujours ravi de pratiquer mon français avec toi !',
+              tr: 'İşimle meşguldüm ama seninle Fransızca pratik yapmaktan her zaman çok mutluyum!'
+            }
+          ]
+        },
+        {
+          chirmoText: "Ça me fait très plaisir ! Qu'as-tu prévu de beau pour le reste de la journée ?",
+          chirmoTr: 'Çok sevindim! Günün geri kalanı için planladığın güzel bir şey var mı?',
+          replies: [
+            {
+              level: 'Kolay',
+              text: 'Ce soir, je vais voir des amis et regarder un bon film.',
+              tr: 'Bu akşam arkadaşlarımla buluşup güzel bir film izleyeceğim.'
+            },
+            {
+              level: 'Doğal',
+              text: 'Je vais faire une agréable promenade et cuisiner un bon plat chaud.',
+              tr: 'Güzel bir yürüyüş yapıp sıcak bir yemek pişireceğim.'
+            },
+            {
+              level: 'Akıcı',
+              text: 'Je vais continuer mes cours sur Chirmo et préparer mes prochains projets avec confiance.',
+              tr: 'Chirmo derslerime devam edeceğim ve gelecek projelerimi özgüvenle hazırlayacağım.'
+            }
+          ]
+        },
+        {
+          chirmoText: "C'est un excellent programme ! Avant qu'on raccroche, que voudrais-tu boire ou manger là maintenant ?",
+          chirmoTr: 'Harika bir program! Kapatmadan önce, şu an ne yemek veya içmek isterdin?',
+          replies: [
+            {
+              level: 'Kolay',
+              text: 'Je voudrais un grand café au lait et un croissant chaud, s\'il te plaît !',
+              tr: 'Büyük bir sütlü kahve ve sıcak bir kruvasan isterdim lütfen!'
+            },
+            {
+              level: 'Doğal',
+              text: 'Un bon thé à la menthe et un biscuit au chocolat seraient absolument parfaits.',
+              tr: 'Güzel bir naneli çay ve çikolatalı bisküvi şu an kesinlikle mükemmel olurdu.'
+            },
+            {
+              level: 'Akıcı',
+              text: 'Franchement, un expresso bien serré me donnerait une énergie incroyable pour toute la soirée !',
+              tr: 'Açıkçası koyu bir espresso bana tüm akşam için inanılmaz bir enerji verirdi!'
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'fr-interview',
+      badge: '💼 Entretien Pro',
+      title: 'Mini Entretien Téléphonique (İş Görüşmesi)',
+      callerTitle: 'Chirmo AI • Recruteur Francophone',
+      turns: [
+        {
+          chirmoText: "Bonjour ! Merci d'avoir postulé chez nous. Pouvez-vous me présenter vos principaux atouts professionnels ?",
+          chirmoTr: 'İyi günler! Bize başvurduğunuz için teşekkürler. Temel profesyonel yetkinliklerinizi tanıtabilir misiniz?',
+          replies: [
+            {
+              level: 'Kolay',
+              text: 'Bonjour ! Je suis très motivé et j\'apprends rapidement les nouvelles méthodes.',
+              tr: 'İyi günler! Çok motiveyim ve yeni yöntemleri hızla öğrenirim.'
+            },
+            {
+              level: 'Doğal',
+              text: 'Bonjour ! J\'ai une solide expérience dans mon domaine et j\'apprécie beaucoup le travail en équipe.',
+              tr: 'İyi günler! Alanımda güçlü bir deneyimim var ve takım çalışmasını çok severim.'
+            },
+            {
+              level: 'Akıcı',
+              text: 'Ravi d\'échanger avec vous ! Je suis rigoureux, orienté résultats et je m\'exprime chaque jour avec plus d\'aisance en français.',
+              tr: 'Sizinle görüşmekten memnunum! Disiplinli, sonuç odaklıyım ve her gün Fransızcada daha rahat iletişim kuruyorum.'
+            }
+          ]
+        },
+        {
+          chirmoText: "Très convaincant ! Quand seriez-vous disponible pour un deuxième entretien plus approfondi ?",
+          chirmoTr: 'Çok ikna edici! Daha kapsamlı ikinci bir görüşme için ne zaman müsait olursunuz?',
+          replies: [
+            {
+              level: 'Kolay',
+              text: 'Je suis disponible demain à quatorze heures.',
+              tr: 'Yarın saat 14:00\'te müsaitim.'
+            },
+            {
+              level: 'Doğal',
+              text: 'Jeudi après-midi ou vendredi matin me conviendrait parfaitement.',
+              tr: 'Perşembe öğleden sonra veya Cuma sabahı bana mükemmel uyar.'
+            },
+            {
+              level: 'Akıcı',
+              text: 'Mon emploi du temps est flexible cette semaine. N\'hésitez pas à m\'envoyer une invitation par e-mail !',
+              tr: 'Bu hafta takvimim esnek. Bana e-posta ile davet göndermekten çekinmeyin!'
+            }
+          ]
+        }
+      ]
+    }
   ]
 };
 
@@ -624,7 +747,7 @@ export const ChirmoVoiceCallSimulatorModal: React.FC<ChirmoVoiceCallSimulatorMod
 
       const recognition = new SpeechRecognition();
       recognitionRef.current = recognition;
-      recognition.lang = targetLang === 'de' ? 'de-DE' : 'en-US';
+      recognition.lang = targetLang === 'de' ? 'de-DE' : targetLang === 'fr' ? 'fr-FR' : 'en-US';
       recognition.interimResults = false;
       recognition.maxAlternatives = 1;
 
@@ -730,7 +853,9 @@ export const ChirmoVoiceCallSimulatorModal: React.FC<ChirmoVoiceCallSimulatorMod
     const closingTarget =
       targetLang === 'de'
         ? 'Ausgezeichnet gesprochen! Du hast alle Schritte dieses Telefonats gemeistert. Möchtest du noch etwas sagen oder das Gespräch abschließen?'
-        : 'Wonderfully spoken! You mastered every step of this phone call. Would you like to say one more thing or complete the call now?';
+        : targetLang === 'fr'
+          ? 'Magnifiquement parlé ! Tu as réussi toutes les étapes de cet appel téléphonique. Veux-tu ajouter quelque chose ou conclure l\'appel ?'
+          : 'Wonderfully spoken! You mastered every step of this phone call. Would you like to say one more thing or complete the call now?';
     const closingTr =
       'Harika konuştun! Bu telefon görüşmesinin tüm adımlarını başarıyla tamamladın. Son bir şey söylemek veya aramayı bitirmek ister misin?';
 
@@ -1051,7 +1176,9 @@ export const ChirmoVoiceCallSimulatorModal: React.FC<ChirmoVoiceCallSimulatorMod
                   placeholder={
                     targetLang === 'de'
                       ? 'Almanca veya Türkçe cevabını yaz...'
-                      : 'İngilizce veya Türkçe cevabını yaz...'
+                      : targetLang === 'fr'
+                        ? 'Fransızca veya Türkçe cevabını yaz...'
+                        : 'İngilizce veya Türkçe cevabını yaz...'
                   }
                   className="flex-1 px-3 py-2 rounded-xl bg-white/10 border border-white/15 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-amber-400"
                 />

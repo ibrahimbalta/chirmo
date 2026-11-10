@@ -22,6 +22,7 @@ interface ToolboxGear {
   examples: {
     en: string;
     de: string;
+    fr?: string;
     tr: string;
   }[];
 }
@@ -53,21 +54,25 @@ export const ChirmoSpeakingToolboxModal: React.FC<ChirmoSpeakingToolboxModalProp
         {
           en: 'I play football every weekend.',
           de: 'Ich spiele jedes Wochenende Fußball.',
+          fr: 'Je joue au football chaque week-end.',
           tr: 'Her hafta sonu futbol oynarım.'
         },
         {
           en: 'We drink fresh water every morning.',
           de: 'Wir trinken jeden Morgen frisches Wasser.',
+          fr: 'Nous buvons de l\'eau fraîche chaque matin.',
           tr: 'Her sabah taze su içeriz.'
         },
         {
           en: 'She reads a great book in the library.',
           de: 'Sie liest ein tolles Buch in der Bibliothek.',
+          fr: 'Elle lit un excellent livre à la bibliothèque.',
           tr: 'Kütüphanede harika bir kitap okuyor.'
         },
         {
           en: 'They watch the sunset together.',
           de: 'Sie schauen den Sonnenuntergang zusammen.',
+          fr: 'Ils regardent le coucher de soleil ensemble.',
           tr: 'Birlikte gün batımını izliyorlar.'
         }
       ]
@@ -85,21 +90,25 @@ export const ChirmoSpeakingToolboxModal: React.FC<ChirmoSpeakingToolboxModalProp
         {
           en: 'Do you like listening to music?',
           de: 'Hörst du gerne Musik?',
+          fr: 'Aimes-tu écouter de la musique ?',
           tr: 'Müzik dinlemeyi sever misin?'
         },
         {
           en: 'Where are you going right now?',
           de: 'Wohin gehst du gerade?',
+          fr: 'Où vas-tu en ce moment ?',
           tr: 'Şu an nereye gidiyorsun?'
         },
         {
           en: 'Can you help me with this task, please?',
           de: 'Kannst du mir bitte bei dieser Aufgabe helfen?',
+          fr: 'Pouvez-vous m\'aider avec cette tâche, s\'il vous plaît ?',
           tr: 'Bu görevde bana yardım edebilir misin lütfen?'
         },
         {
           en: 'What is your favorite dish?',
           de: 'Was ist dein Lieblingsgericht?',
+          fr: 'Quel est votre plat préféré ?',
           tr: 'En sevdiğin yemek nedir?'
         }
       ]
@@ -117,21 +126,25 @@ export const ChirmoSpeakingToolboxModal: React.FC<ChirmoSpeakingToolboxModalProp
         {
           en: 'Can I have some water, please?',
           de: 'Kann ich bitte etwas Wasser haben?',
+          fr: 'Pourrais-je avoir un peu d\'eau, s\'il vous plaît ?',
           tr: 'Biraz su alabilir miyim lütfen?'
         },
         {
           en: 'I would like to order a warm cappuccino.',
           de: 'Ich möchte einen warmen Cappuccino bestellen.',
+          fr: 'Je voudrais commander un cappuccino chaud.',
           tr: 'Sıcak bir kapuçino sipariş etmek istiyorum.'
         },
         {
           en: 'Could you repeat that more slowly, please?',
           de: 'Könnten Sie das bitte langsamer wiederholen?',
+          fr: 'Pourriez-vous répéter plus lentement, s\'il vous plaît ?',
           tr: 'Bunu lütfen biraz daha yavaş tekrar edebilir misiniz?'
         },
         {
           en: 'May I ask a quick question?',
           de: 'Darf ich eine kurze Frage stellen?',
+          fr: 'Puis-je poser une petite question ?',
           tr: 'Kısa bir soru sorabilir miyim?'
         }
       ]
@@ -149,21 +162,25 @@ export const ChirmoSpeakingToolboxModal: React.FC<ChirmoSpeakingToolboxModalProp
         {
           en: 'I feel very energetic and confident today.',
           de: 'Ich fühle mich heute sehr energiegeladen und selbstbewusst.',
+          fr: 'Je me sens très énergique et confiant aujourd\'hui.',
           tr: 'Bugün kendimi çok enerjik ve özgüvenli hissediyorum.'
         },
         {
           en: 'I think this is a fantastic adventure.',
           de: 'Ich denke, das ist ein fantastisches Abenteuer.',
+          fr: 'Je pense que c\'est une aventure fantastique.',
           tr: 'Bence bu şahane bir macera.'
         },
         {
           en: 'I really love practicing speaking with Chirmo.',
           de: 'Ich liebe es wirklich, mit Chirmo Sprechen zu üben.',
+          fr: 'J\'adore vraiment pratiquer l\'expression orale avec Chirmo.',
           tr: 'Chirmo ile konuşma pratiği yapmayı gerçekten çok seviyorum.'
         },
         {
           en: 'I believe we can master this language quickly.',
           de: 'Ich glaube, wir können diese Sprache schnell meistern.',
+          fr: 'Je suis convaincu que nous pouvons maîtriser cette langue rapidement.',
           tr: 'Bu dilde çok hızlı ustalaşabileceğimize inanıyorum.'
         }
       ]
@@ -181,21 +198,25 @@ export const ChirmoSpeakingToolboxModal: React.FC<ChirmoSpeakingToolboxModalProp
         {
           en: 'I learn languages because I love discovering new cultures.',
           de: 'Ich lerne Sprachen, weil ich es liebe, neue Kulturen zu entdecken.',
+          fr: 'J\'apprends des langues parce que j\'adore découvrir de nouvelles cultures.',
           tr: 'Yeni kültürler keşfetmeyi sevdiğim için dil öğreniyorum.'
         },
         {
           en: 'I am a bit tired, but I want to keep practicing.',
           de: 'Ich bin ein bisschen müde, aber ich möchte weiter üben.',
+          fr: 'Je suis un peu fatigué, mais je veux continuer à pratiquer.',
           tr: 'Biraz yorgunum ama pratik yapmaya devam etmek istiyorum.'
         },
         {
           en: 'It was raining outside, so we decided to stay indoors.',
           de: 'Draußen regnete es, also beschlossen wir, drinnen zu bleiben.',
+          fr: 'Il pleuvait dehors, alors nous avons décidé de rester à l\'intérieur.',
           tr: 'Dışarıda yağmur yağıyordu, bu yüzden içeride kalmaya karar verdik.'
         },
         {
           en: 'Call me immediately when you arrive at the airport.',
           de: 'Ruf mich sofort an, wenn du am Flughafen ankommst.',
+          fr: 'Appelle-moi dès que tu arrives à l\'aéroport.',
           tr: 'Havalimanına vardığında beni hemen ara.'
         }
       ]
@@ -319,7 +340,7 @@ export const ChirmoSpeakingToolboxModal: React.FC<ChirmoSpeakingToolboxModalProp
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-black uppercase text-amber-700 dark:text-amber-300 flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Canlı Örnekler & Telaffuz ({targetLang === 'de' ? 'Almanca' : 'İngilizce'})</span>
+                <span>Canlı Örnekler & Telaffuz ({targetLang === 'de' ? 'Almanca' : targetLang === 'fr' ? 'Fransızca' : 'İngilizce'})</span>
               </span>
               <span className="text-[10px] text-slate-500 dark:text-slate-400">
                 {practicedItems.size} dinlendi
@@ -328,7 +349,12 @@ export const ChirmoSpeakingToolboxModal: React.FC<ChirmoSpeakingToolboxModalProp
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
               {currentGear.examples.map((ex, idx) => {
-                const targetText = targetLang === 'de' ? ex.de : ex.en;
+                const targetText =
+                  targetLang === 'de'
+                    ? ex.de
+                    : targetLang === 'fr'
+                      ? (ex.fr || ex.en)
+                      : ex.en;
                 const isPlaying = playingText === targetText;
                 const isDone = practicedItems.has(targetText);
 

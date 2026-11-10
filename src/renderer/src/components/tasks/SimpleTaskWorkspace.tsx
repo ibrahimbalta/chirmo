@@ -64,7 +64,7 @@ export const SimpleTaskWorkspace: React.FC<SimpleTaskWorkspaceProps> = ({
       if (raw) return JSON.parse(raw);
     } catch {}
     return [
-      { id: '1', title: 'Bugün 15 dakika İngilizce sesli pratik yap (+25 XP)', completed: false, createdAt: new Date().toISOString() },
+      { id: '1', title: 'Bugün 15 dakika sesli pratik yap (+25 XP)', completed: false, createdAt: new Date().toISOString() },
       { id: '2', title: 'Chirmo ile kafede kahve siparişi ver (+40 XP)', completed: false, createdAt: new Date().toISOString() },
       { id: '3', title: 'Lego kalıplarından 5 yeni cümle üret (+25 XP)', completed: true, createdAt: new Date().toISOString() }
     ];
@@ -252,7 +252,7 @@ export const SimpleTaskWorkspace: React.FC<SimpleTaskWorkspaceProps> = ({
             {/* Rozetler */}
             <div className="flex items-center flex-wrap gap-1.5">
               <span className="px-2.5 py-1 rounded-xl bg-white/10 border border-white/20 text-xs font-bold text-amber-300">
-                {learningPlan.targetLang === 'de' ? '🇩🇪 Almanca' : '🇬🇧 İngilizce'}
+                {learningPlan.targetLang === 'de' ? '🇩🇪 Almanca' : learningPlan.targetLang === 'fr' ? '🇫🇷 Fransızca' : '🇬🇧 İngilizce'}
               </span>
               <span className="px-2.5 py-1 rounded-xl bg-white/10 border border-white/20 text-xs font-bold text-indigo-200">
                 {learningPlan.ageGroup === 'kids'

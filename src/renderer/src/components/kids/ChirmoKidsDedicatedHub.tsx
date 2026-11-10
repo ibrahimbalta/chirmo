@@ -53,6 +53,21 @@ import {
   GERMAN_AGE_SPEAKING_CHALLENGES,
   GERMAN_PATTERN_OPTIONS
 } from '../../services/germanKidsData';
+import {
+  FRENCH_AGE_VOCABULARY,
+  FRENCH_LISTENING_QUIZZES,
+  FRENCH_PUZZLE_CHALLENGES,
+  FRENCH_VOICE_CHALLENGES,
+  FRENCH_TPR_SIMON_ACTIONS,
+  FRENCH_STORYBOOK_SCENES,
+  FRENCH_KIDS_SONGS,
+  FRENCH_SAFARI_ANIMALS,
+  FRENCH_MAGIC_COLORS,
+  FRENCH_KIDS_CHAT_STEPS,
+  FRENCH_FACTORY_OPTIONS,
+  FRENCH_AGE_SPEAKING_CHALLENGES,
+  FRENCH_PATTERN_OPTIONS
+} from '../../services/frenchKidsData';
 
 export type AgeGroup = '5-7' | '8-10' | '11-13' | '14-17';
 
@@ -114,6 +129,19 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
   useEffect(() => {
     return TargetLanguageService.subscribe((lang) => {
       setTargetLang(lang);
+      const patternOpts = (lang === 'de' ? GERMAN_PATTERN_OPTIONS[selectedAge] : lang === 'fr' ? FRENCH_PATTERN_OPTIONS[selectedAge] : PATTERN_OPTIONS[selectedAge]) || (lang === 'de' ? GERMAN_PATTERN_OPTIONS['5-7'] : lang === 'fr' ? FRENCH_PATTERN_OPTIONS['5-7'] : PATTERN_OPTIONS['5-7']);
+      if (patternOpts) {
+        setBuilderPrefix(patternOpts.prefixes[0] || '');
+        setBuilderObject(patternOpts.objects[0] || '');
+        setBuilderSuffix(patternOpts.suffixes[0] || '');
+      }
+      const factoryOpts = (lang === 'de' ? GERMAN_FACTORY_OPTIONS[selectedAge] : lang === 'fr' ? FRENCH_FACTORY_OPTIONS[selectedAge] : FACTORY_OPTIONS[selectedAge]) || (lang === 'de' ? GERMAN_FACTORY_OPTIONS['5-7'] : lang === 'fr' ? FRENCH_FACTORY_OPTIONS['5-7'] : FACTORY_OPTIONS['5-7']);
+      if (factoryOpts) {
+        setFactorySubject(factoryOpts.subjects[0] || '');
+        setFactoryAction(factoryOpts.actions[0] || '');
+        setFactoryObject(factoryOpts.objects[0] || '');
+        setFactoryTimePlace(factoryOpts.contexts[0] || '');
+      }
     });
   }, []);
 
@@ -229,7 +257,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
   const [isMemoryWon, setIsMemoryWon] = useState(false);
 
   // Memory Game Çiftleri (4 Yaş Kademe x EN & DE)
-  const MEMORY_PAIRS: Record<AgeGroup, Record<'en' | 'de', Array<{ id: string; word: string; tr: string; emoji: string }>>> = {
+  const MEMORY_PAIRS: Record<AgeGroup, Record<'en' | 'de' | 'fr', Array<{ id: string; word: string; tr: string; emoji: string }>>> = {
     '5-7': {
       en: [
         { id: 'm1', word: 'Red Apple', tr: 'Kırmızı Elma', emoji: '🍎' },
@@ -246,6 +274,14 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
         { id: 'm4', word: 'Warme Sonne', tr: 'Sıcak Güneş', emoji: '☀️' },
         { id: 'm5', word: 'Mutiger Löwe', tr: 'Cesur Aslan', emoji: '🦁' },
         { id: 'm6', word: 'Weltraumrakete', tr: 'Uzay Roketi', emoji: '🚀' }
+      ],
+      fr: [
+        { id: 'm1', word: 'Pomme Rouge', tr: 'Kırmızı Elma', emoji: '🍎' },
+        { id: 'm2', word: 'Chat Mignon', tr: 'Sevimli Kedi', emoji: '🐱' },
+        { id: 'm3', word: 'Chien Fidèle', tr: 'Dost Köpek', emoji: '🐶' },
+        { id: 'm4', word: 'Soleil Chaud', tr: 'Sıcak Güneş', emoji: '☀️' },
+        { id: 'm5', word: 'Lion Courageux', tr: 'Cesur Aslan', emoji: '🦁' },
+        { id: 'm6', word: 'Fusée Spatiale', tr: 'Uzay Roketi', emoji: '🚀' }
       ]
     },
     '8-10': {
@@ -264,6 +300,14 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
         { id: 'm10', word: 'Kluger Roboter', tr: 'Akıllı Robot', emoji: '🤖' },
         { id: 'm11', word: 'Leckeres Sandwich', tr: 'Lezzetli Sandviç', emoji: '🥪' },
         { id: 'm12', word: 'Teleskop', tr: 'Teleskop', emoji: '🔭' }
+      ],
+      fr: [
+        { id: 'm7', word: 'Ballon de Foot', tr: 'Futbol Topu', emoji: '⚽' },
+        { id: 'm8', word: 'Sac à Dos', tr: 'Okul Çantası', emoji: '🎒' },
+        { id: 'm9', word: 'Vélo Rapide', tr: 'Hızlı Bisiklet', emoji: '🚲' },
+        { id: 'm10', word: 'Robot Intelligent', tr: 'Akıllı Robot', emoji: '🤖' },
+        { id: 'm11', word: 'Délicieux Sandwich', tr: 'Lezzetli Sandviç', emoji: '🥪' },
+        { id: 'm12', word: 'Télescope', tr: 'Teleskop', emoji: '🔭' }
       ]
     },
     '11-13': {
@@ -282,6 +326,14 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
         { id: 'm16', word: 'Goldener Pokal', tr: 'Altın Kupa', emoji: '🏆' },
         { id: 'm17', word: 'Galaxien', tr: 'Galaksiler', emoji: '🌌' },
         { id: 'm18', word: 'Saubere Energie', tr: 'Temiz Enerji', emoji: '⚡' }
+      ],
+      fr: [
+        { id: 'm13', word: 'Laboratoire', tr: 'Fen Laboratuvarı', emoji: '🔬' },
+        { id: 'm14', word: 'Planète Saturne', tr: 'Satürn Gezegeni', emoji: '🪐' },
+        { id: 'm15', word: 'Technologie Mobile', tr: 'Mobil Teknoloji', emoji: '📱' },
+        { id: 'm16', word: 'Trophée Doré', tr: 'Altın Kupa', emoji: '🏆' },
+        { id: 'm17', word: 'Étoiles Galactiques', tr: 'Galaksiler', emoji: '🌌' },
+        { id: 'm18', word: 'Énergie Propre', tr: 'Temiz Enerji', emoji: '⚡' }
       ]
     },
     '14-17': {
@@ -300,12 +352,20 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
         { id: 'm22', word: 'Große Ambition', tr: 'Büyük Hedef', emoji: '🌟' },
         { id: 'm23', word: 'Podcast Show', tr: 'Podcast', emoji: '🎧' },
         { id: 'm24', word: 'Starkes Teamwork', tr: 'Takım Çalışması', emoji: '🤝' }
+      ],
+      fr: [
+        { id: 'm19', word: 'Intelligence Artificielle', tr: 'Yapay Zeka', emoji: '🧠' },
+        { id: 'm20', word: 'Algorithme de Code', tr: 'Yazılım Kodu', emoji: '💻' },
+        { id: 'm21', word: 'Innovation Créative', tr: 'Yaratıcı İnovasyon', emoji: '💡' },
+        { id: 'm22', word: 'Grande Ambition', tr: 'Büyük Hedef', emoji: '🌟' },
+        { id: 'm23', word: 'Émission Podcast', tr: 'Podcast', emoji: '🎧' },
+        { id: 'm24', word: 'Travail d\'Équipe', tr: 'Takım Çalışması', emoji: '🤝' }
       ]
     }
   };
 
   const initMemoryGame = () => {
-    const langKey = targetLang === 'de' ? 'de' : 'en';
+    const langKey = targetLang === 'de' ? 'de' : targetLang === 'fr' ? 'fr' : 'en';
     const pairs = (MEMORY_PAIRS[selectedAge] && MEMORY_PAIRS[selectedAge][langKey]) || MEMORY_PAIRS['5-7'][langKey];
     const cards: Array<{
       uid: string;
@@ -378,7 +438,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
             if (updated.every((c) => c.isMatched)) {
               setIsMemoryWon(true);
               handleAwardStars(25, 'Hafıza Şampiyonu! Tüm Çiftleri Buldun!');
-              handleSpeak(targetLang === 'de' ? 'Fantastisch! Du hast alle Karten gefunden!' : 'Awesome job! You found all the matching pairs!');
+              handleSpeak(targetLang === 'de' ? 'Fantastisch! Du hast alle Karten gefunden!' : targetLang === 'fr' ? 'Fantastique ! Tu as trouvé toutes les cartes !' : 'Awesome job! You found all the matching pairs!');
             }
             return updated;
           });
@@ -1040,14 +1100,14 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
   ];
 
   // ==================== KELİME KATEGORİ LİSTESİ ====================
-  const allCurrentVocab = (targetLang === 'de' ? GERMAN_AGE_VOCABULARY[selectedAge] : AGE_VOCABULARY[selectedAge]) || [];
+  const allCurrentVocab = (targetLang === 'de' ? GERMAN_AGE_VOCABULARY[selectedAge] : targetLang === 'fr' ? FRENCH_AGE_VOCABULARY[selectedAge] : AGE_VOCABULARY[selectedAge]) || [];
   const uniqueCategories = ['Tümü', ...Array.from(new Set(allCurrentVocab.map((v) => v.category)))];
   const filteredVocab = categoryFilter === 'Tümü'
     ? allCurrentVocab
     : allCurrentVocab.filter((v) => v.category === categoryFilter);
 
   // Mini-Game 1 Handlers
-  const currentQuizzes = (targetLang === 'de' ? GERMAN_LISTENING_QUIZZES[selectedAge] : LISTENING_QUIZZES[selectedAge]) || (targetLang === 'de' ? GERMAN_LISTENING_QUIZZES['5-7'] : LISTENING_QUIZZES['5-7']);
+  const currentQuizzes = (targetLang === 'de' ? GERMAN_LISTENING_QUIZZES[selectedAge] : targetLang === 'fr' ? FRENCH_LISTENING_QUIZZES[selectedAge] : LISTENING_QUIZZES[selectedAge]) || (targetLang === 'de' ? GERMAN_LISTENING_QUIZZES['5-7'] : targetLang === 'fr' ? FRENCH_LISTENING_QUIZZES['5-7'] : LISTENING_QUIZZES['5-7']);
   const activeQuiz = currentQuizzes[quizIndex % currentQuizzes.length];
 
   const handleSelectQuizOption = (optId: string, isCorrect: boolean) => {
@@ -1072,7 +1132,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
   };
 
   // Mini-Game 2 Handlers
-  const currentPuzzles = (targetLang === 'de' ? GERMAN_PUZZLE_CHALLENGES[selectedAge] : PUZZLE_CHALLENGES[selectedAge]) || (targetLang === 'de' ? GERMAN_PUZZLE_CHALLENGES['5-7'] : PUZZLE_CHALLENGES['5-7']);
+  const currentPuzzles = (targetLang === 'de' ? GERMAN_PUZZLE_CHALLENGES[selectedAge] : targetLang === 'fr' ? FRENCH_PUZZLE_CHALLENGES[selectedAge] : PUZZLE_CHALLENGES[selectedAge]) || (targetLang === 'de' ? GERMAN_PUZZLE_CHALLENGES['5-7'] : targetLang === 'fr' ? FRENCH_PUZZLE_CHALLENGES['5-7'] : PUZZLE_CHALLENGES['5-7']);
   const activePuzzle = currentPuzzles[puzzleIndex % currentPuzzles.length];
 
   const handleTogglePuzzleWord = (word: string) => {
@@ -1101,7 +1161,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
   };
 
   // Mini-Game 3 Handlers (Pronunciation Coach)
-  const currentVoices = (targetLang === 'de' ? GERMAN_VOICE_CHALLENGES[selectedAge] : VOICE_CHALLENGES[selectedAge]) || (targetLang === 'de' ? GERMAN_VOICE_CHALLENGES['5-7'] : VOICE_CHALLENGES['5-7']);
+  const currentVoices = (targetLang === 'de' ? GERMAN_VOICE_CHALLENGES[selectedAge] : targetLang === 'fr' ? FRENCH_VOICE_CHALLENGES[selectedAge] : VOICE_CHALLENGES[selectedAge]) || (targetLang === 'de' ? GERMAN_VOICE_CHALLENGES['5-7'] : targetLang === 'fr' ? FRENCH_VOICE_CHALLENGES['5-7'] : VOICE_CHALLENGES['5-7']);
   const activeVoice = currentVoices[voiceIndex % currentVoices.length];
 
   const handleSimulateVoiceRecording = () => {
@@ -1792,20 +1852,20 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
     setChildAnswerText(null);
 
     // Cümle Legosu varsayılanlarını yeni yaşa uyarla
-    const patternOpts = (targetLang === 'de' ? GERMAN_PATTERN_OPTIONS[newAge] : PATTERN_OPTIONS[newAge]) || (targetLang === 'de' ? GERMAN_PATTERN_OPTIONS['5-7'] : PATTERN_OPTIONS['5-7']);
+    const patternOpts = (targetLang === 'de' ? GERMAN_PATTERN_OPTIONS[newAge] : targetLang === 'fr' ? FRENCH_PATTERN_OPTIONS[newAge] : PATTERN_OPTIONS[newAge]) || (targetLang === 'de' ? GERMAN_PATTERN_OPTIONS['5-7'] : targetLang === 'fr' ? FRENCH_PATTERN_OPTIONS['5-7'] : PATTERN_OPTIONS['5-7']);
     setBuilderPrefix(patternOpts.prefixes[0]);
     setBuilderObject(patternOpts.objects[0]);
     setBuilderSuffix(patternOpts.suffixes[0]);
 
     // Cümle Fabrikası varsayılanlarını yeni yaşa uyarla
-    const factoryOpts = (targetLang === 'de' ? GERMAN_FACTORY_OPTIONS[newAge] : FACTORY_OPTIONS[newAge]) || (targetLang === 'de' ? GERMAN_FACTORY_OPTIONS['5-7'] : FACTORY_OPTIONS['5-7']);
+    const factoryOpts = (targetLang === 'de' ? GERMAN_FACTORY_OPTIONS[newAge] : targetLang === 'fr' ? FRENCH_FACTORY_OPTIONS[newAge] : FACTORY_OPTIONS[newAge]) || (targetLang === 'de' ? GERMAN_FACTORY_OPTIONS['5-7'] : targetLang === 'fr' ? FRENCH_FACTORY_OPTIONS['5-7'] : FACTORY_OPTIONS['5-7']);
     setFactorySubject(factoryOpts.subjects[0]);
     setFactoryAction(factoryOpts.actions[0]);
     setFactoryObject(factoryOpts.objects[0]);
     setFactoryContext(factoryOpts.contexts[0]);
 
     // Hikaye sahnesi varsayılanını yeni yaşa uyarla
-    const scenes = (targetLang === 'de' ? GERMAN_STORYBOOK_SCENES[newAge] : STORYBOOK_SCENES[newAge]) || (targetLang === 'de' ? GERMAN_STORYBOOK_SCENES['5-7'] : STORYBOOK_SCENES['5-7']);
+    const scenes = (targetLang === 'de' ? GERMAN_STORYBOOK_SCENES[newAge] : targetLang === 'fr' ? FRENCH_STORYBOOK_SCENES[newAge] : STORYBOOK_SCENES[newAge]) || (targetLang === 'de' ? GERMAN_STORYBOOK_SCENES['5-7'] : targetLang === 'fr' ? FRENCH_STORYBOOK_SCENES['5-7'] : STORYBOOK_SCENES['5-7']);
     if (scenes && scenes.length > 0) {
       setActiveStorySceneId(scenes[0].id);
     }
@@ -2016,14 +2076,14 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                 <div className="flex items-center space-x-2 pt-1">
                   <button
                     type="button"
-                    onClick={() => handleSpeak(targetLang === 'de' ? 'Hallo kleiner Entdecker! Willkommen in Lingoria!' : 'Hello brave adventurer! Welcome to Lingoria!')}
+                    onClick={() => handleSpeak(targetLang === 'de' ? 'Hallo kleiner Entdecker! Willkommen in Lingoria!' : targetLang === 'fr' ? 'Bonjour petit aventurier ! Bienvenue à Lingoria !' : 'Hello brave adventurer! Welcome to Lingoria!')}
                     className="px-2.5 py-1 rounded-xl bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 text-[11px] font-bold flex items-center space-x-1 hover:bg-purple-200 cursor-pointer"
                   >
                     <Volume2 className="w-3.5 h-3.5" />
                     <span>Selamı Dinle</span>
                   </button>
                   <span className="text-[10px] text-slate-500 font-semibold">
-                    {targetLang === 'de' ? '🇩🇪 Almanca Macera' : '🇬🇧 İngilizce Macera'}
+                    {targetLang === 'de' ? '🇩🇪 Almanca Macera' : targetLang === 'fr' ? '🇫🇷 Fransızca Macera' : '🇬🇧 İngilizce Macera'}
                   </span>
                 </div>
               </div>
@@ -2120,7 +2180,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                 <span>Bugünün Kelimesi</span>
               </div>
               <span className="text-[10px] font-extrabold text-pink-500 bg-pink-100 dark:bg-pink-950 px-2 py-0.5 rounded-full">
-                {targetLang === 'de' ? 'Almanca' : 'İngilizce'}
+                {targetLang === 'de' ? 'Almanca' : targetLang === 'fr' ? 'Fransızca' : 'İngilizce'}
               </span>
             </div>
 
@@ -2130,10 +2190,10 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
               </div>
               <div className="space-y-0.5">
                 <div className="text-xl font-black text-slate-900 dark:text-white flex items-center space-x-1.5">
-                  <span>{targetLang === 'de' ? 'Der Apfel' : 'Apple'}</span>
+                  <span>{targetLang === 'de' ? 'Der Apfel' : targetLang === 'fr' ? 'La Pomme' : 'Apple'}</span>
                 </div>
                 <div className="text-xs font-bold text-slate-400">
-                  {targetLang === 'de' ? '/ˈapfl̩/' : '/ˈæpəl/'}
+                  {targetLang === 'de' ? '/ˈapfl̩/' : targetLang === 'fr' ? '/pɔm/' : '/ˈæpəl/'}
                 </div>
                 <div className="text-xs font-black text-purple-600 dark:text-purple-400">
                   Elma
@@ -2143,7 +2203,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
             <button
               type="button"
-              onClick={() => handleSpeak(targetLang === 'de' ? 'Der Apfel ist rot und lecker' : 'The apple is red and sweet')}
+              onClick={() => handleSpeak(targetLang === 'de' ? 'Der Apfel ist rot und lecker' : targetLang === 'fr' ? 'La pomme est rouge et délicieuse' : 'The apple is red and sweet')}
               className="w-full py-2 rounded-xl bg-purple-100 dark:bg-purple-950/80 hover:bg-purple-200 text-purple-700 dark:text-purple-300 font-black text-xs flex items-center justify-center space-x-1.5 cursor-pointer transition-all active:scale-95"
             >
               <Volume2 className="w-4 h-4 text-purple-600" />
@@ -2426,12 +2486,12 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                         <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
                           <div>
-                            <div className="font-black text-white">{targetLang === 'de' ? 'Ich spiele Fußball.' : 'I play football.'}</div>
+                            <div className="font-black text-white">{targetLang === 'de' ? 'Ich spiele Fußball.' : targetLang === 'fr' ? 'Je joue au football.' : 'I play football.'}</div>
                             <div className="text-[11px] text-pink-200">Ben futbol oynarım.</div>
                           </div>
                           <button
                             type="button"
-                            onClick={() => handleSpeak(targetLang === 'de' ? 'Ich spiele Fußball.' : 'I play football.')}
+                            onClick={() => handleSpeak(targetLang === 'de' ? 'Ich spiele Fußball.' : targetLang === 'fr' ? 'Je joue au football.' : 'I play football.')}
                             className="p-2 rounded-xl bg-purple-500/30 hover:bg-purple-500/50 text-amber-300 cursor-pointer"
                           >
                             <Volume2 className="w-4 h-4" />
@@ -2440,12 +2500,12 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
                         <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
                           <div>
-                            <div className="font-black text-white">{targetLang === 'de' ? 'Wir trinken frisches Wasser.' : 'We drink fresh water.'}</div>
+                            <div className="font-black text-white">{targetLang === 'de' ? 'Wir trinken frisches Wasser.' : targetLang === 'fr' ? 'Nous buvons de l\'eau fraîche.' : 'We drink fresh water.'}</div>
                             <div className="text-[11px] text-pink-200">Biz taze su içeriz.</div>
                           </div>
                           <button
                             type="button"
-                            onClick={() => handleSpeak(targetLang === 'de' ? 'Wir trinken frisches Wasser.' : 'We drink fresh water.')}
+                            onClick={() => handleSpeak(targetLang === 'de' ? 'Wir trinken frisches Wasser.' : targetLang === 'fr' ? 'Nous buvons de l\'eau fraîche.' : 'We drink fresh water.')}
                             className="p-2 rounded-xl bg-purple-500/30 hover:bg-purple-500/50 text-amber-300 cursor-pointer"
                           >
                             <Volume2 className="w-4 h-4" />
@@ -2477,12 +2537,12 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                         <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
                           <div>
-                            <div className="font-black text-white">{targetLang === 'de' ? 'Magst du Äpfel?' : 'Do you like apples?'}</div>
+                            <div className="font-black text-white">{targetLang === 'de' ? 'Magst du Äpfel?' : targetLang === 'fr' ? 'Aimes-tu les pommes ?' : 'Do you like apples?'}</div>
                             <div className="text-[11px] text-pink-200">Elma sever misin?</div>
                           </div>
                           <button
                             type="button"
-                            onClick={() => handleSpeak(targetLang === 'de' ? 'Magst du Äpfel?' : 'Do you like apples?')}
+                            onClick={() => handleSpeak(targetLang === 'de' ? 'Magst du Äpfel?' : targetLang === 'fr' ? 'Aimes-tu les pommes ?' : 'Do you like apples?')}
                             className="p-2 rounded-xl bg-purple-500/30 hover:bg-purple-500/50 text-amber-300 cursor-pointer"
                           >
                             <Volume2 className="w-4 h-4" />
@@ -2491,12 +2551,12 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
                         <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
                           <div>
-                            <div className="font-black text-white">{targetLang === 'de' ? 'Kannst du mir helfen?' : 'Can you help me?'}</div>
+                            <div className="font-black text-white">{targetLang === 'de' ? 'Kannst du mir helfen?' : targetLang === 'fr' ? 'Peux-tu m\'aider ?' : 'Can you help me?'}</div>
                             <div className="text-[11px] text-pink-200">Bana yardım edebilir misin?</div>
                           </div>
                           <button
                             type="button"
-                            onClick={() => handleSpeak(targetLang === 'de' ? 'Kannst du mir helfen?' : 'Can you help me?')}
+                            onClick={() => handleSpeak(targetLang === 'de' ? 'Kannst du mir helfen?' : targetLang === 'fr' ? 'Peux-tu m\'aider ?' : 'Can you help me?')}
                             className="p-2 rounded-xl bg-purple-500/30 hover:bg-purple-500/50 text-amber-300 cursor-pointer"
                           >
                             <Volume2 className="w-4 h-4" />
@@ -2528,12 +2588,12 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                         <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
                           <div>
-                            <div className="font-black text-white">{targetLang === 'de' ? 'Kann ich bitte Wasser haben?' : 'Can I have some water, please?'}</div>
+                            <div className="font-black text-white">{targetLang === 'de' ? 'Kann ich bitte Wasser haben?' : targetLang === 'fr' ? 'Puis-je avoir de l\'eau, s\'il vous plaît ?' : 'Can I have some water, please?'}</div>
                             <div className="text-[11px] text-pink-200">Biraz su alabilir miyim lütfen?</div>
                           </div>
                           <button
                             type="button"
-                            onClick={() => handleSpeak(targetLang === 'de' ? 'Kann ich bitte Wasser haben?' : 'Can I have some water, please?')}
+                            onClick={() => handleSpeak(targetLang === 'de' ? 'Kann ich bitte Wasser haben?' : targetLang === 'fr' ? 'Puis-je avoir de l\'eau, s\'il vous plaît ?' : 'Can I have some water, please?')}
                             className="p-2 rounded-xl bg-purple-500/30 hover:bg-purple-500/50 text-amber-300 cursor-pointer"
                           >
                             <Volume2 className="w-4 h-4" />
@@ -2542,12 +2602,12 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
                         <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
                           <div>
-                            <div className="font-black text-white">{targetLang === 'de' ? 'Ich möchte spielen, bitte.' : 'I want to play, please.'}</div>
+                            <div className="font-black text-white">{targetLang === 'de' ? 'Ich möchte spielen, bitte.' : targetLang === 'fr' ? 'Je voudrais jouer, s\'il vous plaît.' : 'I want to play, please.'}</div>
                             <div className="text-[11px] text-pink-200">Oynamak istiyorum lütfen.</div>
                           </div>
                           <button
                             type="button"
-                            onClick={() => handleSpeak(targetLang === 'de' ? 'Ich möchte spielen, bitte.' : 'I want to play, please.')}
+                            onClick={() => handleSpeak(targetLang === 'de' ? 'Ich möchte spielen, bitte.' : targetLang === 'fr' ? 'Je voudrais jouer, s\'il vous plaît.' : 'I want to play, please.')}
                             className="p-2 rounded-xl bg-purple-500/30 hover:bg-purple-500/50 text-amber-300 cursor-pointer"
                           >
                             <Volume2 className="w-4 h-4" />
@@ -2579,12 +2639,12 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                         <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
                           <div>
-                            <div className="font-black text-white">{targetLang === 'de' ? 'Ich liebe dieses Spiel!' : 'I love this game!'}</div>
+                            <div className="font-black text-white">{targetLang === 'de' ? 'Ich liebe dieses Spiel!' : targetLang === 'fr' ? 'J\'adore ce jeu !' : 'I love this game!'}</div>
                             <div className="text-[11px] text-pink-200">Bu oyunu çok seviyorum!</div>
                           </div>
                           <button
                             type="button"
-                            onClick={() => handleSpeak(targetLang === 'de' ? 'Ich liebe dieses Spiel!' : 'I love this game!')}
+                            onClick={() => handleSpeak(targetLang === 'de' ? 'Ich liebe dieses Spiel!' : targetLang === 'fr' ? 'J\'adore ce jeu !' : 'I love this game!')}
                             className="p-2 rounded-xl bg-purple-500/30 hover:bg-purple-500/50 text-amber-300 cursor-pointer"
                           >
                             <Volume2 className="w-4 h-4" />
@@ -2593,12 +2653,12 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
                         <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
                           <div>
-                            <div className="font-black text-white">{targetLang === 'de' ? 'Ich bin heute sehr glücklich.' : 'I feel very happy today.'}</div>
+                            <div className="font-black text-white">{targetLang === 'de' ? 'Ich bin heute sehr glücklich.' : targetLang === 'fr' ? 'Je suis très heureux aujourd\'hui.' : 'I feel very happy today.'}</div>
                             <div className="text-[11px] text-pink-200">Bugün kendimi çok mutlu hissediyorum.</div>
                           </div>
                           <button
                             type="button"
-                            onClick={() => handleSpeak(targetLang === 'de' ? 'Ich bin heute sehr glücklich.' : 'I feel very happy today.')}
+                            onClick={() => handleSpeak(targetLang === 'de' ? 'Ich bin heute sehr glücklich.' : targetLang === 'fr' ? 'Je suis très heureux aujourd\'hui.' : 'I feel very happy today.')}
                             className="p-2 rounded-xl bg-purple-500/30 hover:bg-purple-500/50 text-amber-300 cursor-pointer"
                           >
                             <Volume2 className="w-4 h-4" />
@@ -2630,12 +2690,12 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                         <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
                           <div>
-                            <div className="font-black text-white">{targetLang === 'de' ? 'Ich mag Bücher, weil sie spannend sind.' : 'I like books because they are fun.'}</div>
+                            <div className="font-black text-white">{targetLang === 'de' ? 'Ich mag Bücher, weil sie spannend sind.' : targetLang === 'fr' ? 'J\'aime les livres parce qu\'ils sont passionnants.' : 'I like books because they are fun.'}</div>
                             <div className="text-[11px] text-pink-200">Kitapları seviyorum çünkü eğlenceliler.</div>
                           </div>
                           <button
                             type="button"
-                            onClick={() => handleSpeak(targetLang === 'de' ? 'Ich mag Bücher, weil sie spannend sind.' : 'I like books because they are fun.')}
+                            onClick={() => handleSpeak(targetLang === 'de' ? 'Ich mag Bücher, weil sie spannend sind.' : targetLang === 'fr' ? 'J\'aime les livres parce qu\'ils sont passionnants.' : 'I like books because they are fun.')}
                             className="p-2 rounded-xl bg-purple-500/30 hover:bg-purple-500/50 text-amber-300 cursor-pointer"
                           >
                             <Volume2 className="w-4 h-4" />
@@ -2644,12 +2704,12 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
                         <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
                           <div>
-                            <div className="font-black text-white">{targetLang === 'de' ? 'Ich bin müde, aber glücklich.' : 'I am tired, but I am happy.'}</div>
+                            <div className="font-black text-white">{targetLang === 'de' ? 'Ich bin müde, aber glücklich.' : targetLang === 'fr' ? 'Je suis fatigué, mais heureux.' : 'I am tired, but I am happy.'}</div>
                             <div className="text-[11px] text-pink-200">Yorgunum ama mutluyum.</div>
                           </div>
                           <button
                             type="button"
-                            onClick={() => handleSpeak(targetLang === 'de' ? 'Ich bin müde, aber glücklich.' : 'I am tired, but I am happy.')}
+                            onClick={() => handleSpeak(targetLang === 'de' ? 'Ich bin müde, aber glücklich.' : targetLang === 'fr' ? 'Je suis fatigué, mais heureux.' : 'I am tired, but I am happy.')}
                             className="p-2 rounded-xl bg-purple-500/30 hover:bg-purple-500/50 text-amber-300 cursor-pointer"
                           >
                             <Volume2 className="w-4 h-4" />
@@ -2674,7 +2734,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                     setIsGearChestOpen(false);
                     handleAwardStars(20, 'Teçhizat Sandığını Açtın ve 5 Temel Kalıbı Kuşandın!');
                     setLingoriaXp((prev) => prev + 50);
-                    handleSpeak(targetLang === 'de' ? 'Ausgezeichnet! Du bist bereit für das Abenteuer!' : 'Awesome! You are now fully equipped for Lingoria!');
+                    handleSpeak(targetLang === 'de' ? 'Ausgezeichnet! Du bist bereit für das Abenteuer!' : targetLang === 'fr' ? 'Excellent ! Tu es fin prêt pour l\'aventure !' : 'Awesome! You are now fully equipped for Lingoria!');
                   }}
                   className="w-full sm:w-auto px-6 py-2.5 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 text-slate-950 font-black text-xs sm:text-sm shadow-xl flex items-center justify-center space-x-2 cursor-pointer transition-all hover:scale-105 active:scale-95"
                 >
@@ -2718,7 +2778,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
               type="button"
               onClick={() => {
                 setIsGearChestOpen(true);
-                handleSpeak(targetLang === 'de' ? 'Öffne deine Zauberkiste und lerne die Sprachmuster!' : 'Open your magic gear chest and master the speaking patterns!');
+                handleSpeak(targetLang === 'de' ? 'Öffne deine Zauberkiste und lerne die Sprachmuster!' : targetLang === 'fr' ? 'Ouvre ton coffre magique et découvre les structures !' : 'Open your magic gear chest and master the speaking patterns!');
               }}
               className="w-full md:w-auto px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-slate-950 font-black text-xs sm:text-sm shadow-xl flex items-center justify-center space-x-2 cursor-pointer transition-all hover:scale-105 active:scale-95"
             >
@@ -2858,7 +2918,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
         {/* ==================== GÜNÜN SESLİ KONUŞMA MEYDAN OKUMASI (DAILY SPEAKING CHALLENGE) ==================== */}
         {(() => {
-          const dailyChallenge = (targetLang === 'de' ? GERMAN_AGE_SPEAKING_CHALLENGES[selectedAge] : AGE_SPEAKING_CHALLENGES[selectedAge]) || (targetLang === 'de' ? GERMAN_AGE_SPEAKING_CHALLENGES['5-7'] : AGE_SPEAKING_CHALLENGES['5-7']);
+          const dailyChallenge = (targetLang === 'de' ? GERMAN_AGE_SPEAKING_CHALLENGES[selectedAge] : targetLang === 'fr' ? FRENCH_AGE_SPEAKING_CHALLENGES[selectedAge] : AGE_SPEAKING_CHALLENGES[selectedAge]) || (targetLang === 'de' ? GERMAN_AGE_SPEAKING_CHALLENGES['5-7'] : targetLang === 'fr' ? FRENCH_AGE_SPEAKING_CHALLENGES['5-7'] : AGE_SPEAKING_CHALLENGES['5-7']);
           return (
             <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-purple-700 via-indigo-700 to-pink-600 text-white shadow-xl border border-white/20 relative overflow-hidden space-y-3">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/20 pb-2.5">
@@ -3095,7 +3155,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                 <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-center space-y-2 shadow-lg animate-bounce">
                   <div className="text-2xl font-black">🎉 Harika İş Çıkardın! 🎉</div>
                   <div className="text-xs font-bold">
-                    Tüm {targetLang === 'de' ? 'Almanca' : 'İngilizce'} kart çiftlerini buldun ve telaffuz ettin! +25 Yıldız kazandın.
+                    Tüm {targetLang === 'de' ? 'Almanca' : targetLang === 'fr' ? 'Fransızca' : 'İngilizce'} kart çiftlerini buldun ve telaffuz ettin! +25 Yıldız kazandın.
                   </div>
                   <button
                     type="button"
@@ -3487,7 +3547,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
         {/* ==================== TAB: 🏃‍♂️ CHIRMO DİYOR Kİ! (TPR ACTION LAB) ==================== */}
         {activeTab === 'simon' && (() => {
-          const simonActions = (targetLang === 'de' ? GERMAN_TPR_SIMON_ACTIONS[selectedAge] : TPR_SIMON_ACTIONS[selectedAge]) || (targetLang === 'de' ? GERMAN_TPR_SIMON_ACTIONS['5-7'] : TPR_SIMON_ACTIONS['5-7']);
+          const simonActions = (targetLang === 'de' ? GERMAN_TPR_SIMON_ACTIONS[selectedAge] : targetLang === 'fr' ? FRENCH_TPR_SIMON_ACTIONS[selectedAge] : TPR_SIMON_ACTIONS[selectedAge]) || (targetLang === 'de' ? GERMAN_TPR_SIMON_ACTIONS['5-7'] : targetLang === 'fr' ? FRENCH_TPR_SIMON_ACTIONS['5-7'] : TPR_SIMON_ACTIONS['5-7']);
           const currentAction = simonActions[simonIndex % simonActions.length];
           const isCompleted = simonCompletedActions.includes(currentAction.id);
 
@@ -3500,10 +3560,10 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                     <span>TPR Eylem & Konuşma Laboratuvarı • {selectedAge} Yaş</span>
                   </div>
                   <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
-                    {targetLang === 'de' ? 'Chirmo sagt! (Simon Says) 🏃‍♂️' : 'Chirmo Diyor ki! (Simon Says) 🏃‍♂️'}
+                    {targetLang === 'de' ? 'Chirmo sagt! (Simon Says) 🏃‍♂️' : targetLang === 'fr' ? 'Chirmo dit ! (Simon Says) 🏃‍♂️' : 'Chirmo Diyor ki! (Simon Says) 🏃‍♂️'}
                   </h2>
                   <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                    Duyduğun eylemi tüm bedeninle canlandır ve Chirmo ile birlikte yüksek sesle {targetLang === 'de' ? 'Almanca' : 'İngilizce'} konuş!
+                    Duyduğun eylemi tüm bedeninle canlandır ve Chirmo ile birlikte yüksek sesle {targetLang === 'de' ? 'Almanca' : targetLang === 'fr' ? 'Fransızca' : 'İngilizce'} konuş!
                   </p>
                 </div>
                 <div className="text-right">
@@ -3585,7 +3645,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                         if (!isCompleted) {
                           setsimonCompletedActions((prev) => [...prev, currentAction.id]);
                           handleAwardStars(10, 'Chirmo Diyor ki Görevini Yaptın!');
-                          handleSpeak(targetLang === 'de' ? `Gut gemacht! Fantastisch! ${currentAction.replyEn}` : `Well done! You did it! ${currentAction.replyEn}`);
+                          handleSpeak(targetLang === 'de' ? `Gut gemacht! Fantastisch! ${currentAction.replyEn}` : targetLang === 'fr' ? `Bravo ! Fantastique ! ${currentAction.replyEn}` : `Well done! You did it! ${currentAction.replyEn}`);
                         }
                         setSimonIndex((prev) => (prev + 1) % simonActions.length);
                       }}
@@ -3607,7 +3667,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
         {/* ==================== TAB: 📖 SİHİRLİ KONUŞAN HİKAYELER ==================== */}
         {activeTab === 'stories' && (() => {
-          const currentScenes = (targetLang === 'de' ? GERMAN_STORYBOOK_SCENES[selectedAge] : STORYBOOK_SCENES[selectedAge]) || (targetLang === 'de' ? GERMAN_STORYBOOK_SCENES['5-7'] : STORYBOOK_SCENES['5-7']);
+          const currentScenes = (targetLang === 'de' ? GERMAN_STORYBOOK_SCENES[selectedAge] : targetLang === 'fr' ? FRENCH_STORYBOOK_SCENES[selectedAge] : STORYBOOK_SCENES[selectedAge]) || (targetLang === 'de' ? GERMAN_STORYBOOK_SCENES['5-7'] : targetLang === 'fr' ? FRENCH_STORYBOOK_SCENES['5-7'] : STORYBOOK_SCENES['5-7']);
           const currentScene = currentScenes.find((s) => s.id === activeStorySceneId) || currentScenes[0];
           const activeItem = currentScene.hotspots.find((h) => h.id === selectedStoryItemId) || currentScene.hotspots[0];
 
@@ -3623,7 +3683,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                     Sihirli Konuşan Hikayeler (Interactive Storybooks) 📖
                   </h2>
                   <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                    Bir sahne seç, nesnelerin ve karakterlerin üzerine tıkla; canlı {targetLang === 'de' ? 'Almanca' : 'İngilizce'} hikayeyi dinle!
+                    Bir sahne seç, nesnelerin ve karakterlerin üzerine tıkla; canlı {targetLang === 'de' ? 'Almanca' : targetLang === 'fr' ? 'Fransızca' : 'İngilizce'} hikayeyi dinle!
                   </p>
                 </div>
               </div>
@@ -3736,8 +3796,8 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
         {/* ==================== TAB 3: 🧩 KALIP BİRLEŞTİRME ATÖLYESİ (KIDS PATTERN LEGO) ==================== */}
         {activeTab === 'patterns' && (() => {
-          const currentPatternOpts = (targetLang === 'de' ? GERMAN_PATTERN_OPTIONS[selectedAge] : PATTERN_OPTIONS[selectedAge]) || (targetLang === 'de' ? GERMAN_PATTERN_OPTIONS['5-7'] : PATTERN_OPTIONS['5-7']);
-          const currentFactoryOpts = (targetLang === 'de' ? GERMAN_FACTORY_OPTIONS[selectedAge] : FACTORY_OPTIONS[selectedAge]) || (targetLang === 'de' ? GERMAN_FACTORY_OPTIONS['5-7'] : FACTORY_OPTIONS['5-7']);
+          const currentPatternOpts = (targetLang === 'de' ? GERMAN_PATTERN_OPTIONS[selectedAge] : targetLang === 'fr' ? FRENCH_PATTERN_OPTIONS[selectedAge] : PATTERN_OPTIONS[selectedAge]) || (targetLang === 'de' ? GERMAN_PATTERN_OPTIONS['5-7'] : targetLang === 'fr' ? FRENCH_PATTERN_OPTIONS['5-7'] : PATTERN_OPTIONS['5-7']);
+          const currentFactoryOpts = (targetLang === 'de' ? GERMAN_FACTORY_OPTIONS[selectedAge] : targetLang === 'fr' ? FRENCH_FACTORY_OPTIONS[selectedAge] : FACTORY_OPTIONS[selectedAge]) || (targetLang === 'de' ? GERMAN_FACTORY_OPTIONS['5-7'] : targetLang === 'fr' ? FRENCH_FACTORY_OPTIONS['5-7'] : FACTORY_OPTIONS['5-7']);
 
           return (
             <div className="p-5 sm:p-7 rounded-3xl bg-white dark:bg-slate-900 border-2 border-purple-200 dark:border-slate-800 shadow-lg space-y-8">
@@ -3749,7 +3809,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                   </span>
                 </h2>
                 <p className="text-xs text-slate-500">
-                  Türkçe ile {targetLang === 'de' ? 'Almanca' : 'İngilizce'} arasındaki farkı çöz: Cümleleri kalıp bloklarını yan yana getirerek oluşturuyoruz.
+                  Türkçe ile {targetLang === 'de' ? 'Almanca' : targetLang === 'fr' ? 'Fransızca' : 'İngilizce'} arasındaki farkı çöz: Cümleleri kalıp bloklarını yan yana getirerek oluşturuyoruz.
                 </p>
               </div>
 
@@ -3822,7 +3882,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
               {/* Canlı Üretilen Cümle Vitrini */}
               <div className="p-5 rounded-2xl bg-gradient-to-r from-purple-900 to-indigo-950 text-white shadow-lg space-y-3">
                 <div className="text-[10px] font-black uppercase tracking-wider text-amber-300">
-                  ⚡ Canlı Oluşturulan {targetLang === 'de' ? 'Almanca' : 'İngilizce'} Cümlen:
+                  ⚡ Canlı Oluşturulan {targetLang === 'de' ? 'Almanca' : targetLang === 'fr' ? 'Fransızca' : 'İngilizce'} Cümlen:
                 </div>
                 <div className="text-xl sm:text-2xl font-black text-white">
                   "{constructedKidsSentence}."
@@ -3854,7 +3914,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                       </span>
                     </h3>
                     <p className="text-xs text-slate-500 dark:text-slate-400">
-                      Özne, Eylem, Nesne ve Zaman/Yer bloklarını seçerek sınırsız sayıda {targetLang === 'de' ? 'Almanca' : 'İngilizce'} cümle üret!
+                      Özne, Eylem, Nesne ve Zaman/Yer bloklarını seçerek sınırsız sayıda {targetLang === 'de' ? 'Almanca' : targetLang === 'fr' ? 'Fransızca' : 'İngilizce'} cümle üret!
                     </p>
                   </div>
 
@@ -4031,7 +4091,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
         {/* ==================== TAB: 🦁 KONUŞAN HAYVANAT BAHÇESİ ==================== */}
         {activeTab === 'animals' && (() => {
-          const currentAnimals = targetLang === 'de' ? GERMAN_SAFARI_ANIMALS : SAFARI_ANIMALS;
+          const currentAnimals = targetLang === 'de' ? GERMAN_SAFARI_ANIMALS : targetLang === 'fr' ? FRENCH_SAFARI_ANIMALS : SAFARI_ANIMALS;
           return (
             <div className="p-3.5 sm:p-8 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border-2 border-emerald-200 dark:border-slate-800 shadow-xl space-y-4 sm:space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
@@ -4043,7 +4103,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                     Chirmo'nun Konuşan Hayvanat Bahçesi
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-500">
-                    Bir hayvana tıkla! Hem neşeli sesini duy hem de {targetLang === 'de' ? 'Almanca' : 'İngilizce'} kendini nasıl tanıttığını dinle.
+                    Bir hayvana tıkla! Hem neşeli sesini duy hem de {targetLang === 'de' ? 'Almanca' : targetLang === 'fr' ? 'Fransızca' : 'İngilizce'} kendini nasıl tanıttığını dinle.
                   </p>
                 </div>
               </div>
@@ -4099,7 +4159,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
         {/* ==================== TAB: 🎨 SİHİRLİ BOYA & KONUŞ ==================== */}
         {activeTab === 'colors' && (() => {
-          const currentColors = targetLang === 'de' ? GERMAN_MAGIC_COLORS : MAGIC_COLORS;
+          const currentColors = targetLang === 'de' ? GERMAN_MAGIC_COLORS : targetLang === 'fr' ? FRENCH_MAGIC_COLORS : MAGIC_COLORS;
           const activeColor = currentColors.find((c) => c.id === activeColorId) || currentColors[0];
 
           return (
@@ -4112,7 +4172,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
                   Sihirli Boya & Konuş Laboratuvarı
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-500">
-                  Rengi seç, sihirli fırçayla boya ve nesnenin {targetLang === 'de' ? 'Almanca' : 'İngilizce'} cümlesini tekrar et!
+                  Rengi seç, sihirli fırçayla boya ve nesnenin {targetLang === 'de' ? 'Almanca' : targetLang === 'fr' ? 'Fransızca' : 'İngilizce'} cümlesini tekrar et!
                 </p>
               </div>
 
@@ -4180,7 +4240,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
             </div>
 
             {(() => {
-              const currentChatList = (targetLang === 'de' ? GERMAN_KIDS_CHAT_STEPS[selectedAge] : KIDS_CHAT_STEPS[selectedAge]) || (targetLang === 'de' ? GERMAN_KIDS_CHAT_STEPS['5-7'] : KIDS_CHAT_STEPS['5-7']);
+              const currentChatList = (targetLang === 'de' ? GERMAN_KIDS_CHAT_STEPS[selectedAge] : targetLang === 'fr' ? FRENCH_KIDS_CHAT_STEPS[selectedAge] : KIDS_CHAT_STEPS[selectedAge]) || (targetLang === 'de' ? GERMAN_KIDS_CHAT_STEPS['5-7'] : targetLang === 'fr' ? FRENCH_KIDS_CHAT_STEPS['5-7'] : KIDS_CHAT_STEPS['5-7']);
               const currentStep = currentChatList[chatStepIndex % currentChatList.length];
               return (
                 <div className="space-y-6">
@@ -4299,7 +4359,7 @@ export const ChirmoKidsDedicatedHub: React.FC<ChirmoKidsDedicatedHubProps> = ({ 
 
         {/* ==================== TAB 4: 🎵 ŞARKILAR, MASALLAR & KARAOKE ==================== */}
         {activeTab === 'songs' && (() => {
-          const currentSongs = targetLang === 'de' ? GERMAN_KIDS_SONGS : KIDS_SONGS;
+          const currentSongs = targetLang === 'de' ? GERMAN_KIDS_SONGS : targetLang === 'fr' ? FRENCH_KIDS_SONGS : KIDS_SONGS;
           return (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {currentSongs.map((song) => {

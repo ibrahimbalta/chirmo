@@ -160,7 +160,7 @@ export const DailyEnglishStudio: React.FC = () => {
           <div className="flex items-center space-x-2">
             <span className="text-xs font-black text-indigo-600 bg-indigo-50 dark:bg-indigo-950 dark:text-indigo-300 px-3 py-1 rounded-full flex items-center space-x-1.5">
               <Sparkles className="w-4 h-4 text-amber-500" />
-              <span>Chirmo Günlük {targetLang === 'de' ? 'Almanca 🇩🇪' : 'İngilizce 🇬🇧'} & Pratik Stüdyosu</span>
+              <span>Chirmo Günlük {targetLang === 'de' ? 'Almanca 🇩🇪' : targetLang === 'fr' ? 'Fransızca 🇫🇷' : 'İngilizce 🇬🇧'} & Pratik Stüdyosu</span>
             </span>
           </div>
 

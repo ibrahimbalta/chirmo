@@ -41,24 +41,63 @@ export const ChirmoPronunciationDoctor: React.FC<ChirmoPronunciationDoctorProps>
   const [selectedWord, setSelectedWord] = useState<EvaluatedWord | null>(null);
   const [overallScore, setOverallScore] = useState<number | null>(null);
 
+  const activeLang = TargetLanguageService.getTargetLanguage();
+
   // Örnek Zorlu Telaffuz Cümleleri
-  const sampleChallenges = [
-    {
-      en: 'I think this is the best decision for our future.',
-      tr: 'Bunun geleceğimiz için en iyi karar olduğunu düşünüyorum.',
-      focus: "'th' ve 'f' sesleri"
-    },
-    {
-      en: 'Would you like some water with lemon or orange juice?',
-      tr: 'Limonlu su mu yoksa portakal suyu mu istersiniz?',
-      focus: "'w' ve 'r' sesleri"
-    },
-    {
-      en: 'She really wants to improve her international communication skills.',
-      tr: 'Uluslararası iletişim becerilerini gerçekten geliştirmek istiyor.',
-      focus: "'sh' ve 'tion' vurguları"
-    }
-  ];
+  const sampleChallenges =
+    activeLang === 'de'
+      ? [
+          {
+            en: 'Ich hätte gerne einen Cappuccino mit Hafermilch, bitte.',
+            tr: 'Yulaf sütlü bir kapuçino rica edebilir miyim lütfen?',
+            focus: "'ch' ve 'ü' sesleri"
+          },
+          {
+            en: 'Entschuldigung, von welchem Gleis fährt der Zug nach Berlin ab?',
+            tr: 'Afedersiniz, Berlin treni hangi perondan kalkıyor?',
+            focus: "'sch' ve 'pf' sesleri"
+          },
+          {
+            en: 'Könnten Sie bitte etwas langsamer sprechen?',
+            tr: 'Lütfen biraz daha yavaş konuşabilir misiniz?',
+            focus: "'ö' ve 'r' vurguları"
+          }
+        ]
+      : activeLang === 'fr'
+        ? [
+            {
+              en: 'Je voudrais un café au lait et un croissant, s\'il vous plaît.',
+              tr: 'Sütlü bir kahve ve bir kruvasan rica ediyorum, lütfen.',
+              focus: "Nazal 'an' ve 'oi' sesleri"
+            },
+            {
+              en: 'Pardon, de quel quai part le train pour Paris ?',
+              tr: 'Afedersiniz, Paris treni hangi perondan kalkıyor?',
+              focus: "Boğazdan 'r' ve 'qu' sesleri"
+            },
+            {
+              en: 'Pourriez-vous parler un peu plus lentement, s\'il vous plaît ?',
+              tr: 'Lütfen biraz daha yavaş konuşabilir misiniz?',
+              focus: "'eu' ve 'ment' sesleri"
+            }
+          ]
+        : [
+            {
+              en: 'I think this is the best decision for our future.',
+              tr: 'Bunun geleceğimiz için en iyi karar olduğunu düşünüyorum.',
+              focus: "'th' ve 'f' sesleri"
+            },
+            {
+              en: 'Would you like some water with lemon or orange juice?',
+              tr: 'Limonlu su mu yoksa portakal suyu mu istersiniz?',
+              focus: "'w' ve 'r' sesleri"
+            },
+            {
+              en: 'She really wants to improve her international communication skills.',
+              tr: 'Uluslararası iletişim becerilerini gerçekten geliştirmek istiyor.',
+              focus: "'sh' ve 'tion' vurguları"
+            }
+          ];
 
   // Fonetik İpucu Kütüphanesi
   const getPhoneticTip = (word: string): string => {
@@ -86,7 +125,7 @@ export const ChirmoPronunciationDoctor: React.FC<ChirmoPronunciationDoctorProps>
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
+      utterance.lang = activeLang === 'de' ? 'de-DE' : activeLang === 'fr' ? 'fr-FR' : 'en-US';
       utterance.rate = 0.65; // Yavaş çekim telaffuz
       utterance.pitch = 1.0;
       window.speechSynthesis.speak(utterance);
@@ -156,7 +195,7 @@ export const ChirmoPronunciationDoctor: React.FC<ChirmoPronunciationDoctorProps>
     if (SpeechRecognition) {
       try {
         const recognition = new SpeechRecognition();
-        recognition.lang = TargetLanguageService.getTargetLanguage() === 'de' ? 'de-DE' : 'en-US';
+        recognition.lang = activeLang === 'de' ? 'de-DE' : activeLang === 'fr' ? 'fr-FR' : 'en-US';
         recognition.interimResults = false;
         recognition.maxAlternatives = 1;
 

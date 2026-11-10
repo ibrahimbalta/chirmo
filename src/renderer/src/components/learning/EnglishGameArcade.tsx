@@ -358,7 +358,8 @@ export const EnglishGameArcade: React.FC = () => {
     if (SpeechRecognition) {
       try {
         const recognition = new SpeechRecognition();
-        recognition.lang = TargetLanguageService.getTargetLanguage() === 'de' ? 'de-DE' : 'en-US';
+        const activeLang = TargetLanguageService.getTargetLanguage();
+        recognition.lang = activeLang === 'de' ? 'de-DE' : activeLang === 'fr' ? 'fr-FR' : 'en-US';
         recognition.interimResults = false;
         recognition.maxAlternatives = 1;
 

@@ -213,13 +213,91 @@ export const ChirmoAiTeacherSidebar: React.FC<ChirmoAiTeacherSidebarProps> = ({
     }
   ];
 
+  // ==================== FRANSIZCA GÜNÜN KELİMELERİ LİSTESİ ====================
+  const FRENCH_FEATURED_WORDS: FeaturedWordItem[] = [
+    {
+      word: 'Améliorer',
+      level: 'B1',
+      meaningTr: 'Geliştirmek / İyileştirmek',
+      phonetic: '/a.me.ljɔ.ʁe/',
+      sentenceEn: 'Je veux améliorer mon français chaque jour.',
+      sentenceTr: 'Fransızcamı her gün geliştirmek istiyorum.',
+      synonyms: 'optimiser, perfectionner, développer',
+      tipTr: 'Bir yeteneği veya durumu daha iyiye götürmek için en sık kullanılan fiildir.',
+      grammarNotes: '"vouloir" (istemek) fiilinden sonra gelen ikinci fiil doğrudan mastar olur: Je veux améliorer.',
+      breakdown: [
+        { part: 'Je', role: 'Özne (Ben)' },
+        { part: 'veux', role: 'Çekimli fiil (İstemek)' },
+        { part: 'améliorer', role: 'Mastar fiil (Geliştirmek)' },
+        { part: 'mon français', role: 'Belirtili nesne (Fransızcamı)' },
+        { part: 'chaque jour', role: 'Zaman zarfı (Her gün)' }
+      ]
+    },
+    {
+      word: 'Confiance',
+      level: 'B1',
+      meaningTr: 'Güven / Özgüven',
+      phonetic: '/kɔ̃.fjɑ̃s/',
+      sentenceEn: 'J\'ai confiance en moi quand je parle français.',
+      sentenceTr: 'Fransızca konuşurken kendime güveniyorum.',
+      synonyms: 'assurance, certitude, foi',
+      tipTr: 'Fransızcada kendine güvenmek "avoir confiance en soi" kalıbıyla ifade edilir.',
+      grammarNotes: '"avoir confiance en..." yapısı güven duyulan nesne veya kişiyi "en" edatıyla bağlar.',
+      breakdown: [
+        { part: 'J\'ai', role: 'Özne + Fiil (Sahibim)' },
+        { part: 'confiance', role: 'İsim (Güven)' },
+        { part: 'en moi', role: 'Edat öbeği (Kendime)' },
+        { part: 'quand je parle français', role: 'Zaman cümleciği (Fransızca konuşurken)' }
+      ]
+    },
+    {
+      word: 'Conseiller',
+      level: 'A2',
+      meaningTr: 'Tavsiye Etmek / Önermek',
+      phonetic: '/kɔ̃.sɛ.je/',
+      sentenceEn: 'Que me conseillez-vous aujourd\'hui ?',
+      sentenceTr: 'Bugün bana ne tavsiye edersiniz?',
+      synonyms: 'recommander, suggérer',
+      tipTr: 'Restoranda veya mağazada yardım isterken en pratik ve zarif soru kalıbıdır.',
+      grammarNotes: '"conseiller" fiili kime tavsiye ediliyorsa dolaylı nesne zamiri (me / vous) fiilin önüne gelir.',
+      breakdown: [
+        { part: 'Que', role: 'Soru zamiri (Ne)' },
+        { part: 'me', role: 'Dolaylı zamir (Bana)' },
+        { part: 'conseillez-vous', role: 'Ters fiil-özne (Önerir misiniz)' },
+        { part: 'aujourd\'hui', role: 'Zaman zarfı (Bugün)' }
+      ]
+    },
+    {
+      word: 'Couramment',
+      level: 'B2',
+      meaningTr: 'Akıcı Bir Şekilde',
+      phonetic: '/ku.ʁa.mɑ̃/',
+      sentenceEn: 'Elle parle couramment français et anglais.',
+      sentenceTr: 'O, akıcı bir şekilde Fransızca ve İngilizce konuşuyor.',
+      synonyms: 'avec aisance, fluidement',
+      tipTr: 'Bir yabancı dili rahat ve takılmadan konuşabildiğinizi belirtmek için kullanılır.',
+      grammarNotes: '-ment ekiyle türetilmiş bir tarz zarfıdır.',
+      breakdown: [
+        { part: 'Elle', role: 'Özne (O)' },
+        { part: 'parle', role: 'Geniş zaman fiili (Konuşur)' },
+        { part: 'couramment', role: 'Tarz zarfı (Akıcı)' },
+        { part: 'français et anglais', role: 'Nesne (Fransızca ve İngilizce)' }
+      ]
+    }
+  ];
+
   const [targetLang, setTargetLang] = useState(() => TargetLanguageService.getTargetLanguage());
 
   useEffect(() => {
     return TargetLanguageService.subscribe((lang) => setTargetLang(lang));
   }, []);
 
-  const activeWordList = targetLang === 'de' ? GERMAN_FEATURED_WORDS : FEATURED_WORDS;
+  const activeWordList =
+    targetLang === 'de'
+      ? GERMAN_FEATURED_WORDS
+      : targetLang === 'fr'
+        ? FRENCH_FEATURED_WORDS
+        : FEATURED_WORDS;
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const activeWord = activeWordList[currentWordIndex] || activeWordList[0];
 
@@ -287,23 +365,29 @@ export const ChirmoAiTeacherSidebar: React.FC<ChirmoAiTeacherSidebarProps> = ({
     setIsAnswering(true);
     setTimeout(() => {
       setIsAnswering(false);
-      if (q.toLowerCase().includes('nasıl') || q.toLowerCase().includes('how') || q.toLowerCase().includes('wie')) {
+      if (q.toLowerCase().includes('nasıl') || q.toLowerCase().includes('how') || q.toLowerCase().includes('wie') || q.toLowerCase().includes('comment')) {
         setQuickAnswerOutput(
           targetLang === 'de'
             ? 'Almancada bir şeyi nasıl yapacağını sorarken "Wie kann ich...?" kalıbını kullanabilirsin!'
-            : 'İngilizcede bir şeyi nasıl yapacağını sorarken "How can I...?" veya "How do you...?" kalıbını kullanabilirsin!'
+            : targetLang === 'fr'
+              ? 'Fransızcada bir şeyi nasıl yapacağını sorarken "Comment puis-je...?" veya "Comment fait-on...?" kalıbını kullanabilirsin!'
+              : 'İngilizcede bir şeyi nasıl yapacağını sorarken "How can I...?" veya "How do you...?" kalıbını kullanabilirsin!'
         );
-      } else if (q.toLowerCase().includes('geçmiş') || q.toLowerCase().includes('past') || q.toLowerCase().includes('perfekt')) {
+      } else if (q.toLowerCase().includes('geçmiş') || q.toLowerCase().includes('past') || q.toLowerCase().includes('perfekt') || q.toLowerCase().includes('passé')) {
         setQuickAnswerOutput(
           targetLang === 'de'
             ? 'Almancada geçmiş zaman (Perfekt) için genellikle "haben/sein + Partizip II" kullanılır: "Ich habe gelernt", "Ich bin gegangen".'
-            : 'Geçmiş zamanda düzenli fiillerin sonuna "-ed" gelir: "I worked", "I played". Düzensizlerde ise fiil değişir: "I went".'
+            : targetLang === 'fr'
+              ? 'Fransızcada geçmiş zaman (Passé Composé) için genellikle "avoir/être + participe passé" kullanılır: "J\'ai parlé", "Je suis allé".'
+              : 'Geçmiş zamanda düzenli fiillerin sonuna "-ed" gelir: "I worked", "I played". Düzensizlerde ise fiil değişir: "I went".'
         );
       } else {
         setQuickAnswerOutput(
           targetLang === 'de'
             ? `Harika bir soru! "${q}" hakkında en pratik Almanca kuralı: Düz cümlelerde fiil her zaman ikinci sırada yer alır (Verb auf Position 2).`
-            : `Harika bir soru! "${q}" hakkında en pratik kural: Günlük konuşmada önce özneyi (I/You), hemen ardından fiili getirerek konuşmaya başlamaktır.`
+            : targetLang === 'fr'
+              ? `Harika bir soru! "${q}" hakkında en pratik Fransızca kuralı: Nezaket için emir kipi yerine daima "Je voudrais..." veya "Pourriez-vous..." kullanmaktır.`
+              : `Harika bir soru! "${q}" hakkında en pratik kural: Günlük konuşmada önce özneyi (I/You), hemen ardından fiili getirerek konuşmaya başlamaktır.`
         );
       }
     }, 700);
@@ -322,7 +406,9 @@ export const ChirmoAiTeacherSidebar: React.FC<ChirmoAiTeacherSidebarProps> = ({
               setChatInitialPrompt(
                 targetLang === 'de'
                   ? 'Hallo Chirmo! Ich möchte Deutsch üben.'
-                  : 'Merhaba Chirmo! İngilizce konuşma hakkında bir soru sormak istiyorum.'
+                  : targetLang === 'fr'
+                    ? 'Bonjour Chirmo ! Je voudrais pratiquer le français.'
+                    : 'Merhaba Chirmo! İngilizce konuşma hakkında bir soru sormak istiyorum.'
               );
               setIsChatModalOpen(true);
             }}
@@ -370,7 +456,9 @@ export const ChirmoAiTeacherSidebar: React.FC<ChirmoAiTeacherSidebarProps> = ({
             setChatInitialPrompt(
               targetLang === 'de'
                 ? 'Sollen wir heute lernen, wie man im Restaurant bestellt?'
-                : 'Bugün restoranda nasıl sipariş verileceğini öğrenelim mi?'
+                : targetLang === 'fr'
+                  ? 'Voulez-vous apprendre comment commander au restaurant aujourd\'hui ?'
+                  : 'Bugün restoranda nasıl sipariş verileceğini öğrenelim mi?'
             );
             setIsChatModalOpen(true);
           }}
@@ -378,7 +466,7 @@ export const ChirmoAiTeacherSidebar: React.FC<ChirmoAiTeacherSidebarProps> = ({
           title="Tıkla ve Chirmo ile Canlı Konuşmaya Başla"
         >
           <span>
-            Merhaba {profile.hasCustomName ? profile.name : 'Arkadaşım'}! 👋 {targetLang === 'de' ? 'Almancanı' : 'İngilizceni'} geliştirmek için buradayım. Bugün sana nasıl yardımcı olabilirim?
+            Merhaba {profile.hasCustomName ? profile.name : 'Arkadaşım'}! 👋 {targetLang === 'de' ? 'Almancanı' : targetLang === 'fr' ? 'Fransızcanı' : 'İngilizceni'} geliştirmek için buradayım. Bugün sana nasıl yardımcı olabilirim?
           </span>
           <span className="block mt-1.5 text-[10px] font-black text-purple-600 dark:text-purple-400 group-hover:underline">
             Sohbeti Başlat 💬 →
@@ -688,7 +776,9 @@ export const ChirmoAiTeacherSidebar: React.FC<ChirmoAiTeacherSidebarProps> = ({
                   quickQuestionInput ||
                     (targetLang === 'de'
                       ? 'Almanca bir soru sormak istiyorum.'
-                      : 'İngilizce bir soru sormak istiyorum.')
+                      : targetLang === 'fr'
+                        ? 'Fransızca bir soru sormak istiyorum.'
+                        : 'İngilizce bir soru sormak istiyorum.')
                 );
                 setIsChatModalOpen(true);
               }}
