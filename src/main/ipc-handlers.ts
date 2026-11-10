@@ -1,10 +1,11 @@
 import { ipcMain, BrowserWindow } from 'electron';
 import { BrowserManager, BrowserBounds } from './browser-manager';
 import { SettingsStore, AppSettings } from './store';
-import { WorkspaceDatabase, TaskStatus } from './database';
+import { WorkspaceDatabase } from './database';
 import { AgentRunner } from './ai/agent-runner';
 import { ToolsService } from './ai/tools-service';
 import { WorkflowEngine } from './ai/workflow-engine';
+import { isSafeExternalUrl } from './security';
 
 export function registerIpcHandlers(
   win: BrowserWindow,
@@ -16,7 +17,8 @@ export function registerIpcHandlers(
 ): void {
   // Tabs
   ipcMain.handle('chirmo:create-tab', async (_, url?: string) => {
-    return browserManager.createTab(url);
+    const safeUrl = url && isSafeExternalUrl(url) ? url : undefined;
+    return browserManager.createTab(safeUrl);
   });
 
   ipcMain.handle('chirmo:close-tab', async (_, tabId: string) => {
@@ -37,7 +39,13 @@ export function registerIpcHandlers(
 
   // Navigation
   ipcMain.handle('chirmo:navigate', async (_, tabId: string, input: string) => {
-    browserManager.navigate(tabId, input);
+    if (!input || typeof input !== 'string' || input.length > 2048) return;
+    const trimmed = input.trim();
+    if (/^(javascript|data|file|vbscript):/i.test(trimmed)) {
+      console.warn('[Security] Blocked dangerous URI scheme in chirmo:navigate');
+      return;
+    }
+    browserManager.navigate(tabId, trimmed);
   });
 
   ipcMain.handle('chirmo:go-back', async (_, tabId: string) => {
@@ -161,6 +169,9 @@ export function registerIpcHandlers(
 
   // --- TOOLS & WORKFLOWS ---
   ipcMain.handle('chirmo:analyze-page', async (_, url: string) => {
+    if (!isSafeExternalUrl(url)) {
+      throw new Error('Blocked unsafe or restricted URL in analyzePage');
+    }
     return ToolsService.analyzePage(url);
   });
 
@@ -169,6 +180,7 @@ export function registerIpcHandlers(
   });
 
   ipcMain.handle('chirmo:run-batch-workflow', async (_, projectId: string, urls: string[], title?: string) => {
-    return workflowEngine.runBatchScrape(projectId, urls, title);
+    const safeUrls = (Array.isArray(urls) ? urls : []).filter((u) => isSafeExternalUrl(u));
+    return workflowEngine.runBatchScrape(projectId, safeUrls, title);
   });
 }

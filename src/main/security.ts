@@ -1,6 +1,38 @@
 import { session, WebContents } from 'electron';
 
-const ALLOWED_PROTOCOLS = new Set(['http:', 'https:', 'about:', 'data:']);
+const ALLOWED_PROTOCOLS = new Set(['http:', 'https:', 'about:']);
+
+const BLOCKED_SSRF_HOSTS = new Set([
+  '169.254.169.254',
+  'metadata.google.internal',
+  '127.0.0.1',
+  '0.0.0.0',
+  'localhost',
+  '[::1]'
+]);
+
+/**
+ * Validates URLs passed across IPC or navigation to prevent SSRF, protocol smuggling, and local file disclosure.
+ */
+export function isSafeExternalUrl(rawUrl: string): boolean {
+  if (!rawUrl || typeof rawUrl !== 'string') return false;
+  const trimmed = rawUrl.trim();
+  if (trimmed === 'about:blank') return true;
+
+  try {
+    const parsed = new URL(trimmed);
+    if (!ALLOWED_PROTOCOLS.has(parsed.protocol)) {
+      return false;
+    }
+    const hostname = parsed.hostname.toLowerCase();
+    if (BLOCKED_SSRF_HOSTS.has(hostname) || hostname.startsWith('169.254.')) {
+      return false;
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 const BLOCKED_PERMISSIONS = new Set([
   'media',
@@ -19,7 +51,7 @@ const BLOCKED_PERMISSIONS = new Set([
   'idle-detection',
   'screen-wake-lock',
   'window-management',
-  'local-fonts',
+  'local-fonts'
 ]);
 
 export function setupSecurityPolicies(): void {
@@ -60,35 +92,25 @@ export function setupSecurityPolicies(): void {
 }
 
 export function secureWebContents(
-  contents: WebContents, 
+  contents: WebContents,
   onNewTabRequested?: (url: string) => void
 ): void {
   // Prevent opening arbitrary external windows or popups; route to Chirmo tab
   contents.setWindowOpenHandler(({ url }) => {
-    try {
-      const parsed = new URL(url);
-      if (ALLOWED_PROTOCOLS.has(parsed.protocol)) {
-        if (onNewTabRequested) {
-          onNewTabRequested(url);
-        }
-      } else {
-        console.warn(`[Security] Blocked untrusted protocol in new window request: ${url}`);
+    if (isSafeExternalUrl(url)) {
+      if (onNewTabRequested) {
+        onNewTabRequested(url);
       }
-    } catch {
-      console.warn(`[Security] Invalid URL requested in window open: ${url}`);
+    } else {
+      console.warn(`[Security] Blocked untrusted URL in new window request: ${url}`);
     }
     return { action: 'deny' };
   });
 
-  // Intercept will-navigate to prevent protocol smuggling
+  // Intercept will-navigate to prevent protocol smuggling and SSRF
   contents.on('will-navigate', (event, navigationUrl) => {
-    try {
-      const parsed = new URL(navigationUrl);
-      if (!ALLOWED_PROTOCOLS.has(parsed.protocol)) {
-        console.warn(`[Security] Blocked navigation to forbidden protocol: ${navigationUrl}`);
-        event.preventDefault();
-      }
-    } catch {
+    if (!isSafeExternalUrl(navigationUrl)) {
+      console.warn(`[Security] Blocked navigation to forbidden URL: ${navigationUrl}`);
       event.preventDefault();
     }
   });

@@ -99,17 +99,20 @@ export const ChirmoAuthModal: React.FC<ChirmoAuthModalProps> = ({
     }
   };
 
-  const handleForgotLookupQuestion = (e: React.FormEvent) => {
+  const handleForgotLookupQuestion = async (e: React.FormEvent) => {
     e.preventDefault();
     clearMessages();
+    setLoading(true);
 
     try {
-      const question = PrivacyAuthService.getSecurityQuestion(forgotUsername);
+      const question = await PrivacyAuthService.getSecurityQuestionAsync(forgotUsername);
       setRetrievedQuestion(question);
       setSuccessMessage('Güvenlik sorunuz bulundu! Lütfen cevabı ve yeni şifrenizi girin.');
     } catch (err: any) {
       setErrorMessage(err.message || 'Kullanıcı bulunamadı.');
       setRetrievedQuestion(null);
+    } finally {
+      setLoading(false);
     }
   };
 

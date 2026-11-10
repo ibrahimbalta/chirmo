@@ -2,8 +2,71 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Helper: Validate username format & length
+    function isValidUsername(username) {
+      return username is string
+        && username.size() >= 3
+        && username.size() <= 40
+        && username.matches('^[a-z0-9_.\\-@]+$');
+    }
+
+    // Helper: Validate user account schema & payload bounds
+    function isValidUserPayload(data, username) {
+      return data.keys().hasAll(['id', 'username', 'passwordHash', 'salt', 'plan'])
+        && data.username == username
+        && data.id is string && data.id.size() >= 3 && data.id.size() <= 80
+        && data.passwordHash is string && data.passwordHash.size() >= 16 && data.passwordHash.size() <= 256
+        && data.salt is string && data.salt.size() >= 6 && data.salt.size() <= 128
+        && data.plan in ['free', 'pro', 'lifetime']
+        && (!('securityQuestion' in data) || (data.securityQuestion is string && data.securityQuestion.size() <= 200))
+        && (!('securityAnswerHash' in data) || (data.securityAnswerHash is string && data.securityAnswerHash.size() <= 256))
+        && (!('syncedData' in data) || (data.syncedData is string && data.syncedData.size() <= 65536));
+    }
+
+    // 1. User Accounts Collection (Zero-PII Auth & Synced Learning Progress)
+    match /users/{username} {
+      allow get, list: if true;
+      allow create: if isValidUsername(username)
+        && isValidUserPayload(request.resource.data, username);
+      allow update: if isValidUsername(username)
+        && isValidUserPayload(request.resource.data, username)
+        && request.resource.data.username == resource.data.username;
+      allow delete: if isValidUsername(username);
+    }
+
+    // 2. Public Profiles Collection (Sanitized Leaderboard & 1v1 Duel Opponents — Zero Credentials)
+    match /public_profiles/{username} {
+      allow get, list: if true;
+      allow create, update: if isValidUsername(username)
+        && request.resource.data.username == username
+        && !('passwordHash' in request.resource.data)
+        && !('salt' in request.resource.data)
+        && !('securityAnswerHash' in request.resource.data)
+        && request.resource.data.plan in ['free', 'pro', 'lifetime']
+        && (!('xp' in request.resource.data) || (request.resource.data.xp is int && request.resource.data.xp >= 0 && request.resource.data.xp <= 1000000));
+      allow delete: if false;
+    }
+
+    // 3. Global Site Visitor & Member Statistics (Monotonic Counter Protection, No Deletion)
+    match /site_stats/global {
+      allow get: if true;
+      allow create, update: if request.resource.data.keys().hasAll(['totalVisitors', 'todayVisitors', 'registeredMembers', 'lastDate'])
+        && request.resource.data.totalVisitors is int
+        && request.resource.data.totalVisitors >= 0
+        && request.resource.data.todayVisitors is int
+        && request.resource.data.todayVisitors >= 0
+        && request.resource.data.registeredMembers is int
+        && request.resource.data.registeredMembers >= 0
+        && request.resource.data.lastDate is string
+        && request.resource.data.lastDate.size() == 10
+        && (resource == null || request.resource.data.totalVisitors >= resource.data.totalVisitors);
+      allow delete: if false;
+    }
+
+    // 4. Default Deny for All Other Collections & Paths
     match /{document=**} {
-      allow read, write: if true;
+      allow read, write: if false;
     }
   }
 }

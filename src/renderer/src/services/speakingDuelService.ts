@@ -475,7 +475,7 @@ export class SpeakingDuelService {
     const map = new Map<string, DuelOpponent>();
 
     try {
-      const cloudUsers = await FirestoreService.getAllUsers();
+      const cloudUsers = await FirestoreService.getPublicUsers();
       for (const acc of cloudUsers) {
         if (!acc.username) continue;
         if (currentSession && acc.username.toLowerCase() === currentSession.username.toLowerCase()) {

@@ -2,6 +2,7 @@
 // Google Gemini API Entegrasyonu & Pedagojik Konuşma Asistanı (İngilizce & Almanca)
 
 import { TargetLanguageService, SupportedLanguage } from './targetLanguageService';
+import { PrivacyAuthService } from './privacyAuthService';
 
 export interface ChatMessage {
   id: string;
@@ -10,18 +11,125 @@ export interface ChatMessage {
   timestamp: string;
 }
 
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 dakika
+const MAX_REQUESTS_PER_MINUTE = 12;
+const DAILY_QUOTA_FREE = 150;
+const DAILY_QUOTA_PRO = 1000;
+const MAX_USER_INPUT_LENGTH = 500;
+
+function sanitizeUserPrompt(raw: string, maxLen: number = MAX_USER_INPUT_LENGTH): string {
+  if (!raw || typeof raw !== 'string') return '';
+  return raw
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '')
+    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+    .replace(/[<>]/g, '')
+    .replace(/ignore\s+(all\s+)?(previous|prior)\s+instructions/gi, '')
+    .replace(/system\s*prompt\s*:/gi, '')
+    .trim()
+    .slice(0, maxLen);
+}
+
+function encodeStoredKey(plain: string): string {
+  try {
+    return 'enc_v2_' + btoa(unescape(encodeURIComponent(plain.trim())));
+  } catch {
+    return plain.trim();
+  }
+}
+
+function decodeStoredKey(stored: string): string {
+  try {
+    if (stored.startsWith('enc_v2_')) {
+      return decodeURIComponent(escape(atob(stored.slice(7))));
+    }
+    return stored;
+  } catch {
+    return '';
+  }
+}
+
 export class GeminiAiTeacherService {
-  private static STORAGE_KEY = 'chirmo_gemini_api_key';
+  private static STORAGE_KEY = 'chirmo_gemini_api_key_v2';
+  private static LEGACY_STORAGE_KEY = 'chirmo_gemini_api_key';
+  private static QUOTA_STORAGE_KEY = 'chirmo_ai_daily_quota_v1';
+  private static requestTimestamps: number[] = [];
+
   private static DEFAULT_KEY =
     (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_GEMINI_API_KEY) || '';
 
   public static getApiKey(): string {
-    const saved = localStorage.getItem(this.STORAGE_KEY);
-    return saved && saved.trim() ? saved.trim() : this.DEFAULT_KEY;
+    try {
+      const legacy = localStorage.getItem(this.LEGACY_STORAGE_KEY);
+      if (legacy && legacy.trim()) {
+        this.setApiKey(legacy.trim());
+        localStorage.removeItem(this.LEGACY_STORAGE_KEY);
+      }
+      const saved = localStorage.getItem(this.STORAGE_KEY);
+      if (saved && saved.trim()) {
+        const decoded = decodeStoredKey(saved.trim());
+        if (decoded) return decoded;
+      }
+    } catch {}
+    return this.DEFAULT_KEY;
   }
 
   public static setApiKey(key: string): void {
-    localStorage.setItem(this.STORAGE_KEY, key.trim());
+    try {
+      const clean = sanitizeUserPrompt(key, 200);
+      if (!clean) {
+        localStorage.removeItem(this.STORAGE_KEY);
+        return;
+      }
+      localStorage.setItem(this.STORAGE_KEY, encodeStoredKey(clean));
+      localStorage.removeItem(this.LEGACY_STORAGE_KEY);
+    } catch {}
+  }
+
+  /**
+   * İstek Sınırlandırma (Rate Limiting - 12 istek/dk) ve Kullanıcı Başına Günlük Kota Kontrolü
+   */
+  public static checkRateAndQuotaAllowance(): { allowed: boolean; reason?: string } {
+    const now = Date.now();
+    this.requestTimestamps = this.requestTimestamps.filter(
+      (ts) => now - ts < RATE_LIMIT_WINDOW_MS
+    );
+
+    if (this.requestTimestamps.length >= MAX_REQUESTS_PER_MINUTE) {
+      return {
+        allowed: false,
+        reason: 'Dakikalık maksimum AI istek sınırına ulaşıldı. Yerel pedagoji motoru yanıtlıyor.'
+      };
+    }
+
+    const user = PrivacyAuthService.getCurrentUser();
+    const username = user?.username || 'guest';
+    const maxDaily =
+      user?.plan === 'pro' || user?.plan === 'lifetime' ? DAILY_QUOTA_PRO : DAILY_QUOTA_FREE;
+    const today = new Date().toISOString().slice(0, 10);
+
+    try {
+      const raw = localStorage.getItem(this.QUOTA_STORAGE_KEY);
+      const map: Record<string, { date: string; count: number }> = raw ? JSON.parse(raw) : {};
+      const entry = map[username];
+
+      if (entry && entry.date === today) {
+        if (entry.count >= maxDaily) {
+          return {
+            allowed: false,
+            reason: 'Günlük AI kullanım kotası doldu. Yerel pedagoji motoru devrede.'
+          };
+        }
+        entry.count += 1;
+        map[username] = entry;
+      } else {
+        map[username] = { date: today, count: 1 };
+      }
+
+      localStorage.setItem(this.QUOTA_STORAGE_KEY, JSON.stringify(map));
+    } catch {}
+
+    this.requestTimestamps.push(now);
+    return { allowed: true };
   }
 
   /**
@@ -32,37 +140,42 @@ export class GeminiAiTeacherService {
     contextQuestion: string = '',
     targetLang?: SupportedLanguage
   ): Promise<string> {
-    const trimmed = turkishText.trim();
+    const trimmed = sanitizeUserPrompt(turkishText, MAX_USER_INPUT_LENGTH);
+    const safeContext = sanitizeUserPrompt(contextQuestion, 300);
     if (!trimmed) return '';
 
     const lang: SupportedLanguage = targetLang || TargetLanguageService.getTargetLanguage();
     const tlCode = lang === 'de' ? 'de' : 'en';
 
+    const quotaCheck = this.checkRateAndQuotaAllowance();
+
     // 1. Anında ve Yüksek Doğruluklu Canlı Çeviri (Google Translate Endpoint)
-    try {
-      const res = await fetch(
-        `https://translate.googleapis.com/translate_a/single?client=gtx&sl=tr&tl=${tlCode}&dt=t&q=${encodeURIComponent(trimmed)}`
-      );
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data[0]) {
-          const translated = data[0].map((x: any) => x[0]).join('').trim();
-          if (translated) {
-            return translated;
+    if (quotaCheck.allowed) {
+      try {
+        const res = await fetch(
+          `https://translate.googleapis.com/translate_a/single?client=gtx&sl=tr&tl=${tlCode}&dt=t&q=${encodeURIComponent(trimmed)}`
+        );
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data[0]) {
+            const translated = data[0].map((x: any) => x[0]).join('').trim();
+            if (translated) {
+              return sanitizeUserPrompt(translated, MAX_USER_INPUT_LENGTH);
+            }
           }
         }
+      } catch {
+        // Ağ veya bağlantı hatasında sonraki adıma geç
       }
-    } catch {
-      // Ağ veya bağlantı hatasında sonraki adıma geç
     }
 
-    // 2. Google Gemini API ile Doğal Konuşma Çevirisi (Key varsa)
+    // 2. Google Gemini API ile Doğal Konuşma Çevirisi (Key ve kota uygun ise)
     const apiKey = this.getApiKey();
-    if (apiKey) {
+    if (apiKey && quotaCheck.allowed) {
       try {
         const targetLangName = lang === 'de' ? 'Almancasına (Deutsch)' : 'İngilizcesine';
         const prompt = `Sen Türkçe düşünceyi akıcı, doğal günlük konuşma ${targetLangName} çeviren bir asistansın.
-Chirmo'nun sorduğu soru: "${contextQuestion}".
+Chirmo'nun sorduğu soru: "${safeContext}".
 Kullanıcının Türkçe vermek istediği yanıt: "${trimmed}".
 
 Görev: Bu cevabı A1-B1 seviyesinde, günlük konuşma dilinde son derece doğal ve samimi tek bir konuşma cümlesine çevir. Asla açıklama veya Türkçe ekleme, yalnızca tek bir hedef dilde cümle döndür.`;
@@ -71,7 +184,7 @@ Görev: Bu cevabı A1-B1 seviyesinde, günlük konuşma dilinde son derece doğa
         for (const m of models) {
           try {
             const resp = await fetch(
-              `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${apiKey}`,
+              `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(apiKey)}`,
               {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -86,11 +199,11 @@ Görev: Bu cevabı A1-B1 seviyesinde, günlük konuşma dilinde son derece doğa
               if (reply && reply.trim()) {
                 let clean = reply.split('\n')[0].trim().replace(/^["']/, '').replace(/["']$/, '');
                 if (clean.includes('(')) clean = clean.split('(')[0].trim();
-                return clean;
+                return sanitizeUserPrompt(clean, MAX_USER_INPUT_LENGTH);
               }
             }
           } catch {
-            // Sıradaki modeli dene
+            // Gizli anahtar veya dahili hata detayları dışarı sızdırılmaz
           }
         }
       } catch {
@@ -170,13 +283,17 @@ Görev: Bu cevabı A1-B1 seviyesinde, günlük konuşma dilinde son derece doğa
     history: ChatMessage[] = [],
     scenario: string = 'Günlük Sohbet & Restoran'
   ): Promise<{ text: string; source: 'gemini' | 'pedagogy_fallback'; info?: string }> {
+    const safeUserMessage = sanitizeUserPrompt(userMessage, MAX_USER_INPUT_LENGTH);
+    const safeScenario = sanitizeUserPrompt(scenario, 120);
     const apiKey = this.getApiKey();
     const activeLang = TargetLanguageService.getTargetLanguage();
     const langLabel = activeLang === 'de' ? 'Almanca' : 'İngilizce';
 
+    const quotaCheck = this.checkRateAndQuotaAllowance();
+
     const systemPrompt = `Sen "Chirmo", kullanıcıların ${langLabel} konuşma korkusunu yenmelerini sağlayan, arkadaş canlısı, neşeli ve cesaretlendirici bir yapay zekâ ${langLabel} öğretmenisin.
-Şu anki Senaryo / Odak: "${scenario}".
-Kullanıcının Mesajı: "${userMessage}".
+Şu anki Senaryo / Odak: "${safeScenario}".
+Kullanıcının Mesajı: "${safeUserMessage}".
 
 Kurallar:
 1. Cevabın kısa, samimi ve motive edici olsun (en fazla 2-3 cümle).
@@ -185,7 +302,7 @@ Kurallar:
 4. Asla kullanıcıyı azarlama; hata yaptıysa nazikçe doğrusunu göster ve övgüde bulun.`;
 
     // 1. Canlı Google Gemini API Çağrısı Denemesi
-    if (apiKey) {
+    if (apiKey && quotaCheck.allowed && safeUserMessage) {
       const modelsToTry = ['gemini-2.5-flash', 'gemini-3.8-flash', 'gemini-flash-latest'];
 
       for (const model of modelsToTry) {
@@ -193,16 +310,16 @@ Kurallar:
           const contents = [
             ...history.slice(-4).map((m) => ({
               role: m.sender === 'user' ? 'user' : 'model',
-              parts: [{ text: m.text }]
+              parts: [{ text: sanitizeUserPrompt(m.text, MAX_USER_INPUT_LENGTH) }]
             })),
             {
               role: 'user',
-              parts: [{ text: `${systemPrompt}\n\nKullanıcı: ${userMessage}` }]
+              parts: [{ text: `${systemPrompt}\n\nKullanıcı: ${safeUserMessage}` }]
             }
           ];
 
           const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`,
             {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -214,17 +331,17 @@ Kurallar:
             const data = await response.json();
             const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
             if (reply && reply.trim()) {
-              return { text: reply.trim(), source: 'gemini' };
+              return { text: sanitizeUserPrompt(reply.trim(), 1200), source: 'gemini' };
             }
           }
         } catch {
-          // Devam et, fallback devreye girsin
+          // Gizli anahtar veya sunucu hatası sızdırılmaz; güvenli yerel motora geçilir
         }
       }
     }
 
     // 2. Akıllı Pedagojik Yanıt Motoru (Kesintisiz Kullanıcı Deneyimi Fallback)
-    const lower = userMessage.toLowerCase();
+    const lower = safeUserMessage.toLowerCase();
     let fallbackText = '';
 
     if (activeLang === 'de') {
@@ -256,7 +373,7 @@ Kurallar:
     return {
       text: fallbackText,
       source: 'pedagogy_fallback',
-      info: 'Gemini API anahtarı tanımlandı. Google AI Studio projesinde kota/ücretli katman açıldığında doğrudan canlı bulut yanıtı verir.'
+      info: quotaCheck.reason || 'Pedagojik yanıt motoru aktif.'
     };
   }
 }
