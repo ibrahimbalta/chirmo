@@ -109,6 +109,7 @@ export const ChirmoOnboardingModal: React.FC<ChirmoOnboardingModalProps> = ({
   };
 
   const isDe = selectedLang === 'de';
+  const isFr = selectedLang === 'fr';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-950/75 backdrop-blur-md animate-fade-in overflow-y-auto">
@@ -156,7 +157,7 @@ export const ChirmoOnboardingModal: React.FC<ChirmoOnboardingModalProps> = ({
                 <label className="text-[11px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">
                   1. Öğrenmek İstediğin Dil:
                 </label>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   <button
                     type="button"
                     onClick={() => handleLangChange('en')}
@@ -193,6 +194,25 @@ export const ChirmoOnboardingModal: React.FC<ChirmoOnboardingModalProps> = ({
                       </div>
                     </div>
                     {selectedLang === 'de' && <CheckCircle2 className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleLangChange('fr')}
+                    className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex items-center justify-between ${
+                      selectedLang === 'fr'
+                        ? 'border-indigo-600 bg-indigo-50/80 dark:bg-indigo-950/40 text-indigo-950 dark:text-indigo-100 ring-2 ring-indigo-500/20'
+                        : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/40 hover:bg-slate-50'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <span className="text-2xl">🇫🇷</span>
+                      <div>
+                        <div className="font-black text-xs">Fransızca</div>
+                        <div className="text-[10px] text-slate-500">Français Parler</div>
+                      </div>
+                    </div>
+                    {selectedLang === 'fr' && <CheckCircle2 className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />}
                   </button>
                 </div>
               </div>
@@ -272,7 +292,11 @@ export const ChirmoOnboardingModal: React.FC<ChirmoOnboardingModalProps> = ({
                     {
                       lvl: 'A1' as CEFRLevelSimple,
                       title: 'A1 — Sıfırdan Başlıyorum',
-                      desc: isDe ? 'Hiç Almanca bilmiyorum veya sadece birkaç kelime hatırlıyorum.' : 'Hiç İngilizce bilmiyorum veya sadece birkaç kelime biliyorum.'
+                      desc: isDe
+                        ? 'Hiç Almanca bilmiyorum veya sadece birkaç kelime hatırlıyorum.'
+                        : isFr
+                          ? 'Hiç Fransızca bilmiyorum veya sadece birkaç kelime biliyorum.'
+                          : 'Hiç İngilizce bilmiyorum veya sadece birkaç kelime biliyorum.'
                     },
                     {
                       lvl: 'A2' as CEFRLevelSimple,
@@ -355,7 +379,9 @@ export const ChirmoOnboardingModal: React.FC<ChirmoOnboardingModalProps> = ({
                 <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white mt-1">
                   {isDe
                     ? 'Berlin’de bir kafedesin, kahve sipariş edeceksin. Yerliler gibi en doğal ve saygılı nasıl istersin?'
-                    : 'Yurt dışında bir kafedesin, kahve sipariş edeceksin. Yerliler gibi en doğal ve kibar nasıl istersin?'}
+                    : isFr
+                      ? 'Paris’te bir kafedesin, kahve sipariş edeceksin. Yerliler gibi en doğal ve kibar nasıl istersin?'
+                      : 'Yurt dışında bir kafedesin, kahve sipariş edeceksin. Yerliler gibi en doğal ve kibar nasıl istersin?'}
                 </h3>
               </div>
 
@@ -375,20 +401,35 @@ export const ChirmoOnboardingModal: React.FC<ChirmoOnboardingModalProps> = ({
                         expl: '❌ Emir kipi ("Gib mir") siparişlerde asla kullanılmaz.'
                       }
                     ]
-                  : [
-                      {
-                        text: 'Can I get an iced latte to go, please?',
-                        expl: '✅ Harika! "Can I get..." kalıbı İngilizce konuşulan ülkelerde en doğal, yerel ve saygılı sipariş formülüdür.'
-                      },
-                      {
-                        text: 'I want coffee latte now.',
-                        expl: '❌ "I want..." emrivaki ve kaba algılanır. Yerliler siparişte daima "Can I get..." kalıbını tercih eder.'
-                      },
-                      {
-                        text: 'Give me one latte fast.',
-                        expl: '❌ Emir kipi ("Give me") günlük yaşamda hoş karşılanmaz.'
-                      }
-                    ]
+                  : isFr
+                    ? [
+                        {
+                          text: "Un café au lait et un croissant, s'il vous plaît.",
+                          expl: "✅ Harika! \"...s'il vous plaît\" kalıbı Fransızca'da en doğal, yerel ve saygılı sipariş formülüdür."
+                        },
+                        {
+                          text: 'Je veux du café tout de suite.',
+                          expl: '❌ "Je veux..." (istiyorum) emrivaki ve kaba algılanır. Fransızlar siparişte daima rica formüllerini tercih eder.'
+                        },
+                        {
+                          text: 'Donne-moi un café vite.',
+                          expl: '❌ Emir kipi ("Donne-moi") günlük yaşamda ve kafede kaba karşılanır.'
+                        }
+                      ]
+                    : [
+                        {
+                          text: 'Can I get an iced latte to go, please?',
+                          expl: '✅ Harika! "Can I get..." kalıbı İngilizce konuşulan ülkelerde en doğal, yerel ve saygılı sipariş formülüdür.'
+                        },
+                        {
+                          text: 'I want coffee latte now.',
+                          expl: '❌ "I want..." emrivaki ve kaba algılanır. Yerliler siparişte daima "Can I get..." kalıbını tercih eder.'
+                        },
+                        {
+                          text: 'Give me one latte fast.',
+                          expl: '❌ Emir kipi ("Give me") günlük yaşamda hoş karşılanmaz.'
+                        }
+                      ]
                 ).map((item, idx) => (
                   <button
                     key={idx}
@@ -441,7 +482,7 @@ export const ChirmoOnboardingModal: React.FC<ChirmoOnboardingModalProps> = ({
               {/* Profil Özet Rozetleri */}
               <div className="flex items-center justify-center flex-wrap gap-1.5 text-xs">
                 <span className="px-2.5 py-1 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 font-bold">
-                  {selectedLang === 'de' ? '🇩🇪 Almanca' : '🇬🇧 İngilizce'}
+                  {selectedLang === 'de' ? '🇩🇪 Almanca' : selectedLang === 'fr' ? '🇫🇷 Fransızca' : '🇬🇧 İngilizce'}
                 </span>
                 <span className="px-2.5 py-1 rounded-xl bg-purple-50 dark:bg-purple-950/50 border border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 font-bold">
                   {previewPlan.levelTitle}

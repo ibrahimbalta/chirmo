@@ -100,6 +100,23 @@ describe('PersonalizedLearningPlanService', () => {
     expect(hasGermanModule).toBe(true);
   });
 
+  it('generates French-specific modules when target language is French', () => {
+    const plan = PersonalizedLearningPlanService.generateAndSavePlan({
+      ageGroup: 'adults',
+      ageNumber: 25,
+      level: 'A1',
+      targetLang: 'fr',
+      targetFocus: 'daily'
+    });
+
+    expect(plan.targetLang).toBe('fr');
+    expect(plan.levelTitle).toContain('Fransızca');
+    const hasFrenchModule = plan.steps.some(
+      (s) => s.title.includes('Fransızca') || s.description.includes('Fransızca')
+    );
+    expect(hasFrenchModule).toBe(true);
+  });
+
   it('marks steps as completed, recalculates progress and earns XP', () => {
     const plan = PersonalizedLearningPlanService.generateAndSavePlan({
       ageGroup: 'adults',
