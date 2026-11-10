@@ -5,17 +5,53 @@ const ALLOWED_PROTOCOLS = new Set(['http:', 'https:', 'about:']);
 const BLOCKED_SSRF_HOSTS = new Set([
   '169.254.169.254',
   'metadata.google.internal',
+  'metadata',
   '127.0.0.1',
   '0.0.0.0',
   'localhost',
-  '[::1]'
+  '[::1]',
+  '[::]'
 ]);
 
+function isPrivateOrLoopbackIp(hostname: string): boolean {
+  const h = hostname.toLowerCase().replace(/^\[|\]$/g, '');
+  if (
+    h === '::1' ||
+    h === '::' ||
+    h.startsWith('fe80:') ||
+    h.startsWith('fc00:') ||
+    h.startsWith('fd00:') ||
+    h.endsWith('.local') ||
+    h.endsWith('.internal')
+  ) {
+    return true;
+  }
+
+  // Pure integer/hex/octal IP obfuscation check
+  if (/^(0x[0-9a-f]+|\d+)$/i.test(h)) {
+    return true;
+  }
+
+  const ipv4Match = h.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+  if (ipv4Match) {
+    const a = Number(ipv4Match[1]);
+    const b = Number(ipv4Match[2]);
+    if (a === 0 || a === 10 || a === 127) return true;
+    if (a === 169 && b === 254) return true;
+    if (a === 192 && b === 168) return true;
+    if (a === 172 && b >= 16 && b <= 31) return true;
+    if (a === 100 && b >= 64 && b <= 127) return true; // Carrier-grade NAT
+  }
+
+  return false;
+}
+
 /**
- * Validates URLs passed across IPC or navigation to prevent SSRF, protocol smuggling, and local file disclosure.
+ * Validates URLs passed across IPC or navigation to prevent SSRF, protocol smuggling,
+ * private network scanning (RFC1918/IPv6), and local file disclosure.
  */
 export function isSafeExternalUrl(rawUrl: string): boolean {
-  if (!rawUrl || typeof rawUrl !== 'string') return false;
+  if (!rawUrl || typeof rawUrl !== 'string' || rawUrl.length > 2048) return false;
   const trimmed = rawUrl.trim();
   if (trimmed === 'about:blank') return true;
 
@@ -24,8 +60,15 @@ export function isSafeExternalUrl(rawUrl: string): boolean {
     if (!ALLOWED_PROTOCOLS.has(parsed.protocol)) {
       return false;
     }
+    if (parsed.protocol === 'about:' && trimmed !== 'about:blank') {
+      return false;
+    }
+    // Block embedded URL credentials (phishing / SSRF parser confusion)
+    if (parsed.username || parsed.password) {
+      return false;
+    }
     const hostname = parsed.hostname.toLowerCase();
-    if (BLOCKED_SSRF_HOSTS.has(hostname) || hostname.startsWith('169.254.')) {
+    if (BLOCKED_SSRF_HOSTS.has(hostname) || isPrivateOrLoopbackIp(hostname)) {
       return false;
     }
     return true;
@@ -107,10 +150,17 @@ export function secureWebContents(
     return { action: 'deny' };
   });
 
-  // Intercept will-navigate to prevent protocol smuggling and SSRF
+  // Intercept will-navigate and will-redirect to prevent protocol smuggling and 302 SSRF
   contents.on('will-navigate', (event, navigationUrl) => {
     if (!isSafeExternalUrl(navigationUrl)) {
       console.warn(`[Security] Blocked navigation to forbidden URL: ${navigationUrl}`);
+      event.preventDefault();
+    }
+  });
+
+  contents.on('will-redirect', (event, redirectUrl) => {
+    if (!isSafeExternalUrl(redirectUrl)) {
+      console.warn(`[Security] Blocked redirect to forbidden URL: ${redirectUrl}`);
       event.preventDefault();
     }
   });

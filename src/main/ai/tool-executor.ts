@@ -1,6 +1,7 @@
-import { WebContentsView, BrowserWindow } from 'electron';
+import { WebContentsView } from 'electron';
 import { ScrapedPageData } from './types';
 import { resolveUrlOrSearch } from '../url-helper';
+import { isSafeExternalUrl, secureWebContents } from '../security';
 
 export class ToolExecutor {
   /**
@@ -12,6 +13,9 @@ export class ToolExecutor {
     timeoutMs = 15000
   ): Promise<ScrapedPageData> {
     const resolvedUrl = resolveUrlOrSearch(url);
+    if (!isSafeExternalUrl(resolvedUrl) || resolvedUrl === 'about:blank') {
+      throw new Error('Güvenlik politikası gereği bu URL adresine erişim engellendi.');
+    }
 
     return new Promise((resolve, reject) => {
       const view = new WebContentsView({
@@ -19,9 +23,12 @@ export class ToolExecutor {
           sandbox: true,
           contextIsolation: true,
           nodeIntegration: false,
-          images: false, // Don't load images for faster background scraping
-        },
+          images: false
+        }
       });
+
+      // Enforce navigation & redirect SSRF protection on background scraper view
+      secureWebContents(view.webContents);
 
       let timeoutTimer: NodeJS.Timeout | null = null;
       let isDone = false;
@@ -29,7 +36,6 @@ export class ToolExecutor {
       const cleanup = () => {
         if (timeoutTimer) clearTimeout(timeoutTimer);
         try {
-          // view is garbage collected after losing reference
           view.webContents.stop();
         } catch {
           // ignore
@@ -50,13 +56,11 @@ export class ToolExecutor {
         cleanup();
 
         try {
-          // Safely execute JavaScript in isolated DOM context
           const extractionScript = `
             (() => {
               const title = document.title || '';
               const metaDesc = document.querySelector('meta[name="description"]')?.getAttribute('content') || '';
               
-              // Extract headings and news card titles
               const headingNodes = Array.from(document.querySelectorAll('h1, h2, h3, a[title]'));
               const seen = new Set();
               const headings = [];
@@ -69,7 +73,6 @@ export class ToolExecutor {
                 }
               }
               
-              // Extract main text (strip script, style, nav, footer, noscript)
               const clone = document.body.cloneNode(true);
               const elementsToRemove = clone.querySelectorAll('script, style, nav, footer, noscript, iframe, svg');
               elementsToRemove.forEach(el => el.remove());
@@ -84,7 +87,7 @@ export class ToolExecutor {
                 title,
                 description: metaDesc,
                 headings,
-                mainText: cleanedText.slice(0, 4000), // First 4000 characters
+                mainText: cleanedText.slice(0, 4000),
                 wordCount: words,
                 linksCount
               };
@@ -100,7 +103,7 @@ export class ToolExecutor {
             headings: result.headings || [],
             mainText: result.mainText || '',
             wordCount: result.wordCount || 0,
-            linksCount: result.linksCount || 0,
+            linksCount: result.linksCount || 0
           });
         } catch (err: any) {
           reject(new Error(`Sayfa içeriği ayrıştırılamadı: ${err.message}`));

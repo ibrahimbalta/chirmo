@@ -1,7 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { sanitizeWebContent, wrapUntrustedContext } from '../src/main/security/sanitizer';
 import { isSafeExternalUrl } from '../src/main/security';
-import { PrivacyAuthService } from '../src/renderer/src/services/privacyAuthService';
+import { generateErrorPage } from '../src/main/error-page';
+import { resolveUrlOrSearch } from '../src/main/url-helper';
+import { PrivacyAuthService, constantTimeEqual } from '../src/renderer/src/services/privacyAuthService';
 import { AdminService } from '../src/renderer/src/services/adminService';
 import { GeminiAiTeacherService } from '../src/renderer/src/services/geminiAiTeacherService';
 import { stripSensitiveUserFields } from '../src/renderer/src/services/firestoreService';
@@ -66,14 +68,47 @@ describe('Security Policies and Prompt Injection Sanitization', () => {
     expect(wrapped).toContain('Wikipedia sayfası içeriği');
   });
 
-  it('should block SSRF, file:, data:, and javascript: URLs in Electron URL validator', () => {
+  it('should block SSRF, RFC1918 private IPs, file:, data:, and javascript: URLs in Electron URL validator', () => {
     expect(isSafeExternalUrl('https://chirmo-f95a0.web.app')).toBe(true);
     expect(isSafeExternalUrl('javascript:alert(1)')).toBe(false);
     expect(isSafeExternalUrl('file:///etc/passwd')).toBe(false);
     expect(isSafeExternalUrl('data:text/html,<script>alert(1)</script>')).toBe(false);
     expect(isSafeExternalUrl('http://169.254.169.254/latest/meta-data/')).toBe(false);
     expect(isSafeExternalUrl('http://127.0.0.1:8080/admin')).toBe(false);
+    expect(isSafeExternalUrl('http://10.0.0.1/internal')).toBe(false);
+    expect(isSafeExternalUrl('http://192.168.1.1/router')).toBe(false);
+    expect(isSafeExternalUrl('http://172.16.5.4/secret')).toBe(false);
     expect(isSafeExternalUrl('http://localhost:3000')).toBe(false);
+    expect(isSafeExternalUrl('https://user:password@example.com/')).toBe(false);
+  });
+
+  it('should escape XSS payloads in error page generator and block dangerous schemes in url-helper', () => {
+    const rawDataUrl = generateErrorPage(
+      `https://evil.example.com/' onclick="alert(1)" <script>evil()</script>`,
+      -105,
+      `ERR_NAME_NOT_RESOLVED <img src=x onerror=alert(1)>`
+    );
+    const decodedHtml = decodeURIComponent(rawDataUrl.replace('data:text/html;charset=utf-8,', ''));
+    expect(decodedHtml).not.toContain('<script>evil()</script>');
+    expect(decodedHtml).not.toContain('<img src=x');
+    expect(decodedHtml).toContain('&lt;script&gt;');
+
+    expect(resolveUrlOrSearch('file:///C:/Windows/win.ini')).toBe('about:blank');
+    expect(resolveUrlOrSearch('javascript:alert(1)')).toBe('about:blank');
+    expect(resolveUrlOrSearch('chrome://settings')).toBe('about:blank');
+  });
+
+  it('should block prototype pollution usernames and perform constant-time hash comparisons', async () => {
+    expect(constantTimeEqual('abc12345', 'abc12345')).toBe(true);
+    expect(constantTimeEqual('abc12345', 'abc12346')).toBe(false);
+    expect(constantTimeEqual('short', 'longer_string')).toBe(false);
+
+    await expect(
+      PrivacyAuthService.register('__proto__', 'ValidPass123', 'Soru?', 'Cevap')
+    ).rejects.toThrow();
+    await expect(
+      PrivacyAuthService.register('constructor', 'ValidPass123', 'Soru?', 'Cevap')
+    ).rejects.toThrow();
   });
 
   it('should hash passwords with PBKDF2-HMAC-SHA256 and protect session against tampering', async () => {

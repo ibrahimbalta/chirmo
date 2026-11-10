@@ -6,7 +6,7 @@
  * yedekleme ve güvenlik ayarlarını yönetir.
  */
 
-import { PrivacyAuthService, UserAccount } from './privacyAuthService';
+import { PrivacyAuthService, UserAccount, constantTimeEqual } from './privacyAuthService';
 import { CURATED_VIDEOS, VideoLesson } from '../components/learning/WatchingView';
 
 const STORAGE_KEYS = {
@@ -111,7 +111,7 @@ export class AdminService {
         return false;
       }
       const expectedSig = computeAdminPinDigest(`session:${parsed.expiresAt}`);
-      if (parsed.sig !== expectedSig) {
+      if (!constantTimeEqual(parsed.sig, expectedSig)) {
         localStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
         return false;
       }
@@ -139,8 +139,8 @@ export class AdminService {
     const inputDigest = computeAdminPinDigest(inputPin.trim());
     const storedCustomDigest = localStorage.getItem(STORAGE_KEYS.ADMIN_PIN_HASH);
     const isValid =
-      inputDigest === DEFAULT_ADMIN_PIN_DIGEST ||
-      (Boolean(storedCustomDigest) && inputDigest === storedCustomDigest);
+      constantTimeEqual(inputDigest, DEFAULT_ADMIN_PIN_DIGEST) ||
+      (Boolean(storedCustomDigest) && constantTimeEqual(inputDigest, storedCustomDigest!));
 
     if (isValid) {
       const expiresAt = now + ADMIN_SESSION_TTL_MS;
@@ -307,26 +307,30 @@ export class AdminService {
   public static importBackup(jsonString: string): boolean {
     try {
       if (!jsonString || jsonString.length > 5 * 1024 * 1024) return false;
-      const parsed = JSON.parse(jsonString);
+      const safeParse = (raw: string) =>
+        JSON.parse(raw, (k, v) =>
+          k === '__proto__' || k === 'constructor' || k === 'prototype' ? undefined : v
+        );
+      const parsed = safeParse(jsonString);
       if (!parsed || typeof parsed !== 'object') return false;
 
       if (parsed.accounts) {
         const accObj =
-          typeof parsed.accounts === 'string' ? JSON.parse(parsed.accounts) : parsed.accounts;
+          typeof parsed.accounts === 'string' ? safeParse(parsed.accounts) : parsed.accounts;
         if (accObj && typeof accObj === 'object' && !Array.isArray(accObj)) {
           localStorage.setItem('chirmo_saas_accounts_v1', JSON.stringify(accObj));
         }
       }
       if (parsed.videos) {
         const vidArr =
-          typeof parsed.videos === 'string' ? JSON.parse(parsed.videos) : parsed.videos;
+          typeof parsed.videos === 'string' ? safeParse(parsed.videos) : parsed.videos;
         if (Array.isArray(vidArr)) {
           localStorage.setItem(STORAGE_KEYS.CUSTOM_VIDEOS, JSON.stringify(vidArr));
         }
       }
       if (parsed.vocabVault) {
         const vocabArr =
-          typeof parsed.vocabVault === 'string' ? JSON.parse(parsed.vocabVault) : parsed.vocabVault;
+          typeof parsed.vocabVault === 'string' ? safeParse(parsed.vocabVault) : parsed.vocabVault;
         if (Array.isArray(vocabArr)) {
           localStorage.setItem('chirmo_vocab_vault_v1', JSON.stringify(vocabArr));
         }
@@ -334,7 +338,7 @@ export class AdminService {
       if (parsed.subscription) {
         const subObj =
           typeof parsed.subscription === 'string'
-            ? JSON.parse(parsed.subscription)
+            ? safeParse(parsed.subscription)
             : parsed.subscription;
         if (subObj && typeof subObj === 'object') {
           localStorage.setItem('chirmo_user_subscription_v1', JSON.stringify(subObj));

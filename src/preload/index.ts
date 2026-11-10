@@ -135,4 +135,4 @@ const api = {
   },
 };
 
-contextBridge.exposeInMainWorld('chirmo', api);
+contextBridge.exposeInMainWorld('chirmo', Object.freeze(api));

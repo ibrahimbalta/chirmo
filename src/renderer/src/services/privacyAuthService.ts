@@ -38,6 +38,39 @@ const LOCKOUT_WINDOW_MS = 5 * 60 * 1000; // 5 dakika
 const PBKDF2_PREFIX = 'pbkdf2_v1$';
 const PBKDF2_ITERATIONS = 100000;
 const USERNAME_ALLOWED_REGEX = /^[a-z0-9_.\-@]{3,40}$/;
+const FORBIDDEN_PROTOTYPE_KEYS = new Set([
+  '__proto__',
+  'constructor',
+  'prototype',
+  'tostring',
+  'valueof',
+  'hasownproperty'
+]);
+
+// Timing-attack resistant (sabit zamanlı) kriptografik özet karşılaştırması
+export function constantTimeEqual(a: string, b: string): boolean {
+  if (typeof a !== 'string' || typeof b !== 'string') return false;
+  const lenA = a.length;
+  const lenB = b.length;
+  const maxLen = Math.max(lenA, lenB);
+  let diff = lenA ^ lenB;
+  for (let i = 0; i < maxLen; i++) {
+    const charA = i < lenA ? a.charCodeAt(i) : 0;
+    const charB = i < lenB ? b.charCodeAt(i) : 0;
+    diff |= charA ^ charB;
+  }
+  return diff === 0;
+}
+
+// Prototype Pollution saldırılarını engelleyen güvenli JSON ayrıştırıcı
+function safeJsonParse<T>(raw: string): T {
+  return JSON.parse(raw, (key, value) => {
+    if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+      return undefined;
+    }
+    return value;
+  });
+}
 
 interface RateLimitEntry {
   count: number;
@@ -106,12 +139,12 @@ async function verifySecretHash(
 
   if (storedHash.startsWith(PBKDF2_PREFIX)) {
     const candidate = await derivePasswordHash(secret, salt);
-    return { valid: candidate === storedHash, needsUpgrade: false };
+    return { valid: constantTimeEqual(candidate, storedHash), needsUpgrade: false };
   }
 
-  // Legacy tek tur SHA-256 kontrolü
+  // Legacy tek tur SHA-256 kontrolü (sabit zamanlı)
   const legacyCandidate = await sha256Hex(secret + salt);
-  if (legacyCandidate === storedHash) {
+  if (constantTimeEqual(legacyCandidate, storedHash)) {
     return { valid: true, needsUpgrade: true };
   }
 
@@ -147,7 +180,9 @@ function computeSessionSignature(id: string, username: string, plan: string, exp
 }
 
 function normalizeUsername(raw: string): string {
-  return (raw || '').trim().toLowerCase();
+  const norm = (raw || '').trim().toLowerCase();
+  if (FORBIDDEN_PROTOTYPE_KEYS.has(norm)) return '';
+  return norm;
 }
 
 function normalizeAnswer(raw: string): string {
@@ -219,9 +254,14 @@ export class PrivacyAuthService {
   private static getAccounts(): Record<string, UserAccount> {
     try {
       const raw = localStorage.getItem(STORAGE_KEYS.ACCOUNTS);
-      if (raw) return JSON.parse(raw);
+      if (raw) {
+        const parsed = safeJsonParse<Record<string, UserAccount>>(raw);
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          return Object.assign(Object.create(null), parsed);
+        }
+      }
     } catch {}
-    return {};
+    return Object.create(null);
   }
 
   private static saveAccounts(accounts: Record<string, UserAccount>): void {
@@ -289,7 +329,7 @@ export class PrivacyAuthService {
           parsed.plan,
           parsed._expiresAt
         );
-        if (parsed._sig !== expectedSig) {
+        if (!constantTimeEqual(parsed._sig, expectedSig)) {
           const accounts = this.getAccounts();
           const storedAcc = accounts[parsed.username];
           const verifiedPlan = storedAcc?.plan || 'free';

@@ -1,3 +1,22 @@
+function escapeHtml(unsafe: string): string {
+  return String(unsafe || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function sanitizeRetryUrl(rawUrl: string): string {
+  try {
+    const parsed = new URL(String(rawUrl || '').trim());
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+      return parsed.toString().replace(/['"\\<>]/g, '');
+    }
+  } catch {}
+  return 'about:blank';
+}
+
 export function generateErrorPage(
   failedUrl: string,
   errorCode: number,
@@ -19,15 +38,21 @@ export function generateErrorPage(
     if (desc.includes('CERT')) {
       return 'Güvenlik sertifikası geçersiz veya güvenilir bulunamadı.';
     }
-    return `Sayfa yüklenirken bir ağ veya sunucu hatası oluştu (${errorDescription}).`;
+    return `Sayfa yüklenirken bir ağ veya sunucu hatası oluştu (${escapeHtml(errorDescription)}).`;
   };
 
-  const explanation = getFriendlyExplanation(errorDescription);
+  const explanation = getFriendlyExplanation(String(errorDescription || ''));
+  const safeDisplayUrl = escapeHtml(failedUrl);
+  const safeErrorDesc = escapeHtml(errorDescription);
+  const safeErrorCode = Number.isFinite(errorCode) ? Number(errorCode) : -1;
+  const safeRetryHref = escapeHtml(sanitizeRetryUrl(failedUrl));
+  const safeSearchQuery = encodeURIComponent(String(failedUrl || '').slice(0, 500));
 
   const html = `<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline';">
   <title>Sayfaya Ulaşılamıyor - Chirmo</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -123,10 +148,10 @@ export function generateErrorPage(
     <div class="icon">⚠️</div>
     <h1>Bu Sayfaya Ulaşılamıyor</h1>
     <p>${explanation}</p>
-    <div class="code">Hata Kodu: ${errorDescription} (${errorCode})<br>URL: ${failedUrl}</div>
+    <div class="code">Hata Kodu: ${safeErrorDesc} (${safeErrorCode})<br>URL: ${safeDisplayUrl}</div>
     <div class="actions">
-      <button class="btn-primary" onclick="window.location.href='${failedUrl}'">Yeniden Dene</button>
-      <a class="btn-secondary" href="https://www.google.com/search?q=${encodeURIComponent(failedUrl)}">Google'da Ara</a>
+      <a class="btn-primary" href="${safeRetryHref}">Yeniden Dene</a>
+      <a class="btn-secondary" href="https://www.google.com/search?q=${safeSearchQuery}">Google'da Ara</a>
     </div>
   </div>
 </body>

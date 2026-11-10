@@ -3,17 +3,30 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper: Validate username format & length
+    // Helper: Validate username format & length (blocks prototype pollution & path traversal)
     function isValidUsername(username) {
       return username is string
         && username.size() >= 3
         && username.size() <= 40
-        && username.matches('^[a-z0-9_.\\-@]+$');
+        && username.matches('^[a-z0-9_.\\-@]+$')
+        && !(username in ['__proto__', 'constructor', 'prototype', 'toString', 'valueOf']);
     }
 
-    // Helper: Validate user account schema & payload bounds
+    // Helper: Strict schema & field whitelist validation for user accounts
     function isValidUserPayload(data, username) {
       return data.keys().hasAll(['id', 'username', 'passwordHash', 'salt', 'plan'])
+        && data.keys().hasOnly([
+          'id',
+          'username',
+          'passwordHash',
+          'salt',
+          'securityQuestion',
+          'securityAnswerHash',
+          'plan',
+          'createdAt',
+          'lastLogin',
+          'syncedData'
+        ])
         && data.username == username
         && data.id is string && data.id.size() >= 3 && data.id.size() <= 80
         && data.passwordHash is string && data.passwordHash.size() >= 16 && data.passwordHash.size() <= 256
@@ -21,6 +34,8 @@ service cloud.firestore {
         && data.plan in ['free', 'pro', 'lifetime']
         && (!('securityQuestion' in data) || (data.securityQuestion is string && data.securityQuestion.size() <= 200))
         && (!('securityAnswerHash' in data) || (data.securityAnswerHash is string && data.securityAnswerHash.size() <= 256))
+        && (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 64))
+        && (!('lastLogin' in data) || (data.lastLogin is string && data.lastLogin.size() <= 64))
         && (!('syncedData' in data) || (data.syncedData is string && data.syncedData.size() <= 65536));
     }
 
@@ -31,7 +46,8 @@ service cloud.firestore {
         && isValidUserPayload(request.resource.data, username);
       allow update: if isValidUsername(username)
         && isValidUserPayload(request.resource.data, username)
-        && request.resource.data.username == resource.data.username;
+        && request.resource.data.username == resource.data.username
+        && request.resource.data.id == resource.data.id;
       allow delete: if isValidUsername(username);
     }
 
@@ -39,19 +55,36 @@ service cloud.firestore {
     match /public_profiles/{username} {
       allow get, list: if true;
       allow create, update: if isValidUsername(username)
+        && request.resource.data.keys().hasOnly([
+          'username',
+          'plan',
+          'level',
+          'xp',
+          'avatar',
+          'updatedAt'
+        ])
         && request.resource.data.username == username
         && !('passwordHash' in request.resource.data)
         && !('salt' in request.resource.data)
         && !('securityAnswerHash' in request.resource.data)
         && request.resource.data.plan in ['free', 'pro', 'lifetime']
+        && (!('level' in request.resource.data) || (request.resource.data.level is string && request.resource.data.level.size() <= 16))
+        && (!('avatar' in request.resource.data) || (request.resource.data.avatar is string && request.resource.data.avatar.size() <= 32))
         && (!('xp' in request.resource.data) || (request.resource.data.xp is int && request.resource.data.xp >= 0 && request.resource.data.xp <= 1000000));
       allow delete: if false;
     }
 
-    // 3. Global Site Visitor & Member Statistics (Monotonic Counter Protection, No Deletion)
+    // 3. Global Site Visitor & Member Statistics (Monotonic & Bounded Counter Protection, No Deletion)
     match /site_stats/global {
       allow get: if true;
       allow create, update: if request.resource.data.keys().hasAll(['totalVisitors', 'todayVisitors', 'registeredMembers', 'lastDate'])
+        && request.resource.data.keys().hasOnly([
+          'totalVisitors',
+          'todayVisitors',
+          'registeredMembers',
+          'lastDate',
+          'updatedAt'
+        ])
         && request.resource.data.totalVisitors is int
         && request.resource.data.totalVisitors >= 0
         && request.resource.data.todayVisitors is int
@@ -60,7 +93,13 @@ service cloud.firestore {
         && request.resource.data.registeredMembers >= 0
         && request.resource.data.lastDate is string
         && request.resource.data.lastDate.size() == 10
-        && (resource == null || request.resource.data.totalVisitors >= resource.data.totalVisitors);
+        && (
+          resource == null
+          || (
+            request.resource.data.totalVisitors >= resource.data.totalVisitors
+            && request.resource.data.totalVisitors <= resource.data.totalVisitors + 50
+          )
+        );
       allow delete: if false;
     }
 
